@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html class="dark" lang="pt-BR">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Gaia Team | GymIntel Predictive Intelligence</title>
+    <title>Gaia Team | GymIntel Inteligência Preditiva</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -151,7 +151,7 @@
                         class="text-blue-500">Intel</span></h1>
                 <nav class="hidden md:flex items-center gap-0.5">
                     <a class="px-2 py-1 text-sm font-medium text-white bg-white/10 rounded border border-white/5 transition-colors"
-                        href="dashboard.html">Dashboard</a>
+                        href="dashboard.html">Painel</a>
                     <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
                         href="membros.html">Membros</a>
                     <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
@@ -194,7 +194,7 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <div class="flex items-center gap-2 text-text-muted text-sm mb-0.5">
-                    <span>Home</span>
+                    <span>Início</span>
                     <span class="material-symbols-outlined text-sm">chevron_right</span>
                     <span>Inteligência</span>
                     <span class="material-symbols-outlined text-sm">chevron_right</span>
@@ -202,7 +202,7 @@
                 </div>
                 <h2 class="text-xl font-bold text-white tracking-tight">Análise Preditiva & Retenção</h2>
                 <p class="text-text-muted text-sm mt-0.5 max-w-2xl">Monitoramento em tempo real de padrões
-                    comportamentais com 12M+ data points.</p>
+                    comportamentais com 12Mi+ pontos de dados.</p>
             </div>
             <div class="flex gap-2">
                 <div class="flex gap-1.5">
@@ -230,7 +230,7 @@
             <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-blue-500/50 transition-colors fade-in"
                 style="animation-delay: 0.1s">
                 <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco de Churn (Alta Prob.)
+                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco de Evasão (Evasão)
                     </p>
                     <span
                         class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-blue-400 transition-colors">warning</span>
@@ -282,7 +282,7 @@
             <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-blue-500/50 transition-colors fade-in"
                 style="animation-delay: 0.3s">
                 <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">LTV Projetado</p>
+                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">LTV Projetado (Valor Vitalício)</p>
                     <span
                         class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-blue-400 transition-colors">payments</span>
                 </div>
@@ -475,10 +475,10 @@
 
             <!-- Churn Prob & Actions -->
             <div class="lg:col-span-4 flex flex-col gap-3">
-                <!-- Churn Gauge -->
+                <!-- Indicador de Evasão -->
                 <div class="bg-surface-dark border border-border-dark rounded p-4 flex-1 flex flex-col items-center justify-center relative overflow-hidden fade-in"
                     style="animation-delay: 0.5s">
-                    <h3 class="text-sm font-bold text-white w-full text-left mb-2">Risco de Churn</h3>
+                    <h3 class="text-sm font-bold text-white w-full text-left mb-2">Risco de Evasão</h3>
                     <div class="relative w-32 h-32 flex items-center justify-center">
                         <svg class="w-full h-full transform -rotate-90">
                             <circle class="text-surface-darker" cx="96" cy="96" fill="transparent" r="88"
@@ -536,7 +536,7 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
                             </div>
                             <div class="mt-2 flex items-center justify-between">
-                                <span class="text-sm text-blue-400 font-medium">+$2.4k LTV</span>
+                                <span class="text-sm text-blue-400 font-medium">+$2.4k em LTV</span>
                                 <button onclick="showToast('Abrindo editor...', 'edit')"
                                     class="h-6 px-2 bg-surface-dark border border-border-dark text-text-muted text-sm font-bold uppercase rounded">Revisar</button>
                             </div>
@@ -627,7 +627,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-1.5 uppercase tracking-tighter italic">
                         <span class="material-symbols-outlined text-rose-500 text-[16px]">warning</span>
-                        <h3 class="text-sm font-bold text-white">Risk Queue</h3>
+                        <h3 class="text-sm font-bold text-white">Fila de Risco</h3>
                     </div>
                     <span
                         class="bg-rose-500/10 text-rose-500 text-sm font-black px-1.5 py-0.5 rounded border border-rose-500/20">12
@@ -712,7 +712,7 @@
                             <th class="px-3 py-2">Membro</th>
                             <th class="px-3 py-2">Status</th>
                             <th class="px-3 py-2 text-right">Freq (30d)</th>
-                            <th class="px-3 py-2 text-right text-purple-400">Churn (ML)</th>
+                            <th class="px-3 py-2 text-right text-purple-400">Evasão (ML)</th>
                             <th class="px-3 py-2 text-right">Score</th>
                             <th class="px-3 py-2 text-right">Visita</th>
                             <th class="px-3 py-2 text-center">Ação</th>
