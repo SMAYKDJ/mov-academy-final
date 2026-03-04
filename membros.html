@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gestão Comportamental de Membros | GymIntel</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        "primary-dark": "#1d4ed8",
+                        secondary: "#f59e0b",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                        "surface-darker": "#111827",
+                        "border-dark": "#334155",
+                        "text-main": "#f1f5f9",
+                        "text-muted": "#94a3b8",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
+    <div id="toast-container"></div>
+
+    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-6 h-14 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-fit">
+                <div
+                    class="w-8 h-8 rounded bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined text-[20px]">fitness_center</span>
+                </div>
+                <h1 class="text-sm font-bold tracking-tight text-white uppercase">Gym<span
+                        class="text-blue-500">Intel</span></h1>
+                <div class="h-4 w-[1px] bg-border-dark mx-2"></div>
+                <nav class="hidden md:flex items-center gap-1">
+                    <a class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
+                        href="dashboard.html">Dashboard</a>
+                    <a class="px-3 py-1.5 text-xs font-medium text-white bg-white/10 rounded border border-white/5 transition-colors"
+                        href="membros.html">Membros</a>
+                    <a class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
+                        href="#">Preditivo</a>
+                    <a class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
+                        href="campanhas.html">Campanhas</a>
+                    <a class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
+                        href="financeiro.html">Financeiro</a>
+                    <a class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
+                        href="#">Configurações</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-3 flex-1 justify-end">
+                <div class="relative w-full max-w-[240px] hidden sm:block">
+                    <span
+                        class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted text-[16px]">search</span>
+                    <input id="globalSearch"
+                        class="w-full h-8 bg-surface-dark border border-border-dark rounded text-xs pl-8 pr-3 text-white placeholder-text-muted focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        placeholder="Buscar membro..." type="text" />
+                </div>
+                <div
+                    class="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-600 border border-border-dark overflow-hidden cursor-pointer">
+                    <img alt="User Profile" class="w-full h-full object-cover"
+                        src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" />
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-[1600px] mx-auto w-full p-6 flex flex-col gap-8">
+        <div class="flex flex-wrap justify-between items-end gap-4 fade-in">
+            <div class="flex min-w-72 flex-col gap-2">
+                <h1 class="text-white tracking-tight text-3xl font-black">Gestão Comportamental de Membros</h1>
+                <p class="text-text-muted text-base font-normal leading-normal">Acompanhamento de estágios e score de
+                    saúde gerado por IA (Kanban)</p>
+            </div>
+            <div class="flex gap-3">
+                <button
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-surface-dark text-text-muted border border-border-dark hover:text-white transition-colors gap-2 text-sm font-medium leading-normal">
+                    <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    <span>Filtrar</span>
+                </button>
+                <button
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white hover:bg-blue-500 transition-colors gap-2 text-sm font-medium leading-normal shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <span>Adicionar Membro</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="flex-1 flex gap-6 overflow-x-auto pb-6 fade-in" style="animation-delay: 0.1s">
+            <!-- Column: Ativo -->
+            <div
+                class="flex-1 min-w-[340px] max-w-[400px] flex flex-col gap-4 bg-surface-dark/40 border border-border-dark rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                        <h3 class="text-white font-bold text-lg uppercase tracking-tight">Ativo</h3>
+                        <span
+                            class="bg-surface-darker text-text-muted text-[10px] py-0.5 px-2 rounded-full font-bold border border-border-dark">3</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <!-- Card 1 -->
+                    <div
+                        class="bg-surface-dark border border-border-dark p-4 rounded-xl shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cover bg-center border-2 border-border-dark group-hover:border-blue-500/30 transition-all"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWcvjJVR1ECY19o0zfVc0LSmnDuKpVU2sYQS1iitM9V8jGnMaQ0ZO7Q-fpI3BqwlDLy8b1wchJOdYHWVJAS9c9p_WhhYneJbhzeWJONaPffM-8TkIKpaptjW8svo8RAzo6BJ3n1bk8hVQy_ns4Mb2kE9DykFk_gUgbHt9QLHcocPigkFqEdGeVqNEYRDQwc-vFRJjuZ5o05Zr4sZ-y1HQrDBDpWOrdgRNHFlbEwM7PKWt41I9z9h7OjbWtXfZxv3wI2XpmE-6gt01m");'>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-white font-bold text-sm truncate">João Silva</h4>
+                                    <span class="text-text-muted text-[10px] font-mono whitespace-nowrap">28 anos</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-text-muted tracking-widest">Score
+                                        IA</span>
+                                    <span class="text-sm font-black text-emerald-400">92%</span>
+                                </div>
+                                <div class="w-full bg-surface-darker rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div
+                        class="bg-surface-dark border border-border-dark p-4 rounded-xl shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cover bg-center border-2 border-border-dark group-hover:border-blue-500/30 transition-all"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQ7Rs7DOlinMEBAvG3fBSIlhMlAVUlkfWCGwRnXxL1QlKbXUuTAoT3jMua0We03SN-TWJpsba1vuM3mAl5OfX6R0blE2RhfkJbG_lix1Ftr9lMlgwnURyOI7WBmZa7V0_uytPXs12t5a9Ow8hmfl-Tt0fmr4UC6vIq5SFQIbHgijv0r10vowgfQlVybMhmX4wPnQKL8U1LFiJq-h6Hcq7HjNinQ4ae5uaNPwpEmeXaIMmyME7-C0zfGdkpS6M0HY8FPGtSnU1MMS9E");'>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-white font-bold text-sm truncate">Maria Oliveira</h4>
+                                    <span class="text-text-muted text-[10px] font-mono whitespace-nowrap">34 anos</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-text-muted tracking-widest">Score
+                                        IA</span>
+                                    <span class="text-sm font-black text-emerald-400">85%</span>
+                                </div>
+                                <div class="w-full bg-surface-darker rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div
+                        class="bg-surface-dark border border-border-dark p-4 rounded-xl shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cover bg-center border-2 border-border-dark group-hover:border-blue-500/30 transition-all"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgIcyU5L00tUAKXP_JYq23TGhkN0N-dMJSIqBrGGV8GdJCRmeqh0IdXkwX-gNQgJm1eNbFNvU7EHcBPjOXDak1GKJKP6q5Jl70Jekmuq-FWwIymv5-c7iXx3nyKSkjYBc8f5gL6racsUvokKC3H2efR9AIYLxkZkl4DHX-mzhZUNSP-G0F651M3WvOWDiYsDi_f1O_4Jj3-Ual-p6D_aqV_wxJMOi7P1GhBN_b1iGDVP4iVddl2F9hW0xeK5kR403wPJiGxWL1LQJn");'>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-white font-bold text-sm truncate">Carlos Souza</h4>
+                                    <span class="text-text-muted text-[10px] font-mono whitespace-nowrap">41 anos</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-text-muted tracking-widest">Score
+                                        IA</span>
+                                    <span class="text-sm font-black text-emerald-400">78%</span>
+                                </div>
+                                <div class="w-full bg-surface-darker rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column: Em Risco -->
+            <div
+                class="flex-1 min-w-[340px] max-w-[400px] flex flex-col gap-4 bg-surface-dark/40 border border-border-dark rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-secondary shadow-[0_0_8px_rgba(245,158,11,0.5)]"></div>
+                        <h3 class="text-white font-bold text-lg uppercase tracking-tight">Em Risco</h3>
+                        <span
+                            class="bg-surface-darker text-text-muted text-[10px] py-0.5 px-2 rounded-full font-bold border border-border-dark">2</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <!-- Card 4 -->
+                    <div
+                        class="bg-surface-dark border border-secondary/20 p-4 rounded-xl shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cover bg-center border-2 border-border-dark group-hover:border-blue-500/30 transition-all"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQvmoJcpH0h8Ha8TSWMYYRiuymxVVqStmrCouxETz7VgzLBAewtvsBQAnnjaBJNhUdMiIdcO4pZLn1IAwYHR5_tx6eIi3_RyO2gLEe_VCUGXneKsfP-Jt39uPyiictwjmdT68-TwiHr2Sb-xQS5eB8ckMIAAO9SHDn7SXcZJm540rS2d-58xci7YAIH4nL3hsYHuG4Jws8INgz_GCfEKu4aAHURmuqSBCcZ-I-UlQqdfC1NCu7tNwpZaRkXmoB7SedQpzRSzi2cTVO");'>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-white font-bold text-sm truncate">Ana Costa</h4>
+                                    <span class="text-text-muted text-[10px] font-mono whitespace-nowrap">25 anos</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-text-muted tracking-widest">Score
+                                        IA</span>
+                                    <span class="text-sm font-black text-secondary">45%</span>
+                                </div>
+                                <div class="w-full bg-surface-darker rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-secondary h-full rounded-full" style="width: 45%"></div>
+                                </div>
+                                <div
+                                    class="mt-3 flex items-center gap-1.5 text-[9px] font-black text-secondary uppercase tracking-widest bg-secondary/10 py-1.5 px-2.5 rounded-lg border border-secondary/20">
+                                    <span class="material-symbols-outlined text-[14px]">warning</span>
+                                    Faltou 3 treinos seguidos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 5 -->
+                    <div
+                        class="bg-surface-dark border border-secondary/20 p-4 rounded-xl shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cover bg-center border-2 border-border-dark group-hover:border-blue-500/30 transition-all"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxdR4VbiuCA7MzueiqdqQOnBD1LQPuXMTx_K2aYjEbWzk4ssi2Zmvm4wMoQfSkbY6le2AEfeAQq02dI4vJMjt_lFdExuPhH4qkSTzFi7VIu-DLoWzfft21jqzQZY6GPKChWbRzSRM_ZQTsT6PGgSySFZFOHDhq7EpQmLBdL9-cJHbqCrqTrt1GJZaNxUsHbdyywVn9aqKOBj5poUfVo2NLmBWPDQSvqIKDUrKKcIHret5dKy7qSgASkAcc1FgnR5OmSo4q7MhdXzv_");'>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-white font-bold text-sm truncate">Roberto Lima</h4>
+                                    <span class="text-text-muted text-[10px] font-mono whitespace-nowrap">38 anos</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-text-muted tracking-widest">Score
+                                        IA</span>
+                                    <span class="text-sm font-black text-secondary">52%</span>
+                                </div>
+                                <div class="w-full bg-surface-darker rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-secondary h-full rounded-full" style="width: 52%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column: Inativo -->
+            <div
+                class="flex-1 min-w-[340px] max-w-[400px] flex flex-col gap-4 bg-surface-dark/40 border border-border-dark rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></div>
+                        <h3 class="text-white font-bold text-lg uppercase tracking-tight">Inativo</h3>
+                        <span
+                            class="bg-surface-darker text-text-muted text-[10px] py-0.5 px-2 rounded-full font-bold border border-border-dark">1</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <!-- Card 6 -->
+                    <div
+                        class="bg-surface-dark border border-rose-500/20 p-4 rounded-xl shadow-lg hover:border-blue-500/50 cursor-grab transition-all group opacity-60">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cover bg-center border-2 border-border-dark grayscale group-hover:grayscale-0 transition-all"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpajrSuFmhWw3SSYc-Hy0sa3gsSNupo2uSmMpFUz68lDScbw_uhFjadRYg7rqIL9aVYJX1vS1oi59D7JYvzHfTbyJo5RDeYKAEe6su0gTZDTEbnPlkpbA3uBzJr50KpMwlDNcqSq4FvsH9z_slTZOOCLsyUxBluWewMVKpKNmVNzN1ZKICTwtQDVC3zdiSGdy7fmVAeU1xlgsF9I1LFJlokJvKnc0gQP-o8M9Io1WKZIhA5J7bqtffTDhczAJppod5nLR3nHYsNgdX");'>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-white font-bold text-sm truncate">Juliana Mendes</h4>
+                                    <span class="text-text-muted text-[10px] font-mono whitespace-nowrap">29 anos</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[10px] uppercase font-bold text-text-muted tracking-widest">Score
+                                        IA</span>
+                                    <span class="text-sm font-black text-rose-400">15%</span>
+                                </div>
+                                <div class="w-full bg-surface-darker rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-rose-500 h-full rounded-full" style="width: 15%"></div>
+                                </div>
+                                <div
+                                    class="mt-3 flex items-center gap-1.5 text-[9px] font-black text-rose-400 uppercase tracking-widest bg-rose-500/10 py-1.5 px-2.5 rounded-lg border border-rose-500/20">
+                                    <span class="material-symbols-outlined text-[14px]">history</span>
+                                    Ausente há 30+ dias
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Programa Embaixador GymIntel -->
+        <div class="fade-in space-y-6" style="animation-delay: 0.2s">
+            <div class="flex items-center justify-between border-b border-border-dark pb-4">
+                <div>
+                    <h2 class="text-2xl font-black text-white flex items-center gap-3">
+                        <span class="material-symbols-outlined text-secondary text-3xl">workspace_premium</span>
+                        Programa Embaixador GymIntel
+                    </h2>
+                    <p class="text-sm text-text-muted mt-1">Ranking de membros que são motores de crescimento da
+                        unidade.</p>
+                </div>
+                <div class="flex gap-2">
+                    <div class="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                        <span class="text-[10px] font-black text-emerald-400 uppercase block tracking-wider">Economia de
+                            CAC</span>
+                        <span class="text-lg font-black text-white">R$ 4.250 <span
+                                class="text-[10px] font-normal text-text-muted">/mês</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Ranking de Líderes (Top Embaixadores) -->
+                <div class="lg:col-span-8 flex flex-col gap-4">
+                    <div class="glass-card rounded-2xl overflow-hidden border border-border-dark shadow-xl">
+                        <div class="bg-surface-darker/50 p-4 border-b border-border-dark">
+                            <h3 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-blue-400">military_tech</span>
+                                Ranking de Indicações (Ativos)
+                            </h3>
+                        </div>
+                        <div class="p-0">
+                            <table class="w-full text-left">
+                                <thead
+                                    class="bg-surface-dark/50 text-text-muted text-[10px] uppercase font-bold border-b border-border-dark">
+                                    <tr>
+                                        <th class="px-6 py-4">Posição</th>
+                                        <th class="px-6 py-4">Embaixador</th>
+                                        <th class="px-6 py-4 text-center">Indicados</th>
+                                        <th class="px-6 py-4">Vantagem Atual</th>
+                                        <th class="px-6 py-4 text-right">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-border-dark/30">
+                                    <tr class="hover:bg-white/5 transition-colors group">
+                                        <td class="px-6 py-4">
+                                            <div
+                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-500 font-black text-sm border border-yellow-500/30">
+                                                1º</div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="w-10 h-10 rounded-full border-2 border-yellow-500 overflow-hidden shadow-lg shadow-yellow-500/10">
+                                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWcvjJVR1ECY19o0zfVc0LSmnDuKpVU2sYQS1iitM9V8jGnMaQ0ZO7Q-fpI3BqwlDLy8b1wchJOdYHWVJAS9c9p_WhhYneJbhzeWJONaPffM-8TkIKpaptjW8svo8RAzo6BJ3n1bk8hVQy_ns4Mb2kE9DykFk_gUgbHt9QLHcocPigkFqEdGeVqNEYRDQwc-vFRJjuZ5o05Zr4sZ-y1HQrDBDpWOrdgRNHFlbEwM7PKWt41I9z9h7OjbWtXfZxv3wI2XpmE-6gt01m"
+                                                        class="w-full h-full object-cover">
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-bold text-white">João Silva</p>
+                                                    <p class="text-[10px] text-emerald-400 font-bold">Nível
+                                                        Influenciador</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="text-lg font-black text-white">12</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded border border-emerald-500/20">MENSALIDADE
+                                                GRÁTIS</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="material-symbols-outlined text-text-muted hover:text-white transition-colors">rewarded_ads</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-white/5 transition-colors group">
+                                        <td class="px-6 py-4">
+                                            <div
+                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-400/20 text-slate-400 font-black text-sm border border-slate-400/30">
+                                                2º</div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="w-10 h-10 rounded-full border-2 border-slate-400 overflow-hidden shadow-lg">
+                                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ7Rs7DOlinMEBAvG3fBSIlhMlAVUlkfWCGwRnXxL1QlKbXUuTAoT3jMua0We03SN-TWJpsba1vuM3mAl5OfX6R0blE2RhfkJbG_lix1Ftr9lMlgwnURyOI7WBmZa7V0_uytPXs12t5a9Ow8hmfl-Tt0fmr4UC6vIq5SFQIbHgijv0r10vowgfQlVybMhmX4wPnQKL8U1LFiJq-h6Hcq7HjNinQ4ae5uaNPwpEmeXaIMmyME7-C0zfGdkpS6M0HY8FPGtSnU1MMS9E"
+                                                        class="w-full h-full object-cover">
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-bold text-white">Maria Oliveira</p>
+                                                    <p class="text-[10px] text-blue-400 font-bold">Nível Embaixador</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="text-lg font-black text-white">8</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="px-2 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-black rounded border border-blue-500/20">50%
+                                                DESCONTO</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="material-symbols-outlined text-text-muted hover:text-white transition-colors">rewarded_ads</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-white/5 transition-colors group">
+                                        <td class="px-6 py-4">
+                                            <div
+                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-700/20 text-orange-700 font-black text-sm border border-orange-700/30">
+                                                3º</div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="w-10 h-10 rounded-full border-2 border-orange-700 overflow-hidden shadow-lg">
+                                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgIcyU5L00tUAKXP_JYq23TGhkN0N-dMJSIqBrGGV8GdJCRmeqh0IdXkwX-gNQgJm1eNbFNvU7EHcBPjOXDak1GKJKP6q5Jl70Jekmuq-FWwIymv5-c7iXx3nyKSkjYBc8f5gL6racsUvokKC3H2efR9AIYLxkZkl4DHX-mzhZUNSP-G0F651M3WvOWDiYsDi_f1O_4Jj3-Ual-p6D_aqV_wxJMOi7P1GhBN_b1iGDVP4iVddl2F9hW0xeK5kR403wPJiGxWL1LQJn"
+                                                        class="w-full h-full object-cover">
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-bold text-white">Carlos Souza</p>
+                                                    <p class="text-[10px] text-orange-400 font-bold">Nível Ativo</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="text-lg font-black text-white">5</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="px-2 py-1 bg-orange-500/10 text-orange-400 text-[10px] font-black rounded border border-orange-500/20">KIT
+                                                SUPLEMENTOS</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="material-symbols-outlined text-text-muted hover:text-white transition-colors">rewarded_ads</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel de Regras e Lógica de Indicação -->
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <div
+                        class="glass-card rounded-2xl p-6 border border-border-dark shadow-xl bg-gradient-to-br from-surface-dark to-surface-darker">
+                        <h3
+                            class="text-sm font-black text-white uppercase tracking-widest mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-blue-500">settings_suggest</span>
+                            Regras do Programa
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                                <span
+                                    class="size-8 rounded-lg bg-blue-500 text-white flex items-center justify-center font-bold">1</span>
+                                <div>
+                                    <p class="text-xs font-bold text-white">Trazer 1 Amigo</p>
+                                    <p class="text-[10px] text-text-muted italic">R$ 10,00 de desconto recorrente.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                                <span
+                                    class="size-8 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold">3</span>
+                                <div>
+                                    <p class="text-xs font-bold text-white">Trazer 3 Amigos</p>
+                                    <p class="text-[10px] text-text-muted italic">30% de desconto + Kit Boné/Squeeze.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-3 rounded-xl bg-emerald-600/20 border border-emerald-500/20">
+                                <span
+                                    class="size-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold">5</span>
+                                <div>
+                                    <p class="text-xs font-bold text-white">Nível Embaixador (5+)</p>
+                                    <p class="text-[10px] text-emerald-400 font-bold uppercase">Isenção total da
+                                        mensalidade.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="mt-8 p-4 bg-blue-600/10 border border-blue-500/30 rounded-2xl relative overflow-hidden group">
+                            <div
+                                class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[80px] text-blue-500">person_add</span>
+                            </div>
+                            <h4 class="text-xs font-black text-blue-400 uppercase mb-2">Lógica de Atribuição:</h4>
+                            <p class="text-[10px] text-text-muted leading-relaxed">
+                                Ao cadastrar um novo aluno, o campo <span
+                                    class="text-white font-bold">"Referência"</span> vinculará o progresso do embaixador
+                                automaticamente após a conversão para "Ativo".
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CTA para o Gestor -->
+                    <div
+                        class="bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl cursor-pointer transition-all shadow-lg shadow-blue-500/20 text-center group">
+                        <span
+                            class="text-xs font-black text-white uppercase tracking-widest flex items-center justify-center gap-2">
+                            Lançar Nova Indicação
+                            <span
+                                class="material-symbols-outlined group-hover:rotate-12 transition-transform">add_link</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showToast(message, iconName = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <span class="material-symbols-outlined text-blue-400">${iconName}</span>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
