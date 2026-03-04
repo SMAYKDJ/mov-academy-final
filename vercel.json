@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "name": "gaiateam",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" }
+  ]
+}
