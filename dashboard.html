@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Gaia Team | GymIntel Inteligência Preditiva</title>
+    <title>Gaia Team | Inteligência Preditiva</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -19,8 +19,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#3b82f6",
-                        "primary-dark": "#1d4ed8",
+                        primary: "#dc2626",
+                        "primary-dark": "#991b1b",
                         secondary: "#f59e0b",
                         "background-light": "#f8fafc",
                         "background-dark": "#0f172a",
@@ -178,11 +178,12 @@
         <div class="max-w-[1600px] mx-auto px-4 h-11 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 min-w-fit">
                 <div
-                    class="w-7 h-7 rounded bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                    <span class="material-symbols-outlined text-[18px]">fitness_center</span>
+                    class="w-8 h-8 rounded-full overflow-hidden border border-white/10 flex items-center justify-center bg-surface-dark shadow-lg shadow-red-500/20">
+                    <img src="logo.png" alt="Gaia Team Logo" class="w-full h-full object-cover">
                 </div>
-                <h1 class="text-base font-bold tracking-tight text-white uppercase">Gym<span
-                        class="text-blue-500">Intel</span></h1>
+                <h1 class="text-base font-bold tracking-tight text-white uppercase">Gaia<span class="text-red-600">
+                        Team</span></h1>
+                <div class="h-4 w-[1px] bg-border-dark mx-1.5"></div>
                 <nav class="hidden md:flex items-center gap-0.5">
                     <a class="px-2 py-1 text-sm font-medium text-white bg-white/10 rounded border border-white/5 transition-colors"
                         href="dashboard.html">Painel</a>
@@ -201,11 +202,11 @@
                     <span
                         class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted text-[16px]">search</span>
                     <input id="globalSearch"
-                        class="w-full h-8 bg-surface-dark border border-border-dark rounded text-sm pl-8 pr-3 text-white placeholder-text-muted focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        class="w-full h-8 bg-surface-dark border border-border-dark rounded text-sm pl-8 pr-3 text-white placeholder-text-muted focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all"
                         placeholder="Buscar membro ou KPI..." type="text" />
                 </div>
                 <button onclick="showToast('Relatórios gerados com sucesso!', 'description')"
-                    class="h-7 px-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded flex items-center gap-1.5 transition-colors">
+                    class="h-7 px-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded flex items-center gap-1.5 transition-colors">
                     <span class="material-symbols-outlined text-[14px]">add_chart</span>
                     <span>Relatórios</span>
                 </button>
@@ -261,13 +262,13 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <!-- Stat Card 1 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-blue-500/50 transition-colors fade-in"
+            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
                 style="animation-delay: 0.1s">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco de Evasão (Evasão)
                     </p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-blue-400 transition-colors">warning</span>
+                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">warning</span>
                 </div>
                 <div class="flex items-end gap-2">
                     <h3 class="text-xl font-bold text-white">12.4%</h3>
@@ -278,7 +279,7 @@
                     </div>
                 </div>
                 <div class="mt-3 h-8 w-full">
-                    <svg class="w-full h-full text-blue-500/20" preserveAspectRatio="none" viewBox="0 0 100 20">
+                    <svg class="w-full h-full text-red-500/20" preserveAspectRatio="none" viewBox="0 0 100 20">
                         <path d="M0 15 Q 10 5, 20 10 T 40 12 T 60 5 T 80 15 T 100 8" fill="none" stroke="currentColor"
                             stroke-width="2" vector-effect="non-scaling-stroke"></path>
                         <path class="opacity-20" d="M0 15 Q 10 5, 20 10 T 40 12 T 60 5 T 80 15 T 100 8 V 20 H 0 Z"
@@ -287,12 +288,12 @@
                 </div>
             </div>
             <!-- Stat Card 2 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-blue-500/50 transition-colors fade-in"
+            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
                 style="animation-delay: 0.2s">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Engajamento Médio</p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-blue-400 transition-colors">fitness_center</span>
+                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">fitness_center</span>
                 </div>
                 <div class="flex items-end gap-2">
                     <h3 class="text-xl font-bold text-white">3.2<span
@@ -313,13 +314,13 @@
                 </div>
             </div>
             <!-- Stat Card 3 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-blue-500/50 transition-colors fade-in"
+            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
                 style="animation-delay: 0.3s">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">LTV Projetado (Valor
                         Vitalício)</p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-blue-400 transition-colors">payments</span>
+                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">payments</span>
                 </div>
                 <div class="flex items-end gap-3">
                     <h3 class="text-2xl font-bold text-white">$840</h3>
@@ -339,12 +340,12 @@
                 </div>
             </div>
             <!-- Stat Card 4 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-blue-500/50 transition-colors fade-in"
+            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
                 style="animation-delay: 0.4s">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco Crítico</p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-blue-400 transition-colors">group_remove</span>
+                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">group_remove</span>
                 </div>
                 <div class="flex items-end gap-3">
                     <h3 class="text-2xl font-bold text-white">142<span
@@ -400,24 +401,24 @@
 
             <!-- Card Break-even (Zero a Zero) -->
             <div
-                class="bg-surface-dark border border-border-dark rounded-lg p-3 flex items-center gap-4 group hover:border-blue-500/30 transition-all">
-                <div class="size-11 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                class="bg-surface-dark border border-border-dark rounded-lg p-3 flex items-center gap-4 group hover:border-red-500/30 transition-all">
+                <div class="size-11 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
                     <span class="material-symbols-outlined text-xl">balance</span>
                 </div>
                 <div class="flex-1">
                     <div class="flex justify-between items-center mb-1">
                         <span class="text-sm font-bold text-text-muted uppercase tracking-wider">Ponto de Equilíbrio
                             (Zero a Zero)</span>
-                        <span class="text-sm text-blue-400 font-mono">Meta: 410 alunos</span>
+                        <span class="text-sm text-red-400 font-mono">Meta: 410 alunos</span>
                     </div>
                     <div class="flex items-baseline gap-1.5">
                         <h3 class="text-xl font-black text-white">1.245 <span
                                 class="text-sm font-medium text-text-muted">/ 410</span></h3>
-                        <span class="text-sm text-blue-400 font-bold uppercase">Meta Atingida</span>
+                        <span class="text-sm text-red-400 font-bold uppercase">Meta Atingida</span>
                     </div>
                     <div class="flex items-center gap-2 mt-2">
                         <div class="flex-1 bg-surface-darker h-1 rounded-full overflow-hidden">
-                            <div class="bg-blue-500 h-full progress-animate" style="width: 100%"></div>
+                            <div class="bg-red-500 h-full progress-animate" style="width: 100%"></div>
                         </div>
                         <span class="text-sm font-bold text-white">303%</span>
                     </div>
@@ -434,7 +435,7 @@
                         <h3 class="text-sm font-bold text-white flex items-center gap-2">
                             Correlação: Idade vs Frequência
                             <span
-                                class="px-1 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm uppercase tracking-wider rounded font-mono">Scikit-Learn
+                                class="px-1 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-sm uppercase tracking-wider rounded font-mono">Scikit-Learn
                                 (K-Means)</span>
                         </h3>
                         <p class="text-sm text-text-muted mt-0.5">Clusters de evasão identificados</p>
@@ -457,7 +458,7 @@
                                 class="text-purple-400">import</span> KMeans<br />
                             kmeans = KMeans(n_clusters=3)<br />
                             labels = kmeans.fit_predict(X_scaled)<br />
-                            <span class="text-blue-400"># Atualizado há 2m</span>
+                            <span class="text-red-400"># Atualizado há 2m</span>
                         </div>
                     </div>
 
@@ -488,15 +489,15 @@
                         </div>
 
                         <!-- Manual Points (replicated from original but as interactive elements) -->
-                        <div class="chart-point absolute left-[20%] top-[30%] w-2 h-2 bg-blue-500 rounded-full cursor-help"
+                        <div class="chart-point absolute left-[20%] top-[30%] w-2 h-2 bg-red-500 rounded-full cursor-help"
                             title="Membro A (Saudável)"></div>
-                        <div class="chart-point absolute left-[22%] top-[25%] w-2 h-2 bg-blue-500 rounded-full cursor-help"
+                        <div class="chart-point absolute left-[22%] top-[25%] w-2 h-2 bg-red-500 rounded-full cursor-help"
                             title="Membro B (Saudável)"></div>
-                        <div class="chart-point absolute left-[25%] top-[28%] w-2 h-2 bg-blue-500 rounded-full cursor-help"
+                        <div class="chart-point absolute left-[25%] top-[28%] w-2 h-2 bg-red-500 rounded-full cursor-help"
                             title="Membro C (Saudável)"></div>
-                        <div class="chart-point absolute left-[28%] top-[20%] w-2 h-2 bg-blue-500 rounded-full cursor-help"
+                        <div class="chart-point absolute left-[28%] top-[20%] w-2 h-2 bg-red-500 rounded-full cursor-help"
                             title="Membro D (Saudável)"></div>
-                        <div class="chart-point absolute left-[50%] top-[40%] w-2 h-2 bg-blue-500 rounded-full cursor-help"
+                        <div class="chart-point absolute left-[50%] top-[40%] w-2 h-2 bg-red-500 rounded-full cursor-help"
                             title="Membro E (Médio)"></div>
                         <div class="chart-point absolute left-[55%] top-[50%] w-2.5 h-2.5 bg-secondary rounded-full cursor-help shadow-[0_0_8px_rgba(245,158,11,0.6)]"
                             title="ALERTA: Tendência de Queda"></div>
@@ -518,7 +519,7 @@
                         <svg class="w-full h-full transform -rotate-90">
                             <circle class="text-surface-darker" cx="96" cy="96" fill="transparent" r="88"
                                 stroke="currentColor" stroke-width="8"></circle>
-                            <circle class="text-blue-500 gauge-animate" cx="96" cy="96" fill="transparent" r="88"
+                            <circle class="text-red-500 gauge-animate" cx="96" cy="96" fill="transparent" r="88"
                                 stroke="currentColor" stroke-dasharray="552" stroke-dashoffset="193"
                                 stroke-linecap="round" stroke-width="8"></circle>
                             <circle class="text-rose-500 gauge-animate" cx="96" cy="96" fill="transparent" r="88"
@@ -535,17 +536,17 @@
                 <!-- AI Recommended Actions -->
                 <div class="bg-surface-dark border border-border-dark rounded flex flex-col flex-1 max-h-[400px] fade-in"
                     style="animation-delay: 0.6s">
-                    <div class="px-3 py-2 border-b border-border-dark bg-blue-900/10 flex justify-between items-center">
+                    <div class="px-3 py-2 border-b border-border-dark bg-red-900/10 flex justify-between items-center">
                         <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-blue-400 text-[16px]">smart_toy</span>
+                            <span class="material-symbols-outlined text-red-400 text-[16px]">smart_toy</span>
                             <h3 class="text-sm font-bold text-white">Recomendações IA</h3>
                         </div>
                         <span
-                            class="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-sm font-bold rounded uppercase tracking-wide">Beta</span>
+                            class="px-2 py-0.5 bg-red-500/20 text-red-400 text-sm font-bold rounded uppercase tracking-wide">Beta</span>
                     </div>
                     <div class="overflow-y-auto p-2 flex flex-col gap-2">
                         <div
-                            class="p-2.5 bg-surface-darker rounded border border-border-dark hover:border-blue-500/30 transition-all group">
+                            class="p-2.5 bg-surface-darker rounded border border-border-dark hover:border-red-500/30 transition-all group">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="text-sm font-semibold text-white">Reativação</h4>
@@ -554,15 +555,15 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                             </div>
                             <div class="mt-2 flex items-center justify-between">
-                                <span class="text-sm text-blue-400 font-medium">+15% Retenção</span>
+                                <span class="text-sm text-red-400 font-medium">+15% Retenção</span>
                                 <button onclick="showToast('Automação iniciada!', 'auto_fix')"
-                                    class="h-6 px-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold uppercase tracking-wide rounded transition-colors flex items-center gap-1">
+                                    class="h-6 px-2 bg-red-600 hover:bg-red-500 text-white text-sm font-bold uppercase tracking-wide rounded transition-colors flex items-center gap-1">
                                     Automatizar
                                 </button>
                             </div>
                         </div>
                         <div
-                            class="p-2.5 bg-surface-darker rounded border border-border-dark hover:border-blue-500/30 transition-all group">
+                            class="p-2.5 bg-surface-darker rounded border border-border-dark hover:border-red-500/30 transition-all group">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="text-sm font-semibold text-white">Upsell</h4>
@@ -571,7 +572,7 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
                             </div>
                             <div class="mt-2 flex items-center justify-between">
-                                <span class="text-sm text-blue-400 font-medium">+$2.4k em LTV</span>
+                                <span class="text-sm text-red-400 font-medium">+$2.4k em LTV</span>
                                 <button onclick="showToast('Abrindo editor...', 'edit')"
                                     class="h-6 px-2 bg-surface-dark border border-border-dark text-text-muted text-sm font-bold uppercase rounded">Revisar</button>
                             </div>
@@ -587,16 +588,16 @@
             <div class="lg:col-span-2 bg-surface-dark border border-border-dark rounded-lg p-4 shadow-xl flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-400 text-[18px]">pie_chart</span>
+                        <span class="material-symbols-outlined text-red-400 text-[18px]">pie_chart</span>
                         Distribuição de Planos
                     </h3>
                     <button onclick="showToast('Abrindo relatório de planos...', 'analytics')"
-                        class="text-blue-500 text-sm font-medium hover:underline">Ver completo</button>
+                        class="text-red-500 text-sm font-medium hover:underline">Ver completo</button>
                 </div>
                 <div class="flex flex-col md:flex-row gap-6 items-center lg:items-start">
                     <!-- Gauge/Pie Visual -->
                     <div class="relative size-32 rounded-full border-[10px] border-surface-darker flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
-                        style="background: conic-gradient(#3b82f6 0% 45%, #60a5fa 45% 75%, #93c5fd 75% 90%, #1e293b 90% 100%);">
+                        style="background: conic-gradient(#dc2626 0% 45%, #ef4444 45% 75%, #fca5a5 75% 90%, #1e293b 90% 100%);">
                         <div
                             class="absolute inset-0 m-2.5 bg-surface-dark rounded-full flex flex-col items-center justify-center">
                             <span class="text-xl font-bold text-white">1.245</span>
@@ -608,7 +609,7 @@
                         <div class="space-y-1">
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center gap-2 text-white font-medium">
-                                    <div class="size-2.5 rounded-full bg-blue-500"></div>
+                                    <div class="size-2.5 rounded-full bg-red-500"></div>
                                     <span>Básico (Mensal)</span>
                                 </div>
                                 <div class="flex items-center gap-3">
@@ -617,14 +618,14 @@
                                 </div>
                             </div>
                             <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-blue-500 h-1.5 rounded-full progress-animate" style="width: 45%">
+                                <div class="bg-red-500 h-1.5 rounded-full progress-animate" style="width: 45%">
                                 </div>
                             </div>
                         </div>
                         <div class="space-y-1">
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center gap-2 text-white font-medium">
-                                    <div class="size-2.5 rounded-full bg-blue-400"></div>
+                                    <div class="size-2.5 rounded-full bg-red-400"></div>
                                     <span>Pro (Semestral)</span>
                                 </div>
                                 <div class="flex items-center gap-3">
@@ -633,14 +634,14 @@
                                 </div>
                             </div>
                             <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-blue-400 h-1.5 rounded-full progress-animate" style="width: 30%">
+                                <div class="bg-red-400 h-1.5 rounded-full progress-animate" style="width: 30%">
                                 </div>
                             </div>
                         </div>
                         <div class="space-y-1">
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center gap-2 text-white font-medium">
-                                    <div class="size-2.5 rounded-full bg-blue-300"></div>
+                                    <div class="size-2.5 rounded-full bg-red-300"></div>
                                     <span>Premium (Anual)</span>
                                 </div>
                                 <div class="flex items-center gap-3">
@@ -649,7 +650,7 @@
                                 </div>
                             </div>
                             <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-blue-300 h-1.5 rounded-full progress-animate" style="width: 15%">
+                                <div class="bg-red-300 h-1.5 rounded-full progress-animate" style="width: 15%">
                                 </div>
                             </div>
                         </div>
@@ -682,7 +683,7 @@
                             </div>
                         </div>
                         <span
-                            class="material-symbols-outlined text-blue-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">chat</span>
+                            class="material-symbols-outlined text-red-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">chat</span>
                     </div>
                     <!-- Item Crítico -->
                     <div
@@ -712,7 +713,7 @@
                             </div>
                         </div>
                         <span
-                            class="material-symbols-outlined text-blue-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">chat</span>
+                            class="material-symbols-outlined text-red-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">chat</span>
                     </div>
                 </div>
                 <button onclick="showToast('Lista de risco completa expandida.', 'list')"
@@ -731,7 +732,7 @@
                 </h3>
                 <div class="flex gap-2">
                     <input id="tableFilter"
-                        class="h-7 bg-surface-darker border border-border-dark rounded text-sm px-2 text-white placeholder-text-muted focus:ring-1 focus:ring-blue-500"
+                        class="h-7 bg-surface-darker border border-border-dark rounded text-sm px-2 text-white placeholder-text-muted focus:ring-1 focus:ring-red-500"
                         placeholder="Filtrar por nome..." type="text" />
                     <button
                         class="h-7 w-7 flex items-center justify-center bg-surface-darker border border-border-dark rounded text-text-muted hover:text-white">
@@ -756,7 +757,7 @@
                     <tbody class="text-sm divide-y divide-border-dark">
                         <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
                             <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-blue-500/30 transition-all shrink-0"
+                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
                                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWcvjJVR1ECY19o0zfVc0LSmnDuKpVU2sYQS1iitM9V8jGnMaQ0ZO7Q-fpI3BqwlDLy8b1wchJOdYHWVJAS9c9p_WhhYneJbhzeWJONaPffM-8TkIKpaptjW8svo8RAzo6BJ3n1bk8hVQy_ns4Mb2kE9DykFk_gUgbHt9QLHcocPigkFqEdGeVqNEYRDQwc-vFRJjuZ5o05Zr4sZ-y1HQrDBDpWOrdgRNHFlbEwM7PKWt41I9z9h7OjbWtXfZxv3wI2XpmE-6gt01m");'>
                                 </div>
                                 <span class="member-name">João D.</span>
@@ -778,13 +779,13 @@
                             <td class="px-3 py-2 text-right text-text-muted text-sm">14d atrás</td>
                             <td class="px-3 py-2 text-center">
                                 <button onclick="openModal('edit', 'João D.')"
-                                    class="text-text-muted hover:text-blue-500 transition-colors"><span
+                                    class="text-text-muted hover:text-red-500 transition-colors"><span
                                         class="material-symbols-outlined text-[16px]">edit</span></button>
                             </td>
                         </tr>
                         <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
                             <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-blue-500/30 transition-all shrink-0"
+                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
                                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQ7Rs7DOlinMEBAvG3fBSIlhMlAVUlkfWCGwRnXxL1QlKbXUuTAoT3jMua0We03SN-TWJpsba1vuM3mAl5OfX6R0blE2RhfkJbG_lix1Ftr9lMlgwnURyOI7WBmZa7V0_uytPXs12t5a9Ow8hmfl-Tt0fmr4UC6vIq5SFQIbHgijv0r10vowgfQlVybMhmX4wPnQKL8U1LFiJq-h6Hcq7HjNinQ4ae5uaNPwpEmeXaIMmyME7-C0zfGdkpS6M0HY8FPGtSnU1MMS9E");'>
                                 </div>
                                 <span class="member-name">Maria S.</span>
@@ -806,14 +807,14 @@
                             <td class="px-3 py-2 text-right text-text-muted text-sm">5d atrás</td>
                             <td class="px-3 py-2 text-center">
                                 <button onclick="openModal('edit', 'Maria S.')"
-                                    class="text-text-muted hover:text-blue-500 transition-colors">
+                                    class="text-text-muted hover:text-red-500 transition-colors">
                                     <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
                             </td>
                         </tr>
                         <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
                             <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-blue-500/30 transition-all shrink-0"
+                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
                                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgIcyU5L00tUAKXP_JYq23TGhkN0N-dMJSIqBrGGV8GdJCRmeqh0IdXkwX-gNQgJm1eNbFNvU7EHcBPjOXDak1GKJKP6q5Jl70Jekmuq-FWwIymv5-c7iXx3nyKSkjYBc8f5gL6racsUvokKC3H2efR9AIYLxkZkl4DHX-mzhZUNSP-G0F651M3WvOWDiYsDi_f1O_4Jj3-Ual-p6D_aqV_wxJMOi7P1GhBN_b1iGDVP4iVddl2F9hW0xeK5kR403wPJiGxWL1LQJn");'>
                                 </div>
                                 <span class="member-name">Carlos P.</span>
@@ -835,7 +836,7 @@
                             <td class="px-3 py-2 text-right text-text-muted text-sm">22d atrás</td>
                             <td class="px-3 py-2 text-center">
                                 <button onclick="openModal('edit', 'Carlos P.')"
-                                    class="text-text-muted hover:text-blue-500 transition-colors">
+                                    class="text-text-muted hover:text-red-500 transition-colors">
                                     <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
                             </td>
@@ -845,7 +846,7 @@
             </div>
             <div class="p-3 border-t border-border-dark flex justify-center">
                 <button onclick="showToast('Carregando mais membros...', 'expand_more')"
-                    class="text-sm text-blue-500 hover:text-blue-400 font-medium flex items-center gap-1 transition-colors">
+                    class="text-sm text-red-500 hover:text-red-400 font-medium flex items-center gap-1 transition-colors">
                     Ver todos os 142 membros
                     <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </button>
@@ -867,20 +868,20 @@
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome Completo</label>
                     <input type="text" id="memberName" required
-                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                         placeholder="Ex: João Silva">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Idade</label>
                         <input type="number" id="memberAge" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                             placeholder="Ex: 25">
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
                         <select id="memberPlan"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
                             <option value="basic">Mensal Básico</option>
                             <option value="pro">Pro Semestral</option>
                             <option value="vip">VIP Anual</option>
@@ -891,14 +892,14 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
                         <input type="email" id="memberEmail" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                             placeholder="joao@email.com">
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp /
                             Celular</label>
                         <input type="tel" id="memberPhone" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                             placeholder="(11) 99999-9999">
                     </div>
                 </div>
@@ -906,21 +907,21 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
                         <input type="text" id="memberCPF" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                             placeholder="000.000.000-00">
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Vencimento
                             (Dia)</label>
                         <input type="number" id="memberDueDate" required min="1" max="31"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                             placeholder="Ex: 10">
                     </div>
                 </div>
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo Principal</label>
                     <select id="memberGoal"
-                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
                         <option value="weightloss">Emagrecimento</option>
                         <option value="gain">Hipertrofia</option>
                         <option value="health">Saúde / Bem-estar</option>
@@ -928,7 +929,7 @@
                 </div>
                 <div class="pt-2">
                     <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                        class="w-full bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
                         Gravar Informações
                     </button>
                 </div>
@@ -943,7 +944,7 @@
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.innerHTML = `
-                <span class="material-symbols-outlined text-blue-400">${iconName}</span>
+                <span class="material-symbols-outlined text-red-400">${iconName}</span>
                 <span class="text-sm font-medium">${message}</span>
             `;
             container.appendChild(toast);
@@ -1033,7 +1034,7 @@
 
         // Initialize progress bars on scroll or load (already handled by CSS animation)
         window.addEventListener('load', () => {
-            console.log('GymIntel Dashboard Ready');
+            console.log('Gaia Team Dashboard Ready');
             // We can add a "ready" toast if we want
         });
     </script>
