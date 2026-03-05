@@ -95,6 +95,40 @@
         .toast.show {
             transform: translateX(0);
         }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.8);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
     </style>
 </head>
 
@@ -153,7 +187,7 @@
                     <span class="material-symbols-outlined text-[16px]">filter_list</span>
                     <span>Filtrar</span>
                 </button>
-                <button
+                <button onclick="openModal('register')"
                     class="flex cursor-pointer items-center justify-center overflow-hidden rounded h-8 px-3 bg-blue-600 text-white hover:bg-blue-500 transition-colors gap-1.5 text-sm font-bold uppercase tracking-wider shadow-lg shadow-blue-500/20">
                     <span class="material-symbols-outlined text-[16px]">add</span>
                     <span>Novo Membro</span>
@@ -178,7 +212,11 @@
                 <div class="flex flex-col gap-2">
                     <!-- Card 1 -->
                     <div
-                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-blue-500/50 cursor-grab transition-all group relative">
+                        <button onclick="openModal('edit', 'João Silva')"
+                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-white">
+                            <span class="material-symbols-outlined text-sm">edit</span>
+                        </button>
                         <div class="flex items-center gap-3">
                             <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-blue-500/30 transition-all shrink-0"
                                 style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWcvjJVR1ECY19o0zfVc0LSmnDuKpVU2sYQS1iitM9V8jGnMaQ0ZO7Q-fpI3BqwlDLy8b1wchJOdYHWVJAS9c9p_WhhYneJbhzeWJONaPffM-8TkIKpaptjW8svo8RAzo6BJ3n1bk8hVQy_ns4Mb2kE9DykFk_gUgbHt9QLHcocPigkFqEdGeVqNEYRDQwc-vFRJjuZ5o05Zr4sZ-y1HQrDBDpWOrdgRNHFlbEwM7PKWt41I9z9h7OjbWtXfZxv3wI2XpmE-6gt01m");'>
@@ -201,7 +239,11 @@
                     </div>
                     <!-- Card 2 -->
                     <div
-                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-blue-500/50 cursor-grab transition-all group">
+                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-blue-500/50 cursor-grab transition-all group relative">
+                        <button onclick="openModal('edit', 'Maria Oliveira')"
+                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-white">
+                            <span class="material-symbols-outlined text-sm">edit</span>
+                        </button>
                         <div class="flex items-center gap-3">
                             <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-blue-500/30 transition-all shrink-0"
                                 style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQ7Rs7DOlinMEBAvG3fBSIlhMlAVUlkfWCGwRnXxL1QlKbXUuTAoT3jMua0We03SN-TWJpsba1vuM3mAl5OfX6R0blE2RhfkJbG_lix1Ftr9lMlgwnURyOI7WBmZa7V0_uytPXs12t5a9Ow8hmfl-Tt0fmr4UC6vIq5SFQIbHgijv0r10vowgfQlVybMhmX4wPnQKL8U1LFiJq-h6Hcq7HjNinQ4ae5uaNPwpEmeXaIMmyME7-C0zfGdkpS6M0HY8FPGtSnU1MMS9E");'>
@@ -560,6 +602,59 @@
         </div>
     </main>
 
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content overflow-hidden">
+            <div class="bg-surface-darker px-6 py-4 border-b border-border-dark flex justify-between items-center">
+                <h3 id="modalTitle" class="text-white font-black uppercase tracking-widest text-base">Novo Cadastro</h3>
+                <button onclick="closeModal()" class="text-text-muted hover:text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form id="memberForm" class="p-6 space-y-4" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="formAction" value="register">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome Completo</label>
+                    <input type="text" id="memberName" required
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                        placeholder="Ex: João Silva">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Idade</label>
+                        <input type="number" id="memberAge" required
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            placeholder="Ex: 25">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
+                        <select id="memberPlan"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                            <option value="basic">Mensal Básico</option>
+                            <option value="pro">Pro Semestral</option>
+                            <option value="vip">VIP Anual</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo Principal</label>
+                    <select id="memberGoal"
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                        <option value="weightloss">Emagrecimento</option>
+                        <option value="gain">Hipertrofia</option>
+                        <option value="health">Saúde / Bem-estar</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                        Gravar Informações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function showToast(message, iconName = 'info') {
             const container = document.getElementById('toast-container');
@@ -575,6 +670,43 @@
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        function openModal(action, name = '') {
+            const overlay = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+            const nameInput = document.getElementById('memberName');
+            const actionInput = document.getElementById('formAction');
+
+            overlay.classList.add('active');
+            actionInput.value = action;
+
+            if (action === 'edit') {
+                title.textContent = 'Editar Cadastro';
+                nameInput.value = name;
+                // Em um app real, carregaríamos o restante dos dados do BD
+            } else {
+                title.textContent = 'Novo Cadastro';
+                document.getElementById('memberForm').reset();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const action = document.getElementById('formAction').value;
+            const name = document.getElementById('memberName').value;
+
+            closeModal();
+
+            if (action === 'register') {
+                showToast(`Membro ${name} cadastrado com sucesso!`, 'check_circle');
+            } else {
+                showToast(`Perfil de ${name} atualizado!`, 'verified');
+            }
         }
     </script>
 </body>

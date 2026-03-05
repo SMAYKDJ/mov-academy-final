@@ -133,6 +133,40 @@
         .toast.show {
             transform: translateX(0);
         }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.8);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
     </style>
 </head>
 
@@ -743,9 +777,9 @@
                             </td>
                             <td class="px-3 py-2 text-right text-text-muted text-sm">14d atrás</td>
                             <td class="px-3 py-2 text-center">
-                                <button onclick="showToast('Mais opções', 'person')"
+                                <button onclick="openModal('edit', 'João D.')"
                                     class="text-text-muted hover:text-blue-500 transition-colors"><span
-                                        class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+                                        class="material-symbols-outlined text-[16px]">edit</span></button>
                             </td>
                         </tr>
                         <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
@@ -771,9 +805,9 @@
                             </td>
                             <td class="px-3 py-2 text-right text-text-muted text-sm">5d atrás</td>
                             <td class="px-3 py-2 text-center">
-                                <button onclick="showToast('Ações para Maria S.', 'person')"
+                                <button onclick="openModal('edit', 'Maria S.')"
                                     class="text-text-muted hover:text-blue-500 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px]">more_horiz</span>
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
                             </td>
                         </tr>
@@ -800,9 +834,9 @@
                             </td>
                             <td class="px-3 py-2 text-right text-text-muted text-sm">22d atrás</td>
                             <td class="px-3 py-2 text-center">
-                                <button onclick="showToast('Ações para Carlos P.', 'person')"
+                                <button onclick="openModal('edit', 'Carlos P.')"
                                     class="text-text-muted hover:text-blue-500 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px]">more_horiz</span>
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
                             </td>
                         </tr>
@@ -819,6 +853,59 @@
         </div>
     </main>
 
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content overflow-hidden">
+            <div class="bg-surface-darker px-6 py-4 border-b border-border-dark flex justify-between items-center">
+                <h3 id="modalTitle" class="text-white font-black uppercase tracking-widest text-base">Novo Cadastro</h3>
+                <button onclick="closeModal()" class="text-text-muted hover:text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form id="memberForm" class="p-6 space-y-4" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="formAction" value="register">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome Completo</label>
+                    <input type="text" id="memberName" required
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                        placeholder="Ex: João Silva">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Idade</label>
+                        <input type="number" id="memberAge" required
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            placeholder="Ex: 25">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
+                        <select id="memberPlan"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                            <option value="basic">Mensal Básico</option>
+                            <option value="pro">Pro Semestral</option>
+                            <option value="vip">VIP Anual</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo Principal</label>
+                    <select id="memberGoal"
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                        <option value="weightloss">Emagrecimento</option>
+                        <option value="gain">Hipertrofia</option>
+                        <option value="health">Saúde / Bem-estar</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                        Gravar Informações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Toast Functionality
         function showToast(message, iconName = 'info') {
@@ -830,15 +917,47 @@
                 <span class="text-sm font-medium">${message}</span>
             `;
             container.appendChild(toast);
-
-            // Trigger reflow for animation
             setTimeout(() => toast.classList.add('show'), 10);
-
-            // Remove toast after 3s
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        function openModal(action, name = '') {
+            const overlay = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+            const nameInput = document.getElementById('memberName');
+            const actionInput = document.getElementById('formAction');
+
+            overlay.classList.add('active');
+            actionInput.value = action;
+
+            if (action === 'edit') {
+                title.textContent = 'Editar Cadastro';
+                nameInput.value = name;
+            } else {
+                title.textContent = 'Novo Cadastro';
+                document.getElementById('memberForm').reset();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const action = document.getElementById('formAction').value;
+            const name = document.getElementById('memberName').value;
+
+            closeModal();
+
+            if (action === 'register') {
+                showToast(`Membro ${name} cadastrado com sucesso!`, 'check_circle');
+            } else {
+                showToast(`Perfil de ${name} atualizado!`, 'verified');
+            }
         }
 
         // Table Filtering
