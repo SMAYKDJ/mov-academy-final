@@ -636,6 +636,36 @@
                         </select>
                     </div>
                 </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
+                        <input type="email" id="memberEmail" required
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            placeholder="joao@email.com">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp /
+                            Celular</label>
+                        <input type="tel" id="memberPhone" required
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
+                        <input type="text" id="memberCPF" required
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            placeholder="000.000.000-00">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Vencimento
+                            (Dia)</label>
+                        <input type="number" id="memberDueDate" required min="1" max="31"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-blue-500 outline-none"
+                            placeholder="Ex: 10">
+                    </div>
+                </div>
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo Principal</label>
                     <select id="memberGoal"
@@ -684,7 +714,11 @@
             if (action === 'edit') {
                 title.textContent = 'Editar Cadastro';
                 nameInput.value = name;
-                // Em um app real, carregaríamos o restante dos dados do BD
+                // Simulação de preenchimento para campos financeiros e contato
+                document.getElementById('memberEmail').value = name.toLowerCase().replace(' ', '.') + '@email.com';
+                document.getElementById('memberPhone').value = '(11) 9' + Math.floor(10000000 + Math.random() * 90000000);
+                document.getElementById('memberCPF').value = '000.000.000-00';
+                document.getElementById('memberDueDate').value = '10';
             } else {
                 title.textContent = 'Novo Cadastro';
                 document.getElementById('memberForm').reset();
