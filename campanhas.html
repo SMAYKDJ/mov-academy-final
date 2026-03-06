@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
         tailwind.config = {
@@ -28,10 +30,17 @@
                         "border-dark": "#334155",
                         "text-main": "#f1f5f9",
                         "text-muted": "#94a3b8",
+                        brand: {
+                            pink: '#E91E63',
+                            red: '#FF1744',
+                            orange: '#FF9100',
+                            navy: '#0B1221',
+                            card: '#151C2C',
+                        }
                     },
                     fontFamily: {
-                        display: ["Inter", "sans-serif"],
-                        sans: ["Inter", "sans-serif"],
+                        display: ["Space Grotesk", "Inter", "sans-serif"],
+                        sans: ["Space Grotesk", "Inter", "sans-serif"],
                     },
                 },
             },
@@ -82,6 +91,31 @@
             animation: fadeIn 0.8s ease-out forwards;
         }
 
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(233, 30, 99, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 23, 68, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(233, 30, 99, 0.2);
+            }
+        }
+
+        .brand-glow {
+            animation: glow 3s infinite ease-in-out;
+        }
+
+        .glass-morphism {
+            background: rgba(21, 28, 44, 0.6);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         #toast-container {
             position: fixed;
             bottom: 24px;
@@ -108,6 +142,23 @@
 
         .toast.show {
             transform: translateX(0);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(233, 30, 99, 0.3);
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(233, 30, 99, 0.5);
         }
     </style>
 </head>
@@ -169,7 +220,7 @@
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div class="lg:col-span-3 flex flex-col gap-4">
+            <div id="main-content-section" class="lg:col-span-3 flex flex-col gap-4 transition-all duration-500">
                 <!-- Campanhas Ativas -->
                 <section class="fade-in" style="animation-delay: 0.1s">
                     <h2 class="text-sm font-bold text-white uppercase tracking-widest mb-3">Campanhas Ativas</h2>
@@ -221,218 +272,241 @@
                 </section>
 
                 <!-- Métricas Globais -->
-                <section class="fade-in" style="animation-delay: 0.2s">
+                <section class="fade-in" id="conversion-section" style="animation-delay: 0.2s">
                     <h2 class="text-sm font-bold text-white uppercase tracking-widest mb-3">Métricas de Conversão</h2>
-                    <div class="bg-surface-dark border border-border-dark rounded-lg p-4 shadow-xl">
-                        <div class="flex justify-between items-end mb-4">
-                            <div>
-                                <p class="text-text-muted text-sm uppercase font-bold tracking-widest mb-0.5">Taxa
-                                    de Conversão</p>
-                                <div class="flex items-baseline gap-1.5">
-                                    <p class="text-white text-2xl font-black">18.5%</p>
-                                    <p class="text-emerald-400 text-sm font-bold flex items-center gap-0.5">
-                                        <span class="material-symbols-outlined text-sm">trending_up</span>+2.1%
-                                    </p>
+                    <div class="flex flex-col lg:flex-row gap-4">
+                        <div id="metrics-base-card"
+                            class="bg-surface-dark border border-border-dark rounded-lg p-4 shadow-xl transition-all duration-500 ease-in-out flex-1">
+                            <div class="flex justify-between items-end mb-4">
+                                <div>
+                                    <p class="text-text-muted text-sm uppercase font-bold tracking-widest mb-0.5">Taxa
+                                        de Conversão</p>
+                                    <div class="flex items-baseline gap-1.5">
+                                        <p class="text-white text-2xl font-black">18.5%</p>
+                                        <p class="text-emerald-400 text-sm font-bold flex items-center gap-0.5">
+                                            <span class="material-symbols-outlined text-sm">trending_up</span>+2.1%
+                                        </p>
+                                    </div>
                                 </div>
+                                <select
+                                    class="bg-surface-darker border border-border-dark text-text-muted text-sm rounded-lg p-2 focus:ring-red-500">
+                                    <option>Últimos 30 dias</option>
+                                    <option>Este Mês</option>
+                                </select>
                             </div>
-                            <select
-                                class="bg-surface-darker border border-border-dark text-text-muted text-sm rounded-lg p-2 focus:ring-red-500">
-                                <option>Últimos 30 dias</option>
-                                <option>Este Mês</option>
-                            </select>
-                        </div>
-                        <div class="flex flex-col gap-6">
-                            <div class="flex flex-col gap-2">
-                                <div class="flex justify-between text-sm mb-1 text-text-muted">
-                                    <span>Contatados</span>
-                                    <span class="text-white font-bold">2.450</span>
+                            <div class="flex flex-col gap-6">
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-sm mb-1 text-text-muted">
+                                        <span>Contatados</span>
+                                        <span class="text-white font-bold">2.450</span>
+                                    </div>
+                                    <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
+                                        <div class="bg-red-500/20 h-full progress-animate" style="width: 100%;"></div>
+                                    </div>
                                 </div>
-                                <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
-                                    <div class="bg-red-500/20 h-full progress-animate" style="width: 100%;"></div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-sm mb-1 text-text-muted">
+                                        <span>Aberturas</span>
+                                        <span class="text-white font-bold">1.592</span>
+                                    </div>
+                                    <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
+                                        <div class="bg-red-500/40 h-full progress-animate" style="width: 65%;"></div>
+                                    </div>
                                 </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-sm mb-1 text-text-muted">
+                                        <span>Cliques</span>
+                                        <span class="text-white font-bold">857</span>
+                                    </div>
+                                    <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
+                                        <div class="bg-red-500/70 h-full progress-animate" style="width: 35%;"></div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-sm mb-1 text-text-muted">
+                                        <span>Conversões</span>
+                                        <span class="text-white font-bold">453</span>
+                                    </div>
+                                    <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
+                                        <div class="bg-red-500 h-full progress-animate" style="width: 18.5%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- panel removed -->
                             </div>
-                            <div class="flex flex-col gap-2">
-                                <div class="flex justify-between text-sm mb-1 text-text-muted">
-                                    <span>Aberturas</span>
-                                    <span class="text-white font-bold">1.592</span>
-                                </div>
-                                <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
-                                    <div class="bg-red-500/40 h-full progress-animate" style="width: 65%;"></div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <div class="flex justify-between text-sm mb-1 text-text-muted">
-                                    <span>Cliques</span>
-                                    <span class="text-white font-bold">857</span>
-                                </div>
-                                <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
-                                    <div class="bg-red-500/70 h-full progress-animate" style="width: 35%;"></div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <div class="flex justify-between text-sm mb-1 text-text-muted">
-                                    <span>Conversões</span>
-                                    <span class="text-white font-bold">453</span>
-                                </div>
-                                <div class="h-6 bg-surface-darker rounded-lg overflow-hidden flex items-center">
-                                    <div class="bg-red-500 h-full progress-animate" style="width: 18.5%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </section>
             </div>
 
-            <!-- Ranking Embaixadores (Programa de Indicação) -->
-            <section class="fade-in" style="animation-delay: 0.3s">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex flex-col">
-                        <h2 class="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                            <span class="material-symbols-outlined text-yellow-500 scale-110">rewarded_ads</span>
-                            Ranking Embaixadores
-                        </h2>
-                        <p class="text-[10px] text-text-muted uppercase font-bold tracking-widest mt-0.5">Líderes de
-                            Indicações Mensais</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span
-                            class="px-2 py-0.5 bg-red-500/10 text-red-500 text-[10px] font-black rounded border border-red-500/20 uppercase">Evento
-                            Ativo</span>
-                        <span class="text-sm text-white font-black italic">Premiar <span class="text-red-500">Top
-                                3</span></span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Top 2 -->
-                    <div class="order-2 md:order-1 flex flex-col items-center">
-                        <div class="relative group cursor-pointer mb-3">
-                            <div
-                                class="absolute -inset-1 bg-gradient-to-r from-slate-400 to-slate-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000">
-                            </div>
-                            <div
-                                class="relative size-16 rounded-full border-2 border-slate-400 p-0.5 bg-surface-darker">
-                                <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=64748b&color=fff"
-                                    class="size-full rounded-full object-cover">
-                            </div>
-                            <div
-                                class="absolute -top-1 -right-1 size-6 bg-slate-400 text-white rounded-full flex items-center justify-center font-black border-2 border-surface-dark shadow-lg">
-                                2</div>
-                        </div>
-                        <div
-                            class="text-center bg-surface-dark/50 border border-border-dark p-3 rounded-xl w-full backdrop-blur-sm">
-                            <h4 class="text-white font-bold text-sm">Ana Costa</h4>
-                            <p class="text-emerald-400 text-xs font-black uppercase mt-0.5">8 Indicações</p>
-                            <div class="mt-2 text-[10px] text-text-muted font-bold uppercase tracking-widest">+R$ 80
-                                Desc.</div>
-                        </div>
-                    </div>
-
-                    <!-- Top 1 - Destaque Central -->
-                    <div class="order-1 md:order-2 flex flex-col items-center">
-                        <div class="relative group cursor-pointer mb-4 scale-110">
-                            <div
-                                class="absolute -inset-2 bg-gradient-to-r from-yellow-500 via-red-600 to-orange-500 rounded-full blur-md opacity-40 group-hover:opacity-100 animate-pulse transition duration-1000">
-                            </div>
-                            <div
-                                class="relative size-20 rounded-full border-4 border-yellow-500 p-1 bg-surface-darker shadow-[0_0_20px_rgba(234,179,8,0.3)]">
-                                <img src="https://ui-avatars.com/api/?name=Ricardo+Silva&background=3b82f6&color=fff"
-                                    class="size-full rounded-full object-cover">
-                            </div>
-                            <div
-                                class="absolute -top-2 -right-2 size-8 bg-yellow-500 text-white rounded-full flex items-center justify-center font-black border-4 border-surface-dark shadow-2xl text-lg">
-                                1</div>
-                            <div
-                                class="absolute -bottom-2 translate-y-1/2 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-yellow-500 text-surface-darker text-[10px] font-black rounded-full uppercase shadow-lg whitespace-nowrap">
-                                Líder Gaia</div>
-                        </div>
-                        <div
-                            class="text-center bg-surface-dark border-2 border-yellow-500/30 p-4 rounded-2xl w-full shadow-2xl shadow-yellow-500/5 relative overflow-hidden group">
-                            <div
-                                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-50">
-                            </div>
-                            <h4 class="text-white font-black text-base">Ricardo Silva</h4>
-                            <p class="text-emerald-400 text-sm font-black uppercase mt-0.5 tracking-tighter">12 Novos
-                                Alunos</p>
-                            <div
-                                class="mt-3 flex items-center justify-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                                <span
-                                    class="material-symbols-outlined text-[14px] text-emerald-400">workspace_premium</span>
-                                <span class="text-[10px] font-black text-emerald-400 uppercase">Isento de
-                                    Mensalidade</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Top 3 -->
-                    <div class="order-3 flex flex-col items-center">
-                        <div class="relative group cursor-pointer mb-3">
-                            <div
-                                class="absolute -inset-1 bg-gradient-to-r from-amber-700 to-orange-800 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000">
-                            </div>
-                            <div
-                                class="relative size-16 rounded-full border-2 border-amber-700 p-0.5 bg-surface-darker">
-                                <img src="https://ui-avatars.com/api/?name=Marcos+Oliveira&background=64748b&color=fff"
-                                    class="size-full rounded-full object-cover">
-                            </div>
-                            <div
-                                class="absolute -top-1 -right-1 size-6 bg-amber-700 text-white rounded-full flex items-center justify-center font-black border-2 border-surface-dark shadow-lg">
-                                3</div>
-                        </div>
-                        <div
-                            class="text-center bg-surface-dark/50 border border-border-dark p-3 rounded-xl w-full backdrop-blur-sm">
-                            <h4 class="text-white font-bold text-sm">Marcos Oliveira</h4>
-                            <p class="text-emerald-400 text-xs font-black uppercase mt-0.5">5 Indicações</p>
-                            <div class="mt-2 text-[10px] text-text-muted font-bold uppercase tracking-widest">+ Kit Gaia
-                                Team</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Sidebar Sugestões -->
-        <div class="lg:col-span-1">
-            <section
-                class="bg-red-500/5 border border-red-500/20 rounded-lg p-3 flex flex-col gap-3 sticky top-16 fade-in"
-                style="animation-delay: 0.4s">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-red-400 text-xl">auto_awesome</span>
-                    <h2 class="text-white text-sm font-bold uppercase tracking-widest">Dicas IA</h2>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    <div
-                        class="bg-surface-darker border border-border-dark rounded p-2 hover:border-red-500/30 transition-colors">
-                        <h4 class="text-white font-bold text-sm mb-1 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-rose-500 text-[14px]">warning</span>
-                            Risco Noite
-                        </h4>
-                        <p class="text-text-muted text-sm mb-2 leading-tight">Queda brusca de frequência no noturno.
-                        </p>
-                        <button onclick="showToast('Enviando via WhatsApp...', 'chat')"
-                            class="w-full h-7 rounded bg-red-600 text-white text-sm font-bold hover:bg-red-500 transition-colors">
-                            Lançar WhatsApp
+            <div id="sidebar-section" class="lg:col-span-1 flex gap-4 transition-all duration-500 overflow-hidden">
+                <!-- Panel de Detalhes dos Indicados (Dinamico) -->
+                <div id="referrals-panel"
+                    class="hidden opacity-0 translate-x-4 transition-all duration-500 ease-in-out lg:w-0 min-w-0 bg-brand-navy/40 border border-white/10 rounded-xl p-4 shadow-2xl flex flex-col gap-3 h-fit sticky top-4">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-2 mb-1">
+                        <h3 class="text-white text-[11px] font-black uppercase tracking-widest whitespace-nowrap">
+                            Indicados por <span id="ambassador-name-display" class="text-brand-pink">---</span></h3>
+                        <button onclick="closeReferrals()" class="text-text-muted hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
                         </button>
                     </div>
-
-                    <div
-                        class="bg-surface-darker border border-border-dark rounded p-2 hover:border-red-500/30 transition-colors">
-                        <h4 class="text-white font-bold text-sm mb-1 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-amber-500 text-[14px]">lightbulb</span>
-                            Cross-sell
-                        </h4>
-                        <p class="text-text-muted text-sm mb-2 leading-tight">Sugestão de suplementação para cluster
-                            Hipertrofia.</p>
-                        <button onclick="showToast('Email agendado!', 'email')"
-                            class="w-full h-7 rounded border border-red-500/50 text-red-400 text-sm font-bold hover:bg-red-500/10 transition-colors">
-                            Lançar Email
-                        </button>
+                    <div id="referrals-list-container"
+                        class="flex flex-col gap-2 overflow-y-auto max-h-[70vh] pr-1 custom-scrollbar">
+                        <!-- Cards de indicados serão inseridos via JS -->
                     </div>
                 </div>
-            </section>
-        </div>
-        </div>
+
+                <div class="flex flex-col gap-4 flex-1">
+                    <!-- Sidebar Sugestões -->
+                    <section class="bg-red-500/5 border border-red-500/20 rounded-lg p-3 flex flex-col gap-3 fade-in"
+                        style="animation-delay: 0.4s">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-red-400 text-xl font-icon">auto_awesome</span>
+                            <h2 class="text-white text-[11px] font-bold uppercase tracking-widest">Dicas IA</h2>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <div
+                                class="bg-surface-darker/50 border border-border-dark rounded-lg p-2 hover:border-red-500/30 transition-colors">
+                                <h4 class="text-white font-bold text-[12px] mb-0.5 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-rose-500 text-[12px]">warning</span>
+                                    Risco Noite
+                                </h4>
+                                <p class="text-text-muted text-[11px] mb-1.5 leading-tight">Queda brusca de frequência
+                                    no
+                                    noturno.
+                                </p>
+                                <button onclick="showToast('Enviando via WhatsApp...', 'chat')"
+                                    class="w-full h-6 rounded bg-red-600 text-white text-[10px] font-bold hover:bg-red-500 transition-colors">
+                                    Lançar WhatsApp
+                                </button>
+                            </div>
+
+                            <div
+                                class="bg-surface-darker/50 border border-border-dark rounded-lg p-2 hover:border-red-500/30 transition-colors">
+                                <h4 class="text-white font-bold text-[12px] mb-0.5 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-amber-500 text-[12px]">lightbulb</span>
+                                    Cross-sell
+                                </h4>
+                                <p class="text-text-muted text-[11px] mb-1.5 leading-tight">Sugestão de suplementação
+                                    para
+                                    cluster Hipertrofia.</p>
+                                <button onclick="showToast('Email agendado!', 'email')"
+                                    class="w-full h-6 rounded border border-red-500/50 text-red-400 text-[10px] font-bold hover:bg-red-500/10 transition-colors">
+                                    Lançar Email
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Ranking Embaixadores (Compact Sidebar Version) -->
+                    <section
+                        class="fade-in bg-brand-navy/30 border border-white/5 rounded-xl p-3 flex flex-col gap-4 h-fit"
+                        style="animation-delay: 0.3s">
+                        <div class="flex items-center gap-2 border-b border-white/5 pb-2">
+                            <div
+                                class="w-7 h-7 bg-gradient-to-br from-orange-400 to-orange-600 rounded flex items-center justify-center shadow-lg">
+                                <span class="material-symbols-outlined text-white text-[16px]">stars</span>
+                            </div>
+                            <div>
+                                <h2 class="text-[11px] font-black text-white uppercase tracking-tight">Elite
+                                    Embaixadores
+                                </h2>
+                                <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider animate-pulse">
+                                    Live
+                                    Ranking</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            <!-- 1st Place: Ricardo Silva -->
+                            <div class="relative group cursor-pointer" onclick="toggleReferrals('Ricardo Silva')">
+                                <div
+                                    class="bg-gradient-to-br from-brand-pink/20 to-brand-red/10 border border-brand-pink/30 rounded-xl p-3 shadow-lg relative overflow-hidden transition-all duration-500 group-hover:border-brand-pink/80 group-hover:scale-[1.02] active:scale-95">
+                                    <div class="flex items-center gap-3 relative z-10">
+                                        <div class="relative shrink-0">
+                                            <div
+                                                class="w-12 h-12 rounded-full border-2 border-brand-red brand-glow overflow-hidden">
+                                                <img alt="Ricardo Silva" class="w-full h-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXdLGmOxxOmekyvHOkx6aFRdFBz2qqpOE25vGP5GHyVH47Fu-wvrDywcqWM8ey9Xh64-X7RYHPmn5m83eQZKW2sJyMqTJkAT6v-ttu89uf3peNwwJLJbJD4kO901ZL6-SO8WXSe2pz1K8oI0Ci2JcIjHiVql0EN3oHREf0_dG1GzlSSUa9BttOAEZIYHniPNhguFqSAwgDdiaSx13Wvfx_-mjIuonYZ_WF9tK9BiD_DCFTg569pera3s4S8aactpDXxSCNgNYI_pI" />
+                                            </div>
+                                            <div
+                                                class="absolute -top-1 -right-1 w-5 h-5 bg-brand-pink rounded-full flex items-center justify-center text-white font-black text-[10px] border-2 border-brand-navy">
+                                                1</div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="text-white text-[12px] font-black truncate uppercase">Ricardo
+                                                Silva
+                                            </h3>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-xl font-black text-white">12</span>
+                                                <span
+                                                    class="text-[10px] text-brand-pink font-bold uppercase tracking-widest">Alunos</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="mt-2 bg-gradient-to-r from-brand-pink to-brand-orange text-white rounded-lg py-1 px-2 font-black text-[9px] flex items-center justify-center gap-1.5 shadow-md">
+                                        <span>🏆</span> MENSALIDADE GRÁTIS
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2nd Place: Ana Costa -->
+                            <div class="glass-morphism rounded-xl p-2.5 flex items-center gap-3 border border-white/5 hover:border-brand-pink/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                                onclick="toggleReferrals('Ana Costa')">
+                                <div class="relative shrink-0">
+                                    <div class="w-10 h-10 rounded-full border-2 border-slate-400/50 overflow-hidden">
+                                        <img alt="Ana Costa" class="w-full h-full object-cover"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb_-scER5w1kG8nijqWv-HHTt6zqCKJ5lsLGrPt2p5Ggxdp2em42yXXssJ6M-F3nlcPabiEapL0exrYnFoJ8OhCvBI9GSr7iTtlOnqZDTXtCufXB-Ohd8ZWrlMjJDZp1JD_PIVkUJ-IAJtQjKvvx1w6VL9oxkn2xr5wTQQ7X7oJc5I0gSl5an_NngN0ToLHABbsTPXB1pro9TQ6xo50t8M6thnR-izfqZ_LGRRCeDDrWSUyLzzpwxFivoi5770TE-NqcBAUaDiomA" />
+                                    </div>
+                                    <div
+                                        class="absolute -top-1 -right-1 w-4 h-4 bg-slate-400 rounded-full flex items-center justify-center text-brand-navy font-black text-[9px]">
+                                        2</div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-white text-[11px] font-black truncate uppercase">Ana Costa</h3>
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="text-base font-black text-brand-orange">08</span>
+                                        <span
+                                            class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Indicações</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="text-[9px] font-black text-slate-300 bg-white/5 py-0.5 px-1.5 rounded transition-colors group-hover:bg-white/10">
+                                    +R$80</div>
+                            </div>
+
+                            <!-- 3rd Place: Marcos Oliveira -->
+                            <div class="glass-morphism rounded-xl p-2.5 flex items-center gap-3 border border-white/5 hover:border-brand-pink/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                                onclick="toggleReferrals('Marcos Oliveira')">
+                                <div class="relative shrink-0">
+                                    <div class="w-10 h-10 rounded-full border-2 border-amber-800/50 overflow-hidden">
+                                        <img alt="Marcos Oliveira" class="w-full h-full object-cover"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2yKaGdSbSaIS6V4BAoCcYHrdgA28pvJDFJ7pqYJUDN3ywIn6HPs8k-J8xyUCeFv5Rwm4amitqVi7TKAHMXJYiTmgwmXCZ1xAkPSju2WUXHjIOQAliyb9e3zTlhgSlEotyaM8Cps4hMqoLh7xfxbP_trc7pJyXlBdXyU01lQMKOSwax0YRN2cBHiOpqQYF1Sck3QPAqzhkNNPqtOkBXoeOxICAWFeUGLIh9pfDMGXL5nFUTnnpmhOoGnAmRyJNZ2yZ1QVe-805FuA" />
+                                    </div>
+                                    <div
+                                        class="absolute -top-1 -right-1 w-4 h-4 bg-amber-800 rounded-full flex items-center justify-center text-white font-black text-[9px]">
+                                        3</div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-white text-[11px] font-black truncate uppercase">Marcos Oliveira
+                                    </h3>
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="text-base font-black text-brand-orange">05</span>
+                                        <span
+                                            class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Indicações</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="text-[9px] font-black text-slate-300 bg-white/5 py-0.5 px-1.5 rounded truncate">
+                                    Kit Gaia</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+
+
     </main>
 
     <script>
@@ -450,6 +524,101 @@
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        // --- SISTEMA DE RANKING DINÂMICO ---
+        const referralsData = {
+            'Ricardo Silva': [
+                { reg: '2024001', name: 'Carlos Eduardo' }, { reg: '2024002', name: 'Juliana Lopes' },
+                { reg: '2024003', name: 'Roberto Souza' }, { reg: '2024004', name: 'Fernanda Lima' },
+                { reg: '2024005', name: 'Gabriel Santos' }, { reg: '2024006', name: 'Amanda Costa' },
+                { reg: '2024007', name: 'Lucas Oliveira' }, { reg: '2024008', name: 'Beatriz Rocha' },
+                { reg: '2024009', name: 'Thiago Silva' }, { reg: '2024010', name: 'Camila Pereira' },
+                { reg: '2024011', name: 'Rodrigo Alves' }, { reg: '2024012', name: 'Mariana Ferreira' }
+            ],
+            'Ana Costa': [
+                { reg: '2024020', name: 'Pedro Martins' }, { reg: '2024021', name: 'Sofia Mendes' },
+                { reg: '2024022', name: 'Igor Castro' }, { reg: '2024023', name: 'Leticia Ramos' },
+                { reg: '2024024', name: 'Vitor Hugo' }, { reg: '2024025', name: 'Bianca Silva' },
+                { reg: '2024026', name: 'Bruno Xavier' }, { reg: '2024027', name: 'Clara Antunes' }
+            ],
+            'Marcos Oliveira': [
+                { reg: '2024040', name: 'Daniel Galdino' }, { reg: '2024041', name: 'Raquel Vieira' },
+                { reg: '2024042', name: 'Samuel Lima' }, { reg: '2024043', name: 'Vanessa Gomes' },
+                { reg: '2024044', name: 'Emerson Faria' }
+            ]
+        };
+
+        let currentActiveAmbassador = null;
+
+        function toggleReferrals(name) {
+            const panel = document.getElementById('referrals-panel');
+            const mainSection = document.getElementById('main-content-section');
+            const sidebarSection = document.getElementById('sidebar-section');
+            const listContainer = document.getElementById('referrals-list-container');
+            const nameDisplay = document.getElementById('ambassador-name-display');
+
+            if (currentActiveAmbassador === name) {
+                closeReferrals();
+                return;
+            }
+
+            // Popular Dados
+            currentActiveAmbassador = name;
+            nameDisplay.textContent = name;
+            listContainer.innerHTML = '';
+
+            referralsData[name].forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'glass-morphism rounded-lg p-3 border border-white/5 hover:border-white/20 transition-all flex items-center gap-3 group/item';
+                card.innerHTML = `
+                    <div class="w-8 h-8 rounded bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center text-brand-pink font-black text-[10px] shrink-0">
+                        #${student.reg.slice(-3)}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[11px] font-bold text-white uppercase truncate">${student.name}</p>
+                        <p class="text-[9px] text-text-muted uppercase tracking-widest">Matriculado</p>
+                    </div>
+                    <span class="material-symbols-outlined text-[14px] text-emerald-400 opacity-0 group-hover/item:opacity-100 transition-opacity">check_circle</span>
+                `;
+                listContainer.appendChild(card);
+            });
+
+            // Animação de Abertura
+            panel.classList.remove('hidden');
+            setTimeout(() => {
+                // Ajustar spans da grid
+                mainSection.classList.replace('lg:col-span-3', 'lg:col-span-2');
+                sidebarSection.classList.replace('lg:col-span-1', 'lg:col-span-2');
+
+                panel.style.width = '300px';
+                panel.classList.add('opacity-100', 'translate-x-0');
+            }, 10);
+
+            showToast(`Mostrando indicados de ${name}`, 'person_search');
+        }
+
+        function closeReferrals() {
+            const panel = document.getElementById('referrals-panel');
+            const mainSection = document.getElementById('main-content-section');
+            const sidebarSection = document.getElementById('sidebar-section');
+
+            currentActiveAmbassador = null;
+
+            // Reverter spans da grid
+            if (mainSection.classList.contains('lg:col-span-2')) {
+                mainSection.classList.replace('lg:col-span-2', 'lg:col-span-3');
+            }
+            if (sidebarSection.classList.contains('lg:col-span-2')) {
+                sidebarSection.classList.replace('lg:col-span-2', 'lg:col-span-1');
+            }
+
+            panel.classList.remove('opacity-100', 'translate-x-0');
+            panel.style.width = '0';
+
+            setTimeout(() => {
+                panel.classList.add('hidden');
+            }, 500);
         }
     </script>
 </body>
