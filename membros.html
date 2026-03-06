@@ -11,7 +11,11 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="gaia-api.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -196,9 +200,9 @@
         </div>
 
         <!-- Kanban Board -->
-        <div class="flex-1 flex gap-3 overflow-x-auto pb-4 fade-in" style="animation-delay: 0.1s">
-            <!-- Column: Ativo -->
-            <div
+        <div id="kanbanBoard" class="flex-1 flex gap-3 overflow-x-auto pb-4 fade-in" style="animation-delay: 0.1s">
+            <!-- Colunas serão preenchidas dinamicamente via JS -->
+            <div data-status="Ativo"
                 class="flex-1 min-w-[280px] max-w-[320px] flex flex-col gap-2.5 bg-surface-dark/40 border border-border-dark rounded-xl p-3">
                 <div class="flex items-center justify-between mb-1">
                     <div class="flex items-center gap-1.5">
@@ -206,197 +210,36 @@
                         </div>
                         <h3 class="text-white font-black text-sm uppercase tracking-widest">Ativo</h3>
                         <span
-                            class="bg-surface-darker text-text-muted text-sm py-0.5 px-1.5 rounded font-bold border border-border-dark">3</span>
+                            class="count bg-surface-darker text-text-muted text-sm py-0.5 px-1.5 rounded font-bold border border-border-dark">0</span>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <!-- Card 1 -->
-                    <div
-                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-red-500/50 cursor-grab transition-all group relative">
-                        <button onclick="openModal('edit', 'João Silva')"
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-white">
-                            <span class="material-symbols-outlined text-sm">edit</span>
-                        </button>
-                        <div class="flex items-center gap-3">
-                            <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWcvjJVR1ECY19o0zfVc0LSmnDuKpVU2sYQS1iitM9V8jGnMaQ0ZO7Q-fpI3BqwlDLy8b1wchJOdYHWVJAS9c9p_WhhYneJbhzeWJONaPffM-8TkIKpaptjW8svo8RAzo6BJ3n1bk8hVQy_ns4Mb2kE9DykFk_gUgbHt9QLHcocPigkFqEdGeVqNEYRDQwc-vFRJjuZ5o05Zr4sZ-y1HQrDBDpWOrdgRNHFlbEwM7PKWt41I9z9h7OjbWtXfZxv3wI2XpmE-6gt01m");'>
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-bold text-sm truncate">João Silva</h4>
-                                    <span class="text-text-muted text-sm font-mono">28a</span>
-                                </div>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm uppercase font-bold text-text-muted tracking-tighter">Score
-                                        IA</span>
-                                    <span class="text-sm font-black text-emerald-400">92%</span>
-                                </div>
-                                <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
-                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 92%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card 2 -->
-                    <div
-                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-red-500/50 cursor-grab transition-all group relative">
-                        <button onclick="openModal('edit', 'Maria Oliveira')"
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-white">
-                            <span class="material-symbols-outlined text-sm">edit</span>
-                        </button>
-                        <div class="flex items-center gap-3">
-                            <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQ7Rs7DOlinMEBAvG3fBSIlhMlAVUlkfWCGwRnXxL1QlKbXUuTAoT3jMua0We03SN-TWJpsba1vuM3mAl5OfX6R0blE2RhfkJbG_lix1Ftr9lMlgwnURyOI7WBmZa7V0_uytPXs12t5a9Ow8hmfl-Tt0fmr4UC6vIq5SFQIbHgijv0r10vowgfQlVybMhmX4wPnQKL8U1LFiJq-h6Hcq7HjNinQ4ae5uaNPwpEmeXaIMmyME7-C0zfGdkpS6M0HY8FPGtSnU1MMS9E");'>
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-bold text-sm truncate">Maria Oliveira</h4>
-                                    <span class="text-text-muted text-sm font-mono">34a</span>
-                                </div>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm uppercase font-bold text-text-muted tracking-tighter">Score
-                                        IA</span>
-                                    <span class="text-sm font-black text-emerald-400">85%</span>
-                                </div>
-                                <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
-                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 85%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card 3 -->
-                    <div
-                        class="bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-red-500/50 cursor-grab transition-all group">
-                        <div class="flex items-center gap-3">
-                            <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgIcyU5L00tUAKXP_JYq23TGhkN0N-dMJSIqBrGGV8GdJCRmeqh0IdXkwX-gNQgJm1eNbFNvU7EHcBPjOXDak1GKJKP6q5Jl70Jekmuq-FWwIymv5-c7iXx3nyKSkjYBc8f5gL6racsUvokKC3H2efR9AIYLxkZkl4DHX-mzhZUNSP-G0F651M3WvOWDiYsDi_f1O_4Jj3-Ual-p6D_aqV_wxJMOi7P1GhBN_b1iGDVP4iVddl2F9hW0xeK5kR403wPJiGxWL1LQJn");'>
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-bold text-sm truncate">Carlos Souza</h4>
-                                    <span class="text-text-muted text-sm font-mono">41a</span>
-                                </div>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm uppercase font-bold text-text-muted tracking-tighter">Score
-                                        IA</span>
-                                    <span class="text-sm font-black text-emerald-400">78%</span>
-                                </div>
-                                <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
-                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 78%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="cards-container flex flex-col gap-2"></div>
             </div>
 
-            <!-- Column: Em Risco -->
-            <div
+            <div data-status="Em Risco"
                 class="flex-1 min-w-[280px] max-w-[320px] flex flex-col gap-2.5 bg-surface-dark/40 border border-border-dark rounded-xl p-3">
                 <div class="flex items-center justify-between mb-1">
                     <div class="flex items-center gap-1.5">
                         <div class="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_8px_rgba(245,158,11,0.5)]"></div>
                         <h3 class="text-white font-black text-sm uppercase tracking-widest">Em Risco</h3>
                         <span
-                            class="bg-surface-darker text-text-muted text-sm py-0.5 px-1.5 rounded font-bold border border-border-dark">2</span>
+                            class="count bg-surface-darker text-text-muted text-sm py-0.5 px-1.5 rounded font-bold border border-border-dark">0</span>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <!-- Card 4 -->
-                    <div
-                        class="bg-surface-dark border border-secondary/20 p-2.5 rounded shadow-lg hover:border-red-500/50 cursor-grab transition-all group">
-                        <div class="flex items-center gap-3">
-                            <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQvmoJcpH0h8Ha8TSWMYYRiuymxVVqStmrCouxETz7VgzLBAewtvsBQAnnjaBJNhUdMiIdcO4pZLn1IAwYHR5_tx6eIi3_RyO2gLEe_VCUGXneKsfP-Jt39uPyiictwjmdT68-TwiHr2Sb-xQS5eB8ckMIAAO9SHDn7SXcZJm540rS2d-58xci7YAIH4nL3hsYHuG4Jws8INgz_GCfEKu4aAHURmuqSBCcZ-I-UlQqdfC1NCu7tNwpZaRkXmoB7SedQpzRSzi2cTVO");'>
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-bold text-sm truncate">Ana Costa</h4>
-                                    <span class="text-text-muted text-sm font-mono">25a</span>
-                                </div>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm uppercase font-bold text-text-muted tracking-tighter">Score
-                                        IA</span>
-                                    <span class="text-sm font-black text-secondary">45%</span>
-                                </div>
-                                <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
-                                    <div class="bg-secondary h-full rounded-full" style="width: 45%"></div>
-                                </div>
-                                <div
-                                    class="mt-2 flex items-center gap-1 text-sm font-black text-secondary uppercase tracking-widest bg-secondary/10 py-1 px-1.5 rounded border border-secondary/20">
-                                    <span class="material-symbols-outlined text-sm">warning</span>
-                                    Alerta Frequência
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card 5 -->
-                    <div
-                        class="bg-surface-dark border border-secondary/20 p-2.5 rounded shadow-lg hover:border-red-500/50 cursor-grab transition-all group">
-                        <div class="flex items-center gap-3">
-                            <div class="size-10 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxdR4VbiuCA7MzueiqdqQOnBD1LQPuXMTx_K2aYjEbWzk4ssi2Zmvm4wMoQfSkbY6le2AEfeAQq02dI4vJMjt_lFdExuPhH4qkSTzFi7VIu-DLoWzfft21jqzQZY6GPKChWbRzSRM_ZQTsT6PGgSySFZFOHDhq7EpQmLBdL9-cJHbqCrqTrt1GJZaNxUsHbdyywVn9aqKOBj5poUfVo2NLmBWPDQSvqIKDUrKKcIHret5dKy7qSgASkAcc1FgnR5OmSo4q7MhdXzv_");'>
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-bold text-sm truncate">Roberto Lima</h4>
-                                    <span class="text-text-muted text-sm font-mono">38a</span>
-                                </div>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm uppercase font-bold text-text-muted tracking-tighter">Score
-                                        IA</span>
-                                    <span class="text-sm font-black text-secondary">52%</span>
-                                </div>
-                                <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
-                                    <div class="bg-secondary h-full rounded-full" style="width: 52%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="cards-container flex flex-col gap-2"></div>
             </div>
 
-            <!-- Column: Inativo -->
-            <div
+            <div data-status="Inativo"
                 class="flex-1 min-w-[280px] max-w-[320px] flex flex-col gap-2.5 bg-surface-dark/40 border border-border-dark rounded-xl p-3">
                 <div class="flex items-center justify-between mb-1">
                     <div class="flex items-center gap-1.5">
                         <div class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></div>
                         <h3 class="text-white font-black text-sm uppercase tracking-widest">Inativo</h3>
                         <span
-                            class="bg-surface-darker text-text-muted text-sm py-0.5 px-1.5 rounded font-bold border border-border-dark">1</span>
+                            class="count bg-surface-darker text-text-muted text-sm py-0.5 px-1.5 rounded font-bold border border-border-dark">0</span>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <!-- Card 6 -->
-                    <div
-                        class="bg-surface-dark border border-rose-500/20 p-2.5 rounded shadow-lg hover:border-red-500/50 cursor-grab transition-all group opacity-60">
-                        <div class="flex items-center gap-3">
-                            <div class="size-10 rounded-full bg-cover bg-center border border-border-dark grayscale group-hover:grayscale-0 transition-all shrink-0"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpajrSuFmhWw3SSYc-Hy0sa3gsSNupo2uSmMpFUz68lDScbw_uhFjadRYg7rqIL9aVYJX1vS1oi59D7JYvzHfTbyJo5RDeYKAEe6su0gTZDTEbnPlkpbA3uBzJr50KpMwlDNcqSq4FvsH9z_slTZOOCLsyUxBluWewMVKpKNmVNzN1ZKICTwtQDVC3zdiSGdy7fmVAeU1xlgsF9I1LFJlokJvKnc0gQP-o8M9Io1WKZIhA5J7bqtffTDhczAJppod5nLR3nHYsNgdX");'>
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-white font-bold text-sm truncate">Juliana Mendes</h4>
-                                    <span class="text-text-muted text-sm font-mono">29a</span>
-                                </div>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm uppercase font-bold text-text-muted tracking-tighter">Score
-                                        IA</span>
-                                    <span class="text-sm font-black text-rose-400">15%</span>
-                                </div>
-                                <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
-                                    <div class="bg-rose-500 h-full rounded-full" style="width: 15%"></div>
-                                </div>
-                                <div
-                                    class="mt-2 flex items-center gap-1 text-sm font-black text-rose-400 uppercase tracking-widest bg-rose-500/10 py-1 px-1.5 rounded border border-rose-500/20">
-                                    <span class="material-symbols-outlined text-sm">history</span>
-                                    Ausente 30d+
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="cards-container flex flex-col gap-2"></div>
             </div>
         </div>
         <!-- Programa Embaixador Gaia Team -->
@@ -499,7 +342,7 @@
                                         <td class="px-4 py-2">
                                             <span
                                                 class="px-1.5 py-0.5 bg-red-500/10 text-red-400 text-sm font-black rounded border border-red-500/10">50%
-                                                OFF</span>
+                                                DESCONTO</span>
                                         </td>
                                         <td class="px-4 py-2 text-right">
                                             <button
@@ -558,7 +401,7 @@
                                     class="size-6 rounded bg-red-500 text-white flex items-center justify-center text-sm font-bold">1</span>
                                 <div>
                                     <p class="text-sm font-bold text-white">1 Amigo</p>
-                                    <p class="text-sm text-text-muted">R$ 10 OFF recorrente.</p>
+                                    <p class="text-sm text-text-muted">R$ 10 de desconto recorrente.</p>
                                 </div>
                             </div>
                             <div class="flex gap-3 p-2 rounded bg-white/5 border border-white/5 italic">
@@ -566,7 +409,7 @@
                                     class="size-6 rounded bg-orange-500 text-white flex items-center justify-center text-sm font-bold">3</span>
                                 <div>
                                     <p class="text-sm font-bold text-white">3 Amigos</p>
-                                    <p class="text-sm text-text-muted">30% OFF + Kit Gaia.</p>
+                                    <p class="text-sm text-text-muted">30% de desconto + Kit Gaia.</p>
                                 </div>
                             </div>
                             <div class="flex gap-3 p-2 rounded bg-emerald-600/20 border border-emerald-500/20 italic">
@@ -606,142 +449,415 @@
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target === this) closeModal()">
         <div class="modal-content overflow-hidden">
             <div class="bg-surface-darker px-6 py-4 border-b border-border-dark flex justify-between items-center">
-                <h3 id="modalTitle" class="text-white font-black uppercase tracking-widest text-base">Novo Cadastro</h3>
+                <div class="flex flex-col">
+                    <h3 id="modalTitle" class="text-white font-black uppercase tracking-widest text-base">Novo Cadastro
+                    </h3>
+                    <div id="codeDisplay" class="flex items-center gap-1.5 mt-0.5">
+                        <span id="nextCodeInfo"
+                            class="text-[10px] font-bold text-red-500 uppercase tracking-widest hidden">Próxima
+                            Matrícula: #000</span>
+                        <span id="currentCodeInfo"
+                            class="text-[10px] font-bold text-red-500 uppercase tracking-widest hidden">Matrícula:
+                            #000</span>
+                    </div>
+                </div>
                 <button onclick="closeModal()" class="text-text-muted hover:text-white">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <form id="memberForm" class="p-6 space-y-4" onsubmit="handleFormSubmit(event)">
+            <form id="memberForm" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="formAction" value="register">
+
+                <!-- Foto do Aluno no Topo -->
+                <div class="flex flex-col items-center gap-3 py-2">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('photoInput').click()">
+                        <div id="photoPreview"
+                            class="size-24 rounded-full bg-surface-darker border-2 border-dashed border-border-dark flex items-center justify-center overflow-hidden transition-all group-hover:border-red-500/50">
+                            <span
+                                class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>
+                        </div>
+                        <div
+                            class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <span class="material-symbols-outlined text-white">upload</span>
+                        </div>
+                        <input type="file" id="photoInput" class="hidden" accept="image/*"
+                            onchange="handlePhotoUpload(this)">
+                    </div>
+                    <label class="text-[10px] font-black text-text-muted uppercase tracking-widest text-center">Foto do
+                        Aluno<br>(Clique para alterar)</label>
+                    <input type="hidden" id="memberPhoto">
+                </div>
+
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome Completo</label>
                     <input type="text" id="memberName" required
                         class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                         placeholder="Ex: João Silva">
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Idade</label>
-                        <input type="number" id="memberAge" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Ex: 25">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
-                        <select id="memberPlan"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                            <option value="basic">Mensal Básico</option>
-                            <option value="pro">Pro Semestral</option>
-                            <option value="vip">VIP Anual</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
-                        <input type="email" id="memberEmail" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="joao@email.com">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp /
-                            Celular</label>
-                        <input type="tel" id="memberPhone" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="(11) 99999-9999">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
-                        <input type="text" id="memberCPF" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="000.000.000-00">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Vencimento
-                            (Dia)</label>
-                        <input type="number" id="memberDueDate" required min="1" max="31"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Ex: 10">
-                    </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Data de Nascimento</label>
+                    <input type="date" id="memberBirth" required
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo Principal</label>
-                    <select id="memberGoal"
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Status</label>
+                    <select id="memberStatus"
                         class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                        <option value="weightloss">Emagrecimento</option>
-                        <option value="gain">Hipertrofia</option>
-                        <option value="health">Saúde / Bem-estar</option>
+                        <option value="Ativo">Ativo</option>
+                        <option value="Em Risco">Em Risco</option>
+                        <option value="Inativo">Inativo</option>
                     </select>
                 </div>
-                <div class="pt-2">
-                    <button type="submit"
-                        class="w-full bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
-                        Gravar Informações
-                    </button>
-                </div>
-            </form>
         </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
+                <input type="email" id="memberEmail" required
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                    placeholder="joao@email.com">
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp</label>
+                <input type="tel" id="memberPhone" required
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                    placeholder="(11) 99999-9999">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
+                <input type="text" id="memberCPF" required
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                    placeholder="000.000.000-00">
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
+                <select id="memberPlan"
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                    <option value="Mensal Básico">Mensal Básico</option>
+                    <option value="Pro Semestral">Pro Semestral</option>
+                    <option value="VIP Anual">VIP Anual</option>
+                    <option value="Experimental">Experimental</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo</label>
+                <select id="memberGoal"
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                    <option value="weightloss">Emagrecimento</option>
+                    <option value="gain">Hipertrofia</option>
+                    <option value="health">Saúde</option>
+                </select>
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Campanha</label>
+                <select id="memberCampaign"
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                    <option value="Orgânico">Orgânico</option>
+                    <option value="Indicação">Indicação</option>
+                    <option value="Recuperação de Inativos">Recuperação de Inativos</option>
+                    <option value="Melhoria para Plano VIP">Melhoria para Plano VIP</option>
+                    <option value="Anúncio Meta">Anúncio Meta</option>
+                    <option value="Google Ads">Google Ads</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="space-y-1.5">
+            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Endereço</label>
+            <input type="text" id="memberAddress"
+                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                placeholder="Rua, Número, Complemento">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Bairro</label>
+                <input type="text" id="memberNeighborhood"
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                    placeholder="Ex: Centro">
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Cidade</label>
+                <input type="text" id="memberCity"
+                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                    placeholder="Ex: São Paulo">
+            </div>
+        </div>
+
+        <div class="space-y-1.5 relative">
+            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Quem o indicou?</label>
+            <input type="text" id="memberReferrer" autocomplete="off"
+                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                placeholder="Digite para buscar alunos..." oninput="handleReferrerInput(this.value)">
+            <div id="referrerSuggestions"
+                class="absolute left-0 right-0 mt-1 bg-surface-dark border border-border-dark rounded-lg shadow-xl z-50 overflow-hidden hidden max-h-48 overflow-y-auto">
+            </div>
+        </div>
+
+        <div class="pt-2">
+            <button type="submit"
+                class="w-full bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg active:scale-[0.98]">
+                Gravar Informações
+            </button>
+        </div>
+        </form>
+    </div>
     </div>
 
     <script>
-        function showToast(message, iconName = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `
-                <span class="material-symbols-outlined text-red-400">${iconName}</span>
-                <span class="text-sm font-medium">${message}</span>
-            `;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
+        let allMembersData = [];
 
-        function openModal(action, name = '') {
-            const overlay = document.getElementById('modalOverlay');
-            const title = document.getElementById('modalTitle');
-            const nameInput = document.getElementById('memberName');
-            const actionInput = document.getElementById('formAction');
+        async function loadMembers() {
+            try {
+                const members = await GaiaAPI.students.list();
+                allMembersData = members.map(m => ({
+                    nome: m.nome_completo,
+                    foto: m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`
+                }));
 
-            overlay.classList.add('active');
-            actionInput.value = action;
+                document.querySelectorAll('.cards-container').forEach(c => c.innerHTML = '');
+                const counts = { 'Ativo': 0, 'Em Risco': 0, 'Inativo': 0 };
 
-            if (action === 'edit') {
-                title.textContent = 'Editar Cadastro';
-                nameInput.value = name;
-                // Simulação de preenchimento para campos financeiros e contato
-                document.getElementById('memberEmail').value = name.toLowerCase().replace(' ', '.') + '@email.com';
-                document.getElementById('memberPhone').value = '(11) 9' + Math.floor(10000000 + Math.random() * 90000000);
-                document.getElementById('memberCPF').value = '000.000.000-00';
-                document.getElementById('memberDueDate').value = '10';
-            } else {
-                title.textContent = 'Novo Cadastro';
-                document.getElementById('memberForm').reset();
+                members.forEach(member => {
+                    const status = member.status || 'Ativo';
+                    const container = document.querySelector(`[data-status="${status}"] .cards-container`);
+                    if (container) {
+                        counts[status]++;
+                        container.appendChild(createMemberCard(member));
+                    }
+                });
+
+                Object.keys(counts).forEach(status => {
+                    const label = document.querySelector(`[data-status="${status}"] .count`);
+                    if (label) label.textContent = counts[status];
+                });
+            } catch (err) {
+                console.error('Erro:', err);
+                showToast('Falha ao sincronizar dados', 'error');
             }
         }
+
+        function createMemberCard(member) {
+            const div = document.createElement('div');
+            div.className = 'bg-surface-dark border border-border-dark p-2.5 rounded shadow-lg hover:border-red-500/50 transition-all group relative';
+
+            const scoreText = member.score_ia >= 70 ? 'text-emerald-400' : (member.score_ia >= 40 ? 'text-secondary' : 'text-rose-400');
+            const progressBg = member.score_ia >= 70 ? 'bg-emerald-500' : (member.score_ia >= 40 ? 'bg-secondary' : 'bg-rose-500');
+
+            div.innerHTML = `
+                <button onclick="openModal('edit', null, '${member.id}', '${member.codigo || ''}')"
+                    class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-white">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-cover bg-center border border-border-dark shrink-0"
+                        style="background-image: url('${member.foto_url || 'https://ui-avatars.com/api/?name=' + member.nome_completo}');">
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-white font-bold text-sm truncate">
+                                <span class="text-red-500 mr-1 opacity-70">#${member.codigo || '---'}</span>
+                                ${member.nome_completo}
+                            </h4>
+                            <span class="text-text-muted text-sm font-mono">${GaiaAPI.utils.calculateAge(member.data_nascimento)}a</span>
+                        </div>
+                        <div class="mt-1 flex items-center justify-between">
+                            <span class="text-xs uppercase font-bold text-text-muted">Score IA</span>
+                            <span class="text-xs font-black ${scoreText}">${member.score_ia || 80}%</span>
+                        </div>
+                        <div class="w-full bg-surface-darker rounded-full h-1 mt-0.5 overflow-hidden">
+                            <div class="${progressBg} h-full rounded-full" style="width: ${member.score_ia || 80}%"></div>
+                        </div>
+                        ${member.campanha ? `
+                        <div class="mt-1.5 flex items-center gap-1 opacity-80">
+                            <span class="material-symbols-outlined text-[12px] text-red-400">campaign</span>
+                            <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider truncate">${member.campanha}</span>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function openModal(action, name = '', id = '', codigo = '') {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.add('active');
+
+            document.getElementById('formAction').value = action;
+            let memberIdElem = document.getElementById('memberId');
+            if (!memberIdElem) {
+                memberIdElem = document.createElement('input');
+                memberIdElem.id = 'memberId';
+                memberIdElem.type = 'hidden';
+                document.getElementById('memberForm').appendChild(memberIdElem);
+            }
+            memberIdElem.value = id;
+
+            if (action === 'edit') {
+                document.getElementById('modalTitle').textContent = 'Editar Cadastro';
+                document.getElementById('nextCodeInfo').classList.add('hidden');
+                document.getElementById('currentCodeInfo').textContent = `Matrícula: #${codigo.toString().padStart(3, '0')}`;
+                document.getElementById('currentCodeInfo').classList.remove('hidden');
+                loadMemberDetails(id);
+            } else {
+                document.getElementById('modalTitle').textContent = 'Novo Cadastro';
+                document.getElementById('currentCodeInfo').classList.add('hidden');
+                document.getElementById('memberForm').reset();
+                document.getElementById('memberPhoto').value = '';
+                document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>';
+                showNextAvailableCode();
+            }
+        }
+
+        async function showNextAvailableCode() {
+            const nextCode = await GaiaAPI.students.getNextCode();
+            const info = document.getElementById('nextCodeInfo');
+            info.textContent = `Próxima Matrícula: #${nextCode.toString().padStart(3, '0')}`;
+            info.classList.remove('hidden');
+        }
+
+        async function loadMemberDetails(id) {
+            try {
+                const data = await GaiaAPI.students.getById(id);
+                if (data) {
+                    document.getElementById('memberName').value = data.nome_completo || '';
+                    document.getElementById('memberEmail').value = data.email || '';
+                    document.getElementById('memberPhone').value = data.telefone || '';
+                    document.getElementById('memberCPF').value = data.cpf || '';
+                    const photoUrl = data.foto_url || '';
+                    document.getElementById('memberPhoto').value = photoUrl;
+                    if (photoUrl) {
+                        document.getElementById('photoPreview').innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover">`;
+                    } else {
+                        document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>';
+                    }
+                    document.getElementById('memberStatus').value = data.status || 'Ativo';
+                    document.getElementById('memberAddress').value = data.endereco || '';
+                    document.getElementById('memberNeighborhood').value = data.bairro || '';
+                    document.getElementById('memberCity').value = data.cidade || '';
+                    document.getElementById('memberReferrer').value = data.indicado_por || '';
+                    document.getElementById('memberPlan').value = data.plano || 'Mensal Básico';
+                    document.getElementById('memberBirth').value = data.data_nascimento || '';
+                    document.getElementById('memberCampaign').value = data.campanha || 'Orgânico';
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Erro ao carregar detalhes', 'error');
+            }
+        }
+
+        async function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const preview = document.getElementById('photoPreview');
+
+                // Show loading state
+                const originalContent = preview.innerHTML;
+                preview.innerHTML = '<div class="flex flex-col items-center gap-1"><div class="size-4 border-2 border-red-500 border-t-transparent animate-spin rounded-full"></div><span class="text-[8px] font-bold text-red-500 uppercase">Enviando</span></div>';
+
+                try {
+                    const publicUrl = await GaiaAPI.storage.upload(file);
+                    document.getElementById('memberPhoto').value = publicUrl;
+                    preview.innerHTML = `<img src="${publicUrl}" class="w-full h-full object-cover">`;
+                    showToast('Foto atualizada com sucesso!', 'check_circle');
+                } catch (err) {
+                    console.error('Erro no upload:', err);
+                    preview.innerHTML = originalContent;
+                    showToast('Erro ao enviar foto. Verifique o bucket "membros".', 'error');
+                }
+            }
+        }
+
+        function handleReferrerInput(value) {
+            const container = document.getElementById('referrerSuggestions');
+            if (!value || value.trim().length === 0) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+                return;
+            }
+            const matches = allMembersData.filter(m => m.nome.toLowerCase().includes(value.toLowerCase()));
+            if (matches.length > 0) {
+                container.innerHTML = matches.map(m => `
+                    <div onclick="selectReferrer('${m.nome.replace(/'/g, "\\'")}')" 
+                         class="px-4 py-2 flex items-center gap-3 text-sm text-white hover:bg-red-500 cursor-pointer border-b border-border-dark last:border-0">
+                        <img src="${m.foto}" class="size-6 rounded-full border border-border-dark shrink-0 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome)}'">
+                        <span class="truncate">${m.nome}</span>
+                    </div>
+                `).join('');
+                container.classList.remove('hidden');
+            } else {
+                container.innerHTML = '<div class="px-4 py-3 text-xs text-text-muted italic flex items-center gap-2"><span class="material-symbols-outlined text-sm">person_off</span>Nenhum aluno encontrado</div>';
+                container.classList.remove('hidden');
+            }
+        }
+
+        function selectReferrer(name) {
+            document.getElementById('memberReferrer').value = name;
+            document.getElementById('referrerSuggestions').classList.add('hidden');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#memberReferrer')) {
+                const sugg = document.getElementById('referrerSuggestions');
+                if (sugg) sugg.classList.add('hidden');
+            }
+        });
 
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');
         }
 
-        function handleFormSubmit(event) {
+        async function handleFormSubmit(event) {
             event.preventDefault();
             const action = document.getElementById('formAction').value;
-            const name = document.getElementById('memberName').value;
+            const id = document.getElementById('memberId')?.value;
 
-            closeModal();
+            const payload = {
+                nome_completo: document.getElementById('memberName').value,
+                email: document.getElementById('memberEmail').value,
+                telefone: document.getElementById('memberPhone').value,
+                cpf: document.getElementById('memberCPF').value,
+                foto_url: document.getElementById('memberPhoto').value,
+                status: document.getElementById('memberStatus').value,
+                endereco: document.getElementById('memberAddress').value,
+                bairro: document.getElementById('memberNeighborhood').value,
+                cidade: document.getElementById('memberCity').value,
+                indicado_por: document.getElementById('memberReferrer').value,
+                plano: document.getElementById('memberPlan').value,
+                data_nascimento: document.getElementById('memberBirth').value,
+                campanha: document.getElementById('memberCampaign').value
+            };
 
-            if (action === 'register') {
-                showToast(`Membro ${name} cadastrado com sucesso!`, 'check_circle');
-            } else {
-                showToast(`Perfil de ${name} atualizado!`, 'verified');
+            try {
+                await GaiaAPI.students.save(id, payload);
+                closeModal();
+                showToast(action === 'register' ? 'Matrícula realizada!' : 'Cadastro atualizado!', 'check_circle');
+                loadMembers();
+            } catch (err) {
+                console.error(err);
+                showToast('Erro ao salvar no banco', 'error');
             }
         }
+
+        function showToast(message, iconName = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span class="material-symbols-outlined text-red-400">${iconName}</span><span class="text-sm font-medium">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMembers);
     </script>
 </body>
 

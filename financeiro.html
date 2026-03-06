@@ -11,7 +11,10 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -124,36 +127,34 @@
             <div class="glass-card rounded-lg p-3 border-l-4 border-l-emerald-500">
                 <span class="text-sm font-bold text-text-muted uppercase tracking-widest">Faturamento</span>
                 <div class="flex items-baseline gap-1.5">
-                    <h3 class="text-xl font-black text-white">R$ 102.450</h3>
-                    <span class="text-emerald-400 text-sm font-bold">+12%</span>
+                    <h3 id="faturamentoTotal" class="text-xl font-black text-white">R$ ...</h3>
+                    <span class="text-emerald-400 text-sm font-bold">Real</span>
                 </div>
             </div>
             <div class="glass-card rounded-lg p-3 border-l-4 border-l-rose-500">
-                <span class="text-sm font-bold text-text-muted uppercase tracking-widest">Custo Operacional</span>
                 <div class="flex items-baseline gap-1.5">
-                    <h3 class="text-xl font-black text-white">R$ 54.200</h3>
-                    <span class="text-rose-400 text-sm font-bold">52%</span>
+                    <h3 id="custoTotal" class="text-xl font-black text-white">R$ 0</h3>
+                    <span class="text-rose-400 text-sm font-bold">Estimado</span>
                 </div>
             </div>
             <div class="glass-card rounded-lg p-3 border-l-4 border-l-red-500">
-                <span class="text-sm font-bold text-text-muted uppercase tracking-widest">Lucro Líquido</span>
                 <div class="flex items-baseline gap-1.5">
-                    <h3 class="text-xl font-black text-emerald-400">R$ 48.250</h3>
-                    <span class="text-emerald-400 text-sm font-bold">47%</span>
+                    <h3 id="lucroTotal" class="text-xl font-black text-emerald-400">R$ 0</h3>
+                    <span class="text-emerald-400 text-sm font-bold">Estimado</span>
                 </div>
             </div>
             <div class="glass-card rounded-lg p-3 border-l-4 border-l-secondary">
-                <span class="text-sm font-bold text-text-muted uppercase tracking-widest">Equilíbrio</span>
+                <span class="text-sm font-bold text-text-muted uppercase tracking-widest">Alunos Ativos</span>
                 <div class="flex items-baseline gap-1.5">
-                    <h3 class="text-xl font-black text-white">472 Alunos</h3>
-                    <span class="text-text-muted text-sm">Atual 890</span>
+                    <h3 id="alunosAtivos" class="text-xl font-black text-white">...</h3>
+                    <span class="text-text-muted text-sm">Base Real</span>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             <!-- Coluna de Lançamentos Contábeis -->
-            <div class="lg:col-span-4 flex flex-col gap-6 fade-in" style="animation-delay: 0.1s">
+            <div class="lg:col-span-4 flex flex-col gap-6 fade-in delay-100">
                 <!-- Novo Lançamento -->
                 <div class="glass-card rounded-lg p-3 border-t-2 border-t-red-500 shadow-xl">
                     <h3 class="text-sm font-bold text-white flex items-center gap-1.5 mb-3">
@@ -244,7 +245,7 @@
             </div>
 
             <!-- Coluna de BI e DRE -->
-            <div class="lg:col-span-8 flex flex-col gap-4 fade-in" style="animation-delay: 0.2s">
+            <div class="lg:col-span-8 flex flex-col gap-4 fade-in delay-200">
                 <!-- DRE Simplificado -->
                 <div class="glass-card rounded-lg overflow-hidden border border-border-dark shadow-xl">
                     <div
@@ -255,7 +256,7 @@
                         </h3>
                         <span class="text-sm font-mono text-text-muted">Competência: Março 2024</span>
                     </div>
-                    <div class="p-0">
+                    <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
                             <thead
                                 class="bg-surface-dark/50 text-text-muted uppercase font-bold border-b border-border-dark text-sm">
@@ -311,7 +312,7 @@
                         </div>
                         <div class="flex-1 w-full">
                             <div class="flex justify-between text-sm font-bold text-text-muted uppercase mb-1">
-                                <span>Break-even</span>
+                                <span>Ponto de Equilíbrio</span>
                                 <span class="text-white">Alcançado</span>
                             </div>
                             <div class="h-1.5 w-full bg-surface-dark rounded-full overflow-hidden">
@@ -439,6 +440,53 @@
         </div>
         </div>
     </main>
+    <script>
+        async function loadFinanceData() {
+            try {
+                // 1. Buscar Pagamentos
+                const { data: payments, error: pError } = await window.supabaseClient
+                    .from('pagamentos')
+                    .select('valor_pago');
+
+                if (pError) throw pError;
+
+                const total = payments.reduce((acc, curr) => acc + (curr.valor_pago || 0), 0);
+                const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.getElementById('faturamentoTotal').textContent = formatter.format(total);
+
+                // 2. Buscar Alunos
+                const { count, error: aError } = await window.supabaseClient
+                    .from('alunos')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'Ativo');
+
+                if (aError) throw aError;
+                document.getElementById('alunosAtivos').textContent = `${count} Alunos`;
+
+                // 3. Estimativas de Custo e Lucro (Regra de Negócio: 60% de Custo)
+                const custo = total * 0.6;
+                const lucro = total - custo;
+
+                document.getElementById('custoTotal').textContent = formatter.format(custo);
+                document.getElementById('lucroTotal').textContent = formatter.format(lucro);
+
+            } catch (err) {
+                console.error('Erro Financeiro:', err);
+                // Fallback
+                document.getElementById('faturamentoTotal').textContent = 'R$ 0,00';
+                document.getElementById('alunosAtivos').textContent = '0 Alunos';
+                document.getElementById('custoTotal').textContent = 'R$ 0,00';
+                document.getElementById('lucroTotal').textContent = 'R$ 0,00';
+            }
+        }
+
+        function showToast(message, iconName = 'info') {
+            // Implementação mínima de toast se necessário aqui ou via global
+            console.log(message);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadFinanceData);
+    </script>
 </body>
 
 </html>

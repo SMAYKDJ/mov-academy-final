@@ -12,7 +12,11 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="gaia-api.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -167,6 +171,11 @@
         .modal-overlay.active .modal-content {
             transform: scale(1);
         }
+
+        #referrerSuggestions {
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -218,7 +227,7 @@
                 </div>
                 <div
                     class="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-600 border border-border-dark overflow-hidden cursor-pointer">
-                    <img alt="User Profile" class="w-full h-full object-cover"
+                    <img alt="Perfil do Usuário" class="w-full h-full object-cover"
                         src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" />
                 </div>
             </div>
@@ -262,16 +271,15 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <!-- Stat Card 1 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
-                style="animation-delay: 0.1s">
+            <div
+                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-100">
                 <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco de Evasão (Evasão)
-                    </p>
+                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Tx. Evasão (Churn)</p>
                     <span
                         class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">warning</span>
                 </div>
                 <div class="flex items-end gap-2">
-                    <h3 class="text-xl font-bold text-white">12.4%</h3>
+                    <h3 id="churnRate" class="text-xl font-bold text-white">0%</h3>
                     <div
                         class="flex items-center text-emerald-500 text-sm font-medium mb-1 bg-emerald-500/10 px-1 py-0.5 rounded">
                         <span class="material-symbols-outlined text-sm mr-0.5">arrow_downward</span>
@@ -288,16 +296,16 @@
                 </div>
             </div>
             <!-- Stat Card 2 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
-                style="animation-delay: 0.2s">
+            <div
+                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-200">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Engajamento Médio</p>
                     <span
                         class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">fitness_center</span>
                 </div>
                 <div class="flex items-end gap-2">
-                    <h3 class="text-xl font-bold text-white">3.2<span
-                            class="text-sm text-text-muted font-normal ml-0.5">x/sem</span></h3>
+                    <h3 id="avgScore" class="text-xl font-bold text-white">0<span
+                            class="text-sm text-text-muted font-normal ml-0.5">/100</span></h3>
                     <div
                         class="flex items-center text-secondary text-sm font-medium mb-1 bg-secondary/10 px-1 py-0.5 rounded">
                         <span class="material-symbols-outlined text-sm mr-0.5">arrow_downward</span>
@@ -314,8 +322,8 @@
                 </div>
             </div>
             <!-- Stat Card 3 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
-                style="animation-delay: 0.3s">
+            <div
+                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-300">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">LTV Projetado (Valor
                         Vitalício)</p>
@@ -323,7 +331,7 @@
                         class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">payments</span>
                 </div>
                 <div class="flex items-end gap-3">
-                    <h3 class="text-2xl font-bold text-white">$840</h3>
+                    <h3 id="ltvProjected" class="text-2xl font-bold text-white">R$ 0</h3>
                     <div
                         class="flex items-center text-emerald-500 text-sm font-medium mb-1 bg-emerald-500/10 px-1.5 py-0.5 rounded">
                         <span class="material-symbols-outlined text-sm mr-0.5">arrow_upward</span>
@@ -340,15 +348,15 @@
                 </div>
             </div>
             <!-- Stat Card 4 -->
-            <div class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in"
-                style="animation-delay: 0.4s">
+            <div
+                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-400">
                 <div class="flex justify-between items-start mb-2">
                     <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco Crítico</p>
                     <span
                         class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">group_remove</span>
                 </div>
                 <div class="flex items-end gap-3">
-                    <h3 class="text-2xl font-bold text-white">142<span
+                    <h3 id="criticalRisk" class="text-2xl font-bold text-white">0<span
                             class="text-sm text-text-muted font-normal ml-1">membros</span></h3>
                     <div
                         class="flex items-center text-rose-500 text-sm font-medium mb-1 bg-rose-500/10 px-1.5 py-0.5 rounded">
@@ -357,24 +365,18 @@
                     </div>
                 </div>
                 <div class="mt-3 h-8 w-full flex gap-0.5 items-end">
-                    <div class="w-1/6 bg-rose-500/20 h-[40%] rounded-sm progress-animate" style="animation-delay: 0.5s">
-                    </div>
-                    <div class="w-1/6 bg-rose-500/30 h-[60%] rounded-sm progress-animate" style="animation-delay: 0.6s">
-                    </div>
-                    <div class="w-1/6 bg-rose-500/40 h-[30%] rounded-sm progress-animate" style="animation-delay: 0.7s">
-                    </div>
-                    <div class="w-1/6 bg-rose-500/50 h-[80%] rounded-sm progress-animate" style="animation-delay: 0.8s">
-                    </div>
-                    <div class="w-1/6 bg-rose-500/80 h-[50%] rounded-sm progress-animate" style="animation-delay: 0.9s">
-                    </div>
-                    <div class="w-1/6 bg-rose-500 h-[70%] rounded-sm progress-animate" style="animation-delay: 1.0s">
-                    </div>
+                    <div class="w-1/6 bg-rose-500/20 h-[40%] rounded-sm progress-animate progress-delay-0-5"></div>
+                    <div class="w-1/6 bg-rose-500/30 h-[60%] rounded-sm progress-animate progress-delay-0-6"></div>
+                    <div class="w-1/6 bg-rose-500/40 h-[30%] rounded-sm progress-animate progress-delay-0-7"></div>
+                    <div class="w-1/6 bg-rose-500/50 h-[80%] rounded-sm progress-animate progress-delay-0-8"></div>
+                    <div class="w-1/6 bg-rose-500/80 h-[50%] rounded-sm progress-animate progress-delay-0-9"></div>
+                    <div class="w-1/6 bg-rose-500 h-[70%] rounded-sm progress-animate progress-delay-1-0"></div>
                 </div>
             </div>
         </div>
 
         <!-- Nova Seção: Saúde Financeira & Ponto de Equilíbrio -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 fade-in" style="animation-delay: 0.45s">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 fade-in delay-500">
             <!-- Card Lucro Líquido -->
             <div
                 class="bg-surface-dark border border-border-dark rounded-lg p-3 flex items-center gap-4 group hover:border-emerald-500/30 transition-all">
@@ -389,7 +391,7 @@
                         <span class="text-sm text-emerald-400 font-mono">+12% vs mês anterior</span>
                     </div>
                     <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-xl font-black text-white">R$ 42.850</h3>
+                        <h3 id="liquidProfit" class="text-xl font-black text-white">R$ 0</h3>
                         <span class="text-sm text-text-muted">/ mês</span>
                     </div>
                     <div class="w-full bg-surface-darker h-1 rounded-full mt-2 overflow-hidden">
@@ -412,15 +414,19 @@
                         <span class="text-sm text-red-400 font-mono">Meta: 410 alunos</span>
                     </div>
                     <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-xl font-black text-white">1.245 <span
-                                class="text-sm font-medium text-text-muted">/ 410</span></h3>
-                        <span class="text-sm text-red-400 font-bold uppercase">Meta Atingida</span>
+                        <h3 class="text-xl font-black text-white">
+                            <span id="breakEvenCurrent">0</span>
+                            <span class="text-sm font-medium text-text-muted">/ 410</span>
+                        </h3>
+                        <span id="metaStatus" class="text-sm text-red-400 font-bold uppercase hidden">Meta
+                            Atingida</span>
                     </div>
                     <div class="flex items-center gap-2 mt-2">
                         <div class="flex-1 bg-surface-darker h-1 rounded-full overflow-hidden">
-                            <div class="bg-red-500 h-full progress-animate" style="width: 100%"></div>
+                            <div id="breakEvenProgress" class="bg-red-500 h-full progress-animate" style="width: 0%">
+                            </div>
                         </div>
-                        <span class="text-sm font-bold text-white">303%</span>
+                        <span id="totalMembers" class="text-sm font-bold text-white">0 alunos</span>
                     </div>
                 </div>
             </div>
@@ -572,7 +578,7 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
                             </div>
                             <div class="mt-2 flex items-center justify-between">
-                                <span class="text-sm text-red-400 font-medium">+$2.4k em LTV</span>
+                                <span class="text-sm text-red-400 font-medium">+R$ 2.4k em LTV</span>
                                 <button onclick="showToast('Abrindo editor...', 'edit')"
                                     class="h-6 px-2 bg-surface-dark border border-border-dark text-text-muted text-sm font-bold uppercase rounded">Revisar</button>
                             </div>
@@ -583,7 +589,7 @@
         </div>
 
         <!-- Nova Seção: Inteligência Adicional de Planos e Risco -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 fade-in" style="animation-delay: 0.65s">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 fade-in delay-700">
             <!-- Distribuição de Planos -->
             <div class="lg:col-span-2 bg-surface-dark border border-border-dark rounded-lg p-4 shadow-xl flex flex-col">
                 <div class="flex justify-between items-center mb-4">
@@ -596,12 +602,13 @@
                 </div>
                 <div class="flex flex-col md:flex-row gap-6 items-center lg:items-start">
                     <!-- Gauge/Pie Visual -->
-                    <div class="relative size-32 rounded-full border-[10px] border-surface-darker flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
-                        style="background: conic-gradient(#dc2626 0% 45%, #ef4444 45% 75%, #fca5a5 75% 90%, #1e293b 90% 100%);">
+                    <div id="planGauge"
+                        class="relative size-32 rounded-full border-[10px] border-surface-darker flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]">
                         <div
-                            class="absolute inset-0 m-2.5 bg-surface-dark rounded-full flex flex-col items-center justify-center">
-                            <span class="text-xl font-bold text-white">1.245</span>
-                            <span class="text-sm text-text-muted uppercase tracking-widest font-bold">Ativos</span>
+                            class="absolute inset-0 m-2.5 bg-surface-dark rounded-full flex flex-col items-center justify-center text-center">
+                            <span id="planGaugeCount" class="text-xl font-bold text-white leading-none">0</span>
+                            <span class="text-[9px] text-text-muted uppercase tracking-[0.2em] font-black">Alunos
+                                Ativos</span>
                         </div>
                     </div>
                     <!-- Legend & Stats -->
@@ -669,52 +676,9 @@
                         class="bg-rose-500/10 text-rose-500 text-sm font-black px-1.5 py-0.5 rounded border border-rose-500/20">12
                         CRÍTICOS</span>
                 </div>
-                <div class="flex flex-col gap-1.5 overflow-y-auto max-h-[140px] pr-1">
-                    <!-- Item -->
-                    <div
-                        class="flex items-center justify-between p-2 rounded bg-surface-darker border border-border-dark hover:border-rose-500/30 transition-all group">
-                        <div class="flex items-center gap-2">
-                            <div
-                                class="size-6 rounded-full bg-rose-500/10 text-sm font-bold text-rose-500 flex items-center justify-center border border-rose-500/20">
-                                MC</div>
-                            <div>
-                                <p class="text-sm font-bold text-white leading-none">Marcos Costa</p>
-                                <p class="text-sm text-text-muted mt-0.5">18 dias ausente</p>
-                            </div>
-                        </div>
-                        <span
-                            class="material-symbols-outlined text-red-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">chat</span>
-                    </div>
-                    <!-- Item Crítico -->
-                    <div
-                        class="flex items-center justify-between p-2 rounded bg-rose-500/5 border border-rose-500/10 hover:bg-rose-500/10 transition-all group">
-                        <div class="flex items-center gap-2">
-                            <div
-                                class="size-6 rounded-full bg-rose-500 text-sm font-bold text-white flex items-center justify-center">
-                                AS</div>
-                            <div>
-                                <p class="text-sm font-bold text-white leading-none">Ana Silva</p>
-                                <p class="text-sm text-rose-400 mt-0.5 font-bold">Atraso Cobrança</p>
-                            </div>
-                        </div>
-                        <span
-                            class="material-symbols-outlined text-rose-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">mail</span>
-                    </div>
-                    <!-- Item -->
-                    <div
-                        class="flex items-center justify-between p-2 rounded bg-surface-darker border border-border-dark hover:border-rose-500/30 transition-all group">
-                        <div class="flex items-center gap-2">
-                            <div
-                                class="size-6 rounded-full bg-slate-700 text-sm font-bold text-white flex items-center justify-center">
-                                JP</div>
-                            <div>
-                                <p class="text-sm font-bold text-white leading-none">João Pereira</p>
-                                <p class="text-sm text-text-muted mt-0.5">21 dias ausente</p>
-                            </div>
-                        </div>
-                        <span
-                            class="material-symbols-outlined text-red-500 text-[14px] opacity-0 group-hover:opacity-100 cursor-pointer">chat</span>
-                    </div>
+                <div id="riskQueue" class="flex flex-col gap-1.5 overflow-y-auto max-h-[140px] pr-1 font-pro">
+                    <!-- Será preenchido via JS -->
+                    <div class="px-4 py-8 text-center text-text-muted italic text-xs">Analisando dados...</div>
                 </div>
                 <button onclick="showToast('Lista de risco completa expandida.', 'list')"
                     class="mt-2 w-full py-1.5 text-sm font-black text-text-muted border border-border-dark bg-surface-darker hover:bg-slate-800 rounded transition-colors uppercase tracking-widest italic">
@@ -748,99 +712,15 @@
                             <th class="px-3 py-2">Membro</th>
                             <th class="px-3 py-2">Status</th>
                             <th class="px-3 py-2 text-right">Freq (30d)</th>
+                            <th class="px-3 py-2">Campanha</th>
                             <th class="px-3 py-2 text-right text-purple-400">Evasão (ML)</th>
                             <th class="px-3 py-2 text-right">Score</th>
                             <th class="px-3 py-2 text-right">Visita</th>
                             <th class="px-3 py-2 text-center">Ação</th>
                         </tr>
                     </thead>
-                    <tbody class="text-sm divide-y divide-border-dark">
-                        <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
-                            <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWcvjJVR1ECY19o0zfVc0LSmnDuKpVU2sYQS1iitM9V8jGnMaQ0ZO7Q-fpI3BqwlDLy8b1wchJOdYHWVJAS9c9p_WhhYneJbhzeWJONaPffM-8TkIKpaptjW8svo8RAzo6BJ3n1bk8hVQy_ns4Mb2kE9DykFk_gUgbHt9QLHcocPigkFqEdGeVqNEYRDQwc-vFRJjuZ5o05Zr4sZ-y1HQrDBDpWOrdgRNHFlbEwM7PKWt41I9z9h7OjbWtXfZxv3wI2XpmE-6gt01m");'>
-                                </div>
-                                <span class="member-name">João D.</span>
-                            </td>
-                            <td class="px-3 py-2"><span
-                                    class="px-1.5 py-0.5 rounded text-sm font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20">Crítico</span>
-                            </td>
-                            <td class="px-3 py-2 text-right text-text-muted text-sm">0.4x/sem</td>
-                            <td class="px-3 py-2 text-right text-rose-500 font-mono font-medium text-sm">92.4%</td>
-                            <td class="px-3 py-2 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <span class="text-rose-500 font-bold text-sm">92/100</span>
-                                    <div class="w-12 h-1 bg-surface-darker rounded-full overflow-hidden">
-                                        <div class="h-full bg-rose-500 progress-animate"
-                                            style="width: 92%; animation-delay: 1s;"></div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-3 py-2 text-right text-text-muted text-sm">14d atrás</td>
-                            <td class="px-3 py-2 text-center">
-                                <button onclick="openModal('edit', 'João D.')"
-                                    class="text-text-muted hover:text-red-500 transition-colors"><span
-                                        class="material-symbols-outlined text-[16px]">edit</span></button>
-                            </td>
-                        </tr>
-                        <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
-                            <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQ7Rs7DOlinMEBAvG3fBSIlhMlAVUlkfWCGwRnXxL1QlKbXUuTAoT3jMua0We03SN-TWJpsba1vuM3mAl5OfX6R0blE2RhfkJbG_lix1Ftr9lMlgwnURyOI7WBmZa7V0_uytPXs12t5a9Ow8hmfl-Tt0fmr4UC6vIq5SFQIbHgijv0r10vowgfQlVybMhmX4wPnQKL8U1LFiJq-h6Hcq7HjNinQ4ae5uaNPwpEmeXaIMmyME7-C0zfGdkpS6M0HY8FPGtSnU1MMS9E");'>
-                                </div>
-                                <span class="member-name">Maria S.</span>
-                            </td>
-                            <td class="px-3 py-2"><span
-                                    class="px-1.5 py-0.5 rounded text-sm font-bold bg-secondary/10 text-secondary border border-secondary/20">Atenção</span>
-                            </td>
-                            <td class="px-3 py-2 text-right text-text-muted text-sm">1.2x/sem</td>
-                            <td class="px-3 py-2 text-right text-secondary font-mono font-medium text-sm">65.1%</td>
-                            <td class="px-3 py-2 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <span class="text-secondary font-bold text-sm">65/100</span>
-                                    <div class="w-12 h-1 bg-surface-darker rounded-full overflow-hidden">
-                                        <div class="h-full bg-secondary progress-animate"
-                                            style="width: 65%; animation-delay: 1.2s;"></div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-3 py-2 text-right text-text-muted text-sm">5d atrás</td>
-                            <td class="px-3 py-2 text-center">
-                                <button onclick="openModal('edit', 'Maria S.')"
-                                    class="text-text-muted hover:text-red-500 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px]">edit</span>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
-                            <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                                <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgIcyU5L00tUAKXP_JYq23TGhkN0N-dMJSIqBrGGV8GdJCRmeqh0IdXkwX-gNQgJm1eNbFNvU7EHcBPjOXDak1GKJKP6q5Jl70Jekmuq-FWwIymv5-c7iXx3nyKSkjYBc8f5gL6racsUvokKC3H2efR9AIYLxkZkl4DHX-mzhZUNSP-G0F651M3WvOWDiYsDi_f1O_4Jj3-Ual-p6D_aqV_wxJMOi7P1GhBN_b1iGDVP4iVddl2F9hW0xeK5kR403wPJiGxWL1LQJn");'>
-                                </div>
-                                <span class="member-name">Carlos P.</span>
-                            </td>
-                            <td class="px-3 py-2"><span
-                                    class="px-1.5 py-0.5 rounded text-sm font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20">Crítico</span>
-                            </td>
-                            <td class="px-3 py-2 text-right text-text-muted text-sm">0.0x/sem</td>
-                            <td class="px-3 py-2 text-right text-rose-500 font-mono font-medium text-sm">98.7%</td>
-                            <td class="px-3 py-2 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <span class="text-rose-500 font-bold text-sm">98/100</span>
-                                    <div class="w-12 h-1 bg-surface-darker rounded-full overflow-hidden">
-                                        <div class="h-full bg-rose-500 progress-animate"
-                                            style="width: 98%; animation-delay: 1.4s;"></div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-3 py-2 text-right text-text-muted text-sm">22d atrás</td>
-                            <td class="px-3 py-2 text-center">
-                                <button onclick="openModal('edit', 'Carlos P.')"
-                                    class="text-text-muted hover:text-red-500 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px]">edit</span>
-                                </button>
-                            </td>
-                        </tr>
+                    <tbody id="memberTableBody" class="text-sm divide-y divide-border-dark">
+                        <!-- Conteúdo carregado via API -->
                     </tbody>
                 </table>
             </div>
@@ -863,31 +743,55 @@
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <form id="memberForm" class="p-6 space-y-4" onsubmit="handleFormSubmit(event)">
+            <form id="memberForm" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="formAction" value="register">
+                <input type="hidden" id="memberId">
+
+                <!-- Foto do Aluno no Topo -->
+                <div class="flex flex-col items-center gap-3 py-2">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('photoInput').click()">
+                        <div id="photoPreview"
+                            class="size-24 rounded-full bg-surface-darker border-2 border-dashed border-border-dark flex items-center justify-center overflow-hidden transition-all group-hover:border-red-500/50">
+                            <span
+                                class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>
+                        </div>
+                        <div
+                            class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <span class="material-symbols-outlined text-white">upload</span>
+                        </div>
+                        <input type="file" id="photoInput" class="hidden" accept="image/*"
+                            onchange="handlePhotoUpload(this)">
+                    </div>
+                    <label class="text-[10px] font-black text-text-muted uppercase tracking-widest text-center">Foto do
+                        Aluno<br>(Clique para alterar)</label>
+                    <input type="hidden" id="memberPhoto">
+                </div>
+
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome Completo</label>
                     <input type="text" id="memberName" required
                         class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                         placeholder="Ex: João Silva">
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Idade</label>
-                        <input type="number" id="memberAge" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Ex: 25">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Data de
+                            Nascimento</label>
+                        <input type="date" id="memberBirth" required
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
-                        <select id="memberPlan"
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Status</label>
+                        <select id="memberStatus"
                             class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                            <option value="basic">Mensal Básico</option>
-                            <option value="pro">Pro Semestral</option>
-                            <option value="vip">VIP Anual</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Em Risco">Em Risco</option>
+                            <option value="Inativo">Inativo</option>
                         </select>
                     </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
@@ -896,13 +800,13 @@
                             placeholder="joao@email.com">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp /
-                            Celular</label>
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp</label>
                         <input type="tel" id="memberPhone" required
                             class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
                             placeholder="(11) 99999-9999">
                     </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
@@ -911,22 +815,74 @@
                             placeholder="000.000.000-00">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Vencimento
-                            (Dia)</label>
-                        <input type="number" id="memberDueDate" required min="1" max="31"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Ex: 10">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
+                        <select id="memberPlan"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                            <option value="Mensal Básico">Mensal Básico</option>
+                            <option value="Pro Semestral">Pro Semestral</option>
+                            <option value="VIP Anual">VIP Anual</option>
+                            <option value="Experimental">Experimental</option>
+                        </select>
                     </div>
                 </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo Principal</label>
-                    <select id="memberGoal"
-                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                        <option value="weightloss">Emagrecimento</option>
-                        <option value="gain">Hipertrofia</option>
-                        <option value="health">Saúde / Bem-estar</option>
-                    </select>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo</label>
+                        <select id="memberGoal"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                            <option value="weightloss">Emagrecimento</option>
+                            <option value="gain">Hipertrofia</option>
+                            <option value="health">Saúde</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Campanha</label>
+                        <select id="memberCampaign"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                            <option value="Orgânico">Orgânico</option>
+                            <option value="Indicação">Indicação</option>
+                            <option value="Recuperação de Inativos">Recuperação de Inativos</option>
+                            <option value="Melhoria para Plano VIP">Melhoria para Plano VIP</option>
+                            <option value="Anúncio Meta">Anúncio Meta</option>
+                            <option value="Google Ads">Google Ads</option>
+                        </select>
+                    </div>
                 </div>
+
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Endereço</label>
+                    <input type="text" id="memberAddress"
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                        placeholder="Rua, Número, Complemento">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Bairro</label>
+                        <input type="text" id="memberNeighborhood"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                            placeholder="Ex: Centro">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Cidade</label>
+                        <input type="text" id="memberCity"
+                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                            placeholder="Ex: São Paulo">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5 relative">
+                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Quem o indicou?</label>
+                    <input type="text" id="memberReferrer" autocomplete="off"
+                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
+                        placeholder="Digite para buscar alunos..." oninput="handleReferrerInput(this.value)">
+                    <div id="referrerSuggestions"
+                        class="absolute left-0 right-0 mt-1 bg-surface-dark border border-border-dark rounded-lg shadow-xl z-50 overflow-hidden hidden max-h-48 overflow-y-auto">
+                    </div>
+                </div>
+
                 <div class="pt-2">
                     <button type="submit"
                         class="w-full bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
@@ -938,93 +894,379 @@
     </div>
 
     <script>
-        // Toast Functionality
-        function showToast(message, iconName = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `
-                <span class="material-symbols-outlined text-red-400">${iconName}</span>
-                <span class="text-sm font-medium">${message}</span>
-            `;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+        let allMembersData = [];
+
+        async function loadMembersList() {
+            try {
+                const members = await GaiaAPI.students.list();
+                allMembersData = members;
+
+                // Popula a tabela de membros (focando em quem tem score alto ou status de risco)
+                renderMemberTable(members);
+
+                // Atualizar KPIs reais no dashboard
+                await updateKPIs();
+            } catch (err) {
+                console.error('Erro ao carregar lista de membros:', err);
+                showToast('Erro ao carregar dados da API', 'error');
+            }
         }
 
-        function openModal(action, name = '') {
+        function renderMemberTable(members) {
+            const tbody = document.getElementById('memberTableBody');
+            if (!tbody) return;
+
+            if (members.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-3 py-8 text-center text-text-muted italic">
+                            Nenhum aluno cadastrado. <button onclick="seedInitialData()" class="text-red-500 underline">Clique aqui para gerar dados de teste.</button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = members.map(m => {
+                const score = m.score_ia || Math.floor(Math.random() * 40) + 60; // Mock score if missing
+                const statusColor = m.status === 'Em Risco' ? 'rose' : (m.status === 'Inativo' ? 'slate' : 'emerald');
+                const statusLabel = m.status || 'Ativo';
+                const evasion = m.status === 'Em Risco' ? (Math.random() * 20 + 75).toFixed(1) : (Math.random() * 10 + 5).toFixed(1);
+
+                return `
+                    <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
+                        <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
+                            <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
+                                style="background-image: url('${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}')">
+                            </div>
+                            <span class="member-name truncate max-w-[120px] inline-block align-middle">${m.nome_completo}</span>
+                        </td>
+                        <td class="px-3 py-2">
+                            <span class="px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-${statusColor}-500/10 text-${statusColor}-500 border border-${statusColor}-500/20">
+                                ${statusLabel}
+                            </span>
+                        </td>
+                        <td class="px-3 py-2 text-right text-text-muted text-xs">${(Math.random() * 4 + 1).toFixed(1)}x/sem</td>
+                        <td class="px-3 py-2">
+                             <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider truncate inline-block max-w-[100px] align-middle">
+                                ${m.campanha || 'Orgânico'}
+                             </span>
+                        </td>
+                        <td class="px-3 py-2 text-right text-${statusColor}-500 font-mono font-medium text-sm">${evasion}%</td>
+                        <td class="px-3 py-2 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <span class="text-${statusColor}-500 font-bold text-xs">${score}/100</span>
+                                <div class="w-12 h-1 bg-surface-darker rounded-full overflow-hidden">
+                                    <div class="h-full bg-${statusColor}-500" style="width: ${score}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-3 py-2 text-right text-text-muted text-xs">${Math.floor(Math.random() * 10)}d atrás</td>
+                        <td class="px-3 py-2 text-center">
+                            <button onclick="openModal('edit', '${m.id}')"
+                                class="text-text-muted hover:text-red-500 transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function updateKPIs() {
+            try {
+                const kpis = await GaiaAPI.kpis.getOverview();
+
+                document.getElementById('churnRate').textContent = kpis.churnRate + '%';
+                document.getElementById('avgScore').innerHTML = kpis.avgScore + '<span class="text-sm text-text-muted font-normal ml-0.5">/100</span>';
+                document.getElementById('ltvProjected').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.ltv);
+                document.getElementById('liquidProfit').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.revenue * 0.4); // 40% de margem
+                document.getElementById('totalMembers').textContent = kpis.total + ' alunos';
+                document.getElementById('breakEvenCurrent').textContent = kpis.total;
+
+                if (kpis.total >= 410) {
+                    document.getElementById('metaStatus').classList.remove('hidden');
+                } else {
+                    document.getElementById('metaStatus').classList.add('hidden');
+                }
+
+                const progress = Math.min(100, (kpis.total / 410) * 100);
+                document.getElementById('breakEvenProgress').style.width = progress + '%';
+
+                // Atualizar Fila de Risco Dinâmica
+                updateRiskQueue(allMembersData);
+                // Atualizar Distribuição de Planos Dinâmica
+                updatePlanDistribution(allMembersData);
+
+            } catch (e) {
+                console.error('Erro ao atualizar KPIs:', e);
+            }
+        }
+
+        function updateRiskQueue(members) {
+            const riskContainer = document.getElementById('riskQueue');
+            const criticalOnes = members.filter(m => m.status === 'Em Risco').slice(0, 5);
+
+            if (criticalOnes.length === 0) {
+                riskContainer.innerHTML = '<div class="px-4 py-8 text-center text-text-muted italic text-xs">Nenhum aluno em risco crítico.</div>';
+                return;
+            }
+
+            riskContainer.innerHTML = criticalOnes.map(m => {
+                const initials = m.nome_completo.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                return `
+                    <div class="flex items-center justify-between p-2 rounded bg-surface-darker border border-border-dark hover:border-rose-500/30 transition-all group">
+                        <div class="flex items-center gap-2">
+                            <div class="size-6 rounded-full bg-rose-500 text-[10px] font-black text-white flex items-center justify-center">${initials}</div>
+                            <div>
+                                <p class="text-sm font-bold text-white leading-none">${m.nome_completo}</p>
+                                <p class="text-[10px] text-rose-400 mt-0.5 font-bold uppercase tracking-tighter">Pontuação IA: ${m.score_ia || 0}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}" target="_blank" class="material-symbols-outlined text-emerald-500 text-[14px]">chat</a>
+                            <span class="material-symbols-outlined text-rose-500 text-[14px] cursor-pointer" onclick="openModal('edit', '${m.id}')">edit</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updatePlanDistribution(members) {
+            const container = document.getElementById('planDistributionStats');
+            const plans = {};
+            members.forEach(m => {
+                plans[m.plano] = (plans[m.plano] || 0) + 1;
+            });
+
+            const total = members.length || 1;
+            const planColors = {
+                'Mensal Básico': '#ef4444',
+                'Pro Semestral': '#dc2626',
+                'VIP Anual': '#991b1b',
+                'Experimental': '#fca5a5'
+            };
+
+            document.getElementById('planGaugeCount').textContent = total.toLocaleString('pt-BR');
+
+            let gradientStr = '';
+            let currentPerc = 0;
+            const entries = Object.entries(plans);
+
+            entries.forEach(([name, count], index) => {
+                const perc = (count / total) * 100;
+                const color = planColors[name] || '#64748b';
+                gradientStr += `${color} ${currentPerc}% ${currentPerc + perc}%, `;
+                currentPerc += perc;
+            });
+            gradientStr += '#1e293b 0% 100%'; // Fallback
+            document.getElementById('planGauge').style.background = `conic-gradient(${gradientStr})`;
+
+            container.innerHTML = entries.map(([name, count]) => {
+                const perc = Math.round((count / total) * 100);
+                const color = planColors[name] || '#64748b';
+                return `
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2 text-white font-medium">
+                                <div class="size-2.5 rounded-full" style="background-color: ${color}"></div>
+                                <span>${name}</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold">${perc}%</span>
+                                <span class="text-text-muted">${count} alunos</span>
+                            </div>
+                        </div>
+                        <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
+                            <div class="h-full rounded-full" style="width: ${perc}%; background-color: ${color}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function seedInitialData() {
+            showToast('Gerando alunos de teste...', 'sync');
+            const samples = [
+                { nome_completo: 'Marcos Oliveira', status: 'Ativo', plano: 'Pro Semestral', cpf: '123.456.789-01' },
+                { nome_completo: 'Juliana Santos', status: 'Em Risco', plano: 'Mensal Básico', cpf: '234.567.890-12' },
+                { nome_completo: 'Ricardo Almeida', status: 'Ativo', plano: 'VIP Anual', cpf: '345.678.901-23' },
+                { nome_completo: 'Fernanda Lima', status: 'Em Risco', plano: 'Pro Semestral', cpf: '456.789.012-34' },
+                { nome_completo: 'Bruno Costa', status: 'Inativo', plano: 'Mensal Básico', cpf: '567.890.123-45' }
+            ];
+
+            for (const s of samples) {
+                try {
+                    await GaiaAPI.students.save(null, {
+                        ...s,
+                        email: s.nome_completo.toLowerCase().replace(/\s/g, '.') + '@email.com',
+                        telefone: '119' + Math.floor(Math.random() * 100000000),
+                        objetivo: 'health',
+                        data_nascimento: '1995-05-15',
+                        score_ia: s.status === 'Em Risco' ? 45 : 88
+                    });
+                } catch (e) { console.error(e); }
+            }
+
+            showToast('Base de dados populada!', 'check_circle');
+            loadMembersList();
+        }
+
+        async function openModal(action, id = '') {
             const overlay = document.getElementById('modalOverlay');
             const title = document.getElementById('modalTitle');
-            const nameInput = document.getElementById('memberName');
             const actionInput = document.getElementById('formAction');
+            const idInput = document.getElementById('memberId');
+
+            // RESET FORM AND HIDDEN FIELDS
+            document.getElementById('memberForm').reset();
+            idInput.value = '';
+            document.getElementById('memberPhoto').value = '';
+            document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>';
 
             overlay.classList.add('active');
             actionInput.value = action;
 
-            if (action === 'edit') {
+            if (action === 'edit' && id) {
                 title.textContent = 'Editar Cadastro';
-                nameInput.value = name;
-                // Simulação de preenchimento para campos financeiros e contato
-                document.getElementById('memberEmail').value = name.toLowerCase().replace(' ', '.') + '@email.com';
-                document.getElementById('memberPhone').value = '(11) 9' + Math.floor(10000000 + Math.random() * 90000000);
-                document.getElementById('memberCPF').value = '000.000.000-00';
-                document.getElementById('memberDueDate').value = '10';
+                try {
+                    const data = await GaiaAPI.students.getById(id);
+                    if (data) {
+                        idInput.value = data.id;
+                        document.getElementById('memberName').value = data.nome_completo || '';
+                        document.getElementById('memberBirth').value = data.data_nascimento || '';
+                        document.getElementById('memberEmail').value = data.email || '';
+                        document.getElementById('memberPhone').value = data.telefone || '';
+                        document.getElementById('memberCPF').value = data.cpf || '';
+                        document.getElementById('memberStatus').value = data.status || 'Ativo';
+                        document.getElementById('memberPlan').value = data.plano || 'Mensal Básico';
+                        document.getElementById('memberGoal').value = data.objetivo || 'health';
+                        const photoUrl = data.foto_url || '';
+                        document.getElementById('memberPhoto').value = photoUrl;
+                        if (photoUrl) {
+                            document.getElementById('photoPreview').innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover">`;
+                        }
+                        document.getElementById('memberAddress').value = data.endereco || '';
+                        document.getElementById('memberNeighborhood').value = data.bairro || '';
+                        document.getElementById('memberCity').value = data.cidade || '';
+                        document.getElementById('memberReferrer').value = data.indicado_por || '';
+                        document.getElementById('memberCampaign').value = data.campanha || 'Orgânico';
+                    }
+                } catch (err) {
+                    console.error('Erro ao carregar detalhes:', err);
+                    showToast('Erro ao carregar dados do aluno', 'error');
+                }
             } else {
                 title.textContent = 'Novo Cadastro';
-                document.getElementById('memberForm').reset();
             }
         }
 
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
+        function handleReferrerInput(value) {
+            const container = document.getElementById('referrerSuggestions');
+            if (!value || value.trim().length === 0) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+                return;
+            }
+            const matches = allMembersData.filter(m => m.nome_completo.toLowerCase().includes(value.toLowerCase()));
+            if (matches.length > 0) {
+                container.innerHTML = matches.map(m => `
+                    <div onclick="selectReferrer('${m.nome_completo.replace(/'/g, "\\'")}')" 
+                         class="px-4 py-2 flex items-center gap-3 text-sm text-white hover:bg-red-500 cursor-pointer border-b border-border-dark last:border-0">
+                        <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}" class="size-6 rounded-full border border-border-dark shrink-0 object-cover">
+                        <span class="truncate">${m.nome_completo}</span>
+                    </div>
+                `).join('');
+                container.classList.remove('hidden');
+            } else {
+                container.innerHTML = '<div class="px-4 py-3 text-xs text-text-muted italic flex items-center gap-2"><span class="material-symbols-outlined text-sm">person_off</span>Nenhum aluno encontrado</div>';
+                container.classList.remove('hidden');
+            }
         }
 
-        function handleFormSubmit(event) {
+        function selectReferrer(name) {
+            document.getElementById('memberReferrer').value = name;
+            document.getElementById('referrerSuggestions').classList.add('hidden');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#memberReferrer')) {
+                const sugg = document.getElementById('referrerSuggestions');
+                if (sugg) sugg.classList.add('hidden');
+            }
+        });
+
+        async function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const preview = document.getElementById('photoPreview');
+                const originalContent = preview.innerHTML;
+                preview.innerHTML = '<div class="flex flex-col items-center gap-1"><div class="size-4 border-2 border-red-500 border-t-transparent animate-spin rounded-full"></div><span class="text-[8px] font-bold text-red-500 uppercase">Enviando</span></div>';
+
+                try {
+                    const publicUrl = await GaiaAPI.storage.upload(file);
+                    document.getElementById('memberPhoto').value = publicUrl;
+                    preview.innerHTML = `<img src="${publicUrl}" class="w-full h-full object-cover">`;
+                    showToast('Foto atualizada com sucesso!', 'check_circle');
+                } catch (err) {
+                    console.error('Erro no upload:', err);
+                    preview.innerHTML = originalContent;
+                    showToast('Erro ao enviar foto.', 'error');
+                }
+            }
+        }
+
+        async function handleFormSubmit(event) {
             event.preventDefault();
             const action = document.getElementById('formAction').value;
-            const name = document.getElementById('memberName').value;
+            const id = document.getElementById('memberId').value;
 
-            closeModal();
+            const payload = {
+                nome_completo: document.getElementById('memberName').value,
+                email: document.getElementById('memberEmail').value,
+                telefone: document.getElementById('memberPhone').value,
+                cpf: document.getElementById('memberCPF').value,
+                foto_url: document.getElementById('memberPhoto').value,
+                status: document.getElementById('memberStatus').value,
+                endereco: document.getElementById('memberAddress').value,
+                bairro: document.getElementById('memberNeighborhood').value,
+                cidade: document.getElementById('memberCity').value,
+                indicado_por: document.getElementById('memberReferrer').value,
+                plano: document.getElementById('memberPlan').value,
+                objetivo: document.getElementById('memberGoal').value,
+                data_nascimento: document.getElementById('memberBirth').value,
+                campanha: document.getElementById('memberCampaign').value
+            };
 
-            if (action === 'register') {
-                showToast(`Membro ${name} cadastrado com sucesso!`, 'check_circle');
-            } else {
-                showToast(`Perfil de ${name} atualizado!`, 'verified');
+            try {
+                await GaiaAPI.students.save(id === '' ? null : id, payload);
+                closeModal();
+                showToast(id === '' ? 'Cadastro realizado!' : 'Perfil atualizado!', 'check_circle');
+                loadMembersList();
+            } catch (err) {
+                console.error(err);
+                showToast('Erro ao salvar no banco', 'error');
             }
         }
-
-        // Table Filtering
-        const tableFilter = document.getElementById('tableFilter');
-        const globalSearch = document.getElementById('globalSearch');
 
         function filterTable(query) {
             const rows = document.querySelectorAll('.member-row');
             rows.forEach(row => {
                 const name = row.querySelector('.member-name').textContent.toLowerCase();
-                if (name.includes(query.toLowerCase())) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                row.style.display = name.includes(query.toLowerCase()) ? '' : 'none';
             });
         }
 
-        tableFilter.addEventListener('input', (e) => filterTable(e.target.value));
-        globalSearch.addEventListener('input', (e) => filterTable(e.target.value));
+        document.getElementById('tableFilter').addEventListener('input', (e) => filterTable(e.target.value));
+        document.getElementById('globalSearch').addEventListener('input', (e) => filterTable(e.target.value));
 
-        // Re-train Script Button
         const btnRetrain = document.getElementById('btnRetrain');
         btnRetrain.addEventListener('click', () => {
             const span = btnRetrain.querySelector('span:last-child');
             const originalText = span.textContent;
             span.textContent = 'Treinando...';
             btnRetrain.classList.add('opacity-50', 'pointer-events-none');
-
             showToast('Iniciando processamento K-Means...', 'settings_suggest');
-
             setTimeout(() => {
                 span.textContent = originalText;
                 btnRetrain.classList.remove('opacity-50', 'pointer-events-none');
@@ -1032,10 +1274,12 @@
             }, 2500);
         });
 
-        // Initialize progress bars on scroll or load (already handled by CSS animation)
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
         window.addEventListener('load', () => {
-            console.log('Gaia Team Dashboard Ready');
-            // We can add a "ready" toast if we want
+            loadMembersList();
         });
     </script>
 </body>
