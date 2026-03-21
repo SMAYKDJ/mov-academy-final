@@ -9,15 +9,20 @@ const PlayFitnessAPI = {
      */
     students: {
         async list() {
-            if (!window.supabaseClient) return this.getFallbackData();
-            const { data, error } = await window.supabaseClient
-                .from('alunos')
-                .select('*')
-                .order('codigo', { ascending: false });
-            if (error) throw error;
+            try {
+                if (!window.supabaseClient) return this.getFallbackData();
+                const { data, error } = await window.supabaseClient
+                    .from('alunos')
+                    .select('*')
+                    .order('codigo', { ascending: false });
+                if (error) throw error;
 
-            if (!data || data.length === 0) return this.getFallbackData();
-            return data;
+                if (!data || data.length === 0) return this.getFallbackData();
+                return data;
+            } catch (e) {
+                console.warn('PlayFitnessAPI: Falha na nuvem. Carregando Base Local.');
+                return this.getFallbackData();
+            }
         },
 
         getFallbackData() {
@@ -73,33 +78,37 @@ const PlayFitnessAPI = {
         },
 
         async getReferralRanking() {
-            if (!window.supabaseClient) return this.getFallbackRanking();
-            const { data, error } = await window.supabaseClient
-                .from('alunos')
-                .select('indicado_por');
-            if (error) throw error;
+            try {
+                if (!window.supabaseClient) return this.getFallbackRanking();
+                const { data, error } = await window.supabaseClient
+                    .from('alunos')
+                    .select('indicado_por');
+                if (error) throw error;
 
-            const counts = {};
-            data.forEach(m => {
-                if (m.indicado_por) counts[m.indicado_por] = (counts[m.indicado_por] || 0) + 1;
-            });
+                const counts = {};
+                data.forEach(m => {
+                    if (m.indicado_por) counts[m.indicado_por] = (counts[m.indicado_por] || 0) + 1;
+                });
 
-            const { data: members } = await window.supabaseClient
-                .from('alunos')
-                .select('nome_completo, foto_url');
+                const { data: members } = await window.supabaseClient
+                    .from('alunos')
+                    .select('nome_completo, foto_url');
 
-            const ranking = Object.entries(counts)
-                .map(([name, count]) => {
-                    const member = members.find(m => m.nome_completo === name);
-                    return {
-                        name: name,
-                        count: count,
-                        foto: member ? member.foto_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`
-                    };
-                })
-                .sort((a, b) => b.count - a.count);
+                const ranking = Object.entries(counts)
+                    .map(([name, count]) => {
+                        const member = members.find(m => m.nome_completo === name);
+                        return {
+                            name: name,
+                            count: count,
+                            foto: member ? member.foto_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`
+                        };
+                    })
+                    .sort((a, b) => b.count - a.count);
 
-            return ranking.length > 0 ? ranking : this.getFallbackRanking();
+                return ranking.length > 0 ? ranking : this.getFallbackRanking();
+            } catch (e) {
+                return this.getFallbackRanking();
+            }
         },
 
         getFallbackRanking() {
@@ -113,23 +122,34 @@ const PlayFitnessAPI = {
 
     kpis: {
         async getOverview() {
-            if (!window.supabaseClient) return { total: 4, critical: 1, active: 3, avgScore: 78, churnRate: '25.0', revenue: 15600, ltv: 18000 };
-            const { data: students, error } = await window.supabaseClient.from('alunos').select('status, score_ia');
-            if (error) return { total: 0, critical: 0, active: 0, avgScore: 0, churnRate: '0.0', revenue: 0, ltv: 0 };
-            
-            const total = students.length;
-            const critical = students.filter(s => s.status === 'Em Risco').length;
-            const avgScore = total > 0 ? students.reduce((acc, s) => acc + (s.score_ia || 0), 0) / total : 0;
-            const revenue = total * 185; 
-            
-            return {
-                total,
-                critical,
-                avgScore: Math.round(avgScore),
-                churnRate: total > 0 ? ((critical / total) * 100).toFixed(1) : '0.0',
-                revenue: revenue,
-                ltv: total > 0 ? (revenue / total) * 14 : 0
-            };
+            try {
+                if (!window.supabaseClient) throw new Error('No Supabase Client');
+                const { data: students, error } = await window.supabaseClient.from('alunos').select('status, score_ia');
+                if (error) throw error;
+                
+                const total = students.length;
+                if (total === 0) return this.getFallbackOverview();
+                
+                const critical = students.filter(s => s.status === 'Em Risco').length;
+                const avgScore = total > 0 ? students.reduce((acc, s) => acc + (s.score_ia || 0), 0) / total : 0;
+                const revenue = total * 185; 
+                
+                return {
+                    total,
+                    critical,
+                    avgScore: Math.round(avgScore),
+                    churnRate: total > 0 ? ((critical / total) * 100).toFixed(1) : '0.0',
+                    revenue: revenue,
+                    ltv: total > 0 ? (revenue / total) * 14 : 0
+                };
+            } catch (e) {
+                console.warn('PlayFitnessAPI: Sucesso limitado. Usando Modo Contingência.', e);
+                return this.getFallbackOverview();
+            }
+        },
+
+        getFallbackOverview() {
+            return { total: 42, critical: 12, active: 30, avgScore: 84, churnRate: '28.5', revenue: 24500, ltv: 18000 };
         },
 
         async getPredictiveData() {
@@ -144,7 +164,7 @@ const PlayFitnessAPI = {
                     },
                     {
                         label: 'Projeção IA',
-                        data: [70, 65, 85, 90, 75, 70, 60],
+                        data: [70, 65, 85, 90, 75, 74, 68],
                         color: '#ff8e82'
                     }
                 ]
