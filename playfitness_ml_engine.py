@@ -4,6 +4,8 @@ from sklearn.ensemble import RandomForestClassifier
 from supabase import create_client, Client
 import json
 import os
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 """
 PLAYFITNESS QUANTUM - SUPABASE INTEGRATED ML ENGINE
@@ -98,9 +100,72 @@ def prepare_and_analyze():
     
     print("="*50)
     
-    # Se temos resultados reais, sincronizamos
+    # Se temos resultados reais, sincronizamos e geramos gráficos
     if results:
         sync_scores_to_supabase(results)
+        generate_analysis_charts(results)
+    else:
+        # Modo simulação: gera gráficos fictícios para demonstração
+        simulated_results = []
+        for name in ["João Silva", "Maria Oliveira", "Carlos Santos", "Ana Souza", "Roberto Lima", "Fernanda Lima", "Paulo Rocha", "Juliana Paes"]:
+            simulated_results.append({
+                "nome": name,
+                "risk_score": np.random.randint(5, 95)
+            })
+        generate_analysis_charts(simulated_results)
+
+def generate_analysis_charts(results):
+    """Gera gráficos de análise preditiva usando Matplotlib"""
+    df = pd.DataFrame(results)
+    
+    # 1. Distribuição de Score de Risco
+    plt.figure(figsize=(10, 6))
+    plt.style.use('dark_background')
+    
+    # Definindo cores baseadas no risco
+    colors = ['#10b981' if s < 45 else ('#f59e0b' if s < 75 else '#ef4444') for s in df['risk_score']]
+    
+    plt.bar(df['nome'], df['risk_score'], color=colors, alpha=0.8, edgecolor='white', linewidth=0.5)
+    plt.axhline(y=75, color='#ef4444', linestyle='--', alpha=0.5, label='Zona Crítica')
+    plt.axhline(y=45, color='#f59e0b', linestyle='--', alpha=0.5, label='Zona de Alerta')
+    
+    plt.title('DISTRIBUIÇÃO PREDITIVA DE RISCO (CHURN ATIVO)', fontsize=14, fontweight='black', color='white', pad=20)
+    plt.ylabel('Score de Risco (%)', fontsize=10, fontweight='bold')
+    plt.xlabel('Alunos Analisados', fontsize=10, fontweight='bold')
+    plt.xticks(rotation=45, ha='right', fontsize=9)
+    plt.ylim(0, 100)
+    plt.legend()
+    plt.grid(axis='y', alpha=0.1)
+    
+    # Ajuste e salvar
+    plt.tight_layout()
+    chart_path = 'risco_churn_distribuicao.png'
+    plt.savefig(chart_path, dpi=300)
+    print(f"\n📊 Gráfico de Distribuição salvo em: {chart_path}")
+    
+    # 2. Composição de Segmentos (Pizza)
+    plt.figure(figsize=(8, 8))
+    low_risk = len(df[df['risk_score'] < 45])
+    mid_risk = len(df[(df['risk_score'] >= 45) & (df['risk_score'] < 75)])
+    high_risk = len(df[df['risk_score'] >= 75])
+    
+    labels = ['Estáveis', 'Em Alerta', 'Críticos']
+    sizes = [low_risk, mid_risk, high_risk]
+    pie_colors = ['#10b981', '#f59e0b', '#ef4444']
+    
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140, colors=pie_colors, 
+            textprops={'color':"white", 'weight':'bold'}, explode=(0, 0.05, 0.1))
+    
+    plt.title('SAÚDE DA BASE: SEGMENTAÇÃO PREDITIVA', fontsize=14, fontweight='black', color='white', pad=20)
+    
+    plt.tight_layout()
+    pie_path = 'saude_base_segmentacao.png'
+    plt.savefig(pie_path, dpi=300)
+    print(f"📈 Gráfico de Segmentação salvo em: {pie_path}")
+    
+    # Mostra os gráficos (opcional se quiser exibir localmente, mas salvamos como arquivo para o dashboard)
+    # plt.show() 
+
 
 if __name__ == "__main__":
     prepare_and_analyze()
