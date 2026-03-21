@@ -130,6 +130,25 @@ const PlayFitnessAPI = {
                 revenue: revenue,
                 ltv: total > 0 ? (revenue / total) * 14 : 0
             };
+        },
+
+        async getPredictiveData() {
+            // Mock data for the Fluxo Preditivo Digital chart
+            return {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                datasets: [
+                    {
+                        label: 'Frequência Real',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        color: '#e02928'
+                    },
+                    {
+                        label: 'Projeção IA',
+                        data: [70, 65, 85, 90, 75, 70, 60],
+                        color: '#ff8e82'
+                    }
+                ]
+            };
         }
     },
 
