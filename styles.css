@@ -1,245 +1,162 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600;700&display=swap');
+/* 
+  PlayFitness Premium Design System 
+  Focus on high-contrast, elite typography and smooth transitions.
+*/
 
-/* styles.css - external stylesheet for PlayFitness Team dashboard */
-
-body {
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-    color: #1e293b;
-    background-color: #f8fafc;
-    /* light slate 50 */
+:root {
+  --primary: #dc2626;
+  --primary-glow: rgba(220, 38, 38, 0.4);
+  --background: #0a0a0b;
+  --surface: #141416;
+  --surface-hover: #1c1c1f;
+  --border: rgba(255, 255, 255, 0.08);
+  --text-main: #ffffff;
+  --text-muted: #8e8e93;
+  --accent-green: #34c759;
+  --accent-amber: #ff9f0a;
+  --accent-rose: #ff3b30;
 }
 
-/* Custom Scrollbar - Global */
+body {
+  background-color: var(--background);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Base Glassmorphism */
+.glass {
+  background: rgba(20, 20, 22, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+}
+
+.glass-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 8px 24px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-
-/* Glassmorphism Classes - Light Theme */
-.glass-morphism {
-    background: rgba(13, 19, 31, 0.6);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
-}
-
-.brand-glow {
-    box-shadow: 0 0 15px rgba(233, 30, 99, 0.3);
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.stagger-card {
-    opacity: 0;
-    animation: slideInRight 0.4s ease-out forwards;
+  background: rgba(220, 38, 38, 0.3);
 }
 
 /* Toast System */
 #toast-container {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .toast {
-    background: white;
-    border: 1px solid #e2e8f0;
-    color: #1e293b;
-    padding: 12px 16px;
-    border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transform: translateX(120%);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: translateX(120%);
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .toast.show {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
-/* Original Styles */
-/* Animation delay utilities */
-.delay-0-1,
-.delay-100 {
-    animation-delay: 0.1s;
+.toast-icon {
+  font-size: 20px;
+  color: var(--primary);
 }
 
-.delay-0-2,
-.delay-200 {
-    animation-delay: 0.2s;
+/* Modal System */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
 }
 
-.delay-0-3,
-.delay-300 {
-    animation-delay: 0.3s;
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
 }
 
-.delay-0-4,
-.delay-400 {
-    animation-delay: 0.4s;
+/* Kanban Cards */
+.kanban-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
 }
 
-.delay-0-5,
-.delay-500 {
-    animation-delay: 0.5s;
-}
-
-.delay-0-6,
-.delay-600 {
-    animation-delay: 0.6s;
-}
-
-.delay-0-7,
-.delay-700 {
-    animation-delay: 0.7s;
-}
-
-.delay-0-8,
-.delay-800 {
-    animation-delay: 0.8s;
-}
-
-.delay-0-9,
-.delay-900 {
-    animation-delay: 0.9s;
-}
-
-.delay-1-0,
-.delay-1000 {
-    animation-delay: 1.0s;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
-}
-
-/* Material Symbols Setup */
-.material-symbols-outlined {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    display: inline-block;
-    -webkit-font-smoothing: antialiased;
-}
-
-/* Member Management - Kanban Light */
-.kanban-column {
-    background: rgba(241, 245, 249, 0.5);
-    /* Slate 100 soft */
-    min-height: calc(100vh - 180px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(15, 23, 42, 0.05);
-    border-radius: 20px;
-}
-
-.kanban-column .cards-container {
-    padding: 0.75rem;
-    padding-bottom: 2rem;
-    min-height: 200px;
-}
-
-.kanban-column.drag-over {
-    background: rgba(220, 38, 38, 0.03);
-    border-color: rgba(220, 38, 38, 0.2) !important;
-}
-
-.cards-container::-webkit-scrollbar {
-    width: 4px;
-}
-
-.cards-container::-webkit-scrollbar-thumb {
-    background: rgba(15, 23, 42, 0.05);
-    border-radius: 10px;
-}
-
-[draggable="true"] {
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-/* CHAT BUBBLES IA (FOR TABLE ROWS) */
-.chat-bubble-ia {
-    background: #f1f5f9;
-    padding: 12px 14px;
-    border-radius: 18px 18px 18px 4px;
-    font-size: 13px;
-    color: #1e293b;
-    border: 1px solid rgba(15, 23, 42, 0.05);
-    max-width: 85%;
-    position: relative;
-    animation: chatIn 0.3s ease-out forwards;
-}
-
-@keyframes chatIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.pulse-red {
-    animation: pulseRed 2s infinite;
-}
-
-@keyframes pulseRed {
-    0% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-    }
+.kanban-card:hover {
+  border-color: var(--primary);
 }

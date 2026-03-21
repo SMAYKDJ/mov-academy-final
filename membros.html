@@ -1,465 +1,244 @@
+<!DOCTYPE html>
 <html class="dark" lang="pt-BR">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Gestão Comportamental de Membros | CT Olimpo</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
+    <title>PlayFitness | Gestão de Membros</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <!-- SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="playfitness-api.js"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
-    <script id="tailwind-config">
+    <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
                         primary: "#dc2626",
-                        "primary-dark": "#991b1b",
-                        secondary: "#f59e0b",
-                        obsidian: "#0f172a",
-                        "background-dark": "#0f172a",
-                        "surface-dark": "#1a202e",
-                        "surface-darker": "#0a0f1a",
-                        "border-dark": "#2d3648",
-                        "text-main": "#f1f5f9",
-                        "text-muted": "#94a3b8",
-                        "brand-pink": "#e91e63",
-                    },
-                    fontFamily: {
-                        display: ["Space Grotesk", "sans-serif"],
-                        sans: ["Space Grotesk", "sans-serif"],
-                        mono: ["JetBrains Mono", "monospace"],
-                    },
-                },
-            },
+                        surface: "#141416",
+                        "surface-dark": "#0a0a0b",
+                        border: "rgba(255, 255, 255, 0.08)"
+                    }
+                }
+            }
         }
     </script>
-    <style>
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        .kanban-column {
-            min-height: calc(100vh - 280px);
-        }
-
-        #toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .toast {
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateX(120%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.8);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: #1e293b;
-            border: 1px solid #334155;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 12px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        /* Utility Delays */
-        .delay-100 {
-            animation-delay: 0.1s;
-        }
-    </style>
 </head>
 
-<body class="bg-background-dark text-text-main font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
-    <div id="toast-container"></div>
-
-    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50 h-11"></header>
-
-    <main class="flex-1 max-w-full w-full p-4 flex flex-col gap-4">
-        <div class="flex flex-wrap justify-between items-end gap-2 fade-in">
-            <div class="flex flex-col gap-0.5">
-                <h1 class="text-white tracking-tight text-2xl font-black italic uppercase">Gestão de Membros</h1>
-                <p class="text-text-muted text-sm font-medium leading-tight">Board Kanban & Score IA de Retenção</p>
+<body class="bg-surface-dark text-white font-sans antialiased min-h-screen flex flex-col md:flex-row overflow-hidden">
+    
+    <!-- Sidebar (Same as Dashboard) -->
+    <aside class="w-full md:w-64 bg-surface border-b md:border-b-0 md:border-r border-border flex flex-col shrink-0 z-50">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="size-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center shadow-lg shadow-primary/5">
+                    <span class="material-symbols-outlined text-primary text-2xl font-bold">bolt</span>
+                </div>
+                <h1 class="text-xl font-black italic tracking-tighter uppercase">
+                    PLAY<span class="text-primary">FITNESS</span>
+                </h1>
             </div>
-            <div class="flex gap-2">
-                <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded h-8 px-3 bg-surface-dark text-text-muted border border-border-dark hover:text-white transition-colors gap-1.5 text-sm font-bold uppercase tracking-wider">
-                    <span class="material-symbols-outlined text-[16px]">filter_list</span>
-                    <span>Filtrar</span>
-                </button>
-                <button onclick="openModal('register')"
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded h-8 px-3 bg-red-600 text-white hover:bg-red-500 transition-colors gap-1.5 text-sm font-bold uppercase tracking-wider shadow-lg shadow-red-500/20">
-                    <span class="material-symbols-outlined text-[16px]">add</span>
-                    <span>Novo Membro</span>
-                </button>
-            </div>
+
+            <nav class="space-y-1">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-text-muted hover:text-white hover:bg-white/5 transition-all group">
+                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">dashboard</span>
+                    <span class="text-sm font-bold uppercase tracking-wider italic">Dashboard</span>
+                </a>
+                <a href="membros.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-primary/10 text-primary border border-primary/20 transition-all group shadow-lg shadow-primary/5">
+                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">group</span>
+                    <span class="text-sm font-bold uppercase tracking-wider italic">Membros</span>
+                </a>
+                <a href="campanhas.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-text-muted hover:text-white hover:bg-white/5 transition-all group">
+                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">campaign</span>
+                    <span class="text-sm font-bold uppercase tracking-wider italic">Campanhas</span>
+                </a>
+                <a href="financeiro.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-text-muted hover:text-white hover:bg-white/5 transition-all group">
+                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">payments</span>
+                    <span class="text-sm font-bold uppercase tracking-wider italic">Financeiro</span>
+                </a>
+            </nav>
         </div>
 
-        <!-- Kanban Board: Optimized for no horizontal scroll -->
-        <div id="kanbanBoard"
-            class="flex-1 flex flex-col md:flex-row gap-4 overflow-x-auto pb-4 fade-in delay-100">
-            <!-- Coluna: Prospecção -->
-            <div data-status="Prospect"
-                class="kanban-column flex-1 min-w-[240px] flex flex-col gap-3 bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 transition-all hover:bg-surface-dark/60 shadow-2xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="size-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]"></div>
-                        <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] italic">Prospecção
-                        </h3>
-                        <span
-                            class="count bg-blue-50 text-blue-600 text-xs py-0.5 px-2 rounded-full font-bold border border-blue-200">0</span>
-                    </div>
-                    <span class="text-[11px] text-text-muted font-mono opacity-50">LEADS</span>
+        <div class="mt-auto p-6 border-t border-border">
+            <div class="glass-card p-4 rounded-2xl border border-white/5 flex items-center gap-3">
+                <div class="size-10 rounded-full border border-primary/20 bg-primary/10 overflow-hidden">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=dc2626&color=fff" class="size-full object-cover">
                 </div>
-                <div class="cards-container flex flex-col gap-3 h-full min-h-[150px]" ondragover="handleDragOver(event)"
-                    ondrop="handleDrop(event, 'Prospect')"></div>
+                <div>
+                    <p class="text-[10px] font-black text-text-muted uppercase tracking-widest">Gestor</p>
+                    <p class="text-xs font-bold text-white uppercase italic">SMAYK TR</p>
+                </div>
+            </div>
+            <button onclick="location.href='index.html'" class="w-full mt-4 flex items-center justify-center gap-2 py-3 text-text-muted hover:text-primary transition-colors text-[10px] font-black uppercase tracking-[0.2em] italic">
+                <span class="material-symbols-outlined text-[16px]">logout</span>
+                Encerrar Sessão
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden relative">
+        <!-- Header -->
+        <header class="h-20 border-b border-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-xl shrink-0">
+            <div class="flex flex-col">
+                <h2 class="text-xl font-black italic uppercase tracking-tighter">
+                    Gestão <span class="text-primary italic">Comportamental</span>
+                </h2>
+                <p class="text-[10px] font-bold text-text-muted uppercase tracking-[.2em] italic">Board Kanban & IA Sync</p>
             </div>
 
-            <!-- Coluna: Experimental -->
-            <div data-status="Experimental"
-                class="kanban-column flex-1 min-w-[240px] flex flex-col gap-3 bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 transition-all hover:bg-surface-dark/60 shadow-2xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="size-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]"></div>
-                        <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] italic">Experimental
-                        </h3>
-                        <span
-                            class="count bg-amber-50 text-amber-600 text-xs py-0.5 px-2 rounded-full font-bold border border-amber-200">0</span>
-                    </div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden sm:block">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+                    <input type="text" placeholder="BUSCAR ALUNO..." class="bg-surface-dark border border-border rounded-full py-2 pl-10 pr-6 text-[10px] font-bold italic tracking-widest focus:ring-1 focus:ring-primary outline-none transition-all w-64 placeholder:text-text-muted/40 uppercase">
                 </div>
-                <div class="cards-container flex flex-col gap-3 h-full min-h-[150px]" ondragover="handleDragOver(event)"
-                    ondrop="handleDrop(event, 'Experimental')"></div>
+                <button onclick="openModal('register')" class="btn-primary px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest italic flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[16px]">person_add</span>
+                    Novo Cadastro
+                </button>
             </div>
+        </header>
 
-            <!-- Coluna: Ativo -->
-            <div data-status="Ativo"
-                class="kanban-column flex-1 min-w-[240px] flex flex-col gap-3 bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 transition-all hover:bg-surface-dark/60 shadow-2xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
-                        <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] italic">Ativos</h3>
-                        <span
-                            class="count bg-emerald-50 text-emerald-600 text-xs py-0.5 px-2 rounded-full font-bold border border-emerald-200">0</span>
+        <!-- Kanban View -->
+        <div id="membrosContent" class="flex-1 overflow-x-auto p-8 scroll-smooth">
+            <div class="flex gap-6 h-full min-w-max">
+                <!-- Prospect -->
+                <div class="kanban-column w-80 shrink-0 flex flex-col bg-surface/30 rounded-[32px] border border-border p-4" data-status="Prospect">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]"></span>
+                            <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em] italic">Prospecção</h3>
+                        </div>
+                        <span class="count text-[11px] font-black text-text-muted/50 font-mono">00</span>
                     </div>
+                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Prospect')"></div>
                 </div>
-                <div class="cards-container flex flex-col gap-3 h-full min-h-[150px]" ondragover="handleDragOver(event)"
-                    ondrop="handleDrop(event, 'Ativo')"></div>
-            </div>
 
-            <!-- Coluna: Em Risco -->
-            <div data-status="Em Risco"
-                class="kanban-column flex-1 min-w-[240px] flex flex-col gap-3 bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 transition-all hover:bg-surface-dark/60 shadow-2xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="size-2 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.3)]"></div>
-                        <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] italic">Em Risco
-                        </h3>
-                        <span
-                            class="count bg-orange-50 text-orange-600 text-xs py-0.5 px-2 rounded-full font-bold border border-orange-200">0</span>
+                <!-- Experimental -->
+                <div class="kanban-column w-80 shrink-0 flex flex-col bg-surface/30 rounded-[32px] border border-border p-4" data-status="Experimental">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]"></span>
+                            <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em] italic">Auditivo</h3>
+                        </div>
+                        <span class="count text-[11px] font-black text-text-muted/50 font-mono">00</span>
                     </div>
+                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Experimental')"></div>
                 </div>
-                <div class="cards-container flex flex-col gap-3 h-full min-h-[150px]" ondragover="handleDragOver(event)"
-                    ondrop="handleDrop(event, 'Em Risco')"></div>
-            </div>
 
-            <!-- Coluna: Inativo -->
-            <div data-status="Inativo"
-                class="kanban-column flex-1 min-w-[240px] flex flex-col gap-3 bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 transition-all hover:bg-surface-dark/60 shadow-2xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="size-2 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.3)]"></div>
-                        <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] italic">Inativos
-                        </h3>
-                        <span
-                            class="count bg-rose-50 text-rose-600 text-xs py-0.5 px-2 rounded-full font-bold border border-rose-200">0</span>
+                <!-- Ativo -->
+                <div class="kanban-column w-80 shrink-0 flex flex-col bg-surface/30 rounded-[32px] border border-border p-4" data-status="Ativo">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"></span>
+                            <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em] italic">Ativos</h3>
+                        </div>
+                        <span class="count text-[11px] font-black text-text-muted/50 font-mono">00</span>
                     </div>
+                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Ativo')"></div>
                 </div>
-                <div class="cards-container flex flex-col gap-3 h-full min-h-[150px]" ondragover="handleDragOver(event)"
-                    ondrop="handleDrop(event, 'Inativo')"></div>
+
+                <!-- Em Risco -->
+                <div class="kanban-column w-80 shrink-0 flex flex-col bg-surface/30 rounded-[32px] border border-border p-4" data-status="Em Risco">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-primary shadow-[0_0_10px_rgba(220,38,38,0.3)] animate-pulse"></span>
+                            <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em] italic">Risco IA</h3>
+                        </div>
+                        <span class="count text-[11px] font-black text-text-muted/50 font-mono">00</span>
+                    </div>
+                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Em Risco')"></div>
+                </div>
+
+                <!-- Inativo -->
+                <div class="kanban-column w-80 shrink-0 flex flex-col bg-surface/30 rounded-[32px] border border-border p-4" data-status="Inativo">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-gray-500 shadow-[0_0_10px_rgba(107,114,128,0.3)]"></span>
+                            <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em] italic">Inativos</h3>
+                        </div>
+                        <span class="count text-[11px] font-black text-text-muted/50 font-mono">00</span>
+                    </div>
+                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Inativo')"></div>
+                </div>
             </div>
         </div>
-        <!-- Programa Embaixador removido (movido para Campanhas) -->
     </main>
 
-    <!-- Modals -->
-    <div id="modalOverlay" class="modal-overlay" onclick="if(event.target === this) closeModal()">
-        <div class="modal-content overflow-hidden flex flex-col max-w-2xl">
-            <!-- Header -->
-            <div
-                class="bg-surface-darker px-6 py-4 border-b border-border-dark flex justify-between items-center shrink-0">
-                <div class="flex flex-col">
-                    <h3 id="modalTitle" class="text-white font-black uppercase tracking-widest text-base">Novo Cadastro
-                    </h3>
-                    <div id="codeDisplay" class="flex items-center gap-1.5 mt-0.5">
-                        <span id="nextCodeInfo"
-                            class="text-xs font-bold text-red-500 uppercase tracking-widest hidden">Próxima
-                            Matrícula: #000</span>
-                        <span id="currentCodeInfo"
-                            class="text-xs font-bold text-red-500 uppercase tracking-widest hidden">Matrícula:
-                            #000</span>
+    <!-- Modals (Simplified/Stylized) -->
+    <div id="modalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-surface-dark/80 backdrop-blur-xl">
+        <div class="glass-card w-full max-w-2xl rounded-[32px] border border-border overflow-hidden shadow-2xl transition-all scale-95 opacity-0 duration-300" id="modalContent">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <div class="flex flex-col">
+                        <h3 id="modalTitle" class="text-xl font-black italic uppercase tracking-tighter">Novo Aluno</h3>
+                        <p id="modalSubtitle" class="text-[10px] font-bold text-text-muted uppercase tracking-widest italic">PlayFitness Onboarding V3</p>
                     </div>
+                    <button onclick="closeModal()" class="size-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
                 </div>
-                <button onclick="closeModal()" class="text-text-muted hover:text-white">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
 
-            <!-- Form Body -->
-            <form id="memberForm" class="p-6 overflow-y-auto flex-1 h-full max-h-[70vh]"
-                onsubmit="handleFormSubmit(event)">
-                <input type="hidden" id="formAction" value="register">
-                <input type="hidden" id="memberId">
-                <input type="hidden" id="memberPhoto">
+                <form id="memberForm" class="space-y-6" onsubmit="handleFormSubmit(event)">
+                    <input type="hidden" id="formAction">
+                    <input type="hidden" id="memberId">
+                    <input type="hidden" id="memberPhoto">
 
-                <div class="flex flex-col gap-6">
-                    <!-- Top section: Photo and Core Info -->
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-col items-center gap-3 shrink-0">
-                            <div class="relative group cursor-pointer"
-                                onclick="document.getElementById('photoInput').click()">
-                                <div id="photoPreview"
-                                    class="size-28 rounded-full bg-surface-darker border-2 border-dashed border-border-dark flex items-center justify-center overflow-hidden transition-all group-hover:border-red-500/50">
-                                    <span class="material-symbols-outlined text-text-muted text-3xl">add_a_photo</span>
-                                </div>
-                                <div
-                                    class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                    <span class="material-symbols-outlined text-white">upload</span>
-                                </div>
-                                <input type="file" id="photoInput" class="hidden" accept="image/*"
-                                    onchange="handlePhotoUpload(this)">
-                            </div>
-                            <label
-                                class="text-xs font-black text-text-muted uppercase tracking-widest text-center">Foto
-                                do Aluno</label>
-                        </div>
-
-                        <div class="flex-1 space-y-4">
-                            <div class="space-y-1.5">
-                                <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome
-                                    Completo</label>
-                                <input type="text" id="memberName" required
-                                    class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                                    placeholder="Ex: João Silva">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="space-y-1.5">
-                                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Data de
-                                        Nascimento</label>
-                                    <input type="date" id="memberBirth" required
-                                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                                </div>
-                                <div class="space-y-1.5">
-                                    <label
-                                        class="text-xs font-bold text-text-muted uppercase tracking-wider">Status</label>
-                                    <select id="memberStatus"
-                                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                                        <option value="Prospect">Prospecção</option>
-                                        <option value="Experimental">Experimental</option>
-                                        <option value="Ativo">Ativo</option>
-                                        <option value="Em Risco">Em Risco</option>
-                                        <option value="Inativo">Inativo</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="h-px bg-border-dark/50"></div>
-
-                    <!-- Contact and Financial Info -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
-                            <input type="email" id="memberEmail" required
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                                placeholder="joao@email.com">
+                            <label class="text-[10px] font-black text-text-muted uppercase tracking-widest italic ml-1">Nome Completo</label>
+                            <input type="text" id="memberName" required class="w-full bg-surface-dark border border-border rounded-2xl py-3 px-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text-muted/40 uppercase font-bold italic">
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp</label>
-                            <input type="tel" id="memberPhone" required
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                                placeholder="(11) 99999-9999">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
-                            <input type="text" id="memberCPF" required
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                                placeholder="000.000.000-00">
+                            <label class="text-[10px] font-black text-text-muted uppercase tracking-widest italic ml-1">WhatsApp</label>
+                            <input type="tel" id="memberPhone" required class="w-full bg-surface-dark border border-border rounded-2xl py-3 px-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text-muted/40 uppercase font-bold italic">
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
-                            <select id="memberPlan"
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                            <label class="text-[10px] font-black text-text-muted uppercase tracking-widest italic ml-1">Plano Estratégico</label>
+                            <select id="memberPlan" class="w-full bg-surface-dark border border-border rounded-2xl py-3 px-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all uppercase font-bold italic">
                                 <option value="Mensal Básico">Mensal Básico</option>
                                 <option value="Pro Semestral">Pro Semestral</option>
                                 <option value="VIP Anual">VIP Anual</option>
                                 <option value="Experimental">Experimental</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo</label>
-                            <select id="memberGoal"
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                                <option value="weightloss">Emagrecimento</option>
-                                <option value="gain">Hipertrofia</option>
-                                <option value="health">Saúde</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Campanha</label>
-                            <select id="memberCampaign"
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                                <option value="Orgânico">Orgânico</option>
-                                <option value="Indicação">Indicação</option>
-                                <option value="Recuperação de Inativos">Recuperação de Inativos</option>
-                                <option value="Melhoria para Plano VIP">Melhoria para Plano VIP</option>
-                                <option value="Anúncio Meta">Anúncio Meta</option>
-                                <option value="Google Ads">Google Ads</option>
+                            <label class="text-[10px] font-black text-text-muted uppercase tracking-widest italic ml-1">Status Base</label>
+                            <select id="memberStatus" class="w-full bg-surface-dark border border-border rounded-2xl py-3 px-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all uppercase font-bold italic">
+                                <option value="Prospect">Prospecção</option>
+                                <option value="Experimental">Experimental</option>
+                                <option value="Ativo">Ativo</option>
+                                <option value="Em Risco">Em Risco</option>
+                                <option value="Inativo">Inativo</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="h-px bg-border-dark/50"></div>
-
-                    <!-- Address and Referral -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Endereço</label>
-                        <input type="text" id="memberAddress"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Rua, Número, Complemento">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Bairro</label>
-                            <input type="text" id="memberNeighborhood"
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                                placeholder="Ex: Centro">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Cidade</label>
-                            <input type="text" id="memberCity"
-                                class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                                placeholder="Ex: São Paulo">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5 relative">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Quem o
-                            indicou?</label>
-                        <input type="text" id="memberReferrer" autocomplete="off"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Digite para buscar alunos..." oninput="handleReferrerInput(this.value)">
-                        <div id="referrerSuggestions"
-                            class="absolute left-0 right-0 mt-1 bg-surface-dark border border-border-dark rounded-lg shadow-xl z-50 overflow-hidden hidden max-h-48 overflow-y-auto">
-                        </div>
-                    </div>
-
-                    <div class="pt-4 sticky bottom-0 bg-surface-dark py-4 mt-auto">
-                        <button type="submit"
-                            class="w-full bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-3 rounded-lg transition-all shadow-lg active:scale-[0.98]">
-                            Gravar Informações
-                        </button>
-                    </div>
-                </div>
-            </form>
+                    <button type="submit" class="w-full btn-primary py-4 rounded-2xl text-base shadow-xl group flex items-center justify-center gap-3">
+                        <span class="uppercase font-black italic">Gravar no Sistema Neural</span>
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">save</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
-        let allMembersData = [];
-
         async function loadMembers() {
             try {
                 const members = await PlayFitnessAPI.students.list();
-                allMembersData = members.map(m => ({
-                    nome: m.nome_completo,
-                    foto: m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`
-                }));
-
                 document.querySelectorAll('.cards-container').forEach(c => c.innerHTML = '');
                 const counts = { 'Prospect': 0, 'Experimental': 0, 'Ativo': 0, 'Em Risco': 0, 'Inativo': 0 };
 
@@ -474,93 +253,75 @@
 
                 Object.keys(counts).forEach(status => {
                     const label = document.querySelector(`[data-status="${status}"] .count`);
-                    if (label) label.textContent = counts[status];
+                    if (label) label.textContent = counts[status].toString().padStart(2, '0');
                 });
             } catch (err) {
-                console.error('Erro:', err);
-                showToast('Falha ao sincronizar dados', 'error');
+                console.error(err);
+                PlayFitnessUI.toast('Erro ao carregar rede neural', 'error');
             }
         }
 
         function createMemberCard(member) {
             const div = document.createElement('div');
-            div.className = 'bg-surface-dark/80 backdrop-blur-xl border border-white/5 p-3 rounded-xl shadow-2xl hover:border-red-500/40 transition-all group relative cursor-grab active:cursor-grabbing hover:translate-y-[-2px] h-[100px] flex items-center overflow-hidden';
+            div.className = 'glass-card p-4 rounded-2xl border border-white/5 hover:border-primary/40 transition-all group relative cursor-grab active:cursor-grabbing shadow-lg';
             div.draggable = true;
             div.id = `member-${member.id}`;
-            div.addEventListener('dragstart', (e) => handleDragStart(e, member.id));
+            div.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', member.id);
+                div.classList.add('opacity-40');
+            });
+            div.addEventListener('dragend', () => div.classList.remove('opacity-40'));
 
-            const isRisk = (member.status === 'Em Risco' || (member.score_ia && member.score_ia < 40));
-            const scoreColor = member.score_ia >= 70 ? 'text-emerald-600' : (member.score_ia >= 40 ? 'text-amber-500' : 'text-rose-600');
-            const progressBg = member.score_ia >= 70 ? 'bg-emerald-500' : (member.score_ia >= 40 ? 'bg-amber-500' : 'bg-rose-500');
+            const scoreColor = (member.score_ia || 0) >= 70 ? 'text-emerald-500' : ((member.score_ia || 0) >= 40 ? 'text-amber-500' : 'text-primary');
 
             div.innerHTML = `
-                <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                    <button onclick="openPlayFitnessMessenger('${member.id}', '${member.nome_completo}', '${member.telefone || ''}', ${member.score_ia || 0})"
-                        class="size-7 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-sm ${isRisk ? 'pulse-red' : ''}" title="Ação IA">
-                        <span class="material-symbols-outlined text-[16px]">bolt</span>
-                    </button>
-                    <button onclick="openModal('edit', null, '${member.id}', '${member.codigo || ''}')"
-                        class="size-7 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[16px]">edit_note</span>
-                    </button>
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-full border border-white/10 overflow-hidden shrink-0">
+                        <img src="${member.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=141416&color=ef4444`}" class="size-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-black italic uppercase italic leading-tight truncate">
+                            <span class="text-primary mr-1 opacity-50 not-italic font-bold">#${member.codigo || '---'}</span>
+                            ${member.nome_completo}
+                        </h4>
+                        <div class="flex items-center justify-between mt-2">
+                             <p class="text-[9px] font-black text-text-muted uppercase tracking-widest italic">${member.plano || 'N/A'}</p>
+                             <p class="text-[10px] font-black ${scoreColor} italic items-center flex gap-1">
+                                <span class="material-symbols-outlined text-[12px]">bolt</span>
+                                ${member.score_ia || 0}%
+                             </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3 w-full">
-                    <div class="size-12 rounded-full overflow-hidden border border-white/5 shadow-lg shrink-0">
-                         <img src="${member.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=1e293b&color=ef4444`}" 
-                               class="size-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0 pr-12">
-                        <div class="flex justify-between items-start mb-0.5">
-                            <h4 class="text-text-main font-black text-[13px] truncate uppercase italic tracking-tight">
-                                <span class="text-red-500 mr-1 opacity-50 not-italic">#${member.codigo || '---'}</span>
-                                ${member.nome_completo}
-                            </h4>
-                        </div>
-                        <div class="flex items-center justify-between mb-0.5">
-                            <span class="text-[11px] uppercase font-bold text-text-muted tracking-tighter">Score IA</span>
-                            <span class="text-xs font-black ${scoreColor}">${member.score_ia || 80}%</span>
-                        </div>
-                        <div class="w-full bg-surface-darker/50 rounded-full h-1 overflow-hidden">
-                            <div class="${progressBg} h-full rounded-full transition-all duration-1000" style="width: ${member.score_ia || 80}%"></div>
-                        </div>
-                        <div class="mt-1 flex items-center gap-3">
-                             <span class="text-[11px] font-mono text-text-muted">CPF: ${member.cpf || '---'}</span>
-                             <span class="text-[11px] font-bold text-text-muted uppercase px-1.5 py-0.5 bg-surface-darker/50 rounded border border-white/5">${PlayFitnessAPI.utils.calculateAge(member.data_nascimento)} anos</span>
-                        </div>
-                    </div>
+                <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="openModal('edit', '${member.id}')" class="size-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
                 </div>
             `;
             return div;
         }
 
-        function openModal(action, name = '', id = '', codigo = '') {
+        function openModal(action, id = '') {
             const overlay = document.getElementById('modalOverlay');
-            overlay.classList.add('active');
+            const content = document.getElementById('modalContent');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
 
             document.getElementById('formAction').value = action;
             document.getElementById('memberId').value = id;
 
             if (action === 'edit') {
-                document.getElementById('modalTitle').textContent = 'Editar Cadastro';
-                document.getElementById('nextCodeInfo').classList.add('hidden');
-                document.getElementById('currentCodeInfo').textContent = `Matrícula: #${codigo.toString().padStart(3, '0')}`;
-                document.getElementById('currentCodeInfo').classList.remove('hidden');
+                document.getElementById('modalTitle').textContent = 'Editar Fluxo';
                 loadMemberDetails(id);
             } else {
-                document.getElementById('modalTitle').textContent = 'Novo Cadastro';
-                document.getElementById('currentCodeInfo').classList.add('hidden');
+                document.getElementById('modalTitle').textContent = 'Novo Fluxo';
                 document.getElementById('memberForm').reset();
-                document.getElementById('memberPhoto').value = '';
-                document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>';
-                showNextAvailableCode();
             }
-        }
-
-        async function showNextAvailableCode() {
-            const nextCode = await PlayFitnessAPI.students.getNextCode();
-            const info = document.getElementById('nextCodeInfo');
-            info.textContent = `Próxima Matrícula: #${nextCode.toString().padStart(3, '0')}`;
-            info.classList.remove('hidden');
         }
 
         async function loadMemberDetails(id) {
@@ -568,249 +329,70 @@
                 const data = await PlayFitnessAPI.students.getById(id);
                 if (data) {
                     document.getElementById('memberName').value = data.nome_completo || '';
-                    document.getElementById('memberEmail').value = data.email || '';
                     document.getElementById('memberPhone').value = data.telefone || '';
-                    document.getElementById('memberCPF').value = data.cpf || '';
-                    const photoUrl = data.foto_url || '';
-                    document.getElementById('memberPhoto').value = photoUrl;
-                    if (photoUrl) {
-                        document.getElementById('photoPreview').innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover">`;
-                    } else {
-                        document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>';
-                    }
                     document.getElementById('memberStatus').value = data.status || 'Ativo';
-                    document.getElementById('memberAddress').value = data.endereco || '';
-                    document.getElementById('memberNeighborhood').value = data.bairro || '';
-                    document.getElementById('memberCity').value = data.cidade || '';
-                    document.getElementById('memberReferrer').value = data.indicado_por || '';
                     document.getElementById('memberPlan').value = data.plano || 'Mensal Básico';
-                    document.getElementById('memberBirth').value = data.data_nascimento || '';
-                    document.getElementById('memberCampaign').value = data.campanha || 'Orgânico';
                 }
             } catch (err) {
                 console.error(err);
-                showToast('Erro ao carregar detalhes', 'error');
+                PlayFitnessUI.toast('Erro no download neural', 'error');
             }
         }
-
-        async function handlePhotoUpload(input) {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const preview = document.getElementById('photoPreview');
-
-                // Show loading state
-                const originalContent = preview.innerHTML;
-                preview.innerHTML = '<div class="flex flex-col items-center gap-1"><div class="size-4 border-2 border-red-500 border-t-transparent animate-spin rounded-full"></div><span class="text-[11px] font-bold text-red-500 uppercase">Enviando</span></div>';
-
-                try {
-                    const publicUrl = await PlayFitnessAPI.storage.upload(file);
-                    document.getElementById('memberPhoto').value = publicUrl;
-                    preview.innerHTML = `<img src="${publicUrl}" class="w-full h-full object-cover">`;
-                    showToast('Foto atualizada com sucesso!', 'check_circle');
-                } catch (err) {
-                    console.error('Erro no upload:', err);
-                    preview.innerHTML = originalContent;
-                    showToast('Erro ao enviar foto. Verifique o bucket "membros".', 'error');
-                }
-            }
-        }
-
-        function handleReferrerInput(value) {
-            const container = document.getElementById('referrerSuggestions');
-            if (!value || value.trim().length === 0) {
-                container.innerHTML = '';
-                container.classList.add('hidden');
-                return;
-            }
-            const matches = allMembersData.filter(m => m.nome.toLowerCase().includes(value.toLowerCase()));
-            if (matches.length > 0) {
-                container.innerHTML = matches.map(m => `
-                    <div onclick="selectReferrer('${m.nome.replace(/'/g, "\\'")}')" 
-                         class="px-4 py-2 flex items-center gap-3 text-sm text-white hover:bg-red-500 cursor-pointer border-b border-border-dark last:border-0">
-                        <img src="${m.foto}" class="size-6 rounded-full border border-border-dark shrink-0 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome)}'">
-                        <span class="truncate">${m.nome}</span>
-                    </div>
-                `).join('');
-                container.classList.remove('hidden');
-            } else {
-                container.innerHTML = '<div class="px-4 py-3 text-xs text-text-muted italic flex items-center gap-2"><span class="material-symbols-outlined text-sm">person_off</span>Nenhum aluno encontrado</div>';
-                container.classList.remove('hidden');
-            }
-        }
-
-        function selectReferrer(name) {
-            document.getElementById('memberReferrer').value = name;
-            document.getElementById('referrerSuggestions').classList.add('hidden');
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#memberReferrer')) {
-                const sugg = document.getElementById('referrerSuggestions');
-                if (sugg) sugg.classList.add('hidden');
-            }
-        });
 
         function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
+            const overlay = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            content.classList.replace('scale-100', 'scale-95');
+            content.classList.replace('opacity-100', 'opacity-0');
+            setTimeout(() => {
+                overlay.classList.remove('flex');
+                overlay.classList.add('hidden');
+            }, 300);
         }
 
         async function handleFormSubmit(event) {
             event.preventDefault();
             const action = document.getElementById('formAction').value;
-            const id = document.getElementById('memberId')?.value;
+            const id = document.getElementById('memberId').value;
 
             const payload = {
                 nome_completo: document.getElementById('memberName').value,
-                email: document.getElementById('memberEmail').value,
                 telefone: document.getElementById('memberPhone').value,
-                cpf: document.getElementById('memberCPF').value,
-                foto_url: document.getElementById('memberPhoto').value,
                 status: document.getElementById('memberStatus').value,
-                endereco: document.getElementById('memberAddress').value,
-                bairro: document.getElementById('memberNeighborhood').value,
-                cidade: document.getElementById('memberCity').value,
-                indicado_por: document.getElementById('memberReferrer').value,
-                plano: document.getElementById('memberPlan').value,
-                data_nascimento: document.getElementById('memberBirth').value,
-                campanha: document.getElementById('memberCampaign').value
+                plano: document.getElementById('memberPlan').value
             };
 
             try {
                 await PlayFitnessAPI.students.save(id, payload);
                 closeModal();
-                showToast(action === 'register' ? 'Matrícula realizada!' : 'Cadastro atualizado!', 'check_circle');
+                PlayFitnessUI.toast(action === 'register' ? 'Matrícula Sincronizada!' : 'Fluxo Atualizado!', 'check_circle');
                 loadMembers();
             } catch (err) {
                 console.error(err);
-                showToast('Erro ao salvar no banco', 'error');
+                PlayFitnessUI.toast('Erro no uplink', 'error');
             }
         }
-
-        // DRAG & DROP HANDLERS
-        function handleDragStart(e, id) {
-            e.dataTransfer.setData('text/plain', id);
-            e.currentTarget.classList.add('opacity-40');
-            setTimeout(() => e.target.classList.add('invisible'), 0);
-        }
-
-        document.addEventListener('dragend', (e) => {
-            if (e.target.classList && e.target.classList.contains('invisible')) {
-                e.target.classList.remove('invisible', 'opacity-40');
-            }
-            document.querySelectorAll('.kanban-column').forEach(col => {
-                col.classList.remove('bg-surface-dark/50', 'border-red-500/40', 'scale-[1.01]');
-            });
-        });
 
         function handleDragOver(e) {
             e.preventDefault();
-            const col = e.currentTarget.closest('.kanban-column');
-            if (col) {
-                col.classList.add('bg-surface-dark/50', 'border-red-500/40', 'scale-[1.01]');
-            }
+            e.currentTarget.classList.add('bg-white/5');
         }
 
-        let waWindow = null;
-        let headerShell = null;
-        let footerShell = null;
-        let glueInterval = null;
-
-        function openPlayFitnessMessenger(id, name, phone, score) {
-            // 1. Mensagem IA
-            let msg = score <= 40
-                ? `Oi ${name}, aqui é do CT Olimpo! Notamos que seu score de engajamento caiu. Faz falta ver você treinando! Vamos agendar uma aula experimental de uma nova modalidade para te motivar?`
-                : score < 70
-                    ? `Olá ${name}! Passando para desejar um ótimo treino. O PlayFitness detectou que você está com uma frequência média. Quer algum ajuste no plano?`
-                    : `Show de bola, ${name}! Seu engajamento está TOP! Ganhou um upgrade de convidado para trazer um amigo esta semana. Bora?`;
-
-            // 2. ENGENHARIA DE MOLDURA "TRÍPLICE"
-            const w = 440;
-            const h = window.innerHeight * 0.85;
-            const x = window.screen.width - w - 24;
-            const y = window.screen.height - h - 100;
-
-            const cleanPhone = phone.replace(/\D/g, '');
-            const encodedMsg = encodeURIComponent(msg);
-            const waUrl = `https://web.whatsapp.com/send?phone=${cleanPhone || '55'}&text=${encodedMsg}`;
-
-            // a) Abrir WhatsApp (Middle)
-            waWindow = window.open(waUrl, 'PlayFitnessWA', `width=${w},height=${h},left=${x},top=${y},status=no,toolbar=no`);
-
-            // b) Abrir Peças da Moldura (Top & Bottom Popups)
-            // Estas janelas por serem pequenas e focadas pelo código, simulam estar "sobre" o navegador
-            headerShell = window.open('shell_header.html', 'PlayFitnessHeader', `width=${w},height=65,left=${x},top=${y - 65},status=no,toolbar=no`);
-            footerShell = window.open('shell_footer.html', 'PlayFitnessFooter', `width=${w},height=160,left=${x},top=${y + h},status=no,toolbar=no`);
-
-            if (waWindow) {
-                showToast(`Docking Quantum: HUD Ativado`, 'dock_to_bottom');
-
-                // MONITOR DE SINCRONIA (GLUE)
-                if (glueInterval) clearInterval(glueInterval);
-                glueInterval = setInterval(() => {
-                    if (waWindow.closed) {
-                        if (headerShell) headerShell.close();
-                        if (footerShell) footerShell.close();
-                        clearInterval(glueInterval);
-                    } else {
-                        // Traz as molduras para frente se o usuário clicar na plataforma
-                        // Isso mantém o visual de cockpit sempre visível
-                        // headerShell.focus();
-                        // footerShell.focus();
-                    }
-                }, 2000);
-            }
-        }
-
-        function closeMessenger() {
-            if (waWindow) waWindow.close();
-            if (headerShell) headerShell.close();
-            if (footerShell) footerShell.close();
-            if (glueInterval) {
-                clearInterval(glueInterval);
-                glueInterval = null;
-            }
-        }
-
-        async function handleDrop(e, newStatus) {
-            e.preventDefault();
-            const col = e.currentTarget.closest('.kanban-column');
-            if (col) {
-                col.classList.remove('bg-surface-dark/50', 'border-red-500/40', 'scale-[1.01]');
-            }
-
-            const id = e.dataTransfer.getData('text/plain');
+        async function handleDrop(event, newStatus) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('bg-white/5');
+            const id = event.dataTransfer.getData('text/plain');
             if (!id) return;
 
             try {
-                // Feedback visual imediato
-                const card = document.getElementById(`member-${id}`);
-                const targetContainer = col.querySelector('.cards-container');
-                if (card && targetContainer) {
-                    targetContainer.appendChild(card);
-                    card.classList.remove('invisible', 'opacity-40');
-                    card.classList.add('animate-pulse');
-                    setTimeout(() => card.classList.remove('animate-pulse'), 500);
-                }
-
-                // Update no banco
                 await PlayFitnessAPI.students.save(id, { status: newStatus });
-                showToast(`Status atualizado: ${newStatus}`, 'sync_saved_locally');
-
-                // Recarrega contadores
+                PlayFitnessUI.toast(`Status: ${newStatus}`, 'sync');
                 loadMembers();
             } catch (err) {
                 console.error(err);
-                showToast('Erro ao sincronizar status', 'error');
-                loadMembers(); // Reverte UI
+                PlayFitnessUI.toast('Erro de Sincronia', 'error');
             }
         }
-
-        // Inicializar UI Global
-        document.addEventListener('DOMContentLoaded', () => {
-            PlayFitnessUI.initHeader('membros');
-        });
-
-        const showToast = (msg, icon) => PlayFitnessUI.toast(msg, icon);
 
         document.addEventListener('DOMContentLoaded', loadMembers);
     </script>

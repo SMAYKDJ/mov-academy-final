@@ -4,755 +4,310 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CT Olimpo | Inteligência Preditiva</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
-        rel="stylesheet" />
+    <title>PlayFitness | Dashboard de Inteligência</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
-    <script src="playfitness-api.js"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
                         primary: "#dc2626",
-                        "primary-dark": "#991b1b",
-                        secondary: "#f59e0b",
-                        obsidian: "#0f172a",
-                        "background-dark": "#0f172a",
-                        "surface-dark": "#1a202e",
-                        "surface-darker": "#0a0f1a",
-                        "border-dark": "#2d3648",
-                        "text-main": "#f1f5f9",
-                        "text-muted": "#94a3b8",
-                        "brand-pink": "#e91e63",
-                    },
-                    fontFamily: {
-                        display: ["Space Grotesk", "sans-serif"],
-                        sans: ["Inter", "sans-serif"],
-                        mono: ["JetBrains Mono", "monospace"],
-                    },
-                },
-            },
+                        surface: "#141416",
+                        "surface-dark": "#0a0a0b",
+                        border: "rgba(255, 255, 255, 0.08)"
+                    }
+                }
+            }
         }
     </script>
+    
+    <!-- API Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="playfitness-api.js"></script>
+
     <style>
-        @keyframes progressLoad {
-            from {
-                width: 0;
-            }
+        .sidebar-item-active {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            border-right: 3px solid #dc2626;
+        }
+        
+        canvas {
+            width: 100% !important;
+            height: 40px !important;
         }
 
-        .progress-animate {
-            animation: progressLoad 1.5s ease-out forwards;
+        .kanban-column {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        .chart-point {
-            transition: all 0.3s ease;
-        }
-
-        .chart-point:hover {
-            transform: scale(1.5);
-            filter: brightness(1.2) drop-shadow(0 0 5px currentColor);
-            z-index: 30;
-        }
-
-        /* Gauge animation */
-        @keyframes gaugeRotate {
-            from {
-                stroke-dashoffset: 552;
-            }
-        }
-
-        .gauge-animate {
-            animation: gaugeRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        /* Toast notifications */
-        #toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .toast {
-            background: #1e293b;
-            border: 1px border #334155;
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateX(120%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.8);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: #1e293b;
-            border: 1px solid #334155;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 12px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        /* Quantum UI System */
-        .glass-panel {
-            background: rgba(13, 19, 31, 0.6);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .cyber-border {
-            position: relative;
-        }
-
-        .cyber-border::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.3), transparent);
-        }
-
-        .scanline-effect {
-            position: relative;
+        .member-table-container {
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
-        }
-
-        .scanline-effect::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(239, 68, 68, 0.1);
-            animation: scanline 4s linear infinite;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        @keyframes scanline {
-            0% {
-                transform: translateY(-100%);
-            }
-
-            100% {
-                transform: translateY(500%);
-            }
-        }
-
-        .data-pulsar {
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-            animation: pulsar 2s ease-in-out infinite;
-        }
-
-        @keyframes pulsar {
-
-            0%,
-            100% {
-                opacity: 0.4;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .column-window {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            height: 100%;
-        }
-
-        .kanban-lane {
-            background: rgba(2, 4, 8, 0.3);
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            min-height: 100px;
-        }
-
-        .kanban-card {
-            background: rgba(13, 19, 31, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 8px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .kanban-card:hover {
-            border-color: rgba(239, 68, 68, 0.4);
-            transform: translateX(2px);
-            background: rgba(13, 19, 31, 1);
-        }
-
-        .gauge-animate {
-            animation: gaugeRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes gaugeRotate {
-            from {
-                stroke-dashoffset: 552;
-            }
-        }
-
-        .delay-100 {
-            animation-delay: 0.1s;
-        }
-
-        .delay-200 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-300 {
-            animation-delay: 0.3s;
-        }
-
-        .delay-400 {
-            animation-delay: 0.4s;
-        }
-
-        .delay-500 {
-            animation-delay: 0.5s;
-        }
-
-        .delay-600 {
-            animation-delay: 0.6s;
-        }
-
-        .delay-700 {
-            animation-delay: 0.7s;
-        }
-
-        .delay-800 {
-            animation-delay: 0.8s;
+            background: var(--surface);
         }
     </style>
 </head>
 
-<body class="bg-obsidian text-slate-300 font-sans antialiased min-h-screen flex flex-col overflow-x-hidden">
+<body class="bg-surface-dark text-white font-sans antialiased min-h-screen flex overflow-hidden">
     <div id="toast-container"></div>
 
-    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50 h-11"></header>
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-border bg-surface flex flex-col hidden lg:flex">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="size-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-white font-bold">bolt</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-tight leading-none">PLAYFITNESS</h1>
+                    <span class="text-[10px] text-text-muted font-bold uppercase tracking-widest">Inteligência Preditiva</span>
+                </div>
+            </div>
 
-    <main class="flex-1 max-w-full w-full p-4 flex flex-col gap-4 relative">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-l border-red-500/20 pl-3">
-            <div>
-                <div class="flex items-center gap-1.5 text-text-muted text-xs mb-0 font-mono">
-                    <span>ROOT</span>
-                    <span class="text-xs opacity-30">/</span>
-                    <span>INTEL</span>
-                    <span class="text-xs opacity-30">/</span>
-                    <span class="text-rose-500">PREDICTIVE_V3</span>
-                </div>
-                <h2 class="text-xl font-black text-white tracking-widest leading-none italic uppercase">Dashboard
-                    Inteligência PlayFitness</h2>
-                <p class="text-text-muted text-xs mt-0.5 max-w-2xl font-mono uppercase tracking-[0.15em]">Neural
-                    Processing Optimized | Cluster Seed Ref: 0xFD42</p>
-            </div>
-            <div class="flex gap-1.5">
-                <div class="flex gap-1">
-                    <button id="btnRetrain"
-                        class="h-6 px-2 bg-surface-dark border border-border-dark hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-xs font-medium rounded flex items-center gap-1 transition-colors group">
-                        <span class="material-symbols-outlined text-[12px] group-hover:animate-spin">terminal</span>
-                        <span>Re-treinar</span>
-                    </button>
-                    <button onclick="showToast('Filtro de data aplicado.', 'calendar_today')"
-                        class="h-6 px-2 bg-surface-dark border border-border-dark hover:bg-surface-darker text-text-muted hover:text-white text-xs font-medium rounded flex items-center gap-1 transition-colors">
-                        <span class="material-symbols-outlined text-[12px]">calendar_today</span>
-                        <span>30 Dias</span>
-                    </button>
-                    <button onclick="showToast('Exportação iniciada...', 'download')"
-                        class="h-6 px-2 bg-surface-dark border border-border-dark hover:bg-surface-darker text-text-muted hover:text-white text-xs font-medium rounded flex items-center gap-1 transition-colors">
-                        <span class="material-symbols-outlined text-[12px]">download</span>
-                        <span>Exportar</span>
-                    </button>
-                </div>
-            </div>
+            <nav class="space-y-1">
+                <a href="#" class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    Dashboard Central
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">groups</span>
+                    Gestão de Alunos
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-[20px]>monitoring</span>
+                    Análise Preditiva
+                </a>
+            </nav>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-            <!-- Stat Card 1 -->
-            <div
-                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-100">
-                <div class="flex justify-between items-start mb-0.5">
-                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">Evasão / Churn
-                    </p>
-                    <span
-                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-red-400">monitoring</span>
+        <div class="mt-auto p-6 border-t border-border">
+            <div class="flex items-center gap-3 p-3 glass-card rounded-xl">
+                <div class="size-8 rounded-full bg-gradient-to-tr from-primary to-rose-400"></div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold truncate">Admin PlayFitness</p>
+                    <p class="text-[10px] text-text-muted truncate">Plano Enterprise</p>
                 </div>
-                <div class="flex items-end gap-1.5">
-                    <h3 id="churnRate" class="text-xl font-black text-white tracking-tighter italic">0%</h3>
-                    <div
-                        class="flex items-center text-emerald-500 text-xs font-black mb-1 bg-emerald-500/5 border border-emerald-500/10 px-1 rounded-sm">
-                        ▼ 1.2%
-                    </div>
-                </div>
-                <div class="mt-2 h-4 w-full relative">
-                    <canvas id="miniChurnChart" class="w-full h-full opacity-50"></canvas>
-                </div>
-            </div>
-            <!-- Stat Card 2 -->
-            <div
-                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-200">
-                <div class="flex justify-between items-start mb-0.5">
-                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">Engajamento Score
-                    </p>
-                    <span
-                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-amber-400">bolt</span>
-                </div>
-                <div class="flex items-end gap-1.5">
-                    <h3 id="avgScore" class="text-xl font-black text-white tracking-tighter italic">0<span
-                            class="text-xs text-text-muted font-normal">/100</span></h3>
-                    <div
-                        class="flex items-center text-amber-500 text-xs font-black mb-1 bg-amber-500/5 border border-amber-500/10 px-1 rounded-sm">
-                        ▲ 0.4%
-                    </div>
-                </div>
-                <div class="mt-2 h-4 w-full relative">
-                    <canvas id="miniEngChart" class="w-full h-full opacity-50"></canvas>
-                </div>
-            </div>
-            <!-- Stat Card 3 -->
-            <div
-                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-300">
-                <div class="flex justify-between items-start mb-0.5">
-                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">LTV Projetado</p>
-                    <span
-                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-emerald-400">payments</span>
-                </div>
-                <div class="flex items-end gap-1.5">
-                    <h3 id="ltvProjected" class="text-xl font-black text-white tracking-tighter italic">R$ 0</h3>
-                </div>
-                <div class="mt-2 h-4 w-full bg-emerald-500/10 rounded-full overflow-hidden">
-                    <div
-                        class="h-full bg-emerald-500/40 w-[78%] progress-animate shadow-[0_0_8px_rgba(16,185,129,0.3)]">
-                    </div>
-                </div>
-            </div>
-            <!-- Stat Card 4 -->
-            <div
-                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-400">
-                <div class="flex justify-between items-start mb-0.5">
-                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">Risco Crítico</p>
-                    <span
-                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-rose-500">skull</span>
-                </div>
-                <div class="flex items-end gap-1.5">
-                    <h3 id="criticalRisk" class="text-xl font-black text-rose-500 tracking-tighter italic">0</h3>
-                    <span class="text-xs text-text-muted uppercase font-black mb-1">+8 LAST_24H</span>
-                </div>
-                <div class="mt-2 h-4 w-full flex items-end gap-0.5">
-                    <div class="flex-1 bg-rose-500/10 h-1/4"></div>
-                    <div class="flex-1 bg-rose-500/20 h-2/4"></div>
-                    <div class="flex-1 bg-rose-500/30 h-3/4"></div>
-                    <div class="flex-1 bg-rose-500/50 h-full"></div>
-                    <div class="flex-1 bg-rose-500 h-2/3"></div>
-                    <div class="flex-1 bg-rose-500/80 h-1/2"></div>
-                </div>
+                <button onclick="location.href='index.html'" class="material-symbols-outlined text-[18px] text-text-muted hover:text-white">logout</button>
             </div>
         </div>
+    </aside>
 
-        <!-- Nova Seção: Saúde Financeira & Quantum Balance -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 fade-in delay-500">
-            <!-- Card Lucro Líquido -->
-            <div
-                class="glass-panel cyber-border rounded p-1.5 flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
-                <div
-                    class="size-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                    <span class="material-symbols-outlined text-[16px]">payments</span>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+        <!-- Header -->
+        <header class="h-16 border-b border-border bg-surface/50 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-8">
+            <h2 class="text-sm font-black uppercase tracking-[0.2em] italic text-text-muted">Visão Geral do Ecosistema</h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-white/5 border border-border px-3 py-1.5 rounded-full">
+                    <span class="size-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Sistema Online</span>
                 </div>
-                <div class="flex-1">
-                    <div class="flex justify-between items-center mb-0.5">
-                        <span
-                            class="text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">Net_Profit_Proj</span>
-                        <span class="text-xs text-emerald-400 font-mono tracking-tighter">FLOW: +12%</span>
-                    </div>
-                    <div class="flex items-baseline gap-1">
-                        <h3 id="liquidProfit"
-                            class="text-base font-black text-white tracking-widest italic leading-none">R$ 0</h3>
-                        <span class="text-xs text-text-muted italic font-mono uppercase">/ real_time</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card Break-even (Zero a Zero) -->
-            <div
-                class="glass-panel cyber-border rounded p-1.5 flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
-                <div
-                    class="size-8 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                    <span class="material-symbols-outlined text-[16px]">balance</span>
-                </div>
-                <div class="flex-1">
-                    <div class="flex justify-between items-center mb-0.5">
-                        <span
-                            class="text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">Break_Even_Target</span>
-                        <span class="text-xs text-rose-400 font-mono tracking-tighter italic">GATE: 410_UNIT</span>
-                    </div>
-                    <div class="flex items-baseline gap-1.5 leading-none">
-                        <h3 class="text-base font-black text-white tracking-widest italic">
-                            <span id="breakEvenCurrent">0</span>
-                            <span class="text-xs text-text-muted font-normal">/ 410</span>
-                        </h3>
-                        <span id="totalMembers"
-                            class="text-xs font-black text-rose-500 uppercase italic tracking-widest border border-rose-500/20 px-1 rounded-sm">0
-                            ACTIVE</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quantum Grid Intelligence -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 min-h-[500px]">
-
-            <!-- Coluna 1: Clusters Neural Scan -->
-            <div class="column-window fade-in delay-100">
-                <div class="glass-panel border-rose-500/10 rounded-lg flex flex-col overflow-hidden scanline-effect">
-                    <div class="px-2 py-1 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-                        <h3
-                            class="text-xs font-black text-white flex items-center gap-1.5 uppercase tracking-[0.2em] italic">
-                            <span class="material-symbols-outlined text-[12px] text-rose-500 animate-pulse">radar</span>
-                            Radar_Scan
-                        </h3>
-                        <span class="text-xs text-text-muted font-mono uppercase">0xFD42</span>
-                    </div>
-                    <div class="p-2">
-                        <div id="scatterPlot" class="w-full h-32 border-l border-b border-white/5 relative bg-black/20">
-                            <div
-                                class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(239,68,68,0.05),transparent)]">
-                            </div>
-                            <div
-                                class="chart-point absolute left-[20%] top-[30%] size-1.5 bg-rose-500 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.6)]">
-                            </div>
-                            <div
-                                class="chart-point absolute left-[55%] top-[50%] size-2 bg-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.4)]">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-panel border-white/5 rounded-lg p-2 flex-1 flex flex-col shadow-inner">
-                    <h3 class="text-xs font-black text-rose-400 uppercase tracking-[0.2em] italic mb-2">
-                        Market_Snapshot</h3>
-                    <div id="planDistributionStats" class="space-y-2 flex-1 scrollbar-hide">
-                        <!-- JS injects here -->
-                    </div>
-                    <div class="mt-2 pt-1.5 border-t border-white/5 flex justify-between">
-                        <span
-                            class="text-xs text-text-muted uppercase font-black italic tracking-widest">Sys_Avg_Ticket</span>
-                        <span class="text-xs font-black text-white italic">R$ 184,50</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Coluna 2: Recovery Kanban -->
-            <div class="column-window fade-in delay-300">
-                <div class="glass-panel border-rose-500/20 rounded-lg p-2 h-full flex flex-col gap-2">
-                    <div class="flex justify-between items-center px-1">
-                        <h3
-                            class="text-xs font-black text-rose-500 uppercase tracking-[0.2em] italic flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[12px]">view_kanban</span>
-                            Voxel_Recovery
-                        </h3>
-                    </div>
-
-                    <div class="flex-1 flex flex-col gap-2 overflow-hidden">
-                        <div class="flex flex-col gap-1 flex-1">
-                            <div
-                                class="flex justify-between text-xs font-black text-rose-500/50 uppercase italic tracking-widest px-1">
-                                <span>Critical_Path</span>
-                                <span class="animate-pulse">LOCK</span>
-                            </div>
-                            <div id="kanban-critical" class="kanban-lane flex-1">
-                                <div
-                                    class="px-2 py-6 text-center text-xs text-text-muted font-mono opacity-20 italic">
-                                    EMPTY_VECTOR</div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-1 flex-1">
-                            <div
-                                class="flex justify-between text-xs font-black text-amber-500/50 uppercase italic tracking-widest px-1">
-                                <span>Sync_Channel</span>
-                                <span class="animate-pulse">ACTIVE</span>
-                            </div>
-                            <div id="kanban-contacting" class="kanban-lane flex-1 opacity-80"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Coluna 3: Neural Action Hub -->
-            <div class="column-window fade-in delay-500">
-                <div class="glass-panel border-rose-500/30 rounded-lg flex flex-col h-full overflow-hidden shadow-2xl">
-                    <div
-                        class="px-2 py-1.5 bg-rose-500/5 border-b border-rose-500/10 flex justify-between items-center">
-                        <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-rose-500 text-[14px]">psychology_alt</span>
-                            <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] italic">Neural_Active
-                            </h3>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="size-1 rounded-full bg-rose-500 data-pulsar"></span>
-                        </div>
-                    </div>
-
-                    <div class="p-2 flex flex-col gap-2 flex-1 overflow-y-auto">
-                        <div
-                            class="p-2 bg-black/20 border border-white/5 rounded-sm relative overflow-hidden group hover:border-rose-500/30 transition-all">
-                            <div
-                                class="absolute top-0 right-0 w-0.5 h-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]">
-                            </div>
-                            <h4 class="text-xs font-black text-white uppercase italic tracking-widest mb-0.5">
-                                Loss_Detection</h4>
-                            <p class="text-xs text-text-muted font-mono leading-tight mb-2">SCAN: 42_UNITS_STALL</p>
-                            <button
-                                class="w-full py-1 bg-rose-600/80 hover:bg-rose-500 text-xs font-black text-white rounded-sm uppercase tracking-widest">Run_Protocol</button>
-                        </div>
-
-                        <div
-                            class="p-2 bg-black/20 border border-white/5 rounded-sm group hover:border-emerald-500/30 transition-all">
-                            <h4 class="text-xs font-black text-white uppercase italic tracking-widest mb-0.5">
-                                Yield_Upsell</h4>
-                            <p class="text-xs text-text-muted font-mono leading-tight mb-2">TARGET: TOP_5%_VIP</p>
-                            <button
-                                class="w-full py-1 border border-white/10 hover:border-emerald-500/50 text-xs font-black text-emerald-400 rounded-sm uppercase tracking-widest">Broadcast</button>
-                        </div>
-
-                        <div class="mt-auto p-2 bg-rose-950/20 border border-white/5 rounded-sm">
-                            <div class="font-mono text-xs text-rose-400/60 leading-tight">
-                                <p class="animate-pulse">> CLUSTER: SYNC_DATA</p>
-                                <p class="opacity-30 italic">> CPU: 12%_LOAD</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Coluna 4: Global Core Metrics -->
-            <div class="column-window fade-in delay-700">
-                <div
-                    class="glass-panel border-white/5 rounded-lg p-2 flex flex-col items-center justify-center relative min-h-[140px] shadow-2xl">
-                    <h3
-                        class="absolute top-2 left-2 text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">
-                        Retention_Net</h3>
-                    <div class="relative size-24 flex items-center justify-center">
-                        <svg class="size-full transform -rotate-90">
-                            <circle class="text-white/[0.02]" cx="48" cy="48" fill="transparent" r="40"
-                                stroke="currentColor" stroke-width="4"></circle>
-                            <circle class="text-rose-500 gauge-animate shadow-[0_0_12px_rgba(239,68,68,0.4)]" cx="48"
-                                cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251"
-                                stroke-dashoffset="88" stroke-linecap="round" stroke-width="4"></circle>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-xl font-black text-white tracking-[0.1em] italic leading-none">65%</span>
-                            <span
-                                class="text-xs text-text-muted font-black uppercase tracking-widest mt-1">CORE_UPLIFT</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="glass-panel border-white/5 rounded-lg p-2.5 flex-1 flex flex-col relative overflow-hidden group shadow-2xl">
-                    <div class="flex justify-between items-start mb-1">
-                        <span
-                            class="text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">Revenue_Flow</span>
-                    </div>
-                    <div class="h-12 w-full flex items-end gap-1 mb-2 mt-2 opacity-40">
-                        <div class="flex-1 bg-rose-500/20 h-1/4"></div>
-                        <div class="flex-1 bg-red-500/40 h-2/4"></div>
-                        <div class="flex-1 bg-rose-500 h-3/4 shadow-[0_0_10px_rgba(239,68,68,0.2)]"></div>
-                        <div class="flex-1 bg-rose-400 h-1/2"></div>
-                    </div>
-                    <div class="mt-auto">
-                        <div class="text-xs text-text-muted uppercase font-black tracking-widest mb-0.5 opacity-30">
-                            Total_Asset_Value</div>
-                        <p id="totalRevenue" class="text-lg font-black text-white tracking-widest italic leading-none">
-                            R$ 14.2k</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Master Ranking Overlay Panel (Efeito Master) -->
-        <div id="referrals-panel"
-            class="hidden fixed inset-y-0 right-0 w-80 bg-surface-dark border-l border-border-dark shadow-2xl z-[100] transform translate-x-full transition-all duration-500 flex flex-col glass-morphism">
-            <div class="p-4 border-b border-white/10 bg-surface-darker/50 flex justify-between items-center">
-                <h3 class="text-white text-xs font-black uppercase tracking-widest">
-                    REDE DE <span id="ambassador-name-display" class="text-rose-500">---</span>
-                </h3>
-                <button onclick="closeReferrals()" class="text-text-muted hover:text-white transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">close</span>
+                <button onclick="openModal('register')" class="btn-primary scale-90">
+                    Novo Aluno
                 </button>
             </div>
-            <div id="referrals-list-container" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2 custom-scrollbar">
-                <!-- Cards de indicados injetados via JS -->
-            </div>
-        </div>
+        </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-2">
-            <!-- Ranking de Embaixadores Global (Componente Master) -->
-            <div class="lg:col-span-1 glass-panel border-white/5 rounded-lg p-2 fade-in delay-800 h-full flex flex-col">
-                <div class="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
-                    <span class="material-symbols-outlined text-rose-500 text-[16px]">stars</span>
-                    <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] italic">Elite_Ranking</h3>
-                </div>
-                <div id="rankingContainer" class="flex flex-col gap-2">
-                    <!-- JS injects here -->
-                </div>
-            </div>
-
-            <!-- Membros em Risco (Movido para grid compacta) -->
-            <div class="lg:col-span-3">
-                <div
-                    class="glass-panel border-white/5 rounded flex flex-col fade-in overflow-hidden shadow-2xl delay-800">
-                    <div class="p-2 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
-                        <h3 class="text-xs font-black text-rose-500 uppercase tracking-[0.2em] italic">
-                            Registry_Vulnerabilities</h3>
-                        <div class="flex gap-2">
-                            <input id="tableFilter"
-                                class="h-6 bg-surface-darker border border-border-dark rounded text-xs px-2 text-white placeholder-text-muted focus:ring-1 focus:ring-red-500"
-                                placeholder="SEARCH..." type="text" />
+        <div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Churn Rate -->
+                <div class="glass-card p-6 rounded-2xl border border-border relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Taxa de Evasão</span>
+                        <div class="size-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-500">
+                            <span class="material-symbols-outlined text-[18px]">trending_down</span>
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table id="memberTable" class="w-full text-left border-collapse">
-                            <thead>
-                                <tr
-                                    class="bg-surface-darker border-b border-border-dark text-xs uppercase tracking-widest text-text-muted font-black">
-                                    <th class="px-2 py-1.5">Membro</th>
-                                    <th class="px-2 py-1.5">Status</th>
-                                    <th class="px-2 py-1.5 text-right italic">Freq</th>
-                                    <th class="px-2 py-1.5 text-right text-purple-400 italic">Evasão</th>
-                                    <th class="px-2 py-1.5 text-right">Score</th>
-                                    <th class="px-2 py-1.5 text-center">Ação</th>
+                    <div class="flex items-end gap-2">
+                        <h3 id="churnRate" class="text-3xl font-black italic">0%</h3>
+                        <span class="text-[10px] text-emerald-500 font-bold mb-1.5">▼ 2.4%</span>
+                    </div>
+                    <canvas id="miniChurnChart" class="mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></canvas>
+                </div>
+
+                <!-- Engagement -->
+                <div class="glass-card p-6 rounded-2xl border border-border relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Engajamento</span>
+                        <div class="size-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                            <span class="material-symbols-outlined text-[18px]">bolt</span>
+                        </div>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <h3 id="avgScore" class="text-3xl font-black italic">0</h3>
+                        <span class="text-xs text-text-muted font-bold mb-1.5">/100</span>
+                    </div>
+                    <canvas id="miniEngChart" class="mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></canvas>
+                </div>
+
+                <!-- LTV -->
+                <div class="glass-card p-6 rounded-2xl border border-border relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">LTV Projetado</span>
+                        <div class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[18px]">attach_money</span>
+                        </div>
+                    </div>
+                    <h3 id="ltvProjected" class="text-3xl font-black italic">R$ 0</h3>
+                    <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary" style="width: 75%"></div>
+                    </div>
+                </div>
+
+                <!-- Revenue -->
+                <div class="glass-card p-6 rounded-2xl border border-border relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Faturamento Real</span>
+                        <div class="size-8 rounded-lg bg-white/5 flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined text-[18px]">account_balance</span>
+                        </div>
+                    </div>
+                    <h3 id="totalRevenue" class="text-3xl font-black italic">R$ 0</h3>
+                    <p id="totalMembers" class="text-[10px] text-text-muted font-bold uppercase mt-4 tracking-widest">0 Alunos Ativos</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Body -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Middle Column: Main Table -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-black uppercase tracking-tight italic">Prontuários em Foco</h3>
+                        <div class="flex items-center gap-3">
+                            <input id="tableFilter" type="text" placeholder="Filtrar aluno..." class="bg-surface border border-border rounded-xl px-4 py-2 text-xs focus:ring-1 focus:ring-primary outline-none min-w-[200px]">
+                            <button id="btnRetrain" class="btn-secondary flex items-center gap-2 scale-90">
+                                <span class="material-symbols-outlined text-[16px]">refresh</span>
+                                Treinar IA
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="member-table-container">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-dark border-b border-border">
+                                <tr class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
+                                    <th class="px-6 py-4 italic">Membro</th>
+                                    <th class="px-6 py-4 hidden md:table-cell">Status</th>
+                                    <th class="px-6 py-4 text-right">Plano</th>
+                                    <th class="px-6 py-4">Score IA</th>
+                                    <th class="px-6 py-4 text-center">Atividade</th>
+                                    <th class="px-6 py-4 text-right px-8">Ação</th>
                                 </tr>
                             </thead>
-                            <tbody id="memberTableBody" class="text-xs divide-y divide-border-dark"></tbody>
+                            <tbody id="memberTableBody" class="divide-y divide-border">
+                                <!-- JS Injected Content -->
+                            </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Right Column: Insights & Ranking -->
+                <div class="space-y-8">
+                    <!-- Distribution Chart -->
+                    <div class="glass-card p-6 rounded-2xl border border-border">
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] italic mb-6">Mix de Planos</h3>
+                        <div id="planDistributionStats" class="space-y-4">
+                            <!-- JS Injected -->
+                        </div>
+                    </div>
+
+                    <!-- Recovery Kanban -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] italic flex items-center gap-2">
+                            <span class="size-2 bg-rose-500 rounded-full animate-ping"></span>
+                            Recuperação Crítica
+                        </h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="kanban-column p-4 flex flex-col gap-3 min-h-[150px]">
+                                <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest italic mb-1">Ações Imediatas</span>
+                                <div id="kanban-critical" class="space-y-3"></div>
+                            </div>
+                            <div class="kanban-column p-4 flex flex-col gap-3 min-h-[150px]">
+                                <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest italic mb-1">Em Atendimento</span>
+                                <div id="kanban-contacting" class="space-y-3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Elite Ranking -->
+                    <div class="glass-card p-6 rounded-2xl border border-border">
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] italic flex items-center gap-2 mb-6 text-primary">
+                            <span class="material-symbols-outlined text-[16px]">stars</span>
+                            Elite Rank (Indicações)
+                        </h3>
+                        <div id="rankingContainer" class="space-y-4">
+                            <!-- JS Injected -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modals -->
-    <div id="modalOverlay" class="modal-overlay" onclick="if(event.target === this) closeModal()">
-        <div class="modal-content overflow-hidden">
-            <div class="bg-surface-darker px-6 py-4 border-b border-border-dark flex justify-between items-center">
-                <h3 id="modalTitle" class="text-white font-black uppercase tracking-widest text-base">Novo Cadastro</h3>
-                <button onclick="closeModal()" class="text-text-muted hover:text-white">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+    <!-- Ambassador Referral Side Panel -->
+    <div id="referrals-panel" class="hidden fixed inset-y-0 right-0 w-96 bg-surface border-l border-border shadow-2xl z-[100] transform translate-x-full transition-all duration-500 flex flex-col backdrop-blur-xl bg-surface/90">
+        <div class="p-6 border-b border-border flex justify-between items-center">
+            <h3 class="text-sm font-black uppercase tracking-widest">
+                Rede de <span id="ambassador-name-display" class="text-primary">---</span>
+            </h3>
+            <button onclick="closeReferrals()" class="material-symbols-outlined text-text-muted hover:text-white transition-colors">close</button>
+        </div>
+        <div id="referrals-list-container" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+            <!-- JS Injected -->
+        </div>
+    </div>
+
+    <!-- Modal: Register/Edit Student -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] hidden items-center justify-center p-4 transition-all opacity-0">
+        <div class="modal-content glass-card rounded-2xl border border-border w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-border flex justify-between items-center bg-surface">
+                <h3 id="modalTitle" class="text-lg font-black uppercase tracking-tight italic italic">Novo Cadastro</h3>
+                <button onclick="closeModal()" class="material-symbols-outlined text-text-muted hover:text-white transition-colors">close</button>
             </div>
-            <form id="memberForm" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto" onsubmit="handleFormSubmit(event)">
+            
+            <form id="memberForm" class="p-8 space-y-6 overflow-y-auto custom-scrollbar" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="formAction" value="register">
                 <input type="hidden" id="memberId">
+                <input type="hidden" id="memberPhoto">
 
-                <!-- Foto do Aluno no Topo -->
-                <div class="flex flex-col items-center gap-3 py-2">
+                <div class="flex items-center gap-6 pb-6 border-b border-border">
                     <div class="relative group cursor-pointer" onclick="document.getElementById('photoInput').click()">
-                        <div id="photoPreview"
-                            class="size-24 rounded-full bg-surface-darker border-2 border-dashed border-border-dark flex items-center justify-center overflow-hidden transition-all group-hover:border-red-500/50">
-                            <span
-                                class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>
+                        <div id="photoPreview" class="size-20 rounded-2xl bg-white/5 border-2 border-dashed border-border flex items-center justify-center overflow-hidden group-hover:border-primary transition-all">
+                            <span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>
                         </div>
-                        <div
-                            class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <span class="material-symbols-outlined text-white">upload</span>
-                        </div>
-                        <input type="file" id="photoInput" class="hidden" accept="image/*"
-                            onchange="handlePhotoUpload(this)">
+                        <input type="file" id="photoInput" class="hidden" accept="image/*" onchange="handlePhotoUpload(this)">
                     </div>
-                    <label class="text-xs font-black text-text-muted uppercase tracking-widest text-center">Foto do
-                        Aluno<br>(Clique para alterar)</label>
-                    <input type="hidden" id="memberPhoto">
+                    <div class="flex-1 space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Nome Completo</label>
+                        <input type="text" id="memberName" required class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Nome do Aluno">
+                    </div>
                 </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Nome Completo</label>
-                    <input type="text" id="memberName" required
-                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                        placeholder="Ex: João Silva">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Data de
-                            Nascimento</label>
-                        <input type="date" id="memberBirth" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Nascimento</label>
+                        <input type="date" id="memberBirth" required class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none transition-all">
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Status</label>
-                        <select id="memberStatus"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Status Analítico</label>
+                        <select id="memberStatus" class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none transition-all">
                             <option value="Ativo">Ativo</option>
                             <option value="Em Risco">Em Risco</option>
                             <option value="Inativo">Inativo</option>
@@ -760,103 +315,40 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email</label>
-                        <input type="email" id="memberEmail" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="joao@email.com">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Email Principal</label>
+                        <input type="email" id="memberEmail" required class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none" placeholder="exemplo@gmail.com">
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">WhatsApp</label>
-                        <input type="tel" id="memberPhone" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="(11) 99999-9999">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">WhatsApp / Telefone</label>
+                        <input type="tel" id="memberPhone" required class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none" placeholder="(00) 00000-0000">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">CPF</label>
-                        <input type="text" id="memberCPF" required
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="000.000.000-00">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Plano</label>
-                        <select id="memberPlan"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Plano Contratado</label>
+                        <select id="memberPlan" class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none">
                             <option value="Mensal Básico">Mensal Básico</option>
                             <option value="Pro Semestral">Pro Semestral</option>
                             <option value="VIP Anual">VIP Anual</option>
                             <option value="Experimental">Experimental</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Objetivo</label>
-                        <select id="memberGoal"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                            <option value="weightloss">Emagrecimento</option>
-                            <option value="gain">Hipertrofia</option>
-                            <option value="health">Saúde</option>
-                        </select>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Campanha</label>
-                        <select id="memberCampaign"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none">
-                            <option value="Orgânico">Orgânico</option>
-                            <option value="Indicação">Indicação</option>
-                            <option value="Recuperação de Inativos">Recuperação de Inativos</option>
-                            <option value="Melhoria para Plano VIP">Melhoria para Plano VIP</option>
-                            <option value="Anúncio Meta">Anúncio Meta</option>
-                            <option value="Google Ads">Google Ads</option>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Objetivo Foco</label>
+                        <select id="memberGoal" class="w-full bg-surface-dark border border-border rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                            <option value="weightloss">Redução de Peso</option>
+                            <option value="gain">Ganho de Massa</option>
+                            <option value="health">Qualidade de Vida</option>
                         </select>
                     </div>
                 </div>
 
-
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Endereço</label>
-                    <input type="text" id="memberAddress"
-                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                        placeholder="Rua, Número, Complemento">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Bairro</label>
-                        <input type="text" id="memberNeighborhood"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Ex: Centro">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Cidade</label>
-                        <input type="text" id="memberCity"
-                            class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                            placeholder="Ex: São Paulo">
-                    </div>
-                </div>
-
-                <div class="space-y-1.5 relative">
-                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Quem o indicou?</label>
-                    <input type="text" id="memberReferrer" autocomplete="off"
-                        class="w-full bg-surface-darker border border-border-dark rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-red-500 outline-none"
-                        placeholder="Digite para buscar alunos..." oninput="handleReferrerInput(this.value)">
-                    <div id="referrerSuggestions"
-                        class="absolute left-0 right-0 mt-1 bg-surface-dark border border-border-dark rounded-lg shadow-xl z-50 overflow-hidden hidden max-h-48 overflow-y-auto">
-                    </div>
-                </div>
-
-                <div class="pt-2">
-                    <button type="submit"
-                        class="w-full bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-sm py-2.5 rounded-lg transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
-                        Gravar Informações
-                    </button>
-                </div>
+                <button type="submit" class="w-full btn-primary py-4 rounded-xl text-base shadow-xl">
+                    Sincronizar no Banco de Dados
+                </button>
             </form>
         </div>
     </div>
@@ -872,161 +364,86 @@
                 updateRiskKanban(members);
                 updatePlanDistribution(members);
                 await updateKPIs();
-
-                // Initialize ranking
-                if (typeof initMasterRanking === 'function') {
-                    await initMasterRanking();
-                }
+                if (typeof initMasterRanking === 'function') await initMasterRanking();
             } catch (err) {
-                console.error('Core_Sync_Error:', err);
-                showToast('Database_Link_Failure', 'error');
+                console.error('Core_Error:', err);
+                PlayFitnessUI.toast('Erro ao sincronizar dados preditivos', 'error');
             }
         }
 
-        function renderMemberTable(members) {
-            const tbody = document.getElementById('memberTableBody');
-            if (!tbody) return;
-
+        function renderMembersTable(members) {
+            const tableBody = document.getElementById('memberTableBody');
+            if (!tableBody) return;
             if (members.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="px-3 py-8 text-center text-text-muted italic">
-                            Nenhum aluno cadastrado. <button onclick="seedInitialData()" class="text-red-500 underline">Clique aqui para gerar dados de teste.</button>
-                        </td>
-                    </tr>
-                `;
+                tableBody.innerHTML = '<tr><td colspan="6" class="px-8 py-20 text-center text-text-muted italic text-sm">Nenhum aluno identificado no ecossistema. <button onclick="seedInitialData()" class="text-primary underline font-bold">Gerar Amostras</button></td></tr>';
                 return;
             }
 
-            tbody.innerHTML = members.map(m => {
-                const score = m.score_ia || Math.floor(Math.random() * 40) + 60; // Mock score if missing
-                const statusColor = m.status === 'Em Risco' ? 'rose' : (m.status === 'Inativo' ? 'slate' : 'emerald');
-                const statusLabel = m.status || 'Ativo';
-                const evasion = m.status === 'Em Risco' ? (Math.random() * 20 + 75).toFixed(1) : (Math.random() * 10 + 5).toFixed(1);
+            tableBody.innerHTML = members.map(m => {
+                const score = m.score_ia || Math.floor(Math.random() * 30) + 70;
+                const statusColor = m.status === 'Em Risco' ? '#ff3b30' : (m.status === 'Inativo' ? '#8e8e93' : '#34c759');
+                const lastSeen = Math.floor(Math.random() * 5);
 
                 return `
-                    <tr class="member-row hover:bg-surface-darker/50 transition-colors group">
-                        <td class="px-3 py-2 font-medium text-white flex items-center gap-2 text-sm">
-                            <div class="size-7 rounded-full bg-cover bg-center border border-border-dark group-hover:border-red-500/30 transition-all shrink-0"
-                                style="background-image: url('${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}')">
-                            </div>
-                            <span class="member-name truncate max-w-[120px] inline-block align-middle">${m.nome_completo}</span>
-                        </td>
-                        <td class="px-3 py-2">
-                            <span class="px-1.5 py-0.5 rounded text-xs font-black uppercase bg-${statusColor}-500/10 text-${statusColor}-500 border border-${statusColor}-500/20">
-                                ${statusLabel}
-                            </span>
-                        </td>
-                        <td class="px-3 py-2 text-right text-text-muted text-xs">${(Math.random() * 4 + 1).toFixed(1)}x/sem</td>
-                        <td class="px-3 py-2">
-                             <span class="text-xs font-bold text-text-muted uppercase tracking-wider truncate inline-block max-w-[100px] align-middle">
-                                ${m.campanha || 'Orgânico'}
-                             </span>
-                        </td>
-                        <td class="px-3 py-2 text-right text-${statusColor}-500 font-mono font-medium text-sm">${evasion}%</td>
-                        <td class="px-3 py-2 text-right">
-                            <div class="flex items-center justify-end gap-1.5">
-                                <span class="text-${statusColor}-500 font-bold text-xs">${score}/100</span>
-                                <div class="w-12 h-1 bg-surface-darker rounded-full overflow-hidden">
-                                    <div class="h-full bg-${statusColor}-500" style="width: ${score}%"></div>
+                    <tr class="member-row group transition-all hover:bg-white/[0.01]">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-4">
+                                <div class="size-10 rounded-xl overflow-hidden border border-border group-hover:border-primary/50 transition-all shrink-0">
+                                    <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}&background=1c1c1f&color=fff`}" class="size-full object-cover">
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-black italic uppercase truncate group-hover:text-primary transition-colors">${m.nome_completo}</p>
+                                    <p class="text-[10px] text-text-muted font-mono">${m.cpf || '000.000.000-00'}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-3 py-2 text-right text-text-muted text-xs">${Math.floor(Math.random() * 10)}d atrás</td>
-                        <td class="px-3 py-2 text-center">
-                            <button onclick="openModal('edit', '${m.id}')"
-                                class="text-text-muted hover:text-red-500 transition-colors">
-                                <span class="material-symbols-outlined text-[16px]">edit</span>
-                            </button>
+                        <td class="px-6 py-4 hidden md:table-cell">
+                            <div class="flex items-center gap-2">
+                                <span class="size-1.5 rounded-full" style="background: ${statusColor}"></span>
+                                <span class="text-[10px] font-black uppercase italic" style="color: ${statusColor}">${m.status || 'Ativo'}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="text-xs font-mono text-text-muted">${m.plano || 'Base'}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden max-w-[60px]">
+                                    <div class="h-full" style="width: ${score}%; background: ${statusColor}"></div>
+                                </div>
+                                <span class="text-xs font-black" style="color: ${statusColor}">${score}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-[10px] font-bold text-text-muted uppercase tracking-widest">${lastSeen}d atrás</span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                                <button onclick="openModal('edit', '${m.id}')" class="material-symbols-outlined text-[18px] hover:text-primary">edit_square</button>
+                                <button onclick="PlayFitnessUI.toast('Integrando com WhatsApp...', 'chat')" class="material-symbols-outlined text-[18px] hover:text-emerald-500">chat</button>
+                            </div>
                         </td>
                     </tr>
                 `;
             }).join('');
-        }
 
-        // Inicializar UI Global
-        document.addEventListener('DOMContentLoaded', () => {
-            PlayFitnessUI.initHeader('dashboard');
-        });
-
-        const showToast = (msg, icon) => PlayFitnessUI.toast(msg, icon);
-
-        async function updateKPIs() {
-            try {
-                const kpis = await PlayFitnessAPI.kpis.getOverview();
-
-                document.getElementById('churnRate').textContent = kpis.churnRate + '%';
-                document.getElementById('avgScore').innerHTML = kpis.avgScore + '<span class="text-xs text-text-muted font-normal ml-0.5">/100</span>';
-                document.getElementById('ltvProjected').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.ltv);
-                document.getElementById('totalRevenue').textContent = new Intl.NumberFormat('pt-BR', { notation: 'compact', style: 'currency', currency: 'BRL' }).format(kpis.revenue);
-                document.getElementById('liquidProfit').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.revenue * 0.4);
-                document.getElementById('totalMembers').textContent = kpis.total + ' alunos';
-                document.getElementById('breakEvenCurrent').textContent = kpis.total;
-
-                // Atualizar Kanban de Risco
-                updateRiskKanban(allMembersData);
-                updatePlanDistribution(allMembersData);
-
-            } catch (e) {
-                console.error('Erro ao atualizar KPIs:', e);
-            }
-        }
-
-        function updateRiskKanban(members) {
-            const criticalLane = document.getElementById('kanban-critical');
-            const contactingLane = document.getElementById('kanban-contacting');
-
-            const criticalOnes = members.filter(m => m.status === 'Em Risco');
-
-            // Mocking some as "Contacting" for demo purposes if we don't have a status for it in DB yet
-            const contactingOnes = criticalOnes.slice(0, Math.floor(criticalOnes.length / 2));
-            const pendingOnes = criticalOnes.slice(Math.floor(criticalOnes.length / 2));
-
-            const renderCard = (m) => `
-                <div class="kanban-card group">
-                    <div class="flex items-center gap-2 mb-1.5">
-                        <div class="size-5 rounded-full bg-cover bg-center border border-border-dark" style="background-image: url('${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}')"></div>
-                        <p class="text-xs font-black text-white truncate w-24 uppercase italic tracking-tighter">${m.nome_completo.split(' ')[0]}</p>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[11px] text-rose-500 font-bold">IA: ${m.score_ia || 45}%</span>
-                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}" target="_blank" class="material-symbols-outlined text-emerald-500 text-[12px]">chat</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            if (pendingOnes.length === 0) {
-                criticalLane.innerHTML = '<div class="px-2 py-4 text-center text-[11px] text-text-muted italic">Fila limpa</div>';
-            } else {
-                criticalLane.innerHTML = pendingOnes.map(renderCard).join('');
-            }
-
-            if (contactingOnes.length === 0 && pendingOnes.length > 0) {
-                // Sample card if empty
-                contactingLane.innerHTML = '<div class="px-2 py-4 text-center text-[11px] text-text-muted italic">Nenhum contato iniciado</div>';
-            } else if (contactingOnes.length > 0) {
-                contactingLane.innerHTML = contactingOnes.map(renderCard).join('');
-            }
+            renderSparkline('miniChurnChart', [2, 5, 3, 2, 4, 3, 2], '#ff3b30');
+            renderSparkline('miniEngChart', [80, 85, 82, 90, 88, 92, 95], '#34c759');
         }
 
         function renderSparkline(canvasId, data, color) {
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            const w = canvas.width / 1;
-            const h = canvas.height / 1;
+            const w = canvas.width = canvas.offsetWidth;
+            const h = canvas.height = canvas.offsetHeight;
             ctx.clearRect(0, 0, w, h);
-
             ctx.beginPath();
             ctx.strokeStyle = color;
             ctx.lineWidth = 2;
             ctx.lineJoin = 'round';
-
             const step = w / (data.length - 1);
             const max = Math.max(...data) * 1.2 || 1;
-
             data.forEach((val, i) => {
                 const x = i * step;
                 const y = h - (val / max) * h;
@@ -1034,378 +451,212 @@
                 else ctx.lineTo(x, y);
             });
             ctx.stroke();
-
-            ctx.lineTo(w, h);
-            ctx.lineTo(0, h);
-            ctx.fillStyle = color.replace(')', ', 0.15)').replace('rgb', 'rgba');
+            ctx.lineTo(w, h); ctx.lineTo(0, h);
+            ctx.fillStyle = color + '15';
             ctx.fill();
         }
 
-        function renderMembersTable(members) {
-            const tableBody = document.getElementById('membersTableBody');
-            if (!tableBody) return;
-            tableBody.innerHTML = members.map(m => `
-                <tr class="member-row group border-b border-white/5 hover:bg-white/[0.01] transition-colors">
-                    <td class="px-2 py-1.5">
-                        <div class="flex items-center gap-2.5">
-                            <div class="relative size-7 shrink-0">
-                                <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}&background=111827&color=ef4444`}" 
-                                     class="size-full rounded-full object-cover border border-white/10 group-hover:border-rose-500/50 transition-all">
-                                <div class="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border-2 border-obsidian ${m.status === 'Ativo' ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' : 'bg-rose-500 shadow-[0_0_5px_#ef4444]'}"></div>
-                            </div>
-                            <div class="flex min-w-0 flex-col">
-                                <span class="member-name truncate italic text-xs font-black uppercase tracking-tight text-white">${m.nome_completo}</span>
-                                <span class="text-[11px] font-mono opacity-70 tracking-tighter text-text-muted">${m.cpf || 'NO_IDENT'}</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="hidden px-2 py-1.5 md:table-cell">
-                        <span class="italic text-[11px] font-black uppercase tracking-widest text-text-muted">${m.plano}</span>
-                    </td>
-                    <td class="px-2 py-1.5">
-                        <div class="flex items-center gap-1.5">
-                            <div class="h-1 w-12 overflow-hidden rounded-full bg-white/5">
-                                <div class="h-full bg-rose-500 shadow-[0_0_3px_#ef4444]" style="width: ${m.score_ia || 0}%"></div>
-                            </div>
-                            <span class="font-mono text-[11px] text-white">${m.score_ia || 0}%</span>
-                        </div>
-                    </td>
-                    <td class="px-2 py-1.5 text-right">
-                        <div class="flex justify-end gap-1 opacity-20 transition-opacity group-hover:opacity-100">
-                            <button onclick="openModal('edit', '${m.id}')" class="p-1 transition-colors hover:text-white">
-                                <span class="material-symbols-outlined text-[14px]">edit_square</span>
-                            </button>
-                            <button onclick="showToast('Protocolo de Envio...', 'send')" class="p-1 transition-colors hover:text-rose-500">
-                                <span class="material-symbols-outlined text-[14px]">outgoing_mail</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+        async function updateKPIs() {
+            try {
+                const kpis = await PlayFitnessAPI.kpis.getOverview();
+                document.getElementById('churnRate').textContent = kpis.churnRate + '%';
+                document.getElementById('avgScore').textContent = kpis.avgScore;
+                document.getElementById('ltvProjected').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.ltv);
+                document.getElementById('totalRevenue').textContent = new Intl.NumberFormat('pt-BR', { notation: 'compact', style: 'currency', currency: 'BRL' }).format(kpis.revenue);
+                document.getElementById('totalMembers').textContent = kpis.total + ' ALUNOS ATIVOS';
+            } catch (e) { console.error(e); }
+        }
 
-            renderSparkline('miniChurnChart', [2, 5, 3, 2, 4, 3, 2], 'rgb(251, 113, 133)');
-            renderSparkline('miniEngChart', [80, 85, 82, 90, 88, 92, 95], 'rgb(16, 185, 129)');
+        function updateRiskKanban(members) {
+            const criticalOnes = members.filter(m => m.status === 'Em Risco');
+            const render = (containerId, subset) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = subset.length > 0 ? subset.map(m => `
+                    <div class="glass-card p-3 rounded-xl border border-white/5 flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}" class="size-7 rounded-lg object-cover border border-white/10">
+                            <span class="text-xs font-bold uppercase truncate w-24">${m.nome_completo.split(' ')[0]}</span>
+                        </div>
+                        <span class="text-[10px] font-black italic text-rose-500">${m.score_ia || 45}%</span>
+                        <a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}" target="_blank" class="material-symbols-outlined text-[16px] text-emerald-500 opacity-0 group-hover:opacity-100 transition-all">chat</a>
+                    </div>
+                `).join('') : '<p class="text-[10px] text-text-muted italic opacity-40 text-center py-4">Fila Limpa</p>';
+            };
+            render('kanban-critical', criticalOnes.slice(Math.floor(criticalOnes.length / 2)));
+            render('kanban-contacting', criticalOnes.slice(0, Math.floor(criticalOnes.length / 2)));
         }
 
         function updatePlanDistribution(members) {
             const container = document.getElementById('planDistributionStats');
             if (!container) return;
             const plans = {};
-            members.forEach(m => {
-                plans[m.plano] = (plans[m.plano] || 0) + 1;
-            });
-
+            members.forEach(m => plans[m.plano] = (plans[m.plano] || 0) + 1);
             const total = members.length || 1;
-            const planColors = {
-                'Mensal Básico': '#ef4444',
-                'Pro Semestral': '#dc2626',
-                'VIP Anual': '#991b1b',
-                'Experimental': '#fca5a5'
-            };
-
-            const gaugeCount = document.getElementById('planGaugeCount');
-            if (gaugeCount) gaugeCount.textContent = total.toLocaleString('pt-BR');
-
-            let gradientStr = '';
-            let currentPerc = 0;
-            const entries = Object.entries(plans);
-
-            entries.forEach(([name, count]) => {
-                const perc = (count / total) * 100;
-                const color = planColors[name] || '#64748b';
-                gradientStr += `${color} ${currentPerc}% ${currentPerc + perc}%, `;
-                currentPerc += perc;
-            });
-            gradientStr += '#1e293b 0% 100%';
-
-            const planGauge = document.getElementById('planGauge');
-            if (planGauge) planGauge.style.background = `conic-gradient(${gradientStr})`;
-
-            container.innerHTML = entries.map(([name, count]) => {
+            const colors = { 'Mensal Básico': '#dc2626', 'Pro Semestral': '#ef4444', 'VIP Anual': '#991b1b', 'Experimental': '#f87171' };
+            
+            container.innerHTML = Object.entries(plans).map(([name, count]) => {
                 const perc = Math.round((count / total) * 100);
-                const color = planColors[name] || '#64748b';
+                const color = colors[name] || '#64748b';
                 return `
-                    <div class="space-y-0.5">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase italic tracking-wider text-white">
-                                <div class="size-1.5 rounded-full" style="background-color: ${color}; box-shadow: 0 0 5px ${color}"></div>
-                                <span>${name}</span>
-                            </div>
-                            <div class="flex items-center gap-2 font-mono text-[11px]">
-                                <span class="text-white">${perc}%</span>
-                                <span class="opacity-50 text-text-muted">${count} U</span>
-                            </div>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[10px] font-black uppercase italic tracking-widest">
+                            <span class="text-text-muted">${name}</span>
+                            <span class="text-white">${perc}%</span>
                         </div>
-                        <div class="h-1 w-full overflow-hidden rounded-full bg-white/5">
-                            <div class="h-full rounded-full transition-all duration-1000" style="width: ${perc}%; background-color: ${color}"></div>
+                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full transition-all duration-1000" style="width: ${perc}%; background: ${color}"></div>
                         </div>
                     </div>
                 `;
             }).join('');
-        }
-
-        async function seedInitialData() {
-            showToast('Sincronizando Core...', 'sync');
-            const samples = [
-                { nome_completo: 'Marcos Oliveira', status: 'Ativo', plano: 'Pro Semestral', cpf: '123.456.789-01' },
-                { nome_completo: 'Juliana Santos', status: 'Em Risco', plano: 'Mensal Básico', cpf: '234.567.890-12' },
-                { nome_completo: 'Ricardo Almeida', status: 'Ativo', plano: 'VIP Anual', cpf: '345.678.901-23' },
-                { nome_completo: 'Fernanda Lima', status: 'Em Risco', plano: 'Pro Semestral', cpf: '456.789.012-34' },
-                { nome_completo: 'Bruno Costa', status: 'Inativo', plano: 'Mensal Básico', cpf: '567.890.123-45' }
-            ];
-
-            for (const s of samples) {
-                try {
-                    await PlayFitnessAPI.students.save(null, {
-                        ...s,
-                        email: s.nome_completo.toLowerCase().replace(/\s/g, '.') + '@email.com',
-                        telefone: '119' + Math.floor(Math.random() * 100000000),
-                        objetivo: 'health',
-                        data_nascimento: '1995-05-15',
-                        score_ia: s.status === 'Em Risco' ? 45 : 88
-                    });
-                } catch (e) { console.error(e); }
-            }
-            loadMembersList();
         }
 
         async function openModal(action, id = '') {
             const overlay = document.getElementById('modalOverlay');
             if (!overlay) return;
-            const title = document.getElementById('modalTitle');
-            const actionInput = document.getElementById('formAction');
-            const idInput = document.getElementById('memberId');
-
             document.getElementById('memberForm').reset();
-            idInput.value = '';
+            document.getElementById('memberId').value = '';
             document.getElementById('memberPhoto').value = '';
-            document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted">add_a_photo</span>';
-
-            overlay.classList.add('active');
-            actionInput.value = action;
-
+            document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl">add_a_photo</span>';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            
             if (action === 'edit' && id) {
-                title.textContent = 'Neural Profile Edit';
+                document.getElementById('modalTitle').textContent = 'Editar Prontuário';
                 try {
                     const data = await PlayFitnessAPI.students.getById(id);
                     if (data) {
-                        idInput.value = data.id;
-                        document.getElementById('memberName').value = data.nome_completo || '';
-                        document.getElementById('memberBirth').value = data.data_nascimento || '';
-                        document.getElementById('memberEmail').value = data.email || '';
-                        document.getElementById('memberPhone').value = data.telefone || '';
-                        document.getElementById('memberCPF').value = data.cpf || '';
-                        document.getElementById('memberStatus').value = data.status || 'Ativo';
-                        document.getElementById('memberPlan').value = data.plano || 'Mensal Básico';
-                        document.getElementById('memberGoal').value = data.objetivo || 'health';
+                        document.getElementById('memberId').value = data.id;
+                        document.getElementById('memberName').value = data.nome_completo;
+                        document.getElementById('memberBirth').value = data.data_nascimento;
+                        document.getElementById('memberEmail').value = data.email;
+                        document.getElementById('memberPhone').value = data.telefone;
+                        document.getElementById('memberStatus').value = data.status;
+                        document.getElementById('memberPlan').value = data.plano;
+                        document.getElementById('memberGoal').value = data.objetivo;
                         document.getElementById('memberPhoto').value = data.foto_url || '';
-                        if (data.foto_url) {
-                            document.getElementById('photoPreview').innerHTML = `<img src="${data.foto_url}" class="w-full h-full object-cover rounded-full">`;
-                        }
+                        if (data.foto_url) document.getElementById('photoPreview').innerHTML = `<img src="${data.foto_url}" class="size-full object-cover">`;
                     }
-                } catch (err) {
-                    showToast('Sync Error', 'error');
-                }
+                } catch (err) { console.error(err); }
             } else {
-                title.textContent = 'Protocol_Append';
-            }
-        }
-
-        function handleReferrerInput(value) {
-            const container = document.getElementById('referrerSuggestions');
-            if (!container) return;
-            if (!value || value.trim().length === 0) {
-                container.innerHTML = '';
-                container.classList.add('hidden');
-                return;
-            }
-            const matches = allMembersData.filter(m => m.nome_completo.toLowerCase().includes(value.toLowerCase()));
-            if (matches.length > 0) {
-                container.innerHTML = matches.map(m => `
-                    <div onclick="selectReferrer('${m.nome_completo.replace(/'/g, "\\'")}')" 
-                         class="px-4 py-2 flex items-center gap-3 text-xs text-white hover:bg-rose-500/20 cursor-pointer border-b border-white/5 last:border-0 italic uppercase font-black">
-                        <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}" class="size-5 rounded-full object-cover">
-                        <span class="truncate tracking-wider">${m.nome_completo}</span>
-                    </div>
-                `).join('');
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
-        }
-
-        async function handlePhotoUpload(input) {
-            if (input.files && input.files[0]) {
-                const preview = document.getElementById('photoPreview');
-                preview.innerHTML = '<div class="size-4 border-2 border-rose-500 border-t-transparent animate-spin rounded-full"></div>';
-                try {
-                    const publicUrl = await PlayFitnessAPI.storage.upload(input.files[0]);
-                    document.getElementById('memberPhoto').value = publicUrl;
-                    preview.innerHTML = `<img src="${publicUrl}" class="w-full h-full object-cover rounded-full">`;
-                    showToast('Uplink Success', 'check_circle');
-                } catch (err) {
-                    preview.innerHTML = '<span class="material-symbols-outlined">add_a_photo</span>';
-                    showToast('Uplink Failed', 'error');
-                }
-            }
-        }
-
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            const id = document.getElementById('memberId').value;
-            const payload = {
-                nome_completo: document.getElementById('memberName').value,
-                email: document.getElementById('memberEmail').value,
-                telefone: document.getElementById('memberPhone').value,
-                cpf: document.getElementById('memberCPF').value,
-                foto_url: document.getElementById('memberPhoto').value,
-                status: document.getElementById('memberStatus').value,
-                plano: document.getElementById('memberPlan').value,
-                objetivo: document.getElementById('memberGoal').value,
-                data_nascimento: document.getElementById('memberBirth').value
-            };
-
-            try {
-                await PlayFitnessAPI.students.save(id || null, payload);
-                closeModal();
-                showToast('Registry_Sync', 'check_circle');
-                loadMembersList();
-            } catch (err) {
-                showToast('Database_Lock', 'error');
+                document.getElementById('modalTitle').textContent = 'Novo Cadastro PlayFitness';
             }
         }
 
         function closeModal() {
             const overlay = document.getElementById('modalOverlay');
-            if (overlay) overlay.classList.remove('active');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300);
         }
 
-        window.addEventListener('load', loadMembersList);
-
-        const filterEl = document.getElementById('tableFilter');
-        if (filterEl) {
-            filterEl.addEventListener('input', (e) => {
-                const rows = document.querySelectorAll('.member-row');
-                rows.forEach(r => {
-                    const name = r.querySelector('.member-name').textContent.toLowerCase();
-                    r.style.display = name.includes(e.target.value.toLowerCase()) ? '' : 'none';
-                });
-            });
+        async function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = '<div class="size-6 border-2 border-primary border-t-transparent animate-spin rounded-full"></div>';
+                try {
+                    const url = await PlayFitnessAPI.storage.upload(input.files[0]);
+                    document.getElementById('memberPhoto').value = url;
+                    preview.innerHTML = `<img src="${url}" class="size-full object-cover">`;
+                } catch (e) { PlayFitnessUI.toast('Erro upload', 'error'); }
+            }
         }
 
-        const btnRetrain = document.getElementById('btnRetrain');
-        if (btnRetrain) {
-            btnRetrain.addEventListener('click', () => {
-                showToast('Neural Python Engine Training...', 'psychology');
-                setTimeout(() => showToast('Python Optimization Complete', 'verified'), 2000);
-            });
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                nome_completo: document.getElementById('memberName').value,
+                email: document.getElementById('memberEmail').value,
+                telefone: document.getElementById('memberPhone').value,
+                status: document.getElementById('memberStatus').value,
+                plano: document.getElementById('memberPlan').value,
+                objetivo: document.getElementById('memberGoal').value,
+                data_nascimento: document.getElementById('memberBirth').value,
+                foto_url: document.getElementById('memberPhoto').value
+            };
+            try {
+                await PlayFitnessAPI.students.save(document.getElementById('memberId').value || null, payload);
+                closeModal();
+                loadMembersList();
+                PlayFitnessUI.toast('Sincronização Completa', 'verified');
+            } catch (e) { PlayFitnessUI.toast('Erro ao salvar', 'error'); }
         }
-
-    </script>
-
-    <!-- MASTER RANKING LOGIC (GLOBAL SCOPE) -->
-    <script>
-        let currentActiveAmbassador = null;
-        let rankingData = [];
-        let allStudents = [];
 
         async function initMasterRanking() {
             try {
-                rankingData = await PlayFitnessAPI.students.getReferralRanking();
-                allStudents = await PlayFitnessAPI.students.list();
-                renderRanking();
-            } catch (err) { console.error(err); }
-        }
-
-        function renderRanking() {
-            const container = document.getElementById('rankingContainer');
-            if (!container) return;
-
-            if (rankingData.length === 0) {
-                container.innerHTML = '<p class="text-xs text-text-muted italic text-center py-4">Nenhuma indicação ainda.</p>';
-                return;
-            }
-
-            container.innerHTML = rankingData.slice(0, 3).map((item, index) => {
-                const isWinner = index === 0;
-                const bgClass = isWinner ? 'bg-gradient-to-br from-rose-500/20 to-red-600/10 border-rose-500/30' : 'bg-surface-darker/50 border-white/5';
-
-                return `
-                    <div class="${bgClass} rounded-lg p-2 flex items-center gap-2.5 border transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer group"
-                         onclick="toggleReferrals('${item.name.replace(/'/g, "\\'")}')">
-                        <div class="relative shrink-0">
-                            <div class="size-8 rounded-full border-2 ${isWinner ? 'border-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]' : 'border-slate-500/30'} overflow-hidden">
-                                <img src="${item.foto}" class="w-full h-full object-cover">
+                const ranking = await PlayFitnessAPI.students.getReferralRanking();
+                const container = document.getElementById('rankingContainer');
+                container.innerHTML = ranking.slice(0, 3).map((item, i) => `
+                    <div onclick="toggleReferrals('${item.name.replace(/'/g, "\\'")}')" class="glass-card p-3 rounded-xl border border-white/5 flex items-center gap-4 cursor-pointer group hover:bg-white/[0.04] transition-all">
+                        <div class="relative">
+                            <div class="size-10 rounded-full border-2 ${i === 0 ? 'border-primary' : 'border-white/10'} overflow-hidden">
+                                <img src="${item.foto}" class="size-full object-cover">
                             </div>
-                            <div class="absolute -top-1 -right-1 size-3.5 ${isWinner ? 'bg-rose-500' : 'bg-slate-700'} rounded-full flex items-center justify-center text-white font-black text-[11px] border border-slate-900">${index + 1}</div>
+                            <span class="absolute -top-1 -right-1 size-4 ${i === 0 ? 'bg-primary' : 'bg-slate-700'} rounded-full text-[10px] font-black flex items-center justify-center border border-surface-dark">${i+1}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="text-white text-[11px] font-black uppercase truncate">${item.name}</h3>
-                            <div class="flex items-center gap-1">
-                                <span class="text-xs font-black text-white">${item.count}</span>
-                                <span class="text-[11px] text-rose-400 font-bold uppercase tracking-widest">Alunos</span>
-                            </div>
+                            <p class="text-xs font-black uppercase italic truncate">${item.name}</p>
+                            <p class="text-[10px] font-black text-primary uppercase">${item.count} Alunos</p>
                         </div>
-                        <span class="material-symbols-outlined text-rose-500 opacity-0 group-hover:opacity-100 transition-all text-xs">arrow_forward</span>
+                        <span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors text-xs">chevron_right</span>
                     </div>
-                `;
-            }).join('');
+                `).join('') || '<p class="text-[10px] text-text-muted italic text-center py-4">Sem registros</p>';
+            } catch (e) { console.error(e); }
         }
 
         function toggleReferrals(name) {
             const panel = document.getElementById('referrals-panel');
-            const listContainer = document.getElementById('referrals-list-container');
-            const nameDisplay = document.getElementById('ambassador-name-display');
-
-            if (currentActiveAmbassador === name) {
-                closeReferrals();
-                return;
-            }
-
-            const referrals = allStudents.filter(s => s.indicado_por === name);
-            if (referrals.length === 0) {
-                PlayFitnessUI.toast(`Ambassador_Empty: ${name}`, 'info');
-                return;
-            }
-
+            if (currentActiveAmbassador === name) return closeReferrals();
+            const referrals = allMembersData.filter(m => m.indicado_por === name);
             currentActiveAmbassador = name;
-            if (nameDisplay) nameDisplay.textContent = name;
-            if (listContainer) {
-                listContainer.innerHTML = '';
-                referrals.forEach((student, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'stagger-card glass-morphism rounded-lg p-2 border border-white/5 flex items-center gap-2.5';
-                    card.style.animationDelay = `${index * 50}ms`;
-                    card.innerHTML = `
-                        <img src="${student.foto_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(student.nome_completo)}" class="size-6 rounded border border-white/10 shrink-0">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-[11px] font-bold text-white uppercase truncate">${student.nome_completo}</p>
-                            <p class="text-[11px] text-text-muted uppercase tracking-widest font-bold">${student.status || 'Ativo'}</p>
-                        </div>
-                        <span class="material-symbols-outlined text-emerald-400 text-[14px]">check_circle</span>
-                    `;
-                    listContainer.appendChild(card);
-                });
-            }
-
-            if (panel) {
-                panel.classList.remove('hidden');
-                setTimeout(() => {
-                    panel.classList.remove('translate-x-full');
-                    panel.classList.add('translate-x-0', 'opacity-100');
-                }, 10);
-            }
-            PlayFitnessUI.toast(`Neural_Scan: ${name}`, 'psychology');
+            document.getElementById('ambassador-name-display').textContent = name;
+            document.getElementById('referrals-list-container').innerHTML = referrals.map(s => `
+                <div class="glass-card p-4 rounded-xl border border-white/5 flex items-center gap-4">
+                    <img src="${s.foto_url || `https://ui-avatars.com/api/?name=${s.nome_completo}`}" class="size-10 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <p class="text-xs font-black uppercase italic">${s.nome_completo}</p>
+                        <p class="text-[10px] font-black uppercase" style="color: ${s.status === 'Em Risco' ? '#ff3b30' : '#34c759'}">${s.status || 'Ativo'}</p>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-sm text-text-muted italic text-center py-10">Nenhum indicado nesta rede</p>';
+            panel.classList.remove('hidden');
+            setTimeout(() => { panel.classList.remove('translate-x-full'); panel.classList.add('translate-x-0'); }, 10);
         }
 
         function closeReferrals() {
             const panel = document.getElementById('referrals-panel');
             currentActiveAmbassador = null;
-            if (panel) {
-                panel.classList.add('translate-x-full');
-                panel.classList.remove('translate-x-0', 'opacity-100');
-                setTimeout(() => panel.classList.add('hidden'), 500);
+            panel.classList.add('translate-x-full');
+            panel.classList.remove('translate-x-0');
+            setTimeout(() => panel.classList.add('hidden'), 500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMembersList();
+            document.getElementById('tableFilter')?.addEventListener('input', e => {
+                const term = e.target.value.toLowerCase();
+                document.querySelectorAll('.member-row').forEach(row => {
+                    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
+            });
+            document.getElementById('btnRetrain')?.addEventListener('click', () => {
+                PlayFitnessUI.toast('Otimizando Redes Neurais...', 'psychology');
+                setTimeout(() => PlayFitnessUI.toast('Treinamento Finalizado', 'verified'), 2000);
+            });
+        });
+
+        async function seedInitialData() {
+            PlayFitnessUI.toast('Povoando Base de Dados...', 'sync');
+            const data = [
+                { nome_completo: 'Carlos Eduardo', status: 'Ativo', plano: 'VIP Anual', objetivo: 'health' },
+                { nome_completo: 'Beatriz Maria', status: 'Em Risco', plano: 'Mensal Básico', objetivo: 'weightloss' },
+                { nome_completo: 'André Luiz', status: 'Ativo', plano: 'Pro Semestral', objetivo: 'gain' }
+            ];
+            for (let d of data) {
+                await PlayFitnessAPI.students.save(null, { ...d, email: d.nome_completo.toLowerCase().replace(' ', '.') + '@test.com', telefone: '11900000000', data_nascimento: '1990-01-01' });
             }
+            loadMembersList();
         }
     </script>
 </body>
