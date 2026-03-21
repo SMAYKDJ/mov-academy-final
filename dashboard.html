@@ -4,19 +4,17 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Gaia Team | Inteligência Preditiva</title>
+    <title>CT Olimpo | Inteligência Preditiva</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
-    <script src="gaia-api.js"></script>
+    <script src="playfitness-api.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -26,16 +24,17 @@
                         primary: "#dc2626",
                         "primary-dark": "#991b1b",
                         secondary: "#f59e0b",
-                        "background-light": "#f8fafc",
+                        obsidian: "#0f172a",
                         "background-dark": "#0f172a",
-                        "surface-dark": "#1e293b",
-                        "surface-darker": "#111827",
-                        "border-dark": "#334155",
+                        "surface-dark": "#1a202e",
+                        "surface-darker": "#0a0f1a",
+                        "border-dark": "#2d3648",
                         "text-main": "#f1f5f9",
                         "text-muted": "#94a3b8",
+                        "brand-pink": "#e91e63",
                     },
                     fontFamily: {
-                        display: ["Inter", "sans-serif"],
+                        display: ["Space Grotesk", "sans-serif"],
                         sans: ["Inter", "sans-serif"],
                         mono: ["JetBrains Mono", "monospace"],
                     },
@@ -44,24 +43,6 @@
         }
     </script>
     <style>
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-
         @keyframes progressLoad {
             from {
                 width: 0;
@@ -172,564 +153,551 @@
             transform: scale(1);
         }
 
-        #referrerSuggestions {
-            max-height: 200px;
-            overflow-y: auto;
+        /* Quantum UI System */
+        .glass-panel {
+            background: rgba(13, 19, 31, 0.6);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cyber-border {
+            position: relative;
+        }
+
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.3), transparent);
+        }
+
+        .scanline-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scanline-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(239, 68, 68, 0.1);
+            animation: scanline 4s linear infinite;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(500%);
+            }
+        }
+
+        .data-pulsar {
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+            animation: pulsar 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsar {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .column-window {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            height: 100%;
+        }
+
+        .kanban-lane {
+            background: rgba(2, 4, 8, 0.3);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 100px;
+        }
+
+        .kanban-card {
+            background: rgba(13, 19, 31, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .kanban-card:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            transform: translateX(2px);
+            background: rgba(13, 19, 31, 1);
+        }
+
+        .gauge-animate {
+            animation: gaugeRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes gaugeRotate {
+            from {
+                stroke-dashoffset: 552;
+            }
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-500 {
+            animation-delay: 0.5s;
+        }
+
+        .delay-600 {
+            animation-delay: 0.6s;
+        }
+
+        .delay-700 {
+            animation-delay: 0.7s;
+        }
+
+        .delay-800 {
+            animation-delay: 0.8s;
         }
     </style>
 </head>
 
-<body
-    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
+<body class="bg-obsidian text-slate-300 font-sans antialiased min-h-screen flex flex-col overflow-x-hidden">
     <div id="toast-container"></div>
 
-    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-4 h-11 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-fit">
-                <div
-                    class="w-8 h-8 rounded-full overflow-hidden border border-white/10 flex items-center justify-center bg-surface-dark shadow-lg shadow-red-500/20">
-                    <img src="logo.png" alt="Gaia Team Logo" class="w-full h-full object-cover">
-                </div>
-                <h1 class="text-base font-bold tracking-tight text-white uppercase">Gaia<span class="text-red-600">
-                        Team</span></h1>
-                <div class="h-4 w-[1px] bg-border-dark mx-1.5"></div>
-                <nav class="hidden md:flex items-center gap-0.5">
-                    <a class="px-2 py-1 text-sm font-medium text-white bg-white/10 rounded border border-white/5 transition-colors"
-                        href="dashboard.html">Painel</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="membros.html">Membros</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="campanhas.html">Campanhas</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="financeiro.html">Financeiro</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="#">Configurações</a>
-                </nav>
-            </div>
-            <div class="flex items-center gap-3 flex-1 justify-end">
-                <div class="relative w-full max-w-[240px] hidden sm:block">
-                    <span
-                        class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted text-[16px]">search</span>
-                    <input id="globalSearch"
-                        class="w-full h-8 bg-surface-dark border border-border-dark rounded text-sm pl-8 pr-3 text-white placeholder-text-muted focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all"
-                        placeholder="Buscar membro ou KPI..." type="text" />
-                </div>
-                <button onclick="showToast('Relatórios gerados com sucesso!', 'description')"
-                    class="h-7 px-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded flex items-center gap-1.5 transition-colors">
-                    <span class="material-symbols-outlined text-[14px]">add_chart</span>
-                    <span>Relatórios</span>
-                </button>
-                <div onclick="showToast('Nenhuma notificação nova.', 'notifications')"
-                    class="h-7 w-7 rounded-full bg-surface-dark border border-border-dark flex items-center justify-center relative cursor-pointer hover:border-text-muted transition-colors">
-                    <span class="material-symbols-outlined text-text-muted text-[16px]">notifications</span>
-                    <span
-                        class="absolute top-0 right-0 w-1.5 h-1.5 bg-secondary rounded-full border border-surface-darker"></span>
-                </div>
-                <div
-                    class="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-600 border border-border-dark overflow-hidden cursor-pointer">
-                    <img alt="Perfil do Usuário" class="w-full h-full object-cover"
-                        src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" />
-                </div>
-            </div>
-        </div>
-    </header>
+    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50 h-11"></header>
 
-    <main class="flex-1 max-w-[1600px] mx-auto w-full p-4 flex flex-col gap-4">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <main class="flex-1 max-w-full w-full p-4 flex flex-col gap-4 relative">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-l border-red-500/20 pl-3">
             <div>
-                <div class="flex items-center gap-2 text-text-muted text-sm mb-0.5">
-                    <span>Início</span>
-                    <span class="material-symbols-outlined text-sm">chevron_right</span>
-                    <span>Inteligência</span>
-                    <span class="material-symbols-outlined text-sm">chevron_right</span>
-                    <span class="text-white">Visão Geral Preditiva</span>
+                <div class="flex items-center gap-1.5 text-text-muted text-xs mb-0 font-mono">
+                    <span>ROOT</span>
+                    <span class="text-xs opacity-30">/</span>
+                    <span>INTEL</span>
+                    <span class="text-xs opacity-30">/</span>
+                    <span class="text-rose-500">PREDICTIVE_V3</span>
                 </div>
-                <h2 class="text-xl font-bold text-white tracking-tight">Análise Preditiva & Retenção</h2>
-                <p class="text-text-muted text-sm mt-0.5 max-w-2xl">Monitoramento em tempo real de padrões
-                    comportamentais com 12Mi+ pontos de dados.</p>
+                <h2 class="text-xl font-black text-white tracking-widest leading-none italic uppercase">Dashboard
+                    Inteligência PlayFitness</h2>
+                <p class="text-text-muted text-xs mt-0.5 max-w-2xl font-mono uppercase tracking-[0.15em]">Neural
+                    Processing Optimized | Cluster Seed Ref: 0xFD42</p>
             </div>
-            <div class="flex gap-2">
-                <div class="flex gap-1.5">
+            <div class="flex gap-1.5">
+                <div class="flex gap-1">
                     <button id="btnRetrain"
-                        class="h-7 px-2.5 bg-surface-dark border border-border-dark hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-sm font-medium rounded flex items-center gap-1.5 transition-colors group">
-                        <span class="material-symbols-outlined text-[14px] group-hover:animate-spin">terminal</span>
+                        class="h-6 px-2 bg-surface-dark border border-border-dark hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-xs font-medium rounded flex items-center gap-1 transition-colors group">
+                        <span class="material-symbols-outlined text-[12px] group-hover:animate-spin">terminal</span>
                         <span>Re-treinar</span>
                     </button>
                     <button onclick="showToast('Filtro de data aplicado.', 'calendar_today')"
-                        class="h-7 px-2.5 bg-surface-dark border border-border-dark hover:bg-surface-darker text-text-muted hover:text-white text-sm font-medium rounded flex items-center gap-1.5 transition-colors">
-                        <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                        class="h-6 px-2 bg-surface-dark border border-border-dark hover:bg-surface-darker text-text-muted hover:text-white text-xs font-medium rounded flex items-center gap-1 transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">calendar_today</span>
                         <span>30 Dias</span>
                     </button>
                     <button onclick="showToast('Exportação iniciada...', 'download')"
-                        class="h-7 px-2.5 bg-surface-dark border border-border-dark hover:bg-surface-darker text-text-muted hover:text-white text-sm font-medium rounded flex items-center gap-1.5 transition-colors">
-                        <span class="material-symbols-outlined text-[14px]">download</span>
+                        class="h-6 px-2 bg-surface-dark border border-border-dark hover:bg-surface-darker text-text-muted hover:text-white text-xs font-medium rounded flex items-center gap-1 transition-colors">
+                        <span class="material-symbols-outlined text-[12px]">download</span>
                         <span>Exportar</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
             <!-- Stat Card 1 -->
             <div
-                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-100">
-                <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Tx. Evasão (Churn)</p>
+                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-100">
+                <div class="flex justify-between items-start mb-0.5">
+                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">Evasão / Churn
+                    </p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">warning</span>
+                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-red-400">monitoring</span>
                 </div>
-                <div class="flex items-end gap-2">
-                    <h3 id="churnRate" class="text-xl font-bold text-white">0%</h3>
+                <div class="flex items-end gap-1.5">
+                    <h3 id="churnRate" class="text-xl font-black text-white tracking-tighter italic">0%</h3>
                     <div
-                        class="flex items-center text-emerald-500 text-sm font-medium mb-1 bg-emerald-500/10 px-1 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-sm mr-0.5">arrow_downward</span>
-                        1.2%
+                        class="flex items-center text-emerald-500 text-xs font-black mb-1 bg-emerald-500/5 border border-emerald-500/10 px-1 rounded-sm">
+                        ▼ 1.2%
                     </div>
                 </div>
-                <div class="mt-3 h-8 w-full">
-                    <svg class="w-full h-full text-red-500/20" preserveAspectRatio="none" viewBox="0 0 100 20">
-                        <path d="M0 15 Q 10 5, 20 10 T 40 12 T 60 5 T 80 15 T 100 8" fill="none" stroke="currentColor"
-                            stroke-width="2" vector-effect="non-scaling-stroke"></path>
-                        <path class="opacity-20" d="M0 15 Q 10 5, 20 10 T 40 12 T 60 5 T 80 15 T 100 8 V 20 H 0 Z"
-                            fill="currentColor"></path>
-                    </svg>
+                <div class="mt-2 h-4 w-full relative">
+                    <canvas id="miniChurnChart" class="w-full h-full opacity-50"></canvas>
                 </div>
             </div>
             <!-- Stat Card 2 -->
             <div
-                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-200">
-                <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Engajamento Médio</p>
+                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-200">
+                <div class="flex justify-between items-start mb-0.5">
+                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">Engajamento Score
+                    </p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">fitness_center</span>
+                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-amber-400">bolt</span>
                 </div>
-                <div class="flex items-end gap-2">
-                    <h3 id="avgScore" class="text-xl font-bold text-white">0<span
-                            class="text-sm text-text-muted font-normal ml-0.5">/100</span></h3>
+                <div class="flex items-end gap-1.5">
+                    <h3 id="avgScore" class="text-xl font-black text-white tracking-tighter italic">0<span
+                            class="text-xs text-text-muted font-normal">/100</span></h3>
                     <div
-                        class="flex items-center text-secondary text-sm font-medium mb-1 bg-secondary/10 px-1 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-sm mr-0.5">arrow_downward</span>
-                        0.4%
+                        class="flex items-center text-amber-500 text-xs font-black mb-1 bg-amber-500/5 border border-amber-500/10 px-1 rounded-sm">
+                        ▲ 0.4%
                     </div>
                 </div>
-                <div class="mt-3 h-8 w-full">
-                    <svg class="w-full h-full text-secondary/20" preserveAspectRatio="none" viewBox="0 0 100 20">
-                        <path d="M0 10 Q 25 18, 50 10 T 100 12" fill="none" stroke="currentColor" stroke-width="2"
-                            vector-effect="non-scaling-stroke"></path>
-                        <path class="opacity-20" d="M0 10 Q 25 18, 50 10 T 100 12 V 20 H 0 Z" fill="currentColor">
-                        </path>
-                    </svg>
+                <div class="mt-2 h-4 w-full relative">
+                    <canvas id="miniEngChart" class="w-full h-full opacity-50"></canvas>
                 </div>
             </div>
             <!-- Stat Card 3 -->
             <div
-                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-300">
-                <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">LTV Projetado (Valor
-                        Vitalício)</p>
+                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-300">
+                <div class="flex justify-between items-start mb-0.5">
+                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">LTV Projetado</p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">payments</span>
+                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-emerald-400">payments</span>
                 </div>
-                <div class="flex items-end gap-3">
-                    <h3 id="ltvProjected" class="text-2xl font-bold text-white">R$ 0</h3>
+                <div class="flex items-end gap-1.5">
+                    <h3 id="ltvProjected" class="text-xl font-black text-white tracking-tighter italic">R$ 0</h3>
+                </div>
+                <div class="mt-2 h-4 w-full bg-emerald-500/10 rounded-full overflow-hidden">
                     <div
-                        class="flex items-center text-emerald-500 text-sm font-medium mb-1 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-sm mr-0.5">arrow_upward</span>
-                        5.0%
+                        class="h-full bg-emerald-500/40 w-[78%] progress-animate shadow-[0_0_8px_rgba(16,185,129,0.3)]">
                     </div>
-                </div>
-                <div class="mt-3 h-8 w-full">
-                    <svg class="w-full h-full text-emerald-500/20" preserveAspectRatio="none" viewBox="0 0 100 20">
-                        <path d="M0 18 L 20 15 L 40 16 L 60 8 L 80 5 L 100 2" fill="none" stroke="currentColor"
-                            stroke-width="2" vector-effect="non-scaling-stroke"></path>
-                        <path class="opacity-20" d="M0 18 L 20 15 L 40 16 L 60 8 L 80 5 L 100 2 V 20 H 0 Z"
-                            fill="currentColor"></path>
-                    </svg>
                 </div>
             </div>
             <!-- Stat Card 4 -->
             <div
-                class="bg-surface-dark border border-border-dark rounded p-3 relative overflow-hidden group hover:border-red-500/50 transition-colors fade-in delay-400">
-                <div class="flex justify-between items-start mb-2">
-                    <p class="text-text-muted text-sm font-medium uppercase tracking-wider">Risco Crítico</p>
+                class="glass-panel cyber-border rounded p-2 relative overflow-hidden group hover:bg-white/[0.02] transition-colors fade-in delay-400">
+                <div class="flex justify-between items-start mb-0.5">
+                    <p class="text-text-muted text-xs font-black uppercase tracking-[0.2em] italic">Risco Crítico</p>
                     <span
-                        class="material-symbols-outlined text-text-muted text-[16px] group-hover:text-red-400 transition-colors">group_remove</span>
+                        class="material-symbols-outlined text-text-muted text-[12px] group-hover:text-rose-500">skull</span>
                 </div>
-                <div class="flex items-end gap-3">
-                    <h3 id="criticalRisk" class="text-2xl font-bold text-white">0<span
-                            class="text-sm text-text-muted font-normal ml-1">membros</span></h3>
-                    <div
-                        class="flex items-center text-rose-500 text-sm font-medium mb-1 bg-rose-500/10 px-1.5 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-sm mr-0.5">arrow_upward</span>
-                        8 novos
-                    </div>
+                <div class="flex items-end gap-1.5">
+                    <h3 id="criticalRisk" class="text-xl font-black text-rose-500 tracking-tighter italic">0</h3>
+                    <span class="text-xs text-text-muted uppercase font-black mb-1">+8 LAST_24H</span>
                 </div>
-                <div class="mt-3 h-8 w-full flex gap-0.5 items-end">
-                    <div class="w-1/6 bg-rose-500/20 h-[40%] rounded-sm progress-animate progress-delay-0-5"></div>
-                    <div class="w-1/6 bg-rose-500/30 h-[60%] rounded-sm progress-animate progress-delay-0-6"></div>
-                    <div class="w-1/6 bg-rose-500/40 h-[30%] rounded-sm progress-animate progress-delay-0-7"></div>
-                    <div class="w-1/6 bg-rose-500/50 h-[80%] rounded-sm progress-animate progress-delay-0-8"></div>
-                    <div class="w-1/6 bg-rose-500/80 h-[50%] rounded-sm progress-animate progress-delay-0-9"></div>
-                    <div class="w-1/6 bg-rose-500 h-[70%] rounded-sm progress-animate progress-delay-1-0"></div>
+                <div class="mt-2 h-4 w-full flex items-end gap-0.5">
+                    <div class="flex-1 bg-rose-500/10 h-1/4"></div>
+                    <div class="flex-1 bg-rose-500/20 h-2/4"></div>
+                    <div class="flex-1 bg-rose-500/30 h-3/4"></div>
+                    <div class="flex-1 bg-rose-500/50 h-full"></div>
+                    <div class="flex-1 bg-rose-500 h-2/3"></div>
+                    <div class="flex-1 bg-rose-500/80 h-1/2"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Nova Seção: Saúde Financeira & Ponto de Equilíbrio -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 fade-in delay-500">
+        <!-- Nova Seção: Saúde Financeira & Quantum Balance -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 fade-in delay-500">
             <!-- Card Lucro Líquido -->
             <div
-                class="bg-surface-dark border border-border-dark rounded-lg p-3 flex items-center gap-4 group hover:border-emerald-500/30 transition-all">
+                class="glass-panel cyber-border rounded p-1.5 flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
                 <div
-                    class="size-11 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shadow-inner">
-                    <span class="material-symbols-outlined text-xl">payments</span>
+                    class="size-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                    <span class="material-symbols-outlined text-[16px]">payments</span>
                 </div>
                 <div class="flex-1">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm font-bold text-text-muted uppercase tracking-wider">Lucro Líquido
-                            Projetado</span>
-                        <span class="text-sm text-emerald-400 font-mono">+12% vs mês anterior</span>
+                    <div class="flex justify-between items-center mb-0.5">
+                        <span
+                            class="text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">Net_Profit_Proj</span>
+                        <span class="text-xs text-emerald-400 font-mono tracking-tighter">FLOW: +12%</span>
                     </div>
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 id="liquidProfit" class="text-xl font-black text-white">R$ 0</h3>
-                        <span class="text-sm text-text-muted">/ mês</span>
-                    </div>
-                    <div class="w-full bg-surface-darker h-1 rounded-full mt-2 overflow-hidden">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-full progress-animate"
-                            style="width: 72%"></div>
+                    <div class="flex items-baseline gap-1">
+                        <h3 id="liquidProfit"
+                            class="text-base font-black text-white tracking-widest italic leading-none">R$ 0</h3>
+                        <span class="text-xs text-text-muted italic font-mono uppercase">/ real_time</span>
                     </div>
                 </div>
             </div>
 
             <!-- Card Break-even (Zero a Zero) -->
             <div
-                class="bg-surface-dark border border-border-dark rounded-lg p-3 flex items-center gap-4 group hover:border-red-500/30 transition-all">
-                <div class="size-11 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
-                    <span class="material-symbols-outlined text-xl">balance</span>
+                class="glass-panel cyber-border rounded p-1.5 flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
+                <div
+                    class="size-8 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+                    <span class="material-symbols-outlined text-[16px]">balance</span>
                 </div>
                 <div class="flex-1">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm font-bold text-text-muted uppercase tracking-wider">Ponto de Equilíbrio
-                            (Zero a Zero)</span>
-                        <span class="text-sm text-red-400 font-mono">Meta: 410 alunos</span>
+                    <div class="flex justify-between items-center mb-0.5">
+                        <span
+                            class="text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">Break_Even_Target</span>
+                        <span class="text-xs text-rose-400 font-mono tracking-tighter italic">GATE: 410_UNIT</span>
                     </div>
-                    <div class="flex items-baseline gap-1.5">
-                        <h3 class="text-xl font-black text-white">
+                    <div class="flex items-baseline gap-1.5 leading-none">
+                        <h3 class="text-base font-black text-white tracking-widest italic">
                             <span id="breakEvenCurrent">0</span>
-                            <span class="text-sm font-medium text-text-muted">/ 410</span>
+                            <span class="text-xs text-text-muted font-normal">/ 410</span>
                         </h3>
-                        <span id="metaStatus" class="text-sm text-red-400 font-bold uppercase hidden">Meta
-                            Atingida</span>
-                    </div>
-                    <div class="flex items-center gap-2 mt-2">
-                        <div class="flex-1 bg-surface-darker h-1 rounded-full overflow-hidden">
-                            <div id="breakEvenProgress" class="bg-red-500 h-full progress-animate" style="width: 0%">
-                            </div>
-                        </div>
-                        <span id="totalMembers" class="text-sm font-bold text-white">0 alunos</span>
+                        <span id="totalMembers"
+                            class="text-xs font-black text-rose-500 uppercase italic tracking-widest border border-rose-500/20 px-1 rounded-sm">0
+                            ACTIVE</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 min-h-[400px]">
-            <!-- Chart Section -->
-            <div class="lg:col-span-8 bg-surface-dark border border-border-dark rounded flex flex-col relative overflow-hidden fade-in"
-                style="animation-delay: 0.4s">
-                <div class="px-4 py-3 border-b border-border-dark flex justify-between items-center">
-                    <div>
-                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                            Correlação: Idade vs Frequência
-                            <span
-                                class="px-1 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-sm uppercase tracking-wider rounded font-mono">Scikit-Learn
-                                (K-Means)</span>
+        <!-- Quantum Grid Intelligence -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 min-h-[500px]">
+
+            <!-- Coluna 1: Clusters Neural Scan -->
+            <div class="column-window fade-in delay-100">
+                <div class="glass-panel border-rose-500/10 rounded-lg flex flex-col overflow-hidden scanline-effect">
+                    <div class="px-2 py-1 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                        <h3
+                            class="text-xs font-black text-white flex items-center gap-1.5 uppercase tracking-[0.2em] italic">
+                            <span class="material-symbols-outlined text-[12px] text-rose-500 animate-pulse">radar</span>
+                            Radar_Scan
                         </h3>
-                        <p class="text-sm text-text-muted mt-0.5">Clusters de evasão identificados</p>
+                        <span class="text-xs text-text-muted font-mono uppercase">0xFD42</span>
+                    </div>
+                    <div class="p-2">
+                        <div id="scatterPlot" class="w-full h-32 border-l border-b border-white/5 relative bg-black/20">
+                            <div
+                                class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(239,68,68,0.05),transparent)]">
+                            </div>
+                            <div
+                                class="chart-point absolute left-[20%] top-[30%] size-1.5 bg-rose-500 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.6)]">
+                            </div>
+                            <div
+                                class="chart-point absolute left-[55%] top-[50%] size-2 bg-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.4)]">
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="flex-1 p-6 relative">
-                    <!-- Code Snippet Overlay -->
-                    <div
-                        class="absolute top-4 right-4 bg-surface-darker/90 backdrop-blur-sm border border-border-dark p-3 rounded shadow-xl z-20 w-64 hidden sm:block">
-                        <div class="flex items-center gap-2 mb-2 border-b border-border-dark pb-2">
-                            <span class="material-symbols-outlined text-[14px] text-emerald-400">code</span>
-                            <span class="text-sm font-mono text-white">model_clustering.py</span>
-                            <span class="ml-auto flex items-center gap-1 text-sm text-emerald-400 font-medium">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                Treinado (98% acc)
-                            </span>
-                        </div>
-                        <div class="font-mono text-sm text-text-muted leading-relaxed">
-                            <span class="text-purple-400">from</span> sklearn.cluster <span
-                                class="text-purple-400">import</span> KMeans<br />
-                            kmeans = KMeans(n_clusters=3)<br />
-                            labels = kmeans.fit_predict(X_scaled)<br />
-                            <span class="text-red-400"># Atualizado há 2m</span>
-                        </div>
+
+                <div class="glass-panel border-white/5 rounded-lg p-2 flex-1 flex flex-col shadow-inner">
+                    <h3 class="text-xs font-black text-rose-400 uppercase tracking-[0.2em] italic mb-2">
+                        Market_Snapshot</h3>
+                    <div id="planDistributionStats" class="space-y-2 flex-1 scrollbar-hide">
+                        <!-- JS injects here -->
                     </div>
-
-                    <div id="scatterPlot"
-                        class="w-full h-full min-h-[300px] border-l border-b border-border-dark relative">
-                        <!-- Points will be added by JS for interaction -->
-                        <div class="absolute -left-7 top-0 text-sm text-text-muted">7x</div>
-                        <div class="absolute -left-7 top-1/4 text-sm text-text-muted">5x</div>
-                        <div class="absolute -left-7 top-2/4 text-sm text-text-muted">3x</div>
-                        <div class="absolute -left-7 top-3/4 text-sm text-text-muted">1x</div>
-                        <div class="absolute -left-7 bottom-0 text-sm text-text-muted">0x</div>
-
-                        <div class="absolute left-0 -bottom-4 text-sm text-text-muted">18</div>
-                        <div class="absolute left-1/4 -bottom-4 text-sm text-text-muted">28</div>
-                        <div class="absolute left-2/4 -bottom-4 text-sm text-text-muted">38</div>
-                        <div class="absolute left-3/4 -bottom-4 text-sm text-text-muted">48</div>
-                        <div class="absolute right-0 -bottom-4 text-sm text-text-muted">65+</div>
-
-                        <!-- Grid Lines -->
-                        <div class="absolute top-1/4 w-full h-[1px] border-dashed border-t border-border-dark/30"></div>
-                        <div class="absolute top-2/4 w-full h-[1px] border-dashed border-t border-border-dark/30"></div>
-                        <div class="absolute top-3/4 w-full h-[1px] border-dashed border-t border-border-dark/30"></div>
-                        <div class="absolute left-1/4 h-full w-[1px] border-dashed border-l border-border-dark/30">
-                        </div>
-                        <div class="absolute left-2/4 h-full w-[1px] border-dashed border-l border-border-dark/30">
-                        </div>
-                        <div class="absolute left-3/4 h-full w-[1px] border-dashed border-l border-border-dark/30">
-                        </div>
-
-                        <!-- Manual Points (replicated from original but as interactive elements) -->
-                        <div class="chart-point absolute left-[20%] top-[30%] w-2 h-2 bg-red-500 rounded-full cursor-help"
-                            title="Membro A (Saudável)"></div>
-                        <div class="chart-point absolute left-[22%] top-[25%] w-2 h-2 bg-red-500 rounded-full cursor-help"
-                            title="Membro B (Saudável)"></div>
-                        <div class="chart-point absolute left-[25%] top-[28%] w-2 h-2 bg-red-500 rounded-full cursor-help"
-                            title="Membro C (Saudável)"></div>
-                        <div class="chart-point absolute left-[28%] top-[20%] w-2 h-2 bg-red-500 rounded-full cursor-help"
-                            title="Membro D (Saudável)"></div>
-                        <div class="chart-point absolute left-[50%] top-[40%] w-2 h-2 bg-red-500 rounded-full cursor-help"
-                            title="Membro E (Médio)"></div>
-                        <div class="chart-point absolute left-[55%] top-[50%] w-2.5 h-2.5 bg-secondary rounded-full cursor-help shadow-[0_0_8px_rgba(245,158,11,0.6)]"
-                            title="ALERTA: Tendência de Queda"></div>
-                        <div class="chart-point absolute right-[20%] bottom-[15%] w-3 h-3 bg-rose-500 rounded-full cursor-help shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
-                            title="CRÍTICO: Risco de Abandono (92%)"></div>
-                        <div class="chart-point absolute right-[22%] bottom-[18%] w-2 h-2 bg-rose-500 rounded-full cursor-help"
-                            title="Membro F (Risco)"></div>
+                    <div class="mt-2 pt-1.5 border-t border-white/5 flex justify-between">
+                        <span
+                            class="text-xs text-text-muted uppercase font-black italic tracking-widest">Sys_Avg_Ticket</span>
+                        <span class="text-xs font-black text-white italic">R$ 184,50</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Churn Prob & Actions -->
-            <div class="lg:col-span-4 flex flex-col gap-3">
-                <!-- Indicador de Evasão -->
-                <div class="bg-surface-dark border border-border-dark rounded p-4 flex-1 flex flex-col items-center justify-center relative overflow-hidden fade-in"
-                    style="animation-delay: 0.5s">
-                    <h3 class="text-sm font-bold text-white w-full text-left mb-2">Risco de Evasão</h3>
-                    <div class="relative w-32 h-32 flex items-center justify-center">
-                        <svg class="w-full h-full transform -rotate-90">
-                            <circle class="text-surface-darker" cx="96" cy="96" fill="transparent" r="88"
-                                stroke="currentColor" stroke-width="8"></circle>
-                            <circle class="text-red-500 gauge-animate" cx="96" cy="96" fill="transparent" r="88"
-                                stroke="currentColor" stroke-dasharray="552" stroke-dashoffset="193"
-                                stroke-linecap="round" stroke-width="8"></circle>
-                            <circle class="text-rose-500 gauge-animate" cx="96" cy="96" fill="transparent" r="88"
-                                stroke="currentColor" stroke-dasharray="552" stroke-dashoffset="480"
-                                stroke-linecap="round" stroke-width="8" style="animation-delay: 0.5s"></circle>
+            <!-- Coluna 2: Recovery Kanban -->
+            <div class="column-window fade-in delay-300">
+                <div class="glass-panel border-rose-500/20 rounded-lg p-2 h-full flex flex-col gap-2">
+                    <div class="flex justify-between items-center px-1">
+                        <h3
+                            class="text-xs font-black text-rose-500 uppercase tracking-[0.2em] italic flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[12px]">view_kanban</span>
+                            Voxel_Recovery
+                        </h3>
+                    </div>
+
+                    <div class="flex-1 flex flex-col gap-2 overflow-hidden">
+                        <div class="flex flex-col gap-1 flex-1">
+                            <div
+                                class="flex justify-between text-xs font-black text-rose-500/50 uppercase italic tracking-widest px-1">
+                                <span>Critical_Path</span>
+                                <span class="animate-pulse">LOCK</span>
+                            </div>
+                            <div id="kanban-critical" class="kanban-lane flex-1">
+                                <div
+                                    class="px-2 py-6 text-center text-xs text-text-muted font-mono opacity-20 italic">
+                                    EMPTY_VECTOR</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1 flex-1">
+                            <div
+                                class="flex justify-between text-xs font-black text-amber-500/50 uppercase italic tracking-widest px-1">
+                                <span>Sync_Channel</span>
+                                <span class="animate-pulse">ACTIVE</span>
+                            </div>
+                            <div id="kanban-contacting" class="kanban-lane flex-1 opacity-80"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna 3: Neural Action Hub -->
+            <div class="column-window fade-in delay-500">
+                <div class="glass-panel border-rose-500/30 rounded-lg flex flex-col h-full overflow-hidden shadow-2xl">
+                    <div
+                        class="px-2 py-1.5 bg-rose-500/5 border-b border-rose-500/10 flex justify-between items-center">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-rose-500 text-[14px]">psychology_alt</span>
+                            <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] italic">Neural_Active
+                            </h3>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="size-1 rounded-full bg-rose-500 data-pulsar"></span>
+                        </div>
+                    </div>
+
+                    <div class="p-2 flex flex-col gap-2 flex-1 overflow-y-auto">
+                        <div
+                            class="p-2 bg-black/20 border border-white/5 rounded-sm relative overflow-hidden group hover:border-rose-500/30 transition-all">
+                            <div
+                                class="absolute top-0 right-0 w-0.5 h-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]">
+                            </div>
+                            <h4 class="text-xs font-black text-white uppercase italic tracking-widest mb-0.5">
+                                Loss_Detection</h4>
+                            <p class="text-xs text-text-muted font-mono leading-tight mb-2">SCAN: 42_UNITS_STALL</p>
+                            <button
+                                class="w-full py-1 bg-rose-600/80 hover:bg-rose-500 text-xs font-black text-white rounded-sm uppercase tracking-widest">Run_Protocol</button>
+                        </div>
+
+                        <div
+                            class="p-2 bg-black/20 border border-white/5 rounded-sm group hover:border-emerald-500/30 transition-all">
+                            <h4 class="text-xs font-black text-white uppercase italic tracking-widest mb-0.5">
+                                Yield_Upsell</h4>
+                            <p class="text-xs text-text-muted font-mono leading-tight mb-2">TARGET: TOP_5%_VIP</p>
+                            <button
+                                class="w-full py-1 border border-white/10 hover:border-emerald-500/50 text-xs font-black text-emerald-400 rounded-sm uppercase tracking-widest">Broadcast</button>
+                        </div>
+
+                        <div class="mt-auto p-2 bg-rose-950/20 border border-white/5 rounded-sm">
+                            <div class="font-mono text-xs text-rose-400/60 leading-tight">
+                                <p class="animate-pulse">> CLUSTER: SYNC_DATA</p>
+                                <p class="opacity-30 italic">> CPU: 12%_LOAD</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna 4: Global Core Metrics -->
+            <div class="column-window fade-in delay-700">
+                <div
+                    class="glass-panel border-white/5 rounded-lg p-2 flex flex-col items-center justify-center relative min-h-[140px] shadow-2xl">
+                    <h3
+                        class="absolute top-2 left-2 text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">
+                        Retention_Net</h3>
+                    <div class="relative size-24 flex items-center justify-center">
+                        <svg class="size-full transform -rotate-90">
+                            <circle class="text-white/[0.02]" cx="48" cy="48" fill="transparent" r="40"
+                                stroke="currentColor" stroke-width="4"></circle>
+                            <circle class="text-rose-500 gauge-animate shadow-[0_0_12px_rgba(239,68,68,0.4)]" cx="48"
+                                cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251"
+                                stroke-dashoffset="88" stroke-linecap="round" stroke-width="4"></circle>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-2xl font-bold text-white tracking-tighter">65%</span>
-                            <span class="text-sm text-text-muted font-medium">Média</span>
+                            <span class="text-xl font-black text-white tracking-[0.1em] italic leading-none">65%</span>
+                            <span
+                                class="text-xs text-text-muted font-black uppercase tracking-widest mt-1">CORE_UPLIFT</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- AI Recommended Actions -->
-                <div class="bg-surface-dark border border-border-dark rounded flex flex-col flex-1 max-h-[400px] fade-in"
-                    style="animation-delay: 0.6s">
-                    <div class="px-3 py-2 border-b border-border-dark bg-red-900/10 flex justify-between items-center">
-                        <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-red-400 text-[16px]">smart_toy</span>
-                            <h3 class="text-sm font-bold text-white">Recomendações IA</h3>
-                        </div>
+                <div
+                    class="glass-panel border-white/5 rounded-lg p-2.5 flex-1 flex flex-col relative overflow-hidden group shadow-2xl">
+                    <div class="flex justify-between items-start mb-1">
                         <span
-                            class="px-2 py-0.5 bg-red-500/20 text-red-400 text-sm font-bold rounded uppercase tracking-wide">Beta</span>
+                            class="text-xs font-black text-text-muted uppercase tracking-[0.2em] italic">Revenue_Flow</span>
                     </div>
-                    <div class="overflow-y-auto p-2 flex flex-col gap-2">
-                        <div
-                            class="p-2.5 bg-surface-darker rounded border border-border-dark hover:border-red-500/30 transition-all group">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-sm font-semibold text-white">Reativação</h4>
-                                    <p class="text-sm text-text-muted mt-0.5">42 membros ausentes >21 dias.</p>
-                                </div>
-                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                            </div>
-                            <div class="mt-2 flex items-center justify-between">
-                                <span class="text-sm text-red-400 font-medium">+15% Retenção</span>
-                                <button onclick="showToast('Automação iniciada!', 'auto_fix')"
-                                    class="h-6 px-2 bg-red-600 hover:bg-red-500 text-white text-sm font-bold uppercase tracking-wide rounded transition-colors flex items-center gap-1">
-                                    Automatizar
-                                </button>
-                            </div>
-                        </div>
-                        <div
-                            class="p-2.5 bg-surface-darker rounded border border-border-dark hover:border-red-500/30 transition-all group">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-sm font-semibold text-white">Upsell</h4>
-                                    <p class="text-sm text-text-muted mt-0.5">Plano Premium para Top 5%.</p>
-                                </div>
-                                <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                            </div>
-                            <div class="mt-2 flex items-center justify-between">
-                                <span class="text-sm text-red-400 font-medium">+R$ 2.4k em LTV</span>
-                                <button onclick="showToast('Abrindo editor...', 'edit')"
-                                    class="h-6 px-2 bg-surface-dark border border-border-dark text-text-muted text-sm font-bold uppercase rounded">Revisar</button>
-                            </div>
-                        </div>
+                    <div class="h-12 w-full flex items-end gap-1 mb-2 mt-2 opacity-40">
+                        <div class="flex-1 bg-rose-500/20 h-1/4"></div>
+                        <div class="flex-1 bg-red-500/40 h-2/4"></div>
+                        <div class="flex-1 bg-rose-500 h-3/4 shadow-[0_0_10px_rgba(239,68,68,0.2)]"></div>
+                        <div class="flex-1 bg-rose-400 h-1/2"></div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="text-xs text-text-muted uppercase font-black tracking-widest mb-0.5 opacity-30">
+                            Total_Asset_Value</div>
+                        <p id="totalRevenue" class="text-lg font-black text-white tracking-widest italic leading-none">
+                            R$ 14.2k</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Nova Seção: Inteligência Adicional de Planos e Risco -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 fade-in delay-700">
-            <!-- Distribuição de Planos -->
-            <div class="lg:col-span-2 bg-surface-dark border border-border-dark rounded-lg p-4 shadow-xl flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-red-400 text-[18px]">pie_chart</span>
-                        Distribuição de Planos
-                    </h3>
-                    <button onclick="showToast('Abrindo relatório de planos...', 'analytics')"
-                        class="text-red-500 text-sm font-medium hover:underline">Ver completo</button>
-                </div>
-                <div class="flex flex-col md:flex-row gap-6 items-center lg:items-start">
-                    <!-- Gauge/Pie Visual -->
-                    <div id="planGauge"
-                        class="relative size-32 rounded-full border-[10px] border-surface-darker flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]">
-                        <div
-                            class="absolute inset-0 m-2.5 bg-surface-dark rounded-full flex flex-col items-center justify-center text-center">
-                            <span id="planGaugeCount" class="text-xl font-bold text-white leading-none">0</span>
-                            <span class="text-[9px] text-text-muted uppercase tracking-[0.2em] font-black">Alunos
-                                Ativos</span>
-                        </div>
-                    </div>
-                    <!-- Legend & Stats -->
-                    <div class="flex-1 w-full flex flex-col gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-2 text-white font-medium">
-                                    <div class="size-2.5 rounded-full bg-red-500"></div>
-                                    <span>Básico (Mensal)</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="font-bold">45%</span>
-                                    <span class="text-text-muted">560 alunos</span>
-                                </div>
-                            </div>
-                            <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-red-500 h-1.5 rounded-full progress-animate" style="width: 45%">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-1">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-2 text-white font-medium">
-                                    <div class="size-2.5 rounded-full bg-red-400"></div>
-                                    <span>Pro (Semestral)</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="font-bold">30%</span>
-                                    <span class="text-text-muted">373 alunos</span>
-                                </div>
-                            </div>
-                            <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-red-400 h-1.5 rounded-full progress-animate" style="width: 30%">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-1">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-2 text-white font-medium">
-                                    <div class="size-2.5 rounded-full bg-red-300"></div>
-                                    <span>Premium (Anual)</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="font-bold">15%</span>
-                                    <span class="text-text-muted">187 alunos</span>
-                                </div>
-                            </div>
-                            <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-red-300 h-1.5 rounded-full progress-animate" style="width: 15%">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Alunos em Risco -->
-            <div class="bg-surface-dark border border-border-dark rounded-lg p-3 shadow-xl flex flex-col">
-                <div class="flex justify-between items-center mb-2">
-                    <div class="flex items-center gap-1.5 uppercase tracking-tighter italic">
-                        <span class="material-symbols-outlined text-rose-500 text-[16px]">warning</span>
-                        <h3 class="text-sm font-bold text-white">Fila de Risco</h3>
-                    </div>
-                    <span
-                        class="bg-rose-500/10 text-rose-500 text-sm font-black px-1.5 py-0.5 rounded border border-rose-500/20">12
-                        CRÍTICOS</span>
-                </div>
-                <div id="riskQueue" class="flex flex-col gap-1.5 overflow-y-auto max-h-[140px] pr-1 font-pro">
-                    <!-- Será preenchido via JS -->
-                    <div class="px-4 py-8 text-center text-text-muted italic text-xs">Analisando dados...</div>
-                </div>
-                <button onclick="showToast('Lista de risco completa expandida.', 'list')"
-                    class="mt-2 w-full py-1.5 text-sm font-black text-text-muted border border-border-dark bg-surface-darker hover:bg-slate-800 rounded transition-colors uppercase tracking-widest italic">
-                    Board Completo (12)
-                </button>
-            </div>
-        </div>
-
-        <!-- Table Section -->
-        <div class="bg-surface-dark border border-border-dark rounded flex flex-col mb-8 fade-in"
-            style="animation-delay: 0.8s">
-            <div class="p-4 border-b border-border-dark flex justify-between items-center">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">Detalhamento por Membro (Risco
-                    Elevado)
+        <!-- Master Ranking Overlay Panel (Efeito Master) -->
+        <div id="referrals-panel"
+            class="hidden fixed inset-y-0 right-0 w-80 bg-surface-dark border-l border-border-dark shadow-2xl z-[100] transform translate-x-full transition-all duration-500 flex flex-col glass-morphism">
+            <div class="p-4 border-b border-white/10 bg-surface-darker/50 flex justify-between items-center">
+                <h3 class="text-white text-xs font-black uppercase tracking-widest">
+                    REDE DE <span id="ambassador-name-display" class="text-rose-500">---</span>
                 </h3>
-                <div class="flex gap-2">
-                    <input id="tableFilter"
-                        class="h-7 bg-surface-darker border border-border-dark rounded text-sm px-2 text-white placeholder-text-muted focus:ring-1 focus:ring-red-500"
-                        placeholder="Filtrar por nome..." type="text" />
-                    <button
-                        class="h-7 w-7 flex items-center justify-center bg-surface-darker border border-border-dark rounded text-text-muted hover:text-white">
-                        <span class="material-symbols-outlined text-[16px]">filter_list</span>
-                    </button>
+                <button onclick="closeReferrals()" class="text-text-muted hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            </div>
+            <div id="referrals-list-container" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2 custom-scrollbar">
+                <!-- Cards de indicados injetados via JS -->
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-2">
+            <!-- Ranking de Embaixadores Global (Componente Master) -->
+            <div class="lg:col-span-1 glass-panel border-white/5 rounded-lg p-2 fade-in delay-800 h-full flex flex-col">
+                <div class="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
+                    <span class="material-symbols-outlined text-rose-500 text-[16px]">stars</span>
+                    <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] italic">Elite_Ranking</h3>
+                </div>
+                <div id="rankingContainer" class="flex flex-col gap-2">
+                    <!-- JS injects here -->
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table id="memberTable" class="w-full text-left border-collapse">
-                    <thead>
-                        <tr
-                            class="bg-surface-darker border-b border-border-dark text-sm uppercase tracking-wider text-text-muted font-semibold">
-                            <th class="px-3 py-2">Membro</th>
-                            <th class="px-3 py-2">Status</th>
-                            <th class="px-3 py-2 text-right">Freq (30d)</th>
-                            <th class="px-3 py-2">Campanha</th>
-                            <th class="px-3 py-2 text-right text-purple-400">Evasão (ML)</th>
-                            <th class="px-3 py-2 text-right">Score</th>
-                            <th class="px-3 py-2 text-right">Visita</th>
-                            <th class="px-3 py-2 text-center">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="memberTableBody" class="text-sm divide-y divide-border-dark">
-                        <!-- Conteúdo carregado via API -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="p-3 border-t border-border-dark flex justify-center">
-                <button onclick="showToast('Carregando mais membros...', 'expand_more')"
-                    class="text-sm text-red-500 hover:text-red-400 font-medium flex items-center gap-1 transition-colors">
-                    Ver todos os 142 membros
-                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </button>
+
+            <!-- Membros em Risco (Movido para grid compacta) -->
+            <div class="lg:col-span-3">
+                <div
+                    class="glass-panel border-white/5 rounded flex flex-col fade-in overflow-hidden shadow-2xl delay-800">
+                    <div class="p-2 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+                        <h3 class="text-xs font-black text-rose-500 uppercase tracking-[0.2em] italic">
+                            Registry_Vulnerabilities</h3>
+                        <div class="flex gap-2">
+                            <input id="tableFilter"
+                                class="h-6 bg-surface-darker border border-border-dark rounded text-xs px-2 text-white placeholder-text-muted focus:ring-1 focus:ring-red-500"
+                                placeholder="SEARCH..." type="text" />
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="memberTable" class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-surface-darker border-b border-border-dark text-xs uppercase tracking-widest text-text-muted font-black">
+                                    <th class="px-2 py-1.5">Membro</th>
+                                    <th class="px-2 py-1.5">Status</th>
+                                    <th class="px-2 py-1.5 text-right italic">Freq</th>
+                                    <th class="px-2 py-1.5 text-right text-purple-400 italic">Evasão</th>
+                                    <th class="px-2 py-1.5 text-right">Score</th>
+                                    <th class="px-2 py-1.5 text-center">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="memberTableBody" class="text-xs divide-y divide-border-dark"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -762,7 +730,7 @@
                         <input type="file" id="photoInput" class="hidden" accept="image/*"
                             onchange="handlePhotoUpload(this)">
                     </div>
-                    <label class="text-[10px] font-black text-text-muted uppercase tracking-widest text-center">Foto do
+                    <label class="text-xs font-black text-text-muted uppercase tracking-widest text-center">Foto do
                         Aluno<br>(Clique para alterar)</label>
                     <input type="hidden" id="memberPhoto">
                 </div>
@@ -898,17 +866,20 @@
 
         async function loadMembersList() {
             try {
-                const members = await GaiaAPI.students.list();
+                const members = await PlayFitnessAPI.students.list();
                 allMembersData = members;
-
-                // Popula a tabela de membros (focando em quem tem score alto ou status de risco)
-                renderMemberTable(members);
-
-                // Atualizar KPIs reais no dashboard
+                renderMembersTable(members);
+                updateRiskKanban(members);
+                updatePlanDistribution(members);
                 await updateKPIs();
+
+                // Initialize ranking
+                if (typeof initMasterRanking === 'function') {
+                    await initMasterRanking();
+                }
             } catch (err) {
-                console.error('Erro ao carregar lista de membros:', err);
-                showToast('Erro ao carregar dados da API', 'error');
+                console.error('Core_Sync_Error:', err);
+                showToast('Database_Link_Failure', 'error');
             }
         }
 
@@ -942,13 +913,13 @@
                             <span class="member-name truncate max-w-[120px] inline-block align-middle">${m.nome_completo}</span>
                         </td>
                         <td class="px-3 py-2">
-                            <span class="px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-${statusColor}-500/10 text-${statusColor}-500 border border-${statusColor}-500/20">
+                            <span class="px-1.5 py-0.5 rounded text-xs font-black uppercase bg-${statusColor}-500/10 text-${statusColor}-500 border border-${statusColor}-500/20">
                                 ${statusLabel}
                             </span>
                         </td>
                         <td class="px-3 py-2 text-right text-text-muted text-xs">${(Math.random() * 4 + 1).toFixed(1)}x/sem</td>
                         <td class="px-3 py-2">
-                             <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider truncate inline-block max-w-[100px] align-middle">
+                             <span class="text-xs font-bold text-text-muted uppercase tracking-wider truncate inline-block max-w-[100px] align-middle">
                                 ${m.campanha || 'Orgânico'}
                              </span>
                         </td>
@@ -973,29 +944,27 @@
             }).join('');
         }
 
+        // Inicializar UI Global
+        document.addEventListener('DOMContentLoaded', () => {
+            PlayFitnessUI.initHeader('dashboard');
+        });
+
+        const showToast = (msg, icon) => PlayFitnessUI.toast(msg, icon);
+
         async function updateKPIs() {
             try {
-                const kpis = await GaiaAPI.kpis.getOverview();
+                const kpis = await PlayFitnessAPI.kpis.getOverview();
 
                 document.getElementById('churnRate').textContent = kpis.churnRate + '%';
-                document.getElementById('avgScore').innerHTML = kpis.avgScore + '<span class="text-sm text-text-muted font-normal ml-0.5">/100</span>';
+                document.getElementById('avgScore').innerHTML = kpis.avgScore + '<span class="text-xs text-text-muted font-normal ml-0.5">/100</span>';
                 document.getElementById('ltvProjected').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.ltv);
-                document.getElementById('liquidProfit').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.revenue * 0.4); // 40% de margem
+                document.getElementById('totalRevenue').textContent = new Intl.NumberFormat('pt-BR', { notation: 'compact', style: 'currency', currency: 'BRL' }).format(kpis.revenue);
+                document.getElementById('liquidProfit').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.revenue * 0.4);
                 document.getElementById('totalMembers').textContent = kpis.total + ' alunos';
                 document.getElementById('breakEvenCurrent').textContent = kpis.total;
 
-                if (kpis.total >= 410) {
-                    document.getElementById('metaStatus').classList.remove('hidden');
-                } else {
-                    document.getElementById('metaStatus').classList.add('hidden');
-                }
-
-                const progress = Math.min(100, (kpis.total / 410) * 100);
-                document.getElementById('breakEvenProgress').style.width = progress + '%';
-
-                // Atualizar Fila de Risco Dinâmica
-                updateRiskQueue(allMembersData);
-                // Atualizar Distribuição de Planos Dinâmica
+                // Atualizar Kanban de Risco
+                updateRiskKanban(allMembersData);
                 updatePlanDistribution(allMembersData);
 
             } catch (e) {
@@ -1003,37 +972,124 @@
             }
         }
 
-        function updateRiskQueue(members) {
-            const riskContainer = document.getElementById('riskQueue');
-            const criticalOnes = members.filter(m => m.status === 'Em Risco').slice(0, 5);
+        function updateRiskKanban(members) {
+            const criticalLane = document.getElementById('kanban-critical');
+            const contactingLane = document.getElementById('kanban-contacting');
 
-            if (criticalOnes.length === 0) {
-                riskContainer.innerHTML = '<div class="px-4 py-8 text-center text-text-muted italic text-xs">Nenhum aluno em risco crítico.</div>';
-                return;
-            }
+            const criticalOnes = members.filter(m => m.status === 'Em Risco');
 
-            riskContainer.innerHTML = criticalOnes.map(m => {
-                const initials = m.nome_completo.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-                return `
-                    <div class="flex items-center justify-between p-2 rounded bg-surface-darker border border-border-dark hover:border-rose-500/30 transition-all group">
-                        <div class="flex items-center gap-2">
-                            <div class="size-6 rounded-full bg-rose-500 text-[10px] font-black text-white flex items-center justify-center">${initials}</div>
-                            <div>
-                                <p class="text-sm font-bold text-white leading-none">${m.nome_completo}</p>
-                                <p class="text-[10px] text-rose-400 mt-0.5 font-bold uppercase tracking-tighter">Pontuação IA: ${m.score_ia || 0}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}" target="_blank" class="material-symbols-outlined text-emerald-500 text-[14px]">chat</a>
-                            <span class="material-symbols-outlined text-rose-500 text-[14px] cursor-pointer" onclick="openModal('edit', '${m.id}')">edit</span>
+            // Mocking some as "Contacting" for demo purposes if we don't have a status for it in DB yet
+            const contactingOnes = criticalOnes.slice(0, Math.floor(criticalOnes.length / 2));
+            const pendingOnes = criticalOnes.slice(Math.floor(criticalOnes.length / 2));
+
+            const renderCard = (m) => `
+                <div class="kanban-card group">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <div class="size-5 rounded-full bg-cover bg-center border border-border-dark" style="background-image: url('${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}')"></div>
+                        <p class="text-xs font-black text-white truncate w-24 uppercase italic tracking-tighter">${m.nome_completo.split(' ')[0]}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[11px] text-rose-500 font-bold">IA: ${m.score_ia || 45}%</span>
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}" target="_blank" class="material-symbols-outlined text-emerald-500 text-[12px]">chat</a>
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `;
+
+            if (pendingOnes.length === 0) {
+                criticalLane.innerHTML = '<div class="px-2 py-4 text-center text-[11px] text-text-muted italic">Fila limpa</div>';
+            } else {
+                criticalLane.innerHTML = pendingOnes.map(renderCard).join('');
+            }
+
+            if (contactingOnes.length === 0 && pendingOnes.length > 0) {
+                // Sample card if empty
+                contactingLane.innerHTML = '<div class="px-2 py-4 text-center text-[11px] text-text-muted italic">Nenhum contato iniciado</div>';
+            } else if (contactingOnes.length > 0) {
+                contactingLane.innerHTML = contactingOnes.map(renderCard).join('');
+            }
+        }
+
+        function renderSparkline(canvasId, data, color) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width / 1;
+            const h = canvas.height / 1;
+            ctx.clearRect(0, 0, w, h);
+
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.lineJoin = 'round';
+
+            const step = w / (data.length - 1);
+            const max = Math.max(...data) * 1.2 || 1;
+
+            data.forEach((val, i) => {
+                const x = i * step;
+                const y = h - (val / max) * h;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            ctx.lineTo(w, h);
+            ctx.lineTo(0, h);
+            ctx.fillStyle = color.replace(')', ', 0.15)').replace('rgb', 'rgba');
+            ctx.fill();
+        }
+
+        function renderMembersTable(members) {
+            const tableBody = document.getElementById('membersTableBody');
+            if (!tableBody) return;
+            tableBody.innerHTML = members.map(m => `
+                <tr class="member-row group border-b border-white/5 hover:bg-white/[0.01] transition-colors">
+                    <td class="px-2 py-1.5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="relative size-7 shrink-0">
+                                <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}&background=111827&color=ef4444`}" 
+                                     class="size-full rounded-full object-cover border border-white/10 group-hover:border-rose-500/50 transition-all">
+                                <div class="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border-2 border-obsidian ${m.status === 'Ativo' ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' : 'bg-rose-500 shadow-[0_0_5px_#ef4444]'}"></div>
+                            </div>
+                            <div class="flex min-w-0 flex-col">
+                                <span class="member-name truncate italic text-xs font-black uppercase tracking-tight text-white">${m.nome_completo}</span>
+                                <span class="text-[11px] font-mono opacity-70 tracking-tighter text-text-muted">${m.cpf || 'NO_IDENT'}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="hidden px-2 py-1.5 md:table-cell">
+                        <span class="italic text-[11px] font-black uppercase tracking-widest text-text-muted">${m.plano}</span>
+                    </td>
+                    <td class="px-2 py-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <div class="h-1 w-12 overflow-hidden rounded-full bg-white/5">
+                                <div class="h-full bg-rose-500 shadow-[0_0_3px_#ef4444]" style="width: ${m.score_ia || 0}%"></div>
+                            </div>
+                            <span class="font-mono text-[11px] text-white">${m.score_ia || 0}%</span>
+                        </div>
+                    </td>
+                    <td class="px-2 py-1.5 text-right">
+                        <div class="flex justify-end gap-1 opacity-20 transition-opacity group-hover:opacity-100">
+                            <button onclick="openModal('edit', '${m.id}')" class="p-1 transition-colors hover:text-white">
+                                <span class="material-symbols-outlined text-[14px]">edit_square</span>
+                            </button>
+                            <button onclick="showToast('Protocolo de Envio...', 'send')" class="p-1 transition-colors hover:text-rose-500">
+                                <span class="material-symbols-outlined text-[14px]">outgoing_mail</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderSparkline('miniChurnChart', [2, 5, 3, 2, 4, 3, 2], 'rgb(251, 113, 133)');
+            renderSparkline('miniEngChart', [80, 85, 82, 90, 88, 92, 95], 'rgb(16, 185, 129)');
         }
 
         function updatePlanDistribution(members) {
             const container = document.getElementById('planDistributionStats');
+            if (!container) return;
             const plans = {};
             members.forEach(m => {
                 plans[m.plano] = (plans[m.plano] || 0) + 1;
@@ -1047,38 +1103,41 @@
                 'Experimental': '#fca5a5'
             };
 
-            document.getElementById('planGaugeCount').textContent = total.toLocaleString('pt-BR');
+            const gaugeCount = document.getElementById('planGaugeCount');
+            if (gaugeCount) gaugeCount.textContent = total.toLocaleString('pt-BR');
 
             let gradientStr = '';
             let currentPerc = 0;
             const entries = Object.entries(plans);
 
-            entries.forEach(([name, count], index) => {
+            entries.forEach(([name, count]) => {
                 const perc = (count / total) * 100;
                 const color = planColors[name] || '#64748b';
                 gradientStr += `${color} ${currentPerc}% ${currentPerc + perc}%, `;
                 currentPerc += perc;
             });
-            gradientStr += '#1e293b 0% 100%'; // Fallback
-            document.getElementById('planGauge').style.background = `conic-gradient(${gradientStr})`;
+            gradientStr += '#1e293b 0% 100%';
+
+            const planGauge = document.getElementById('planGauge');
+            if (planGauge) planGauge.style.background = `conic-gradient(${gradientStr})`;
 
             container.innerHTML = entries.map(([name, count]) => {
                 const perc = Math.round((count / total) * 100);
                 const color = planColors[name] || '#64748b';
                 return `
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between text-sm">
-                            <div class="flex items-center gap-2 text-white font-medium">
-                                <div class="size-2.5 rounded-full" style="background-color: ${color}"></div>
+                    <div class="space-y-0.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase italic tracking-wider text-white">
+                                <div class="size-1.5 rounded-full" style="background-color: ${color}; box-shadow: 0 0 5px ${color}"></div>
                                 <span>${name}</span>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <span class="font-bold">${perc}%</span>
-                                <span class="text-text-muted">${count} alunos</span>
+                            <div class="flex items-center gap-2 font-mono text-[11px]">
+                                <span class="text-white">${perc}%</span>
+                                <span class="opacity-50 text-text-muted">${count} U</span>
                             </div>
                         </div>
-                        <div class="w-full bg-surface-darker rounded-full h-1.5 overflow-hidden">
-                            <div class="h-full rounded-full" style="width: ${perc}%; background-color: ${color}"></div>
+                        <div class="h-1 w-full overflow-hidden rounded-full bg-white/5">
+                            <div class="h-full rounded-full transition-all duration-1000" style="width: ${perc}%; background-color: ${color}"></div>
                         </div>
                     </div>
                 `;
@@ -1086,7 +1145,7 @@
         }
 
         async function seedInitialData() {
-            showToast('Gerando alunos de teste...', 'sync');
+            showToast('Sincronizando Core...', 'sync');
             const samples = [
                 { nome_completo: 'Marcos Oliveira', status: 'Ativo', plano: 'Pro Semestral', cpf: '123.456.789-01' },
                 { nome_completo: 'Juliana Santos', status: 'Em Risco', plano: 'Mensal Básico', cpf: '234.567.890-12' },
@@ -1097,7 +1156,7 @@
 
             for (const s of samples) {
                 try {
-                    await GaiaAPI.students.save(null, {
+                    await PlayFitnessAPI.students.save(null, {
                         ...s,
                         email: s.nome_completo.toLowerCase().replace(/\s/g, '.') + '@email.com',
                         telefone: '119' + Math.floor(Math.random() * 100000000),
@@ -1107,30 +1166,28 @@
                     });
                 } catch (e) { console.error(e); }
             }
-
-            showToast('Base de dados populada!', 'check_circle');
             loadMembersList();
         }
 
         async function openModal(action, id = '') {
             const overlay = document.getElementById('modalOverlay');
+            if (!overlay) return;
             const title = document.getElementById('modalTitle');
             const actionInput = document.getElementById('formAction');
             const idInput = document.getElementById('memberId');
 
-            // RESET FORM AND HIDDEN FIELDS
             document.getElementById('memberForm').reset();
             idInput.value = '';
             document.getElementById('memberPhoto').value = '';
-            document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>';
+            document.getElementById('photoPreview').innerHTML = '<span class="material-symbols-outlined text-text-muted">add_a_photo</span>';
 
             overlay.classList.add('active');
             actionInput.value = action;
 
             if (action === 'edit' && id) {
-                title.textContent = 'Editar Cadastro';
+                title.textContent = 'Neural Profile Edit';
                 try {
-                    const data = await GaiaAPI.students.getById(id);
+                    const data = await PlayFitnessAPI.students.getById(id);
                     if (data) {
                         idInput.value = data.id;
                         document.getElementById('memberName').value = data.nome_completo || '';
@@ -1141,28 +1198,22 @@
                         document.getElementById('memberStatus').value = data.status || 'Ativo';
                         document.getElementById('memberPlan').value = data.plano || 'Mensal Básico';
                         document.getElementById('memberGoal').value = data.objetivo || 'health';
-                        const photoUrl = data.foto_url || '';
-                        document.getElementById('memberPhoto').value = photoUrl;
-                        if (photoUrl) {
-                            document.getElementById('photoPreview').innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover">`;
+                        document.getElementById('memberPhoto').value = data.foto_url || '';
+                        if (data.foto_url) {
+                            document.getElementById('photoPreview').innerHTML = `<img src="${data.foto_url}" class="w-full h-full object-cover rounded-full">`;
                         }
-                        document.getElementById('memberAddress').value = data.endereco || '';
-                        document.getElementById('memberNeighborhood').value = data.bairro || '';
-                        document.getElementById('memberCity').value = data.cidade || '';
-                        document.getElementById('memberReferrer').value = data.indicado_por || '';
-                        document.getElementById('memberCampaign').value = data.campanha || 'Orgânico';
                     }
                 } catch (err) {
-                    console.error('Erro ao carregar detalhes:', err);
-                    showToast('Erro ao carregar dados do aluno', 'error');
+                    showToast('Sync Error', 'error');
                 }
             } else {
-                title.textContent = 'Novo Cadastro';
+                title.textContent = 'Protocol_Append';
             }
         }
 
         function handleReferrerInput(value) {
             const container = document.getElementById('referrerSuggestions');
+            if (!container) return;
             if (!value || value.trim().length === 0) {
                 container.innerHTML = '';
                 container.classList.add('hidden');
@@ -1172,55 +1223,36 @@
             if (matches.length > 0) {
                 container.innerHTML = matches.map(m => `
                     <div onclick="selectReferrer('${m.nome_completo.replace(/'/g, "\\'")}')" 
-                         class="px-4 py-2 flex items-center gap-3 text-sm text-white hover:bg-red-500 cursor-pointer border-b border-border-dark last:border-0">
-                        <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}" class="size-6 rounded-full border border-border-dark shrink-0 object-cover">
-                        <span class="truncate">${m.nome_completo}</span>
+                         class="px-4 py-2 flex items-center gap-3 text-xs text-white hover:bg-rose-500/20 cursor-pointer border-b border-white/5 last:border-0 italic uppercase font-black">
+                        <img src="${m.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nome_completo)}`}" class="size-5 rounded-full object-cover">
+                        <span class="truncate tracking-wider">${m.nome_completo}</span>
                     </div>
                 `).join('');
                 container.classList.remove('hidden');
             } else {
-                container.innerHTML = '<div class="px-4 py-3 text-xs text-text-muted italic flex items-center gap-2"><span class="material-symbols-outlined text-sm">person_off</span>Nenhum aluno encontrado</div>';
-                container.classList.remove('hidden');
+                container.classList.add('hidden');
             }
         }
-
-        function selectReferrer(name) {
-            document.getElementById('memberReferrer').value = name;
-            document.getElementById('referrerSuggestions').classList.add('hidden');
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#memberReferrer')) {
-                const sugg = document.getElementById('referrerSuggestions');
-                if (sugg) sugg.classList.add('hidden');
-            }
-        });
 
         async function handlePhotoUpload(input) {
             if (input.files && input.files[0]) {
-                const file = input.files[0];
                 const preview = document.getElementById('photoPreview');
-                const originalContent = preview.innerHTML;
-                preview.innerHTML = '<div class="flex flex-col items-center gap-1"><div class="size-4 border-2 border-red-500 border-t-transparent animate-spin rounded-full"></div><span class="text-[8px] font-bold text-red-500 uppercase">Enviando</span></div>';
-
+                preview.innerHTML = '<div class="size-4 border-2 border-rose-500 border-t-transparent animate-spin rounded-full"></div>';
                 try {
-                    const publicUrl = await GaiaAPI.storage.upload(file);
+                    const publicUrl = await PlayFitnessAPI.storage.upload(input.files[0]);
                     document.getElementById('memberPhoto').value = publicUrl;
-                    preview.innerHTML = `<img src="${publicUrl}" class="w-full h-full object-cover">`;
-                    showToast('Foto atualizada com sucesso!', 'check_circle');
+                    preview.innerHTML = `<img src="${publicUrl}" class="w-full h-full object-cover rounded-full">`;
+                    showToast('Uplink Success', 'check_circle');
                 } catch (err) {
-                    console.error('Erro no upload:', err);
-                    preview.innerHTML = originalContent;
-                    showToast('Erro ao enviar foto.', 'error');
+                    preview.innerHTML = '<span class="material-symbols-outlined">add_a_photo</span>';
+                    showToast('Uplink Failed', 'error');
                 }
             }
         }
 
         async function handleFormSubmit(event) {
             event.preventDefault();
-            const action = document.getElementById('formAction').value;
             const id = document.getElementById('memberId').value;
-
             const payload = {
                 nome_completo: document.getElementById('memberName').value,
                 email: document.getElementById('memberEmail').value,
@@ -1228,59 +1260,153 @@
                 cpf: document.getElementById('memberCPF').value,
                 foto_url: document.getElementById('memberPhoto').value,
                 status: document.getElementById('memberStatus').value,
-                endereco: document.getElementById('memberAddress').value,
-                bairro: document.getElementById('memberNeighborhood').value,
-                cidade: document.getElementById('memberCity').value,
-                indicado_por: document.getElementById('memberReferrer').value,
                 plano: document.getElementById('memberPlan').value,
                 objetivo: document.getElementById('memberGoal').value,
-                data_nascimento: document.getElementById('memberBirth').value,
-                campanha: document.getElementById('memberCampaign').value
+                data_nascimento: document.getElementById('memberBirth').value
             };
 
             try {
-                await GaiaAPI.students.save(id === '' ? null : id, payload);
+                await PlayFitnessAPI.students.save(id || null, payload);
                 closeModal();
-                showToast(id === '' ? 'Cadastro realizado!' : 'Perfil atualizado!', 'check_circle');
+                showToast('Registry_Sync', 'check_circle');
                 loadMembersList();
             } catch (err) {
-                console.error(err);
-                showToast('Erro ao salvar no banco', 'error');
+                showToast('Database_Lock', 'error');
             }
         }
 
-        function filterTable(query) {
-            const rows = document.querySelectorAll('.member-row');
-            rows.forEach(row => {
-                const name = row.querySelector('.member-name').textContent.toLowerCase();
-                row.style.display = name.includes(query.toLowerCase()) ? '' : 'none';
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        window.addEventListener('load', loadMembersList);
+
+        const filterEl = document.getElementById('tableFilter');
+        if (filterEl) {
+            filterEl.addEventListener('input', (e) => {
+                const rows = document.querySelectorAll('.member-row');
+                rows.forEach(r => {
+                    const name = r.querySelector('.member-name').textContent.toLowerCase();
+                    r.style.display = name.includes(e.target.value.toLowerCase()) ? '' : 'none';
+                });
             });
         }
 
-        document.getElementById('tableFilter').addEventListener('input', (e) => filterTable(e.target.value));
-        document.getElementById('globalSearch').addEventListener('input', (e) => filterTable(e.target.value));
-
         const btnRetrain = document.getElementById('btnRetrain');
-        btnRetrain.addEventListener('click', () => {
-            const span = btnRetrain.querySelector('span:last-child');
-            const originalText = span.textContent;
-            span.textContent = 'Treinando...';
-            btnRetrain.classList.add('opacity-50', 'pointer-events-none');
-            showToast('Iniciando processamento K-Means...', 'settings_suggest');
-            setTimeout(() => {
-                span.textContent = originalText;
-                btnRetrain.classList.remove('opacity-50', 'pointer-events-none');
-                showToast('Modelo re-treinado com 99.2% de precisão!', 'verified');
-            }, 2500);
-        });
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
+        if (btnRetrain) {
+            btnRetrain.addEventListener('click', () => {
+                showToast('Neural Python Engine Training...', 'psychology');
+                setTimeout(() => showToast('Python Optimization Complete', 'verified'), 2000);
+            });
         }
 
-        window.addEventListener('load', () => {
-            loadMembersList();
-        });
+    </script>
+
+    <!-- MASTER RANKING LOGIC (GLOBAL SCOPE) -->
+    <script>
+        let currentActiveAmbassador = null;
+        let rankingData = [];
+        let allStudents = [];
+
+        async function initMasterRanking() {
+            try {
+                rankingData = await PlayFitnessAPI.students.getReferralRanking();
+                allStudents = await PlayFitnessAPI.students.list();
+                renderRanking();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderRanking() {
+            const container = document.getElementById('rankingContainer');
+            if (!container) return;
+
+            if (rankingData.length === 0) {
+                container.innerHTML = '<p class="text-xs text-text-muted italic text-center py-4">Nenhuma indicação ainda.</p>';
+                return;
+            }
+
+            container.innerHTML = rankingData.slice(0, 3).map((item, index) => {
+                const isWinner = index === 0;
+                const bgClass = isWinner ? 'bg-gradient-to-br from-rose-500/20 to-red-600/10 border-rose-500/30' : 'bg-surface-darker/50 border-white/5';
+
+                return `
+                    <div class="${bgClass} rounded-lg p-2 flex items-center gap-2.5 border transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer group"
+                         onclick="toggleReferrals('${item.name.replace(/'/g, "\\'")}')">
+                        <div class="relative shrink-0">
+                            <div class="size-8 rounded-full border-2 ${isWinner ? 'border-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]' : 'border-slate-500/30'} overflow-hidden">
+                                <img src="${item.foto}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute -top-1 -right-1 size-3.5 ${isWinner ? 'bg-rose-500' : 'bg-slate-700'} rounded-full flex items-center justify-center text-white font-black text-[11px] border border-slate-900">${index + 1}</div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-white text-[11px] font-black uppercase truncate">${item.name}</h3>
+                            <div class="flex items-center gap-1">
+                                <span class="text-xs font-black text-white">${item.count}</span>
+                                <span class="text-[11px] text-rose-400 font-bold uppercase tracking-widest">Alunos</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-rose-500 opacity-0 group-hover:opacity-100 transition-all text-xs">arrow_forward</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleReferrals(name) {
+            const panel = document.getElementById('referrals-panel');
+            const listContainer = document.getElementById('referrals-list-container');
+            const nameDisplay = document.getElementById('ambassador-name-display');
+
+            if (currentActiveAmbassador === name) {
+                closeReferrals();
+                return;
+            }
+
+            const referrals = allStudents.filter(s => s.indicado_por === name);
+            if (referrals.length === 0) {
+                PlayFitnessUI.toast(`Ambassador_Empty: ${name}`, 'info');
+                return;
+            }
+
+            currentActiveAmbassador = name;
+            if (nameDisplay) nameDisplay.textContent = name;
+            if (listContainer) {
+                listContainer.innerHTML = '';
+                referrals.forEach((student, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'stagger-card glass-morphism rounded-lg p-2 border border-white/5 flex items-center gap-2.5';
+                    card.style.animationDelay = `${index * 50}ms`;
+                    card.innerHTML = `
+                        <img src="${student.foto_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(student.nome_completo)}" class="size-6 rounded border border-white/10 shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-[11px] font-bold text-white uppercase truncate">${student.nome_completo}</p>
+                            <p class="text-[11px] text-text-muted uppercase tracking-widest font-bold">${student.status || 'Ativo'}</p>
+                        </div>
+                        <span class="material-symbols-outlined text-emerald-400 text-[14px]">check_circle</span>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            }
+
+            if (panel) {
+                panel.classList.remove('hidden');
+                setTimeout(() => {
+                    panel.classList.remove('translate-x-full');
+                    panel.classList.add('translate-x-0', 'opacity-100');
+                }, 10);
+            }
+            PlayFitnessUI.toast(`Neural_Scan: ${name}`, 'psychology');
+        }
+
+        function closeReferrals() {
+            const panel = document.getElementById('referrals-panel');
+            currentActiveAmbassador = null;
+            if (panel) {
+                panel.classList.add('translate-x-full');
+                panel.classList.remove('translate-x-0', 'opacity-100');
+                setTimeout(() => panel.classList.add('hidden'), 500);
+            }
+        }
     </script>
 </body>
 

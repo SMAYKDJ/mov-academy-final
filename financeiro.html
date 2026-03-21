@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Gestão Financeira IA | Gaia Team</title>
+    <title>Gestão Financeira IA | CT Olimpo</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
@@ -13,6 +13,7 @@
         rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
+    <script src="playfitness-api.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
@@ -25,31 +26,22 @@
                         "primary-dark": "#991b1b",
                         secondary: "#f59e0b",
                         "background-dark": "#0f172a",
-                        "surface-dark": "#1e293b",
-                        "surface-darker": "#111827",
-                        "border-dark": "#334155",
+                        "surface-dark": "#1a202e",
+                        "surface-darker": "#0a0f1a",
+                        "border-dark": "#2d3648",
                         "text-main": "#f1f5f9",
                         "text-muted": "#94a3b8",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        sans: ["Space Grotesk", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"],
                     },
                 },
             },
         }
     </script>
     <style>
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -67,43 +59,19 @@
         }
 
         .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
+            background: rgba(26, 32, 46, 0.7);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(51, 65, 85, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 54, 72, 0.5);
         }
     </style>
 </head>
 
 <body class="bg-background-dark text-text-main font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
     <!-- Header -->
-    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-4 h-11 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2 min-w-fit">
-                <div
-                    class="w-8 h-8 rounded-full overflow-hidden border border-white/10 flex items-center justify-center bg-surface-dark shadow-lg shadow-red-500/20">
-                    <img src="logo.png" alt="Gaia Team Logo" class="w-full h-full object-cover">
-                </div>
-                <h1 class="text-base font-bold tracking-tight text-white uppercase">Gaia<span class="text-red-600">
-                        Team</span></h1>
-                <div class="h-4 w-[1px] bg-border-dark mx-1.5"></div>
-                <nav class="hidden md:flex items-center gap-0.5">
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="dashboard.html">Painel</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="membros.html">Membros</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="campanhas.html">Campanhas</a>
-                    <a class="px-2 py-1 text-sm font-medium text-white bg-white/10 rounded border border-white/5 transition-colors"
-                        href="financeiro.html">Financeiro</a>
-                    <a class="px-2 py-1 text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 rounded transition-colors"
-                        href="#">Configurações</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <header class="w-full border-b border-border-dark bg-surface-darker sticky top-0 z-50 h-11"></header>
 
-    <main class="flex-1 max-w-[1600px] mx-auto w-full p-4 flex flex-col gap-4">
+    <main class="flex-1 max-w-full w-full p-4 flex flex-col gap-4">
         <!-- Header Section -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 fade-in">
             <div>
@@ -176,7 +144,7 @@
                             </div>
                             <div>
                                 <label class="text-sm font-bold text-text-muted uppercase mb-1 block">Tipo</label>
-                                <select
+                                <select title="Selecione o tipo de lançamento"
                                     class="w-full h-8 bg-surface-darker border-border-dark rounded text-sm text-white focus:ring-red-500">
                                     <option value="fixa">Despesa Fixa</option>
                                     <option value="variavel">Despesa Variável</option>
@@ -187,7 +155,7 @@
                         <div>
                             <label class="text-sm font-bold text-text-muted uppercase mb-1 block">Plano de
                                 Contas</label>
-                            <select
+                            <select title="Selecione o plano de contas"
                                 class="w-full h-8 bg-surface-darker border-border-dark rounded text-sm text-white focus:ring-red-500">
                                 <optgroup label="1. RECEITAS">
                                     <option>1.1 Mensalidades</option>
@@ -307,7 +275,7 @@
                                 <span class="text-white">Excelente</span>
                             </div>
                             <div class="h-1.5 w-full bg-surface-dark rounded-full overflow-hidden">
-                                <div class="h-full bg-emerald-500 rounded-full" style="width: 54%"></div>
+                                <div class="h-full bg-emerald-500 rounded-full w-[54%]"></div>
                             </div>
                         </div>
                         <div class="flex-1 w-full">
@@ -316,7 +284,7 @@
                                 <span class="text-white">Alcançado</span>
                             </div>
                             <div class="h-1.5 w-full bg-surface-dark rounded-full overflow-hidden">
-                                <div class="h-full bg-red-500 rounded-full" style="width: 80%"></div>
+                                <div class="h-full bg-red-500 rounded-full w-[80%]"></div>
                             </div>
                         </div>
                     </div>
@@ -345,7 +313,7 @@
                                 <span class="text-rose-400 font-bold">-R$ 16k</span>
                             </div>
                             <div class="w-full bg-surface-darker rounded-full h-1.5">
-                                <div class="bg-rose-500 h-full rounded-full" style="width: 65%"></div>
+                                <div class="bg-rose-500 h-full rounded-full w-[65%]"></div>
                             </div>
                         </div>
                     </div>
@@ -430,8 +398,7 @@
                         </div>
                         <div
                             class="h-2 w-full bg-surface-darker rounded-full border border-border-dark overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-red-500 to-emerald-500 rounded-full"
-                                style="width: 65%"></div>
+                            <div class="h-full bg-gradient-to-r from-red-500 to-emerald-500 rounded-full w-[65%]"></div>
                         </div>
                     </div>
                 </div>
@@ -480,12 +447,13 @@
             }
         }
 
-        function showToast(message, iconName = 'info') {
-            // Implementação mínima de toast se necessário aqui ou via global
-            console.log(message);
-        }
+        // Inicializar UI Global
+        document.addEventListener('DOMContentLoaded', () => {
+            PlayFitnessUI.initHeader('financeiro');
+            loadFinanceData();
+        });
 
-        document.addEventListener('DOMContentLoaded', loadFinanceData);
+        const showToast = (msg, icon) => PlayFitnessUI.toast(msg, icon);
     </script>
 </body>
 
