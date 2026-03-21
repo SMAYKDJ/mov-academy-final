@@ -4,240 +4,145 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>PlayFitness | Campanhas IA</title>
+    <title>PlayFitness | Campanhas</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
-    <!-- SDKs -->
+    <!-- API & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="playfitness-api.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
-    <script>
+
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        primary: "#dc2626",
-                        surface: "#141416",
-                        "surface-dark": "#0a0a0b",
-                        border: "rgba(255, 255, 255, 0.08)"
-                    }
-                }
-            }
+                        "surface-variant": "#262627",
+                        "on-secondary": "#525154",
+                        "surface-dim": "#0e0e0f",
+                        "on-surface": "#ffffff",
+                        "background": "#0e0e0f",
+                        "primary-dim": "#e02928",
+                        "primary": "#ff8e82",
+                        "error": "#ff6e84",
+                        "surface-container-highest": "#262627"
+                    },
+                    fontFamily: { "headline": ["Inter"], "body": ["Inter"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
         }
     </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0e0e0f; color: #ffffff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(26, 25, 27, 0.6); backdrop-filter: blur(24px); }
+    </style>
 </head>
 
-<body class="bg-surface-dark text-white font-sans antialiased min-h-screen flex flex-col md:flex-row overflow-hidden">
-    
-    <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-surface border-b md:border-b-0 md:border-r border-border flex flex-col shrink-0 z-50">
-        <div class="p-6">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="size-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center shadow-lg shadow-primary/5">
-                    <span class="material-symbols-outlined text-primary text-2xl font-bold">bolt</span>
-                </div>
-                <h1 class="text-xl font-black italic tracking-tighter uppercase">
-                    PLAY<span class="text-primary">FITNESS</span>
-                </h1>
-            </div>
-
-            <nav class="space-y-1">
-                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-text-muted hover:text-white hover:bg-white/5 transition-all group">
-                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">dashboard</span>
-                    <span class="text-sm font-bold uppercase tracking-wider italic">Dashboard</span>
-                </a>
-                <a href="membros.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-text-muted hover:text-white hover:bg-white/5 transition-all group">
-                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">group</span>
-                    <span class="text-sm font-bold uppercase tracking-wider italic">Membros</span>
-                </a>
-                <a href="campanhas.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-primary/10 text-primary border border-primary/20 transition-all group shadow-lg shadow-primary/5">
-                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">campaign</span>
-                    <span class="text-sm font-bold uppercase tracking-wider italic">Campanhas</span>
-                </a>
-                <a href="financeiro.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-text-muted hover:text-white hover:bg-white/5 transition-all group">
-                    <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">payments</span>
-                    <span class="text-sm font-bold uppercase tracking-wider italic">Financeiro</span>
-                </a>
-            </nav>
+<body class="bg-background text-on-background antialiased overflow-x-hidden">
+    <!-- SideNavBar -->
+    <aside class="fixed left-0 top-0 h-full w-64 border-r border-white/5 bg-[#0e0e0f] flex flex-col py-8 px-4 z-50">
+        <div class="mb-10 px-2">
+            <h1 class="text-xl font-black text-[#ff8e82] tracking-tighter italic">PlayFitness</h1>
+            <p class="font-['Inter'] font-extrabold tracking-[-0.04em] uppercase text-[0.75rem] text-white/50 mt-1">Inteligência Estratégica</p>
         </div>
-
-        <div class="mt-auto p-6 border-t border-border">
-            <div class="glass-card p-4 rounded-2xl border border-white/5 flex items-center gap-3">
-                <div class="size-10 rounded-full border border-primary/20 bg-primary/10 overflow-hidden">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=dc2626&color=fff" class="size-full object-cover">
-                </div>
-                <div>
-                    <p class="text-[10px] font-black text-text-muted uppercase tracking-widest">Gestor</p>
-                    <p class="text-xs font-bold text-white uppercase italic">SMAYK TR</p>
-                </div>
-            </div>
-            <button onclick="location.href='index.html'" class="w-full mt-4 flex items-center justify-center gap-2 py-3 text-text-muted hover:text-primary transition-colors text-[10px] font-black uppercase tracking-[0.2em] italic">
-                <span class="material-symbols-outlined text-[16px]">logout</span>
-                Encerrar Sessão
-            </button>
-        </div>
+        <nav class="flex-1 space-y-2">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-medium text-sm">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="membros.html">
+                <span class="material-symbols-outlined">group</span>
+                <span class="font-medium text-sm">Membros</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="financeiro.html">
+                <span class="material-symbols-outlined">payments</span>
+                <span class="font-medium text-sm">Financeiro</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#ff8e82] border-r-2 border-[#ff8e82] bg-gradient-to-r from-[#e02928]/10 to-transparent transition-all" href="campanhas.html">
+                <span class="material-symbols-outlined">campaign</span>
+                <span class="font-medium text-sm">Campanhas</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="font-medium text-sm">Configurações</span>
+            </a>
+        </nav>
+        <button onclick="location.href='index.html'" class="mt-auto border border-white/5 text-white/40 py-4 rounded-xl font-bold text-xs hover:text-primary transition-all">
+            Sair do Sistema
+        </button>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-hidden relative">
-        <!-- Header -->
-        <header class="h-20 border-b border-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-xl shrink-0">
-            <div class="flex flex-col">
-                <h2 class="text-xl font-black italic uppercase tracking-tighter">
-                    Marketing <span class="text-primary italic">Preditivo</span>
-                </h2>
-                <p class="text-[10px] font-bold text-text-muted uppercase tracking-[.2em] italic">Engenharia de Conversão V3.0</p>
+    <main class="ml-64 min-h-screen pb-20">
+        <header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-[#1a191b]/60 backdrop-blur-3xl flex items-center justify-between px-8 z-40 shadow-2xl">
+             <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-primary-dim animate-pulse"></span>
+                <span class="font-['Inter'] italic font-medium text-sm text-primary">Marketing: IA Ativa</span>
             </div>
-
-            <div class="flex items-center gap-4">
-                <button onclick="PlayFitnessUI.toast('Gerando novos criativos IA...', 'auto_awesome')" class="btn-primary px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest italic flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[16px]">rocket_launch</span>
-                    Nova Campanha
-                </button>
-            </div>
+             <button onclick="PlayFitnessUI.toast('Criando Campanha IA...', 'rocket_launch')" class="bg-primary-dim text-white px-6 py-2 rounded-full font-extrabold text-xs flex items-center gap-2 hover:scale-105 transition-all">
+                <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                Configurar Campanhas
+            </button>
         </header>
 
-        <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
-            <!-- Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="glass-card p-6 rounded-[32px] border border-border shadow-xl">
-                    <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1 italic">Taxa de Conversão</p>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black italic tracking-tighter">18.5%</h3>
-                        <span class="text-[10px] font-bold text-emerald-500 uppercase italic">+2.1% IA</span>
-                    </div>
+        <div class="mt-24 px-10 space-y-12">
+            <h2 class="text-[3.5rem] font-black tracking-[-0.04em] leading-tight">Campanhas <span class="text-primary italic">Preditivas</span></h2>
+            
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="glass-card p-6 rounded-2xl border border-white/5">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">Taxa de Conversão</p>
+                    <h3 class="text-3xl font-black italic tracking-tighter">18.5%</h3>
                 </div>
-                <div class="glass-card p-6 rounded-[32px] border border-border shadow-xl">
-                    <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1 italic">Indicações</p>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black italic tracking-tighter">127</h3>
-                        <span class="text-[10px] font-bold text-emerald-500 uppercase italic">Ativas</span>
-                    </div>
+                <div class="glass-card p-6 rounded-2xl border border-white/5">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">Total Indicações</p>
+                    <h3 class="text-3xl font-black italic tracking-tighter">127</h3>
                 </div>
-                <div class="glass-card p-6 rounded-[32px] border border-border shadow-xl">
-                    <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1 italic">ROI Estimado</p>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black italic tracking-tighter">R$ 5.4k</h3>
-                        <span class="text-[10px] font-bold text-text-muted uppercase italic">Mensal</span>
-                    </div>
+                <div class="glass-card p-6 rounded-2xl border border-white/5">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">ROI Projetado</p>
+                    <h3 class="text-3xl font-black italic tracking-tighter text-emerald-500">5.4x</h3>
                 </div>
-                <div class="glass-card p-6 rounded-[32px] border border-border shadow-xl">
-                    <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1 italic">Custo por Lead</p>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black italic tracking-tighter">R$ 2.45</h3>
-                        <span class="text-[10px] font-bold text-primary uppercase italic">Otimizado</span>
-                    </div>
+                <div class="glass-card p-6 rounded-2xl border border-white/5">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">Custo Lead</p>
+                    <h3 class="text-3xl font-black italic tracking-tighter">R$ 2.45</h3>
                 </div>
-            </div>
+            </section>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Campaigns Table -->
-                <div class="lg:col-span-8 space-y-6">
-                    <h3 class="text-sm font-black italic uppercase tracking-widest text-white/50 px-2">Campanhas em Execução</h3>
-                    <div class="glass-card rounded-[32px] border border-border overflow-hidden shadow-2xl">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 border-b border-border">
-                                <tr>
-                                    <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest italic text-text-muted">Campanha</th>
-                                    <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest italic text-text-muted">Target</th>
-                                    <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest italic text-text-muted">Conversão</th>
-                                    <th class="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest italic text-text-muted">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-border">
-                                <tr class="hover:bg-white/[0.02] transition-colors group">
-                                    <td class="px-6 py-5">
-                                        <div class="flex flex-col">
-                                            <span class="text-xs font-black italic uppercase tracking-tighter text-white">Recuperação de Inativos</span>
-                                            <span class="text-[9px] font-bold text-text-muted uppercase tracking-widest italic">WhatsApp Automatizado</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span class="text-[10px] font-bold text-text-muted uppercase italic px-2 py-1 bg-white/5 rounded-lg border border-border">Churn Risco > 70%</span>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden w-20">
-                                                <div class="h-full bg-primary w-[45%] rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
-                                            </div>
-                                            <span class="text-[10px] font-black italic text-primary">45%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5 text-right">
-                                        <span class="text-[10px] font-black italic text-emerald-500 uppercase tracking-widest px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">Ativa</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-white/[0.02] transition-colors group">
-                                    <td class="px-6 py-5">
-                                        <div class="flex flex-col">
-                                            <span class="text-xs font-black italic uppercase tracking-tighter text-white">Upgrade para VIP Anual</span>
-                                            <span class="text-[9px] font-bold text-text-muted uppercase tracking-widest italic">Email Marketing + Push</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span class="text-[10px] font-bold text-text-muted uppercase italic px-2 py-1 bg-white/5 rounded-lg border border-border">Engajamento > 85%</span>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden w-20">
-                                                <div class="h-full bg-emerald-500 w-[72%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                                            </div>
-                                            <span class="text-[10px] font-black italic text-emerald-500">72%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5 text-right">
-                                        <span class="text-[10px] font-black italic text-emerald-500 uppercase tracking-widest px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">Ativa</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-white/[0.02] transition-colors group">
-                                    <td class="px-6 py-5">
-                                        <div class="flex flex-col">
-                                            <span class="text-xs font-black italic uppercase tracking-tighter text-white">Verão PlayFitness 2026</span>
-                                            <span class="text-[9px] font-bold text-text-muted uppercase tracking-widest italic">Anúncios Meta Ads</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span class="text-[10px] font-bold text-text-muted uppercase italic px-2 py-1 bg-white/5 rounded-lg border border-border">Geolocalização 5KM</span>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden w-20">
-                                                <div class="h-full bg-blue-500 w-[12%] rounded-full"></div>
-                                            </div>
-                                            <span class="text-[10px] font-black italic text-blue-400">12%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5 text-right">
-                                        <span class="text-[10px] font-black italic text-text-muted uppercase tracking-widest px-3 py-1 bg-white/5 border border-border rounded-full">Preparando</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-12 lg:col-span-8 glass-card p-8 rounded-2xl border border-white/5 shadow-2xl">
+                    <h4 class="text-xl font-bold mb-8 italic uppercase tracking-tighter">Status de Conversão Digital</h4>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[0.65rem] uppercase tracking-widest text-white/40 border-b border-white/5">
+                                <th class="pb-4 font-medium">Nome da Campanha</th>
+                                <th class="pb-4 font-medium">Target IA</th>
+                                <th class="pb-4 font-medium text-right">Eficiência</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-6 font-black italic text-sm text-primary uppercase">Recuperação Verão 2026</td>
+                                <td class="py-6 text-[10px] font-bold text-white/50 uppercase tracking-widest italic">Churn > 60%</td>
+                                <td class="py-6 text-right font-black italic text-emerald-500">62%</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-6 font-black italic text-sm text-white uppercase">Upgrade VIP Premium</td>
+                                <td class="py-6 text-[10px] font-bold text-white/50 uppercase tracking-widest italic">Engajamento > 90%</td>
+                                <td class="py-6 text-right font-black italic text-emerald-500">45%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <!-- Ambassador Ranking -->
-                <div class="lg:col-span-4 space-y-6">
-                    <h3 class="text-sm font-black italic uppercase tracking-widest text-primary px-2">Elite Embaixadores</h3>
-                    <div id="rankingContainer" class="space-y-4">
+                <div class="col-span-12 lg:col-span-4 glass-card p-8 rounded-2xl border border-white/5 shadow-2xl">
+                     <h4 class="text-xl font-bold mb-8 uppercase italic tracking-tighter text-primary">Embaixadores Elite</h4>
+                     <div id="rankingContainer" class="space-y-6">
                          <!-- Dynamically populated -->
-                         <div class="animate-pulse flex flex-col gap-4">
-                             <div class="h-20 bg-white/5 rounded-[32px] border border-border"></div>
-                             <div class="h-20 bg-white/5 rounded-[32px] border border-border"></div>
-                             <div class="h-20 bg-white/5 rounded-[32px] border border-border"></div>
-                         </div>
-                    </div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -249,39 +154,19 @@
         });
 
         async function loadCampaignData() {
-            try {
-                const ranking = await PlayFitnessAPI.students.getReferralRanking();
-                renderRanking(ranking);
-            } catch (err) {
-                console.error(err);
-                PlayFitnessUI.toast('Erro ao carregar dados de campanhas', 'error');
-            }
-        }
-
-        function renderRanking(data) {
+            const ranking = await PlayFitnessAPI.students.getReferralRanking();
             const container = document.getElementById('rankingContainer');
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p class="text-[10px] font-bold text-text-muted text-center py-10 uppercase italic tracking-widest">Nenhuma indicação processada</p>';
-                return;
-            }
-
-            container.innerHTML = data.slice(0, 5).map((item, index) => `
-                <div class="glass-card p-4 rounded-[32px] border border-border hover:border-primary/50 transition-all group flex items-center gap-4 cursor-help">
-                    <div class="relative">
-                        <div class="size-12 rounded-full border-2 ${index === 0 ? 'border-primary shadow-[0_0_15px_rgba(220,38,38,0.5)]' : 'border-border'} overflow-hidden">
-                            <img src="${item.foto}" class="size-full object-cover">
+            
+            container.innerHTML = ranking.slice(0, 5).map((item, idx) => `
+                <div class="flex items-center justify-between group">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <img class="w-12 h-12 rounded-full object-cover border-2 border-primary-dim" src="${item.foto}" />
+                            <div class="absolute -top-1 -right-1 bg-primary-dim text-[10px] font-bold px-1.5 py-0.5 rounded-full">#${idx + 1}</div>
                         </div>
-                        <div class="absolute -top-1 -right-1 size-6 rounded-full ${index === 0 ? 'bg-primary' : (index === 1 ? 'bg-slate-400' : 'bg-rose-900')} flex items-center justify-center text-[10px] font-black italic border-2 border-surface shadow-xl shadow-black/50">
-                            ${index + 1}
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-[11px] font-black italic uppercase tracking-tighter text-white truncate">${item.name}</h4>
-                        <div class="flex items-center gap-4 mt-1">
-                             <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest italic">${item.count} Indicações</p>
-                             <div class="h-1 flex-1 bg-white/5 rounded-full overflow-hidden">
-                                <div class="h-full bg-primary rounded-full" style="width: ${Math.min(item.count * 15, 100)}%"></div>
-                             </div>
+                        <div>
+                            <p class="font-bold text-sm uppercase italic">${item.name}</p>
+                            <p class="text-[0.65rem] text-white/50 uppercase tracking-widest">${item.count} Indicações</p>
                         </div>
                     </div>
                 </div>

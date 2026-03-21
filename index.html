@@ -4,96 +4,66 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>PlayFitness | Inteligência Artificial</title>
+    <title>PlayFitness | Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        primary: "#dc2626",
-                        surface: "#141416",
-                        "surface-dark": "#0a0a0b",
-                        border: "rgba(255, 255, 255, 0.08)"
-                    }
-                }
-            }
+                        "background": "#0e0e0f",
+                        "primary-dim": "#e02928",
+                        "primary": "#ff8e82",
+                        "surface-container-highest": "#262627"
+                    },
+                    fontFamily: { "headline": ["Inter"], "body": ["Inter"] },
+                    borderRadius: { "lg": "2rem", "xl": "3rem" },
+                },
+            },
         }
     </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0e0e0f; color: #ffffff; }
+        .glass-card { background: rgba(26, 25, 27, 0.6); backdrop-filter: blur(24px); }
+        .glow-soft { box-shadow: 0 0 60px rgba(224, 41, 40, 0.05); }
+    </style>
 </head>
 
-<body class="bg-surface-dark text-white font-sans antialiased min-h-screen flex items-center justify-center p-6 overflow-hidden relative">
-    
-    <!-- Animated background -->
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-20">
-        <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/20 rounded-full blur-[160px] animate-pulse"></div>
-        <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-rose-600/10 rounded-full blur-[160px] animate-pulse" style="animation-delay: 2s"></div>
-    </div>
+<body class="bg-background flex items-center justify-center min-h-screen p-6 overflow-hidden relative">
+    <!-- Background Decor -->
+    <div class="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary-dim/5 rounded-full blur-[120px] -z-10"></div>
+    <div class="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-primary-dim/3 rounded-full blur-[120px] -z-10"></div>
 
-    <!-- Login Container -->
-    <main class="relative z-10 w-full max-w-md">
-        <div class="glass-card rounded-[32px] border border-border overflow-hidden shadow-2xl">
-            <div class="p-10 flex flex-col items-center">
-                <!-- Logo -->
-                <div class="size-20 bg-primary/10 border border-primary/20 rounded-3xl flex items-center justify-center mb-8 shadow-xl shadow-primary/5">
-                    <span class="material-symbols-outlined text-primary text-4xl font-bold">bolt</span>
+    <div class="w-full max-w-md space-y-8 relative">
+        <div class="text-center space-y-2">
+            <h1 class="text-[4rem] font-black text-[#ff8e82] tracking-tighter italic leading-none">PlayFitness</h1>
+            <p class="font-bold text-[0.7rem] uppercase tracking-[0.4em] text-white/30 italic">Inteligência Estratégica</p>
+        </div>
+
+        <div class="glass-card p-10 rounded-xl border border-white/5 glow-soft space-y-8">
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1 italic">Acesso Restrito</label>
+                    <input type="text" value="SMAYK TR" readonly class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm font-bold uppercase italic text-white/50 cursor-not-allowed">
                 </div>
-
-                <div class="text-center mb-10">
-                    <h1 class="text-3xl font-black italic tracking-tighter uppercase mb-2">
-                        PLAY<span class="text-primary italic">FITNESS</span>
-                    </h1>
-                    <p class="text-text-muted text-xs font-bold uppercase tracking-[0.2em] italic">Intelligence System V3.0</p>
-                </div>
-
-                <form class="w-full space-y-6">
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic ml-1">Acesso do Gestor</label>
-                        <div class="relative group">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-[20px] group-focus-within:text-primary transition-colors">person</span>
-                            <input type="email" placeholder="gestor@playfitness.com" class="w-full bg-surface-dark border border-border rounded-2xl py-4 pl-12 pr-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text-muted/40">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-center px-1">
-                            <label class="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic">Senha Neural</label>
-                        </div>
-                        <div class="relative group">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-[20px] group-focus-within:text-primary transition-colors">lock</span>
-                            <input type="password" placeholder="••••••••" class="w-full bg-surface-dark border border-border rounded-2xl py-4 pl-12 pr-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text-muted/40">
-                        </div>
-                    </div>
-
-                    <button type="button" onclick="location.href='dashboard.html'" class="w-full btn-primary py-4 rounded-2xl text-base shadow-xl group flex items-center justify-center gap-3">
-                        <span>Inicializar Dashboard</span>
-                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </button>
-                </form>
-
-                <div class="mt-8 pt-8 border-t border-border w-full flex flex-col items-center gap-4">
-                    <p class="text-[10px] text-text-muted font-bold uppercase tracking-widest">Faculdade Estácio | ADS Project</p>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1 italic">Chave de Segurança</label>
+                    <input type="password" value="••••••••" readonly class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm font-bold italic text-white/50 cursor-not-allowed">
                 </div>
             </div>
+
+            <button onclick="location.href='dashboard.html'" class="w-full bg-primary-dim text-white py-5 rounded-2xl font-black text-sm uppercase italic hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary-dim/20 flex items-center justify-center gap-3">
+                <span>Inicializar Módulos</span>
+                <span class="material-symbols-outlined text-[18px]">bolt</span>
+            </button>
         </div>
 
-        <!-- Footer -->
-        <div class="mt-8 flex justify-center gap-6 opacity-30 hover:opacity-60 transition-opacity">
-            <span class="text-[10px] font-black uppercase tracking-widest italic cursor-help">Kernel: Python 3.11</span>
-            <span class="text-[10px] font-black uppercase tracking-widest italic cursor-help">Storage: Supabase Cloud</span>
-        </div>
-    </main>
-
+        <p class="text-center text-[10px] font-bold text-white/10 uppercase tracking-widest">© 2026 PlayFitness Quantum Analysis • Faculdade Estácio</p>
+    </div>
 </body>
 
 </html>
