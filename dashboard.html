@@ -11,6 +11,7 @@
     
     <!-- API & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="supabase.js"></script>
     <script src="playfitness-api.js"></script>
 
@@ -232,40 +233,19 @@
                     </div>
                 </div>
 
-                <!-- Predictive Analysis Visualization -->
-                <div class="col-span-12 lg:col-span-8 glass-card p-8 rounded-lg overflow-hidden flex flex-col shadow-2xl">
+                <!-- Predictive Analysis Visualization: Sharp Line Chart -->
+                <div class="col-span-12 lg:col-span-8 glass-card p-10 rounded-lg overflow-hidden flex flex-col shadow-2xl border border-white/5">
                     <div class="flex justify-between items-start mb-10">
                         <div>
-                            <h4 class="text-xl font-bold">Análise Comparativa Digital</h4>
-                            <p class="text-sm text-white/50 italic">Probabilidade de evasão baseada em comportamento biométrico</p>
+                            <h4 class="text-xl font-bold uppercase italic tracking-tighter">Fluxo Preditivo Digital</h4>
+                            <p class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mt-1">Algoritmo de Probabilidade Ativa</p>
                         </div>
                         <div class="flex gap-2">
-                             <button class="bg-primary-dim px-4 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest text-white">Mensal</button>
+                             <span class="bg-primary-dim/10 text-primary-dim px-4 py-1 rounded-full text-[0.65rem] font-black uppercase tracking-widest border border-primary-dim/20">Real Time</span>
                         </div>
                     </div>
-                    <div id="chartContainer" class="flex-1 w-full flex items-end justify-between gap-4 h-64">
-                        <!-- Bars will be rendered here if needed, or static illustration -->
-                        <div class="group relative flex-1 h-[40%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end">
-                            <div class="w-full h-[60%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
-                        <div class="group relative flex-1 h-[60%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end">
-                            <div class="w-full h-[40%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
-                        <div class="group relative flex-1 h-[30%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end">
-                            <div class="w-full h-[80%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
-                        <div class="group relative flex-1 h-[80%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end">
-                            <div class="w-full h-[20%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
-                        <div class="group relative flex-1 h-[55%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end">
-                            <div class="w-full h-[75%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
-                        <div class="group relative flex-1 h-[45%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end border-b-4 border-primary-dim">
-                            <div class="w-full h-[95%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
-                         <div class="group relative flex-1 h-[90%] bg-surface-container-highest rounded-t-xl hover:bg-primary-dim/30 transition-all flex items-end">
-                            <div class="w-full h-[15%] bg-primary-dim rounded-t-xl"></div>
-                        </div>
+                    <div class="flex-1 w-full h-72">
+                        <canvas id="predictiveChart"></canvas>
                     </div>
                 </div>
             </section>
@@ -367,10 +347,56 @@
                     </div>
                 `).join('');
 
+                initPredictiveChart();
+
             } catch (err) {
                 console.error(err);
                 PlayFitnessUI.toast('Erro no Data Sync', 'error');
             }
+        }
+
+        function initPredictiveChart() {
+            const ctx = document.getElementById('predictiveChart').getContext('2d');
+            
+            // Redesigned: Sharp, Linear, Futuristic
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Probabilidade de Escala',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        fill: true,
+                        backgroundColor: 'rgba(224, 41, 40, 0.05)',
+                        borderColor: '#e02928',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ff8e82',
+                        pointBorderColor: '#0e0e0f',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0, // 0 = Sharp straight lines
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { size: 10, weight: 'bold' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { size: 10, weight: 'bold' } }
+                        }
+                    }
+                }
+            });
         }
     </script>
 </body>
