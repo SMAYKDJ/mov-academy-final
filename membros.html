@@ -120,7 +120,7 @@
                 </div>
 
                 <div class="flex items-center gap-4 border-l border-white/10 pl-6">
-                    <button onclick="PlayFitnessAPI.utils.exportCSV(currentMembers, 'roster_alunos.csv')" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-5 py-2.5 rounded-full font-headline text-xs font-black uppercase tracking-widest active:scale-95 transition-all outline-none">
+                    <button onclick="PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-5 py-2.5 rounded-full font-headline text-xs font-black uppercase tracking-widest active:scale-95 transition-all outline-none">
                         <span class="material-symbols-outlined text-[16px]">download</span>
                         Exportar Alunos
                     </button>
@@ -437,11 +437,15 @@
 
         function renderMembers() {
             const container = document.getElementById('rosterContainer');
-            const search = document.getElementById('searchInput').value.toLowerCase();
+            const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            if (!container) return;
             container.innerHTML = '';
 
+            if (!Array.isArray(allMembers)) return;
+
             const filtered = allMembers.filter(m => {
-                const matchesSearch = m.nome_completo.toLowerCase().includes(search);
+                if (!m) return false;
+                const matchesSearch = (m.nome_completo || '').toLowerCase().includes(search);
                 const matchesStatus = currentFilter === 'All' || m.status === currentFilter;
                 return matchesSearch && matchesStatus;
             });
@@ -450,19 +454,24 @@
         }
 
         function updateStats() {
+            if (!Array.isArray(allMembers)) return;
             const total = allMembers.length;
-            document.getElementById('totalCount').textContent = total.toString().padStart(2, '0');
-            const avg = total > 0 ? Math.round(allMembers.reduce((acc, m) => acc + (m.score_ia || 0), 0) / total) : 0;
-            document.getElementById('avgScore').textContent = `${avg}%`;
+            
+            const countEl = document.getElementById('totalCount');
+            if (countEl) countEl.textContent = total.toString().padStart(2, '0');
+            
+            const avg = total > 0 ? Math.round(allMembers.reduce((acc, m) => acc + (m ? (m.score_ia || 0) : 0), 0) / total) : 0;
+            const avgEl = document.getElementById('avgScore');
+            if (avgEl) avgEl.textContent = `${avg}%`;
 
             // Element count updates
             const counts = {
                 All: total,
-                Ativo: allMembers.filter(m => m.status === 'Ativo').length,
-                Prospect: allMembers.filter(m => m.status === 'Prospect').length,
-                Experimental: allMembers.filter(m => m.status === 'Experimental').length,
-                EmRisco: allMembers.filter(m => m.status === 'Em Risco' || (m.score_ia && m.score_ia < 60)).length,
-                Inativo: allMembers.filter(m => m.status === 'Inativo').length
+                Ativo: allMembers.filter(m => m && m.status === 'Ativo').length,
+                Prospect: allMembers.filter(m => m && m.status === 'Prospect').length,
+                Experimental: allMembers.filter(m => m && m.status === 'Experimental').length,
+                EmRisco: allMembers.filter(m => m && (m.status === 'Em Risco' || (m.score_ia && m.score_ia < 60))).length,
+                Inativo: allMembers.filter(m => m && m.status === 'Inativo').length
             };
 
             if (document.getElementById('count-All')) document.getElementById('count-All').textContent = counts.All;
