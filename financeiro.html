@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR">
-
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>PlayFitness | Financeiro</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     
     <!-- API & Supabase -->
@@ -20,131 +19,166 @@
             theme: {
                 extend: {
                     colors: {
-                        "surface-variant": "#262627",
-                        "on-secondary": "#525154",
-                        "surface-dim": "#0e0e0f",
+                        "primary": "#ef4444",
+                        "on-primary-fixed": "#ffffff",
+                        "surface-bright": "#2a2a2a",
+                        "secondary-dim": "#dc2626",
+                        "surface-dim": "#0a0a0a",
+                        "background": "#0a0a0a",
+                        "surface-container": "#161616",
+                        "surface-container-highest": "#242424",
+                        "primary-fixed-dim": "#b91c1c",
+                        "surface-container-low": "#111111",
+                        "primary-dim": "#dc2626",
+                        "on-surface-variant": "#a3a3a3",
                         "on-surface": "#ffffff",
-                        "background": "#0e0e0f",
-                        "primary-dim": "#e02928",
-                        "primary": "#ff8e82",
-                        "error": "#ff6e84",
-                        "surface-container-highest": "#262627"
+                        "surface-tint": "#ef4444",
+                        "primary-fixed": "#dc2626",
+                        "surface-container-lowest": "#000000",
+                        "secondary": "#dc2626",
+                        "error": "#f87171",
+                        "on-background": "#ffffff",
+                        "surface-variant": "#242424",
                     },
-                    fontFamily: { "headline": ["Inter"], "body": ["Inter"] },
-                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                    fontFamily: {
+                        "headline": ["Lexend"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Lexend"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
                 },
             },
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0e0e0f; color: #ffffff; overflow-x: hidden !important; width: 100vw; }
-        html { overflow-x: hidden !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; overflow: hidden; }
+        .font-headline { font-family: 'Lexend', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: rgba(26, 25, 27, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .glass-card { background: rgba(26, 25, 25, 0.4); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
     </style>
 </head>
 
-<body class="bg-background text-on-background antialiased overflow-hidden h-screen flex">
+<body class="bg-background text-on-background antialiased flex h-screen">
     <!-- SideNavBar -->
-    <aside class="w-64 border-r border-white/5 bg-[#0e0e0f] flex flex-col py-8 px-4 shrink-0 overflow-y-auto">
-        <div class="mb-10 px-2">
-            <h1 class="text-xl font-black text-[#ff8e82] tracking-tighter italic">PlayFitness</h1>
-            <p class="font-['Inter'] font-extrabold tracking-[-0.04em] uppercase text-[0.75rem] text-white/50 mt-1">Inteligência Estratégica</p>
+    <nav class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-50 hidden md:flex shrink-0">
+        <div class="px-8 mb-12">
+            <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+            <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="dashboard.html">
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
                 <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-medium text-sm">Dashboard</span>
+                <span>Visão Geral</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="membros.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="membros.html">
                 <span class="material-symbols-outlined">group</span>
-                <span class="font-medium text-sm">Membros</span>
+                <span>Alunos</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#ff8e82] border-r-2 border-[#ff8e82] bg-gradient-to-r from-[#e02928]/10 to-transparent transition-all" href="financeiro.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="financeiro.html">
                 <span class="material-symbols-outlined">payments</span>
-                <span class="font-medium text-sm">Financeiro</span>
+                <span>Financeiro</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="campanhas.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
                 <span class="material-symbols-outlined">campaign</span>
-                <span class="font-medium text-sm">Campanhas</span>
+                <span>Campanhas</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="#">
                 <span class="material-symbols-outlined">settings</span>
-                <span class="font-medium text-sm">Configurações</span>
+                <span>Configurações</span>
             </a>
-        </nav>
-        <button onclick="location.href='index.html'" class="mt-auto border border-white/5 text-white/40 py-4 rounded-xl font-bold text-xs hover:text-primary transition-all">
-            Sair do Sistema
-        </button>
-    </aside>
+        </div>
+        <div class="mt-auto px-6">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        </div>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0 h-screen overflow-x-hidden">
-        <header class="h-16 bg-[#1a191b]/60 backdrop-blur-3xl flex items-center justify-between px-8 z-40 shrink-0 border-b border-white/5">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="font-['Inter'] italic font-medium text-sm text-emerald-500">Fluxo: Consolidado</span>
+    <!-- Main Content Wrapper -->
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+        <header class="flex justify-between items-center h-20 px-10 w-full sticky top-0 z-40 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-2 flex-1">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span id="pageTitle" class="font-headline font-black text-[#ef4444] uppercase tracking-widest text-xs italic">PlayFitness Dashboard Ativo</span>
             </div>
-             <button onclick="PlayFitnessUI.toast('Exportando DRE...', 'picture_as_pdf')" class="bg-primary-dim text-white px-6 py-2 rounded-full font-extrabold text-xs flex items-center gap-2 hover:scale-105 transition-all">
-                <span class="material-symbols-outlined text-[18px]">download</span>
-                Baixar Relatórios
-            </button>
+            <div class="flex items-center gap-8">
+                <button id="btnExport" class="bg-primary hover:bg-primary-fixed-dim text-on-primary-fixed px-8 py-3 rounded-full font-headline text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    Exportar Fluxo (CSV)
+                </button>
+            </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto mt-8 px-10 space-y-12 pb-10 overflow-x-hidden">
-            <h2 class="text-[3.5rem] font-black tracking-[-0.04em] leading-tight">Gestão <span class="text-primary italic">Financeira</span></h2>
-            
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto px-10 py-10 custom-scrollbar">
+            <h2 class="text-5xl font-black text-white font-headline tracking-tighter leading-none mb-10 italic">Gestão <span class="text-primary tracking-tight">Financeira</span></h2>
+
             <!-- Cards -->
-            <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Receita Mensal</p>
-                    <h3 id="faturamentoTotal" class="text-3xl font-black italic tracking-tighter text-primary">R$ ...</h3>
+            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="bg-surface-container-low p-6 rounded-[1.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">Receita Total</p>
+                    <h3 id="faturamentoTotal" class="text-3xl font-black italic tracking-tighter text-primary font-headline">R$ ...</h3>
+                    <p id="yoy-faturamento" class="text-[9px] font-bold text-zinc-500 mt-2 uppercase tracking-tight italic">Carregando...</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Custos Totais</p>
-                    <h3 id="custoTotal" class="text-3xl font-black italic tracking-tighter">R$ ...</h3>
+                <div class="bg-surface-container-low p-6 rounded-[1.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">Custos Operacionais</p>
+                    <h3 id="custoTotal" class="text-3xl font-black italic tracking-tighter text-white font-headline">R$ ...</h3>
+                    <p id="yoy-custo" class="text-[9px] font-bold text-zinc-500 mt-2 uppercase tracking-tight italic">Carregando...</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Resultado EBITDA</p>
-                    <h3 id="lucroTotal" class="text-3xl font-black italic tracking-tighter text-emerald-500">R$ ...</h3>
+                <div class="bg-surface-container-low p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">EBITDA Consolidado</p>
+                    <h3 id="lucroTotal" class="text-3xl font-black italic tracking-tighter text-emerald-500 font-headline">R$ ...</h3>
+                    <p id="yoy-lucro" class="text-[9px] font-bold text-zinc-500 mt-2 uppercase tracking-tight italic">Carregando...</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Pagantes Ativos</p>
-                    <h3 id="alunosAtivos" class="text-3xl font-black italic tracking-tighter">...</h3>
+                <div class="bg-surface-container-low p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">Pagantes Ativos</p>
+                    <h3 id="alunosAtivos" class="text-3xl font-black italic tracking-tighter text-white font-headline">...</h3>
+                    <p id="yoy-alunos" class="text-[9px] font-bold text-zinc-500 mt-2 uppercase tracking-tight italic">Carregando...</p>
                 </div>
             </section>
 
-            <div class="grid grid-cols-12 gap-8">
-                <div class="col-span-12 lg:col-span-7 glass-card p-8 rounded-2xl border border-white/5 shadow-2xl">
-                    <h4 class="text-xl font-bold mb-8">Demonstrativo de Resultado (DRE)</h4>
+            <div class="grid grid-cols-12 gap-8 pb-20">
+                <div class="col-span-12 lg:col-span-7 bg-surface-container-low p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
+                    <h4 class="text-2xl font-black font-headline tracking-tighter mb-10 italic">Demonstrativo de <span class="text-primary italic">Resultado</span></h4>
                     <table class="w-full">
                         <tbody class="divide-y divide-white/5">
-                            <tr><td class="py-4 text-xs font-black uppercase text-white/50">Recupera Bruta</td><td class="py-4 text-right font-bold text-emerald-500" id="dre-receita">...</td></tr>
-                            <tr><td class="py-4 text-xs font-black uppercase text-white/50">Impostos (8.5%)</td><td class="py-4 text-right font-bold text-rose-500" id="dre-impostos">...</td></tr>
-                            <tr class="bg-white/5"><td class="py-4 px-2 text-xs font-black uppercase text-primary">Receita Líquida</td><td class="py-4 px-2 text-right font-black text-primary" id="dre-liquida">...</td></tr>
-                            <tr><td class="py-4 text-xs font-black uppercase text-white/50">Custos Operacionais</td><td class="py-4 text-right font-bold text-rose-500" id="dre-custos">...</td></tr>
-                            <tr class="bg-emerald-500/10"><td class="py-4 px-2 text-xs font-black uppercase text-emerald-500 italic">EBITDA MENSAL</td><td class="py-4 px-2 text-right font-black text-emerald-500 italic" id="dre-ebitda">...</td></tr>
+                            <tr><td class="py-5 text-xs font-black uppercase text-zinc-600 font-headline italic">Receita Bruta</td><td class="py-5 text-right font-black text-emerald-500 font-headline text-lg" id="dre-receita">...</td></tr>
+                            <tr><td class="py-5 text-xs font-black uppercase text-zinc-600 font-headline italic">Impostos (8.5%)</td><td class="py-5 text-right font-black text-rose-500 font-headline text-lg" id="dre-impostos">...</td></tr>
+                            <tr class="bg-white/5"><td class="py-5 px-6 text-xs font-black uppercase text-primary font-headline italic tracking-widest">Receita Líquida</td><td class="py-5 px-6 text-right font-black text-primary font-headline text-xl" id="dre-liquida">...</td></tr>
+                            <tr><td class="py-5 text-xs font-black uppercase text-zinc-600 font-headline italic">Custos Fixos/Variáveis</td><td class="py-5 text-right font-black text-rose-500 font-headline text-lg" id="dre-custos">...</td></tr>
+                            <tr class="bg-emerald-500/10"><td class="py-6 px-6 text-xs font-black uppercase text-emerald-500 italic font-headline tracking-widest">EBITDA MENSAL ESTIMADO</td><td class="py-6 px-6 text-right font-black text-emerald-500 italic font-headline text-2xl" id="dre-ebitda">...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="col-span-12 lg:col-span-5 glass-card p-8 rounded-2xl border border-white/5 shadow-2xl space-y-6">
-                    <h4 class="text-xl font-bold">Lançamento Offline</h4>
-                    <div class="space-y-4">
-                        <input type="text" placeholder="DESCRIÇÃO DO LANÇAMENTO" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm placeholder:text-white/20 uppercase font-bold italic">
+                <div class="col-span-12 lg:col-span-5 bg-surface-container-low p-10 rounded-[2.5rem] border border-white/5 shadow-2xl flex flex-col">
+                    <h4 class="text-2xl font-black font-headline tracking-tighter mb-10 italic">Lançamento <span class="text-primary italic">Manual</span></h4>
+                    <div class="space-y-4 mb-8">
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-3">Descrição da Transação</label>
+                            <input type="text" placeholder="EX: MANUTENÇÃO DE EQUIPAMENTOS" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm placeholder:text-white/10 uppercase font-black italic">
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="number" placeholder="VALOR" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm placeholder:text-white/20 uppercase font-bold italic">
-                            <select class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm uppercase font-bold italic">
-                                <option value="saida">SAÍDA</option>
-                                <option value="entrada">ENTRADA</option>
-                            </select>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-3">Valor (R$)</label>
+                                <input type="number" placeholder="0,00" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm placeholder:text-white/10 uppercase font-black italic">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-3">Tipo</label>
+                                <select title="Tipo de Lançamento" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm uppercase font-black italic appearance-none">
+                                    <option value="saida">SAÍDA</option>
+                                    <option value="entrada">ENTRADA</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <button onclick="PlayFitnessUI.toast('Lançamento Processado!', 'check_circle')" class="w-full bg-primary-dim text-white py-4 rounded-xl font-black text-xs uppercase italic shadow-xl shadow-primary-dim/20">Registrar Transação</button>
+                    <button id="btnSaveTransaction" class="w-full bg-primary text-on-primary-fixed py-5 rounded-2xl font-black text-sm uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all font-headline">Registrar Transação</button>
                     
-                    <div class="p-5 bg-white/5 rounded-2xl border border-white/5 flex items-start gap-4">
-                        <span class="material-symbols-outlined text-primary">auto_awesome</span>
-                        <p class="text-[11px] font-bold text-white/40 leading-relaxed uppercase italic">Insight IA: O Ticket médio subiu 12%. Recomenda-se cross-sell VIP para o grupo Gold.</p>
+                    <div class="mt-auto pt-10">
+                        <div class="p-6 bg-primary/5 rounded-[2rem] border border-primary/10 flex items-start gap-4">
+                            <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                            <p class="text-[11px] font-black text-zinc-400 leading-relaxed uppercase italic font-headline"><span class="text-primary italic">Insight IA:</span> O Ticket médio subiu 12% este mês. Recomendamos converter leads do plano Gold em VIP para maximizar o EBITDA.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,30 +186,105 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadFinanceData();
-        });
+        document.addEventListener('DOMContentLoaded', initializeFinance);
+
+        async function initializeFinance() {
+            try {
+                const config = await PlayFitnessAPI.utils.getGymConfig();
+                document.getElementById('sidebarGymName').textContent = config.nome_academia;
+                document.getElementById('sidebarGymSlogan').textContent = config.slogan;
+                document.getElementById('pageTitle').textContent = `${config.nome_academia} — Fluxo Financeiro`;
+
+                await loadFinanceData();
+                
+                // Export Event
+                document.getElementById('btnExport').onclick = async () => {
+                    const data = await PlayFitnessAPI.finance.getTransactions();
+                    PlayFitnessAPI.utils.exportCSV(data, 'fluxo_caixa.csv');
+                };
+
+                // Save Event
+                document.getElementById('btnSaveTransaction').onclick = async () => {
+                    const desc = document.getElementById('transactionDesc').value;
+                    const val = parseFloat(document.getElementById('transactionValue').value);
+                    const type = document.getElementById('transactionType').value === 'saida' ? 'Despesa Variável' : 'Receita';
+                    
+                    if(!desc || !val) return PlayFitnessUI.toast('Preencha os campos', 'warning');
+                    
+                    await PlayFitnessAPI.finance.saveTransaction({
+                        descricao: desc,
+                        valor: val,
+                        tipo: type,
+                        categoria: 'Manual',
+                        data: new Date().toISOString()
+                    });
+
+                    PlayFitnessUI.toast('Transação Lançada!', 'check_circle');
+                    location.reload(); // Refresh to update charts/stats
+                };
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
 
         async function loadFinanceData() {
-            const overview = await PlayFitnessAPI.kpis.getOverview();
-            const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-            
-            document.getElementById('faturamentoTotal').textContent = formatter.format(overview.revenue);
-            document.getElementById('alunosAtivos').textContent = overview.active.toString().padStart(2, '0');
-            
-            const custo = overview.revenue * 0.48;
-            const lucro = overview.revenue - custo;
-            
-            document.getElementById('custoTotal').textContent = formatter.format(custo);
-            document.getElementById('lucroTotal').textContent = formatter.format(lucro);
+            try {
+                const overview = await PlayFitnessAPI.kpis.getOverview();
+                const totalRevenue = overview.revenue;
+                const totalCost = overview.costs;
+                const totalProfit = totalRevenue - totalCost;
+                
+                document.getElementById('faturamentoTotal').textContent = formatCurrency(totalRevenue);
+                document.getElementById('custoTotal').textContent = formatCurrency(totalCost);
+                document.getElementById('lucroTotal').textContent = formatCurrency(totalProfit);
+                document.getElementById('alunosAtivos').textContent = overview.total;
 
-            document.getElementById('dre-receita').textContent = formatter.format(overview.revenue);
-            document.getElementById('dre-impostos').textContent = `- ${formatter.format(overview.revenue * 0.085)}`;
-            document.getElementById('dre-liquida').textContent = formatter.format(overview.revenue * 0.915);
-            document.getElementById('dre-custos').textContent = `- ${formatter.format(custo)}`;
-            document.getElementById('dre-ebitda').textContent = formatter.format(lucro - (overview.revenue * 0.085));
+                // YoY Comparison Logic (Using base values from database seeding)
+                updateYoY('faturamento', totalRevenue, 44200.50);
+                updateYoY('custo', totalCost, 19550.20);
+                updateYoY('lucro', totalProfit, 24650.30);
+                updateYoY('alunos', overview.total, 380);
+
+                // DRE
+                document.getElementById('dre-receita').textContent = formatCurrency(totalRevenue);
+                const taxes = totalRevenue * 0.085;
+                document.getElementById('dre-impostos').textContent = `(${formatCurrency(taxes)})`;
+                const netRevenue = totalRevenue - taxes;
+                document.getElementById('dre-liquida').textContent = formatCurrency(netRevenue);
+                document.getElementById('dre-custos').textContent = `(${formatCurrency(totalCost)})`;
+                document.getElementById('dre-ebitda').textContent = formatCurrency(netRevenue - totalCost);
+
+            } catch (err) {
+                console.error(err);
+                PlayFitnessUI.toast('Erro nos dados financeiros', 'error');
+            }
+        }
+
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+        }
+
+        function updateYoY(type, current, previous) {
+            const diff = current - previous;
+            const perc = (diff / previous) * 100;
+            const isGrowth = diff >= 0;
+            const color = isGrowth ? 'text-emerald-500' : 'text-rose-500';
+            const sign = isGrowth ? '+' : '';
+            const icon = isGrowth ? 'trending_up' : 'trending_down';
+            
+            const prevFormatted = type === 'alunos' ? previous : formatCurrency(previous);
+            const diffFormatted = type === 'alunos' ? Math.abs(diff) : formatCurrency(Math.abs(diff));
+            const label = document.getElementById(`yoy-${type}`);
+            
+            label.innerHTML = `
+                <span class="text-zinc-600">LY: ${prevFormatted}</span> 
+                <span class="${color} ml-2 font-black italic flex items-center gap-1 inline-flex">
+                    <span class="material-symbols-outlined text-[10px]">${icon}</span>
+                    ${sign}${perc.toFixed(1)}% (${sign}${diffFormatted})
+                </span>
+            `;
         }
     </script>
 </body>
-
 </html>

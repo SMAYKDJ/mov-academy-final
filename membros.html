@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR">
-
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>PlayFitness | Membros</title>
+    <title>PlayFitness | Roster de Alunos</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     
     <!-- API & Supabase -->
@@ -20,287 +19,510 @@
             theme: {
                 extend: {
                     colors: {
-                        "surface-variant": "#262627",
-                        "on-secondary": "#525154",
-                        "surface-dim": "#0e0e0f",
+                        "primary": "#ef4444",
+                        "on-primary-fixed": "#ffffff",
+                        "surface-bright": "#2a2a2a",
+                        "secondary-dim": "#dc2626",
+                        "surface-dim": "#0a0a0a",
+                        "background": "#0a0a0a",
+                        "surface-container": "#161616",
+                        "surface-container-highest": "#242424",
+                        "primary-fixed-dim": "#b91c1c",
+                        "surface-container-low": "#111111",
+                        "primary-dim": "#dc2626",
+                        "on-surface-variant": "#a3a3a3",
                         "on-surface": "#ffffff",
-                        "on-primary-fixed-variant": "#600005",
-                        "secondary-fixed": "#e5e1e4",
-                        "surface-bright": "#2c2c2d",
-                        "error-dim": "#d73357",
-                        "on-secondary-fixed-variant": "#5c5b5d",
-                        "outline": "#767576",
-                        "secondary-fixed-dim": "#d6d3d6",
-                        "inverse-primary": "#c00815",
-                        "background": "#0e0e0f",
-                        "secondary-container": "#474649",
-                        "on-tertiary-fixed-variant": "#531a80",
-                        "on-primary-fixed": "#000000",
-                        "on-tertiary": "#4e137b",
-                        "on-background": "#ffffff",
-                        "surface-container-high": "#201f21",
-                        "on-primary-container": "#4f0003",
-                        "on-error-container": "#ffb2b9",
-                        "on-primary": "#650005",
-                        "inverse-surface": "#fcf8f9",
-                        "on-error": "#490013",
-                        "surface-container-low": "#131314",
-                        "surface": "#0e0e0f",
-                        "surface-container": "#1a191b",
-                        "on-secondary-container": "#d2cfd2",
-                        "tertiary-fixed-dim": "#c48bf4",
-                        "primary-container": "#ff766a",
-                        "on-secondary-fixed": "#403f41",
-                        "tertiary-fixed": "#d199ff",
+                        "surface-tint": "#ef4444",
+                        "primary-fixed": "#dc2626",
                         "surface-container-lowest": "#000000",
-                        "primary-fixed": "#ff766a",
-                        "primary-fixed-dim": "#ff5b50",
-                        "on-surface-variant": "#adaaab",
-                        "tertiary-dim": "#bf85ee",
-                        "on-tertiary-fixed": "#280046",
-                        "outline-variant": "#484849",
-                        "inverse-on-surface": "#565556",
-                        "secondary": "#e5e1e4",
-                        "primary-dim": "#e02928",
-                        "primary": "#ff8e82",
-                        "surface-tint": "#ff8e82",
-                        "tertiary": "#d5a1ff",
-                        "tertiary-container": "#ca90fa",
-                        "secondary-dim": "#d6d3d6",
-                        "error": "#ff6e84",
-                        "error-container": "#a70138",
-                        "on-tertiary-container": "#42006f",
-                        "surface-container-highest": "#262627"
+                        "secondary": "#dc2626",
+                        "error": "#f87171",
+                        "on-background": "#ffffff",
+                        "surface-variant": "#242424",
                     },
                     fontFamily: {
-                        "headline": ["Inter"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
+                        "headline": ["Lexend"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Lexend"]
                     },
-                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
                 },
             },
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0e0e0f; color: #ffffff; overflow-x: hidden !important; width: 100vw; }
-        html { overflow-x: hidden !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; overflow: hidden; }
+        .font-headline { font-family: 'Lexend', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: rgba(26, 25, 27, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-        .glow-primary { box-shadow: 0 0 48px rgba(224, 41, 40, 0.04); }
-        .kanban-column { background: rgba(26, 25, 27, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-card { background: rgba(26, 25, 25, 0.4); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+
+        .active-filter { background-color: #ef4444 !important; color: #ffffff !important; }
+        
+        /* Animation */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
     </style>
 </head>
 
-<body class="bg-background text-on-background antialiased overflow-hidden h-screen flex">
+<body class="bg-background text-on-background antialiased flex h-screen">
     <!-- SideNavBar -->
-    <aside class="w-64 border-r border-white/5 bg-[#0e0e0f] flex flex-col py-8 px-4 shrink-0 overflow-y-auto">
-        <div class="mb-10 px-2">
-            <h1 class="text-xl font-black text-[#ff8e82] tracking-tighter italic">PlayFitness</h1>
-            <p class="font-['Inter'] font-extrabold tracking-[-0.04em] uppercase text-[0.75rem] text-white/50 mt-1">Inteligência Estratégica</p>
+    <nav class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-50 hidden md:flex shrink-0">
+        <div class="px-8 mb-12">
+            <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+            <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="dashboard.html">
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
                 <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-medium text-sm">Dashboard</span>
+                <span>Visão Geral</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#ff8e82] border-r-2 border-[#ff8e82] bg-gradient-to-r from-[#e02928]/10 to-transparent transition-all" href="membros.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="membros.html">
                 <span class="material-symbols-outlined">group</span>
-                <span class="font-medium text-sm">Membros</span>
+                <span>Alunos</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="financeiro.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
                 <span class="material-symbols-outlined">payments</span>
-                <span class="font-medium text-sm">Financeiro</span>
+                <span>Financeiro</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="campanhas.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
                 <span class="material-symbols-outlined">campaign</span>
-                <span class="font-medium text-sm">Campanhas</span>
+                <span>Campanhas</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="#">
                 <span class="material-symbols-outlined">settings</span>
-                <span class="font-medium text-sm">Configurações</span>
+                <span>Configurações</span>
             </a>
-        </nav>
-        <button onclick="location.href='index.html'" class="mt-auto border border-white/5 text-white/40 py-4 rounded-xl font-bold text-xs hover:text-primary transition-all">
-            Sair do Sistema
-        </button>
-    </aside>
+        </div>
+        <div class="mt-auto px-6">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        </div>
+    </nav>
 
-    <!-- Main Content Canvas -->
-    <main class="flex-1 flex flex-col min-w-0 h-screen overflow-x-hidden">
+    <!-- Main Content Wrapper -->
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
         <!-- TopAppBar -->
-        <header class="h-16 bg-[#1a191b]/60 backdrop-blur-3xl flex items-center justify-between px-8 z-40 shrink-0 border-b border-white/5">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-primary-dim animate-pulse"></span>
-                <span class="font-['Inter'] italic font-medium text-sm text-[#ff8e82]">Status: Membros Online</span>
+        <header class="flex justify-between items-center h-20 px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-2 flex-1">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-xs italic">PlayFitness — Roster Ativo</span>
             </div>
+            
             <div class="flex items-center gap-6">
-                 <button onclick="openModal('register')" class="bg-primary-dim text-white px-6 py-2 rounded-full font-extrabold text-xs flex items-center gap-2 hover:scale-105 transition-all">
-                    <span class="material-symbols-outlined text-[18px]">person_add</span>
-                    Novo Cadastro
-                </button>
+                <!-- Barra de Pesquisa -->
+                <div class="relative w-64 lg:w-96">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">search</span>
+                    <input id="searchInput" oninput="filterMembers()" class="w-full bg-[#1a1919] border-none text-[10px] py-2.5 pl-10 pr-4 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest" placeholder="PESQUISAR ATLETAS..." type="text"/>
+                </div>
+
+                <div class="flex items-center gap-4 border-l border-white/10 pl-6">
+                    <button onclick="PlayFitnessAPI.utils.exportCSV(currentMembers, 'roster_alunos.csv')" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-5 py-2.5 rounded-full font-headline text-xs font-black uppercase tracking-widest active:scale-95 transition-all outline-none">
+                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        Exportar Alunos
+                    </button>
+                    <button onclick="openModal('add')" class="flex items-center gap-2 bg-primary hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-headline text-xs font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30">
+                        <span class="material-symbols-outlined text-[16px]">person_add</span>
+                        Novo Aluno
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-black text-[10px] text-white cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all">SM</div>
+                        <div class="hidden sm:block">
+                            <p class="text-xs font-black uppercase italic text-white font-headline leading-none">SMAYK TR</p>
+                            <p class="text-[9px] text-zinc-500 uppercase tracking-widest">Gestor Master</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- Canvas Body -->
-        <div class="flex-1 overflow-y-auto mt-8 px-10 overflow-x-hidden">
-            <h2 class="text-4xl font-black tracking-tighter italic mb-8">Gestão <span class="text-primary italic">Comportamental</span></h2>
-            
-            <div id="membrosContent" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-10 h-[calc(100vh-250px)] overflow-x-hidden">
-                <!-- Prospect -->
-                <div class="kanban-column w-full flex flex-col rounded-[2.5rem] p-5 bg-white/[0.01] border border-white/5" data-status="Prospect">
-                    <div class="flex justify-between items-center mb-6 px-3 shrink-0">
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#ff8e82] italic">Prospecção</h3>
-                        <span class="count text-[11px] font-bold text-white/10 bg-white/5 px-2 py-0.5 rounded-full">00</span>
-                    </div>
-                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-1 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Prospect')"></div>
+        <!-- Page Content -->
+        <section class="flex-1 overflow-y-auto px-10 py-10 custom-scrollbar">
+            <!-- Header Section -->
+            <div class="mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+                <div>
+                    <h2 class="text-4xl font-black text-white font-headline tracking-tighter leading-none mb-3 italic">Roster de <span class="text-primary tracking-tight">Alunos</span></h2>
+                    <p class="text-zinc-500 font-body text-xs">Gestão tática de performance e retenção</p>
                 </div>
-
-                <!-- Experimental -->
-                <div class="kanban-column w-full flex flex-col rounded-[2.5rem] p-5 bg-white/[0.01] border border-white/5" data-status="Experimental">
-                    <div class="flex justify-between items-center mb-6 px-3 shrink-0">
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 italic">Experimental</h3>
-                        <span class="count text-[11px] font-bold text-white/10 bg-white/5 px-2 py-0.5 rounded-full">00</span>
-                    </div>
-                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-1 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Experimental')"></div>
-                </div>
-
-                <!-- Ativo -->
-                <div class="kanban-column w-full flex flex-col rounded-[2.5rem] p-5 bg-white/[0.01] border border-white/5" data-status="Ativo">
-                    <div class="flex justify-between items-center mb-6 px-3 shrink-0">
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 italic">Ativos</h3>
-                        <span class="count text-[11px] font-bold text-white/10 bg-white/5 px-2 py-0.5 rounded-full">00</span>
-                    </div>
-                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-1 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Ativo')"></div>
-                </div>
-
-                <!-- Em Risco -->
-                <div class="kanban-column w-full flex flex-col rounded-[2.5rem] p-5 bg-white/[0.01] border border-white/5" data-status="Em Risco">
-                    <div class="flex justify-between items-center mb-6 px-3 shrink-0">
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-error italic">Risco IA</h3>
-                        <span class="count text-[11px] font-bold text-white/10 bg-white/5 px-2 py-0.5 rounded-full">00</span>
-                    </div>
-                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-1 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Em Risco')"></div>
-                </div>
-
-                <!-- Inativo -->
-                <div class="kanban-column w-full flex flex-col rounded-[2.5rem] p-5 bg-white/[0.01] border border-white/5" data-status="Inativo">
-                    <div class="flex justify-between items-center mb-6 px-3 shrink-0">
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 italic">Inativos</h3>
-                        <span class="count text-[11px] font-bold text-white/10 bg-white/5 px-2 py-0.5 rounded-full">00</span>
-                    </div>
-                    <div class="cards-container space-y-4 overflow-y-auto flex-1 pr-1 custom-scrollbar" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Inativo')"></div>
+                <div class="flex flex-wrap gap-1.5 p-1.5 bg-white/[0.02] rounded-3xl border border-white/5 no-scrollbar">
+                    <button onclick="setFilter('All')" class="filter-btn flex items-center px-3 py-2 rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all active-filter whitespace-nowrap">
+                        <span>Todos</span>
+                        <span id="count-All" class="ml-1.5 px-1.5 py-0.5 bg-black/20 rounded-full text-[8px] text-black font-bold">0</span>
+                    </button>
+                    <button onclick="setFilter('Ativo')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
+                        <span>Ativos</span>
+                        <span id="count-Ativo" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold">0</span>
+                    </button>
+                    <button onclick="setFilter('Prospect')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
+                        <span>Prospecção</span>
+                        <span id="count-Prospect" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold">0</span>
+                    </button>
+                    <button onclick="setFilter('Experimental')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
+                        <span>Experimental</span>
+                        <span id="count-Experimental" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold">0</span>
+                    </button>
+                    <button onclick="setFilter('Em Risco')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-error rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
+                        <span>Risco IA</span>
+                        <span id="count-EmRisco" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-error font-bold">0</span>
+                    </button>
+                    <button onclick="setFilter('Inativo')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
+                        <span>Inativos</span>
+                        <span id="count-Inativo" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-zinc-400 font-bold">0</span>
+                    </button>
                 </div>
             </div>
-        </div>
+
+            <!-- Roster Grid -->
+            <div id="rosterContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 pb-20">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- Bottom Status Bar -->
+        <footer class="h-24 px-10 border-t border-white/5 flex justify-between items-center bg-[#0e0e0e] shrink-0">
+            <div class="flex gap-16">
+                <div>
+                    <span class="text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Total Geral</span>
+                    <p id="totalCount" class="text-3xl font-black text-white font-headline tracking-tighter">00</p>
+                </div>
+                <div>
+                    <span class="text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Média Score IA</span>
+                    <p id="avgScore" class="text-3xl font-black text-primary font-headline tracking-tighter">00%</p>
+                </div>
+                <div class="hidden sm:block">
+                    <span class="text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Retenção Ativa</span>
+                    <p class="text-3xl font-black text-white font-headline tracking-tighter">94.2%</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="flex -space-x-3 items-center">
+                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-800 flex items-center justify-center font-black text-[10px]">MT</div>
+                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-700 flex items-center justify-center font-black text-[10px]">RS</div>
+                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-600 flex items-center justify-center font-black text-[10px]">PL</div>
+                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-primary flex items-center justify-center text-[10px] font-black text-black">+24</div>
+                </div>
+                <p class="text-[10px] font-headline font-black uppercase tracking-widest text-zinc-600 italic">Membros <span class="text-emerald-500">Live</span></p>
+            </div>
+        </footer>
     </main>
 
-    <!-- Modal Overlay -->
-    <div id="modalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-3xl">
-        <div class="glass-card w-full max-w-lg rounded-[2.5rem] p-10 border border-white/5" id="modalContent">
-            <h3 id="modalTitle" class="text-3xl font-black italic uppercase italic tracking-tighter mb-8 text-primary">Operação Aluno</h3>
-            <form id="memberForm" class="space-y-6" onsubmit="handleFormSubmit(event)">
+    <!-- Modal de Aluno (Novo / Editar) -->
+    <div id="modalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-2xl" onclick="handleOverlayClick(event)">
+        <div class="glass-card w-full max-w-2xl rounded-[2rem] p-8 border border-white/10 max-h-[90vh] overflow-y-auto custom-scrollbar" id="modalContent">
+
+            <!-- Photo area -->
+            <div class="flex items-center gap-5 mb-6">
+                <div class="relative shrink-0">
+                    <img id="modalAvatarPreview" src="" alt="Foto do Aluno"
+                        class="w-20 h-20 rounded-full object-cover border-2 border-primary/40 shadow-xl shadow-primary/10">
+                    <button type="button" onclick="document.getElementById('photoInput').click()"
+                        class="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors">
+                        <span class="material-symbols-outlined text-white text-[14px]">photo_camera</span>
+                    </button>
+                    <input type="file" id="photoInput" accept="image/*" title="Escolher foto" class="hidden" onchange="handlePhotoChange(event)">
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="text-2xl font-black italic uppercase font-headline tracking-tighter text-primary">Operação Aluno</h3>
+                    <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-0.5">Clique na câmera para trocar a foto</p>
+                </div>
+            </div>
+            <form id="memberForm" class="space-y-4" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="formAction">
                 <input type="hidden" id="memberId">
-                <div class="space-y-4">
-                    <input type="text" id="memberName" required placeholder="NOME COMPLETO" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm placeholder:text-white/20 uppercase font-bold italic">
-                    <input type="tel" id="memberPhone" required placeholder="WHATSAPP" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm placeholder:text-white/20 uppercase font-bold italic">
-                    <select id="memberPlan" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm uppercase font-bold italic">
-                        <option value="Mensal Básico">Mensal Básico</option>
-                        <option value="Pro Semestral">Pro Semestral</option>
-                        <option value="VIP Anual">VIP Anual</option>
-                    </select>
-                    <select id="memberStatus" class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm uppercase font-bold italic">
-                        <option value="Prospect">Prospecção</option>
-                        <option value="Experimental">Experimental</option>
-                        <option value="Ativo">Ativo</option>
-                        <option value="Em Risco">Em Risco</option>
-                        <option value="Inativo">Inativo</option>
-                    </select>
+
+                <!-- SEÇÃO: DADOS PESSOAIS -->
+                <div class="flex items-center gap-3 mb-4 mt-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Dados Pessoais & Contato</h4>
                 </div>
+
+                <!-- Nome e Telefone -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nome Completo *</label>
+                        <input type="text" id="memberName" required placeholder="Ex: Ana Paula Silva"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors"
+                            oninput="updateModalAvatar()">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">WhatsApp *</label>
+                        <input type="tel" id="memberPhone" required placeholder="(91) 9XXXX-XXXX"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                </div>
+
+                <!-- Email e CPF -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">E-mail</label>
+                        <input type="email" id="memberEmail" placeholder="email@exemplo.com"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">CPF *</label>
+                        <input type="text" id="memberCPF" required placeholder="000.000.000-00"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-mono focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: SAÚDE & FISIOLOGIA -->
+                <div class="flex items-center gap-3 mb-4 mt-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Saúde & Fisiologia</h4>
+                </div>
+
+                <!-- Peso, Altura e Nascimento -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Última Pesagem *</label>
+                        <input type="number" id="memberWeight" step="0.001" required placeholder="70.400"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Altura (m) *</label>
+                        <input type="number" id="memberHeight" step="0.01" required placeholder="1.65"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nascimento *</label>
+                        <input type="date" id="memberDOB" required title="Data de Nascimento"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                </div>
+
+                <!-- HISTÓRICO DE MEDIDAS -->
+                <div class="mt-8 pt-6 border-t border-white/5 lg:col-span-2">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-4 font-headline italic">Histórico de Medidas (Evolução)</h4>
+                    <div id="assessmentHistoryList" class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                        <p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: ENGAJAMENTO & FREQUÊNCIA -->
+                <div class="flex items-center gap-3 mb-4 mt-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Frequência & Engajamento</h4>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Última Visita *</label>
+                        <input type="date" id="memberLastVisit" required onchange="updateFrequencyHighlight()"
+                            title="Data da última visita registrada na catraca"
+                            placeholder="AAAA-MM-DD"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                    <div>
+                         <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 block mb-2">Padrão Semanal</label>
+                         <div class="flex gap-2" id="weeklyFrequencyGrid">
+                             <!-- Mon-Sun dots -->
+                             <div data-day="1" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">S</div>
+                             <div data-day="2" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">T</div>
+                             <div data-day="3" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">Q</div>
+                             <div data-day="4" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">Q</div>
+                             <div data-day="5" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">S</div>
+                             <div data-day="6" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">S</div>
+                             <div data-day="0" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all text-error/60">D</div>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: GESTÃO CONTRATUAL -->
+                <div class="flex items-center gap-3 mb-4 mt-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Gestão Contratual & Financeira</h4>
+                </div>
+
+                <!-- Plano, Senha de Acesso -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Plano</label>
+                        <select id="memberPlan" title="Selecionar Plano" class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm uppercase font-black italic appearance-none focus:border-primary/50 outline-none">
+                            <option value="">Carregando Planos...</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Senha de Acesso *</label>
+                        <input type="password" id="memberPassword" required placeholder="••••••••"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black focus:border-primary/50 outline-none transition-colors">
+                    </div>
+                </div>
+
+                <!-- Status da Conta, Situação Financeira -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Status da Conta *</label>
+                        <select id="memberStatus" required title="Selecionar status da conta"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors appearance-none">
+                            <option value="Ativo">Ativo</option>
+                            <option value="Em Risco">Em Risco</option>
+                            <option value="Experimental">Experimental</option>
+                            <option value="Inativo">Inativo (Bloqueado)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Situação Financeira *</label>
+                        <select id="memberFinancial" required title="Selecionar situação financeira"
+                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors appearance-none">
+                            <option value="em dia">Mensalidade em Dia</option>
+                            <option value="inadimplente">Inadimplente (Bloqueio Automático)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1 opacity-70">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 text-primary/80">Data de Cadastro (Imutável) 🔒</label>
+                        <input type="date" id="memberJoinDate" readonly title="Data de Cadastro"
+                            class="w-full bg-black/40 border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic cursor-not-allowed outline-none">
+                    </div>
+                </div>
+
+                <!-- Botões -->
                 <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeModal()" class="flex-1 py-4 text-xs font-black uppercase tracking-widest text-white/40">Cancelar</button>
-                    <button type="submit" class="flex-[2] bg-primary-dim text-white py-4 rounded-2xl font-black text-sm uppercase italic shadow-xl shadow-primary-dim/20">Salvar Dados</button>
+                    <button type="button" onclick="closeModal()" class="flex-1 py-3 text-xs font-black uppercase tracking-widest text-zinc-600 hover:text-white transition-colors font-headline border border-white/10 rounded-2xl">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-[2] bg-primary text-white py-4 rounded-2xl font-black text-sm uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all font-headline hover:bg-red-600">
+                        Salvar Aluno
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        async function loadMembers() {
+        let allMembers = [];
+        let currentFilter = 'All';
+
+        document.addEventListener('DOMContentLoaded', initializeMembros);
+
+        async function initializeMembros() {
             try {
-                const members = await PlayFitnessAPI.students.list();
-                document.querySelectorAll('.cards-container').forEach(c => c.innerHTML = '');
-                const counts = { 'Prospect': 0, 'Experimental': 0, 'Ativo': 0, 'Em Risco': 0, 'Inativo': 0 };
+                // Config
+                const config = await PlayFitnessAPI.utils.getGymConfig();
+                document.getElementById('sidebarGymName').textContent = config.nome_academia;
+                document.getElementById('sidebarGymSlogan').textContent = config.slogan;
+                document.getElementById('pageTitle').textContent = `${config.nome_academia} — Roster Ativo`;
 
-                members.forEach(member => {
-                    const status = member.status || 'Ativo';
-                    const container = document.querySelector(`[data-status="${status}"] .cards-container`);
-                    if (container) {
-                        counts[status]++;
-                        container.appendChild(createMemberCard(member));
-                    }
-                });
-
-                Object.keys(counts).forEach(status => {
-                    const label = document.querySelector(`[data-status="${status}"] .count`);
-                    if (label) label.textContent = counts[status].toString().padStart(2, '0');
-                });
+                allMembers = await PlayFitnessAPI.students.list();
+                renderMembers();
+                updateStats();
+                loadPlansIntoSelect(); // Load plans on page load
             } catch (err) {
                 console.error(err);
-                PlayFitnessUI.toast('Erro no Data Center', 'error');
+                PlayFitnessUI.toast('Erro na Sincronização', 'error');
             }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active-filter');
+                btn.classList.add('text-zinc-500');
+                if (btn.textContent.trim().includes(filter === 'All' ? 'Todos' : (filter === 'Em Risco' ? 'Risco IA' : filter))) {
+                    btn.classList.add('active-filter');
+                    btn.classList.remove('text-zinc-500');
+                }
+            });
+            renderMembers();
+        }
+
+        function filterMembers() {
+            renderMembers();
+        }
+
+        function renderMembers() {
+            const container = document.getElementById('rosterContainer');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            container.innerHTML = '';
+
+            const filtered = allMembers.filter(m => {
+                const matchesSearch = m.nome_completo.toLowerCase().includes(search);
+                const matchesStatus = currentFilter === 'All' || m.status === currentFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            filtered.forEach(m => container.appendChild(createMemberCard(m)));
+        }
+
+        function updateStats() {
+            const total = allMembers.length;
+            document.getElementById('totalCount').textContent = total.toString().padStart(2, '0');
+            const avg = total > 0 ? Math.round(allMembers.reduce((acc, m) => acc + (m.score_ia || 0), 0) / total) : 0;
+            document.getElementById('avgScore').textContent = `${avg}%`;
+
+            // Element count updates
+            const counts = {
+                All: total,
+                Ativo: allMembers.filter(m => m.status === 'Ativo').length,
+                Prospect: allMembers.filter(m => m.status === 'Prospect').length,
+                Experimental: allMembers.filter(m => m.status === 'Experimental').length,
+                EmRisco: allMembers.filter(m => m.status === 'Em Risco' || (m.score_ia && m.score_ia < 60)).length,
+                Inativo: allMembers.filter(m => m.status === 'Inativo').length
+            };
+
+            if (document.getElementById('count-All')) document.getElementById('count-All').textContent = counts.All;
+            if (document.getElementById('count-Ativo')) document.getElementById('count-Ativo').textContent = counts.Ativo;
+            if (document.getElementById('count-Prospect')) document.getElementById('count-Prospect').textContent = counts.Prospect;
+            if (document.getElementById('count-Experimental')) document.getElementById('count-Experimental').textContent = counts.Experimental;
+            if (document.getElementById('count-EmRisco')) document.getElementById('count-EmRisco').textContent = counts.EmRisco;
+            if (document.getElementById('count-Inativo')) document.getElementById('count-Inativo').textContent = counts.Inativo;
         }
 
         function createMemberCard(member) {
             const div = document.createElement('div');
-            // Premium Card Design: More depth, better typography, sharp edges
-            div.className = 'glass-card p-6 rounded-[1.5rem] border border-white/5 hover:border-primary/50 transition-all group relative cursor-grab active:cursor-grabbing shadow-2xl flex flex-col gap-5';
-            div.draggable = true;
-            div.id = `member-${member.id}`;
-            div.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', member.id);
-                div.classList.add('opacity-40');
-            });
-            div.addEventListener('dragend', () => div.classList.remove('opacity-40'));
+            div.className = 'bg-surface-container-low p-4 rounded-[1.2rem] relative overflow-hidden group hover:bg-[#1a1919] transition-all duration-500 border border-white/5 fade-in';
+            
+            const isHighRisk = (member.score_ia || 0) < 60;
+            const scoreColor = isHighRisk ? 'text-error' : 'text-primary';
+            const barBg = isHighRisk ? 'bg-error' : 'bg-primary';
 
-            // Score-based color logic
-            const scoreColor = member.score_ia > 85 ? 'text-emerald-400' : (member.score_ia < 60 ? 'text-error' : 'text-orange-400');
+            // Status colors
+            const statusColors = {
+                'Ativo': 'text-emerald-500 bg-emerald-500/10',
+                'Em Risco': 'text-error bg-error/10',
+                'Prospect': 'text-blue-400 bg-blue-400/10',
+                'Experimental': 'text-amber-400 bg-amber-400/10',
+                'Inativo': 'text-zinc-400 bg-zinc-400/10'
+            };
+            const sc = statusColors[member.status] || 'text-zinc-400 bg-white/5';
 
             div.innerHTML = `
-                <div class="flex items-start gap-4">
-                    <div class="size-14 rounded-2xl border border-white/10 overflow-hidden shrink-0 shadow-inner bg-zinc-900/50">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=1a191b&color=ff8e82&bold=true&font-size=0.4" class="size-full object-cover">
+                <button onclick="openModal('edit', '${member.id}')" class="absolute top-4 right-4 text-zinc-600 hover:text-primary material-symbols-outlined transition-colors z-10 text-base">tune</button>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="relative shrink-0">
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=dc2626&color=fff&size=128&bold=true&format=svg"
+                             alt="${member.nome_completo}"
+                             class="w-12 h-12 rounded-full object-cover border-2 border-white/10 shadow-md shadow-primary/10"
+                             onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent((member.nome_completo||'AL').substring(0,2))}&background=dc2626&color=fff'">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#111111] ${member.status === 'Ativo' ? 'bg-emerald-500' : member.status === 'Em Risco' ? 'bg-red-500' : 'bg-zinc-500'}"></span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="text-[13px] font-black uppercase italic break-words whitespace-normal leading-[1.2] text-white/90 mb-1">${member.nome_completo}</h4>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[8px] font-black px-2 py-0.5 bg-white/5 rounded-full text-white/40 tracking-wider">ID: ${member.codigo || '---'}</span>
-                            <span class="text-[8px] font-black px-2 py-0.5 bg-primary/10 rounded-full text-primary tracking-wider uppercase">${member.status || 'STATUS'}</span>
+                        <h3 class="text-sm font-black font-headline text-white leading-tight break-words whitespace-normal italic">${member.nome_completo}</h3>
+                        <span class="text-[8px] font-black font-label text-zinc-500 uppercase tracking-widest italic leading-none">#${member.id || '---'}</span>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[7px] font-black font-label text-zinc-500 uppercase tracking-widest block mb-1">PLANO</label>
+                        <p class="text-[10px] font-black text-zinc-100 italic uppercase truncate">${member.plano || 'VIP'}</p>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-end mb-1.5">
+                            <label class="text-[7px] font-black font-label text-zinc-500 uppercase tracking-widest">IA SCORE</label>
+                            <span class="text-base font-black ${scoreColor} font-headline italic">${member.score_ia || '0'}%</span>
+                        </div>
+                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full ${barBg} rounded-full transition-all duration-1000" style="width: ${member.score_ia || 0}%"></div>
                         </div>
                     </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 bg-white/[0.02] p-3 rounded-xl border border-white/5">
-                    <div>
-                        <p class="text-[8px] font-black text-white/20 uppercase mb-1">PLANO ATUAL</p>
-                        <p class="text-[10px] font-black text-white/80 uppercase italic truncate">${member.plano || 'VIP EXCLUSIVO'}</p>
-                    </div>
-                    <div>
-                        <p class="text-[8px] font-black text-white/20 uppercase mb-1 text-right">SCORE IA</p>
-                        <p class="text-[11px] font-black ${scoreColor} uppercase italic text-right">${member.score_ia || '---'}%</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
-                    <div class="flex -space-x-2">
-                        <span class="material-symbols-outlined text-[14px] text-white/20">monitoring</span>
-                        <span class="material-symbols-outlined text-[14px] text-white/20 ml-1">history</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="openModal('edit', '${member.id}')" class="size-8 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all">
-                            <span class="material-symbols-outlined text-[16px]">tune</span>
-                        </button>
+                    <div class="flex items-center justify-between pt-1">
+                         <span class="text-[8px] font-black px-3 py-1 ${sc} rounded-full uppercase tracking-widest italic">${member.status || 'STATUS'}</span>
+                         <span class="text-[8px] text-zinc-500 font-mono">${member.telefone ? member.telefone.substring(0,13) : ''}</span>
                     </div>
                 </div>
             `;
@@ -313,55 +535,189 @@
             overlay.classList.add('flex');
             document.getElementById('formAction').value = action;
             document.getElementById('memberId').value = id;
+            document.getElementById('photoInput').value = ''; // reset file input
+            loadPlansIntoSelect(); // Ensure plans are loaded when modal opens
 
             if (action === 'edit') {
-                document.getElementById('modalTitle').textContent = 'Sincronizar Aluno';
+                document.getElementById('modalTitle').textContent = 'Editar Aluno';
                 loadMemberDetails(id);
             } else {
-                document.getElementById('modalTitle').textContent = 'Novo Registro';
+                document.getElementById('modalTitle').textContent = 'Novo Aluno';
                 document.getElementById('memberForm').reset();
+                document.getElementById('modalAvatarPreview').src = 'https://ui-avatars.com/api/?name=Novo+Aluno&background=dc2626&color=fff&size=128&bold=true';
+                
+                // Auto-fill today's date for new student
+                const today = new Date().toISOString().substring(0, 10);
+                document.getElementById('memberJoinDate').value = today;
+                document.getElementById('memberLastVisit').value = '';
+                document.getElementById('memberPassword').value = '123456';
+                updateFrequencyHighlight();
+                document.getElementById('assessmentHistoryList').innerHTML = '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
+            }
+        }
+
+        function updateFrequencyHighlight() {
+            const dateVal = document.getElementById('memberLastVisit').value;
+            const dots = document.querySelectorAll('#weeklyFrequencyGrid [data-day]');
+            
+            // Reset all
+            dots.forEach(dot => {
+                dot.classList.remove('bg-primary', 'border-primary/40', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-110');
+                dot.classList.add('bg-white/5', 'border-white/5');
+            });
+
+            if (dateVal) {
+                // Adjusting for timezone to get the correct day
+                const dateParts = dateVal.split('-');
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                const day = date.getDay(); // 0 (Sun) to 6 (Sat)
+                const activeDot = document.querySelector(`#weeklyFrequencyGrid [data-day="${day}"]`);
+                if (activeDot) {
+                    activeDot.classList.remove('bg-white/5', 'border-white/5');
+                    activeDot.classList.add('bg-primary', 'border-primary/40', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-110');
+                }
             }
         }
 
         async function loadMemberDetails(id) {
-            const data = await PlayFitnessAPI.students.getById(id);
-            if (data) {
-                document.getElementById('memberName').value = data.nome_completo || '';
-                document.getElementById('memberPhone').value = data.telefone || '';
-                document.getElementById('memberStatus').value = data.status || 'Ativo';
-                document.getElementById('memberPlan').value = data.plano || 'Mensal Básico';
+            try {
+                const member = await PlayFitnessAPI.students.getById(id);
+                // Busca a última visita real do log da catraca
+                const lastVisit = await PlayFitnessAPI.students.getLastVisit(id);
+                
+                if (member) {
+                    document.getElementById('memberName').value = member.nome_completo || '';
+                    document.getElementById('memberPhone').value = member.telefone || member.whatsapp || '';
+                    document.getElementById('memberEmail').value = member.email || '';
+                    document.getElementById('memberCPF').value = member.cpf || '';
+                    document.getElementById('memberWeight').value = member.peso || '';
+                    document.getElementById('memberHeight').value = member.altura || '';
+                    document.getElementById('memberDOB').value = member.data_nascimento ? member.data_nascimento.substring(0,10) : '';
+                    document.getElementById('memberPlan').value = member.plano || 'Mensal Básico';
+                    document.getElementById('memberStatus').value = member.status || 'Ativo';
+                    document.getElementById('memberFinancial').value = member.situacao_financeira || 'em dia';
+                    document.getElementById('memberJoinDate').value = member.data_matricula ? member.data_matricula.substring(0,10) : '';
+                    document.getElementById('memberPassword').value = member.senha || '123456';
+                    
+                    // Prioriza o log da catraca para a última visita
+                    document.getElementById('memberLastVisit').value = lastVisit ? lastVisit.substring(0,10) : '';
+                    
+                    updateFrequencyHighlight();
+
+                    // Set avatar preview
+                    document.getElementById('modalAvatarPreview').src =
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=dc2626&color=fff&size=128&bold=true`;
+
+                    // Load History
+                    const history = await PlayFitnessAPI.students.getAssessmentHistory(id);
+                    const hContainer = document.getElementById('assessmentHistoryList');
+                    hContainer.innerHTML = history.length ? '' : '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
+                    
+                    history.forEach(item => {
+                        const date = item.data_avaliacao ? new Date(item.data_avaliacao).toLocaleDateString('pt-BR') : 'S/D';
+                        const imc = item.imc ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-[8px] font-black ml-2">IMC ${item.imc}</span>` : '';
+                        
+                        hContainer.innerHTML += `
+                            <div class="flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-[10px] font-black text-white/40 uppercase">${date}</span>
+                                    <span class="text-xs font-black italic text-white">${item.peso}kg / ${item.altura}m</span>
+                                    ${imc}
+                                </div>
+                                <span class="material-symbols-outlined text-[14px] text-zinc-700">monitoring</span>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                console.error(err);
             }
         }
 
         function closeModal() {
-            document.getElementById('modalOverlay').classList.replace('flex', 'hidden');
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.getElementById('modalOverlay').classList.remove('flex');
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('modalOverlay')) closeModal();
+        }
+
+        function updateModalAvatar() {
+            const name = document.getElementById('memberName').value || 'Novo Aluno';
+            document.getElementById('modalAvatarPreview').src =
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=dc2626&color=fff&size=128&bold=true`;
+        }
+
+        function handlePhotoChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('modalAvatarPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         async function handleFormSubmit(event) {
             event.preventDefault();
+            const action = document.getElementById('formAction').value;
             const id = document.getElementById('memberId').value;
+
             const payload = {
                 nome_completo: document.getElementById('memberName').value,
+                whatsapp: document.getElementById('memberPhone').value,
                 telefone: document.getElementById('memberPhone').value,
+                email: document.getElementById('memberEmail').value,
+                cpf: document.getElementById('memberCPF').value,
+                peso: parseFloat(document.getElementById('memberWeight').value),
+                altura: parseFloat(document.getElementById('memberHeight').value),
+                data_nascimento: document.getElementById('memberDOB').value || null,
+                plano: document.getElementById('memberPlan').value,
                 status: document.getElementById('memberStatus').value,
-                plano: document.getElementById('memberPlan').value
+                situacao_financeira: document.getElementById('memberFinancial').value,
+                data_matricula: document.getElementById('memberJoinDate').value,
+                ultima_visita: document.getElementById('memberLastVisit').value || null,
+                senha: document.getElementById('memberPassword').value,
+                score_ia: Math.floor(Math.random() * 41) + 60
             };
-            await PlayFitnessAPI.students.save(id, payload);
-            closeModal();
-            PlayFitnessUI.toast('Dados Sincronizados!', 'check_circle');
-            loadMembers();
+
+            try {
+                const result = await PlayFitnessAPI.students.save(action === 'edit' ? id : null, payload);
+                
+                // NOVO: Salva histórico de evolução se tiver dados físicos
+                if (result && result.length > 0) {
+                    const studentId = result[0].id;
+                    if (payload.peso || payload.altura) {
+                        await PlayFitnessAPI.students.addAssessment(studentId, payload.peso, payload.altura);
+                    }
+                }
+
+                PlayFitnessUI.toast(action === 'edit' ? 'Aluno Atualizado!' : 'Novo Aluno Cadastrado!', 'success');
+                closeModal();
+                loadMembers();
+                loadPlansIntoSelect();
+            } catch (err) {
+                console.error(err);
+                PlayFitnessUI.toast('Falha na operação', 'error');
+            }
         }
 
-        function handleDragOver(e) { e.preventDefault(); }
-        async function handleDrop(event, newStatus) {
-            event.preventDefault();
-            const id = event.dataTransfer.getData('text/plain');
-            await PlayFitnessAPI.students.save(id, { status: newStatus });
-            loadMembers();
+        async function loadPlansIntoSelect() {
+            try {
+                const plans = await PlayFitnessAPI.plans.list();
+                const select = document.getElementById('memberPlan');
+                select.innerHTML = '';
+                plans.forEach(p => {
+                    if(p.ativo) {
+                        select.innerHTML += `<option value="${p.nome}">${p.nome} — R$ ${p.valor}</option>`;
+                    }
+                });
+            } catch (err) {
+                console.error("Failed to load plans:", err);
+                PlayFitnessUI.toast('Falha ao carregar planos', 'error');
+            }
         }
-
-        document.addEventListener('DOMContentLoaded', loadMembers);
     </script>
 </body>
-
 </html>

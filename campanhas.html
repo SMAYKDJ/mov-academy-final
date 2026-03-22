@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR">
-
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>PlayFitness | Campanhas</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     
     <!-- API & Supabase -->
@@ -20,160 +19,575 @@
             theme: {
                 extend: {
                     colors: {
-                        "surface-variant": "#262627",
-                        "on-secondary": "#525154",
-                        "surface-dim": "#0e0e0f",
+                        "primary": "#ef4444",
+                        "on-primary-fixed": "#ffffff",
+                        "surface-bright": "#2a2a2a",
+                        "secondary-dim": "#dc2626",
+                        "surface-dim": "#0a0a0a",
+                        "background": "#0a0a0a",
+                        "surface-container": "#161616",
+                        "surface-container-highest": "#242424",
+                        "primary-fixed-dim": "#b91c1c",
+                        "surface-container-low": "#111111",
+                        "primary-dim": "#dc2626",
+                        "on-surface-variant": "#a3a3a3",
                         "on-surface": "#ffffff",
-                        "background": "#0e0e0f",
-                        "primary-dim": "#e02928",
-                        "primary": "#ff8e82",
-                        "error": "#ff6e84",
-                        "surface-container-highest": "#262627"
+                        "surface-tint": "#ef4444",
+                        "primary-fixed": "#dc2626",
+                        "surface-container-lowest": "#000000",
+                        "secondary": "#dc2626",
+                        "error": "#f87171",
+                        "on-background": "#ffffff",
+                        "surface-variant": "#242424",
                     },
-                    fontFamily: { "headline": ["Inter"], "body": ["Inter"] },
-                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                    fontFamily: {
+                        "headline": ["Lexend"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Lexend"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
                 },
             },
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0e0e0f; color: #ffffff; overflow-x: hidden !important; width: 100vw; }
-        html { overflow-x: hidden !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; overflow: hidden; }
+        .font-headline { font-family: 'Lexend', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: rgba(26, 25, 27, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .glass-card { background: rgba(26, 25, 25, 0.4); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+
+        /* Advanced UX Animations */
+        .push-layout { transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .layered-card { transform-origin: left center; animation: slideBehind 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideBehind {
+            from { transform: translateX(20px) scale(0.9); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        .stagger-item { animation: staggerFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        @keyframes staggerFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 
-<body class="bg-background text-on-background antialiased overflow-hidden h-screen flex">
+<body class="bg-background text-on-background antialiased flex h-screen">
     <!-- SideNavBar -->
-    <aside class="w-64 border-r border-white/5 bg-[#0e0e0f] flex flex-col py-8 px-4 shrink-0 overflow-y-auto">
-        <div class="mb-10 px-2">
-            <h1 class="text-xl font-black text-[#ff8e82] tracking-tighter italic">PlayFitness</h1>
-            <p class="font-['Inter'] font-extrabold tracking-[-0.04em] uppercase text-[0.75rem] text-white/50 mt-1">Inteligência Estratégica</p>
+    <nav class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-50 hidden md:flex shrink-0">
+        <div class="px-8 mb-12">
+            <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+            <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="dashboard.html">
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
                 <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-medium text-sm">Dashboard</span>
+                <span>Visão Geral</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="membros.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="membros.html">
                 <span class="material-symbols-outlined">group</span>
-                <span class="font-medium text-sm">Membros</span>
+                <span>Alunos</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="financeiro.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
                 <span class="material-symbols-outlined">payments</span>
-                <span class="font-medium text-sm">Financeiro</span>
+                <span>Financeiro</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#ff8e82] border-r-2 border-[#ff8e82] bg-gradient-to-r from-[#e02928]/10 to-transparent transition-all" href="campanhas.html">
+            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="campanhas.html">
                 <span class="material-symbols-outlined">campaign</span>
-                <span class="font-medium text-sm">Campanhas</span>
+                <span>Campanhas</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="#">
                 <span class="material-symbols-outlined">settings</span>
-                <span class="font-medium text-sm">Configurações</span>
+                <span>Configurações</span>
             </a>
-        </nav>
-        <button onclick="location.href='index.html'" class="mt-auto border border-white/5 text-white/40 py-4 rounded-xl font-bold text-xs hover:text-primary transition-all">
-            Sair do Sistema
-        </button>
-    </aside>
+        </div>
+        <div class="mt-auto px-6">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        </div>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0 h-screen overflow-x-hidden">
-        <header class="h-16 bg-[#1a191b]/60 backdrop-blur-3xl flex items-center justify-between px-8 z-40 shrink-0 border-b border-white/5">
-             <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-primary-dim animate-pulse"></span>
-                <span class="font-['Inter'] italic font-medium text-sm text-primary">Marketing: IA Ativa</span>
+    <!-- Main Content Wrapper -->
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+        <!-- TopAppBar -->
+        <header class="flex justify-between items-center h-20 px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-2 flex-1">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-xs italic">PlayFitness — Campanhas</span>
             </div>
-             <button onclick="PlayFitnessUI.toast('Criando Campanha IA...', 'rocket_launch')" class="bg-primary-dim text-white px-6 py-2 rounded-full font-extrabold text-xs flex items-center gap-2 hover:scale-105 transition-all">
-                <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
-                Configurar Campanhas
-            </button>
+            <div class="flex items-center gap-8">
+                <button onclick="PlayFitnessUI.toast('Criando Campanha IA...', 'rocket_launch')" class="bg-primary hover:bg-primary-fixed-dim text-on-primary-fixed px-8 py-3 rounded-full font-headline text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    Nova Campanha
+                </button>
+            </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto mt-8 px-10 space-y-12 pb-10 overflow-x-hidden">
-            <h2 class="text-[3.5rem] font-black tracking-[-0.04em] leading-tight">Campanhas <span class="text-primary italic">Preditivas</span></h2>
-            
-            <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">Taxa de Conversão</p>
-                    <h3 class="text-3xl font-black italic tracking-tighter">18.5%</h3>
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto px-10 py-10 custom-scrollbar">
+            <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 mb-10">
+                <div>
+                    <h2 class="text-5xl font-black text-white font-headline tracking-tighter leading-none italic">Campanhas <span class="text-primary italic">Preditivas</span></h2>
+                    <div class="flex items-center gap-4 mt-6">
+                        <button onclick="filterCampaigns('all')" class="px-5 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest hover:text-primary transition-all active:scale-95 bg-white/5 text-primary">Todos</button>
+                        <button onclick="filterCampaigns('retidos')" class="px-5 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest hover:text-primary transition-all active:scale-95 text-zinc-500">Alunos Retidos</button>
+                    </div>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">Total Indicações</p>
-                    <h3 class="text-3xl font-black italic tracking-tighter">127</h3>
+
+                <!-- Busca de Aluno -->
+                <div class="relative w-full xl:max-w-sm">
+                    <div class="flex items-center gap-3 bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-3 focus-within:border-primary/50 transition-all">
+                        <span class="material-symbols-outlined text-zinc-500 text-[20px]">person_search</span>
+                        <input id="campSearchInput" type="text" placeholder="Buscar aluno nas campanhas..." autocomplete="off"
+                            class="bg-transparent text-white text-sm font-body placeholder-zinc-600 outline-none w-full"
+                            oninput="searchStudentInCampaigns(this.value)">
+                        <span id="campSearchSpinner" class="hidden material-symbols-outlined text-primary text-[18px] animate-spin">progress_activity</span>
+                    </div>
+                    <!-- Dropdown de sugestões -->
+                    <div id="campSearchResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden z-50 shadow-2xl max-h-64 overflow-y-auto custom-scrollbar"></div>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">ROI Projetado</p>
-                    <h3 class="text-3xl font-black italic tracking-tighter text-emerald-500">5.4x</h3>
+            </div>
+
+            <!-- Card de Rastro do Aluno Selecionado -->
+            <div id="studentTraceCard" class="hidden mb-10 p-6 bg-surface-container-low rounded-[1.5rem] border border-primary/20 shadow-xl">
+                <div class="flex items-start justify-between mb-5">
+                    <div class="flex items-center gap-4">
+                        <div id="traceAvatar" class="w-14 h-14 rounded-2xl bg-zinc-800 border border-primary/30 flex items-center justify-center font-black text-xl text-primary italic shadow-lg"></div>
+                        <div>
+                            <p id="traceName" class="font-black text-lg text-white uppercase italic font-headline leading-tight"></p>
+                            <p id="traceId" class="text-[9px] text-zinc-500 font-mono mt-0.5"></p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('studentTraceCard').classList.add('hidden')" class="text-zinc-600 hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-white/5">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1 italic">Custo Lead</p>
-                    <h3 class="text-3xl font-black italic tracking-tighter">R$ 2.45</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+                    <div class="bg-white/[0.03] p-3 rounded-xl border border-white/5">
+                        <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-black font-headline">Plano</p>
+                        <p id="tracePlan" class="text-sm font-black text-white italic mt-1"></p>
+                    </div>
+                    <div class="bg-white/[0.03] p-3 rounded-xl border border-white/5">
+                        <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-black font-headline">Status</p>
+                        <p id="traceStatus" class="text-sm font-black italic mt-1"></p>
+                    </div>
+                    <div class="bg-white/[0.03] p-3 rounded-xl border border-white/5">
+                        <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-black font-headline">Score IA</p>
+                        <p id="traceScore" class="text-sm font-black text-primary italic mt-1"></p>
+                    </div>
+                    <div class="bg-white/[0.03] p-3 rounded-xl border border-white/5">
+                        <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-black font-headline">Fin. Situação</p>
+                        <p id="traceFinancial" class="text-sm font-black italic mt-1"></p>
+                    </div>
+                </div>
+                <div class="bg-white/[0.02] border border-white/5 rounded-xl p-4">
+                    <p class="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[12px] text-primary">route</span> Rastro de Campanhas
+                    </p>
+                    <div id="traceTimeline" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- KPI Row -->
+            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-surface-container-low p-6 rounded-[1.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">Taxa de Conversão</p>
+                    <h3 class="text-4xl font-black italic tracking-tighter text-white font-headline">18.5%</h3>
+                </div>
+                <div class="bg-surface-container-low p-6 rounded-[1.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">Total Indicações</p>
+                    <h3 class="text-4xl font-black italic tracking-tighter text-white font-headline">127</h3>
+                </div>
+                <div class="bg-surface-container-low p-6 rounded-[1.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">ROI Projetado</p>
+                    <h3 class="text-4xl font-black italic tracking-tighter text-emerald-500 font-headline">5.4x</h3>
+                </div>
+                <div class="bg-surface-container-low p-6 rounded-[1.5rem] border border-white/5 relative overflow-hidden group">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2 font-headline italic">CAC Estimado</p>
+                    <h3 class="text-4xl font-black italic tracking-tighter text-white font-headline">R$ 2.45</h3>
                 </div>
             </section>
 
-            <div class="grid grid-cols-12 gap-8">
-                <div class="col-span-12 lg:col-span-8 glass-card p-8 rounded-2xl border border-white/5 shadow-2xl">
-                    <h4 class="text-xl font-bold mb-8 italic uppercase tracking-tighter">Status de Conversão Digital</h4>
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-[0.65rem] uppercase tracking-widest text-white/40 border-b border-white/5">
-                                <th class="pb-4 font-medium">Nome da Campanha</th>
-                                <th class="pb-4 font-medium">Target IA</th>
-                                <th class="pb-4 font-medium text-right">Eficiência</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-white/5">
-                            <tr class="hover:bg-white/5 transition-all">
-                                <td class="py-6 font-black italic text-sm text-primary uppercase">Recuperação Verão 2026</td>
-                                <td class="py-6 text-[10px] font-bold text-white/50 uppercase tracking-widest italic">Churn > 60%</td>
-                                <td class="py-6 text-right font-black italic text-emerald-500">62%</td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition-all">
-                                <td class="py-6 font-black italic text-sm text-white uppercase">Upgrade VIP Premium</td>
-                                <td class="py-6 text-[10px] font-bold text-white/50 uppercase tracking-widest italic">Engajamento > 90%</td>
-                                <td class="py-6 text-right font-black italic text-emerald-500">45%</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="grid grid-cols-12 gap-8 pb-20 relative">
+                <!-- Campaigns Table -->
+                <div id="campaignsContainer" class="col-span-12 lg:col-span-8 bg-surface-container-low p-10 rounded-[2.5rem] border border-white/5 shadow-2xl push-layout">
+                    <h4 class="text-2xl font-black font-headline tracking-tighter mb-10 italic">Performance de <span class="text-primary italic">Conversão Digital</span></h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-[10px] uppercase tracking-widest text-zinc-600 border-b border-white/5">
+                                    <th class="pb-6 font-black font-headline italic">Nome da Campanha</th>
+                                    <th class="pb-6 font-black font-headline italic text-center">Target IA</th>
+                                    <th class="pb-6 font-black font-headline italic text-right">Eficiência</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 border-b border-white/5">
+                                <tr class="group">
+                                    <td class="pt-8 pb-4">
+                                        <p class="font-black italic text-base text-primary uppercase font-headline">Recuperação Verão 2026</p>
+                                        <p class="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-1">EM EXECUÇÃO [WHATSAPP + EMAIL]</p>
+                                    </td>
+                                    <td class="pt-8 pb-4">
+                                        <div class="flex justify-center">
+                                            <span class="px-4 py-1.5 bg-white/5 rounded-full text-[9px] font-black text-zinc-400 font-headline uppercase tracking-widest italic">Churn > 60%</span>
+                                        </div>
+                                    </td>
+                                    <td class="pt-8 pb-4 text-right">
+                                        <p class="font-black italic text-2xl text-emerald-500 font-headline">62%</p>
+                                        <p class="text-[8px] text-zinc-700 font-black uppercase tracking-widest">OTIMIZADO</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="pb-8">
+                                        <div class="p-4 bg-white/[0.02] border border-white/5 rounded-2xl w-full">
+                                            <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('recovered-camp-1').classList.toggle('hidden'); const btn = this.querySelector('button'); btn.innerText = btn.innerText.includes('+') ? 'Ocultar -' : 'Ver Resgates +';">
+                                                <p class="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-500 font-headline italic flex items-center gap-2 cursor-pointer">
+                                                    <span class="material-symbols-outlined text-[12px] text-emerald-500">route</span> Rastro de Resgates Recentes (24h)
+                                                </p>
+                                                <button class="text-[9px] font-black pointer-events-none text-primary uppercase tracking-widest transition-colors font-headline">Ver Resgates +</button>
+                                            </div>
+                                            <div id="recovered-camp-1" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                                                <div class="text-[9px] text-zinc-600 italic">Buscando rastros...</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="group">
+                                    <td class="pt-8 pb-4">
+                                        <p class="font-black italic text-base text-white uppercase font-headline">Upgrade VIP Premium</p>
+                                        <p class="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-1">EM EXECUÇÃO [PUSH + SMS]</p>
+                                    </td>
+                                    <td class="pt-8 pb-4">
+                                        <div class="flex justify-center">
+                                            <span class="px-4 py-1.5 bg-white/5 rounded-full text-[9px] font-black text-zinc-400 font-headline uppercase tracking-widest italic">Score IA > 90%</span>
+                                        </div>
+                                    </td>
+                                    <td class="pt-8 pb-4 text-right">
+                                        <p class="font-black italic text-2xl text-emerald-500 font-headline">45%</p>
+                                        <p class="text-[8px] text-zinc-700 font-black uppercase tracking-widest">EM ALTA</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="pb-8">
+                                        <div class="p-4 bg-white/[0.02] border border-white/5 rounded-2xl w-full">
+                                            <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('recovered-camp-2').classList.toggle('hidden'); const btn = this.querySelector('button'); btn.innerText = btn.innerText.includes('+') ? 'Ocultar -' : 'Ver Resgates +';">
+                                                <p class="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-500 font-headline italic flex items-center gap-2 cursor-pointer">
+                                                    <span class="material-symbols-outlined text-[12px] text-emerald-500">route</span> Rastro de Conversão Recentes (24h)
+                                                </p>
+                                                <button class="text-[9px] font-black pointer-events-none text-primary uppercase tracking-widest transition-colors font-headline">Ver Resgates +</button>
+                                            </div>
+                                            <div id="recovered-camp-2" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                                                <div class="text-[9px] text-zinc-600 italic">Buscando rastros...</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="col-span-12 lg:col-span-4 glass-card p-8 rounded-2xl border border-white/5 shadow-2xl">
-                     <h4 class="text-xl font-bold mb-8 uppercase italic tracking-tighter text-primary">Embaixadores Elite</h4>
-                     <div id="rankingContainer" class="space-y-6">
-                         <!-- Dynamically populated -->
-                     </div>
+                <!-- Ambassador Ranking -->
+                <div id="ambassadorRankingCard" class="col-span-12 lg:col-span-4 bg-surface-container-low p-10 rounded-[2.5rem] border border-white/5 shadow-2xl relative z-20 transition-all duration-500">
+                    <h4 class="text-2xl font-black font-headline tracking-tighter mb-10 italic">Embaixadores <span class="text-primary italic">Elite</span></h4>
+                    <div id="rankingContainer" class="space-y-6">
+                        <!-- Dynamically populated -->
+                    </div>
+                    <div class="mt-auto pt-10">
+                        <div class="p-6 bg-primary/5 rounded-[2rem] border border-primary/10 flex items-start gap-4">
+                            <span class="material-symbols-outlined text-primary italic">rewarded_ads</span>
+                            <p class="text-[10px] font-black text-zinc-400 leading-relaxed uppercase italic font-headline"><span class="text-primary italic">Promo:</span> Ofereça um mês grátis para embaixadores que atingirem <span class="text-white">5 indicações</span> validadas.</p>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Detalhes do Embaixador (Deep Layer UI) -->
+                <div id="ambassadorDetailsPanel" class="hidden absolute top-0 right-[33.33%] w-[30%] h-full bg-surface-container-highest/90 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 p-10 z-10 layered-card shadow-2xl shadow-black">
+                   <div id="detailsContent" class="h-full flex flex-col">
+                       <h5 class="text-xl font-black italic uppercase font-headline text-primary mb-8">Alunos Indicados</h5>
+                       <div id="referredList" class="space-y-4 overflow-y-auto custom-scrollbar flex-1 pr-2">
+                           <!-- Injected -->
+                       </div>
+                   </div>
+                </div>
+            </div>
             </div>
         </div>
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadCampaignData();
-        });
+        document.addEventListener('DOMContentLoaded', initializeCampanhas);
 
-        async function loadCampaignData() {
-            const ranking = await PlayFitnessAPI.students.getReferralRanking();
-            const container = document.getElementById('rankingContainer');
-            
-            container.innerHTML = ranking.slice(0, 5).map((item, idx) => `
-                <div class="flex items-center justify-between group">
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <img class="w-12 h-12 rounded-full object-cover border-2 border-primary-dim" src="${item.foto}" />
-                            <div class="absolute -top-1 -right-1 bg-primary-dim text-[10px] font-bold px-1.5 py-0.5 rounded-full">#${idx + 1}</div>
+        async function initializeCampanhas() {
+            try {
+                // Config
+                const config = await PlayFitnessAPI.utils.getGymConfig();
+                document.getElementById('sidebarGymName').textContent = config.nome_academia;
+                document.getElementById('sidebarGymSlogan').textContent = config.slogan;
+                document.getElementById('pageTitle').textContent = `${config.nome_academia} — Planejamento de Campanhas`;
+
+                loadCampaigns();
+            } catch (err) { }
+        }
+
+        async function loadCampaigns() {
+            try {
+                const ranking = await PlayFitnessAPI.students.getReferralRanking();
+                const container = document.getElementById('rankingContainer');
+                
+                container.innerHTML = ranking.slice(0, 3).map((item, idx) => {
+                    const medals = ['text-yellow-400', 'text-zinc-400', 'text-amber-600'];
+                    const medal = idx < 3 ? medals[idx] : 'text-zinc-600';
+                    const initials = item.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    
+                    return `
+                    <div onclick="expandAmbassador(this, ${idx}, '${item.name}')" class="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-all active:scale-95">
+                        <div class="flex items-center gap-5">
+                            <div class="relative">
+                                <div class="w-14 h-14 rounded-2xl bg-zinc-800 border ${idx === 0 ? 'border-yellow-400/30' : 'border-white/10'} flex items-center justify-center font-headline font-black text-xl text-primary italic shadow-lg">
+                                    ${initials}
+                                </div>
+                                <div class="absolute -top-2 -right-2 ${idx === 0 ? 'bg-yellow-400 text-black' : 'bg-primary text-white'} text-[9px] font-black px-2 py-0.5 rounded-full font-headline shadow-lg">#${idx + 1}</div>
+                            </div>
+                            <div>
+                                <p class="font-black text-sm font-headline uppercase italic leading-tight text-white/80 group-hover:text-white transition-colors">${item.name}</p>
+                                <p class="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-1">${item.count} Indicações</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-bold text-sm uppercase italic">${item.name}</p>
-                            <p class="text-[0.65rem] text-white/50 uppercase tracking-widest">${item.count} Indicações</p>
+                        <div class="text-right">
+                             <span class="material-symbols-outlined ${medal} text-base italic animate-pulse">workspace_premium</span>
                         </div>
                     </div>
+                    `;
+                }).join('');
+
+                // Buscar alunos para simular o Rastro
+                const students = await PlayFitnessAPI.students.list();
+                const ativos = students.filter(s => s.status === 'Ativo');
+                
+                // Embaralha para pegar diferentes "recuperados" (Mock visual de inteligência)
+                const shuffled = ativos.sort(() => 0.5 - Math.random());
+                const camp1 = shuffled.slice(0, 4);
+                const camp2 = shuffled.slice(4, 7);
+
+                const traceHTML = (list, text) => list.map(student => {
+                    const shortId = student.id ? student.id.toString().substring(0,6).toUpperCase() : 'N/A';
+                    // Criar uma data de retorno mockada entre hoje e 2 dias atrás
+                    const returnDate = new Date();
+                    returnDate.setHours(returnDate.getHours() - Math.floor(Math.random() * 48));
+                    const dateStr = returnDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'});
+
+                    return `
+                    <div class="w-full flex items-center gap-3 bg-black/40 p-3 rounded-xl border border-white/5 hover:border-primary/30 transition-all cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center font-black text-[11px] text-primary italic shrink-0 shadow-lg border border-white/5">
+                            ${student.nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                        </div>
+                        <div class="flex flex-col justify-center w-full">
+                            <div class="flex justify-between items-center w-full gap-2">
+                                <p class="font-black text-[11px] text-white uppercase italic truncate max-w-[140px] leading-tight">${student.nome_completo.split(' ')[0]}</p>
+                                <span class="bg-white/5 px-1.5 py-0.5 rounded text-[8px] font-mono text-zinc-400 border border-white/10 shrink-0">ID:${shortId}</span>
+                            </div>
+                            <p class="text-[9px] text-emerald-500 font-black uppercase tracking-widest mt-1 truncate">${text}</p>
+                            <p class="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5"><span class="material-symbols-outlined text-[9px] align-middle mr-0.5">history</span>Retorno: ${dateStr}</p>
+                        </div>
+                    </div>
+                `}).join('');
+
+                document.getElementById('recovered-camp-1').innerHTML = traceHTML(camp1, "Retornou Retido");
+                document.getElementById('recovered-camp-2').innerHTML = traceHTML(camp2, "Upgrade Confirmado");
+
+            } catch (err) {
+                console.error(err);
+                PlayFitnessUI.toast('Erro nos dados de campanha', 'error');
+            }
+        }
+
+        async function expandAmbassador(el, idx, name) {
+            const panel = document.getElementById('ambassadorDetailsPanel');
+            const mainContainer = document.getElementById('campaignsContainer');
+            const referredBox = document.getElementById('referredList');
+            const rankingCard = document.getElementById('ambassadorRankingCard');
+
+            // Toggle logic
+            if (!panel.classList.contains('hidden')) {
+                panel.classList.add('hidden');
+                mainContainer.style.transform = 'translateX(0)';
+                rankingCard.style.transform = 'translateX(0)';
+                return;
+            }
+
+            panel.classList.remove('hidden');
+            
+            // Push layout effect
+            mainContainer.style.transform = 'translateX(-15%)';
+            rankingCard.style.transform = 'translateX(-5%)';
+
+            referredBox.innerHTML = '<div class="text-[10px] text-zinc-500 italic pb-10">Buscando indicados...</div>';
+
+            try {
+                // Mocking referred students for demonstration
+                const students = await PlayFitnessAPI.students.list();
+                const referred = students.sort(() => 0.5 - Math.random()).slice(0, 4);
+
+                referredBox.innerHTML = referred.map((s, i) => `
+                    <div class="bg-black/40 border border-white/5 p-4 rounded-2xl shadow-lg hover:border-primary/40 transition-all stagger-item" style="animation-delay: ${i * 100}ms">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center font-black text-[10px] text-primary italic border border-white/10 shrink-0">
+                                ${s.nome_completo.split(' ').map(n => n[0]).join('').toUpperCase()}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[11px] font-black text-white italic truncate uppercase">${s.nome_completo}</p>
+                                <p class="text-[8px] text-zinc-500 font-mono mt-0.5">ID: PF-${(s.id+1000)} | ${new Date(s.data_matricula).toLocaleDateString('pt-BR')}</p>
+                            </div>
+                            <span class="ml-auto material-symbols-outlined text-emerald-500 text-[14px]">verified</span>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                referredBox.innerHTML = '<p class="text-xs text-error">Erro ao carrar lista.</p>';
+            }
+        }
+
+        function filterCampaigns(type) {
+            const btns = document.querySelectorAll('[onclick^="filterCampaigns"]');
+            btns.forEach(b => {
+                b.classList.remove('text-primary', 'bg-white/5');
+                b.classList.add('text-zinc-500');
+            });
+            event.target.classList.add('text-primary', 'bg-white/5');
+            event.target.classList.remove('text-zinc-500');
+
+            PlayFitnessUI.toast(`Filtrando por: ${type === 'all' ? 'Tudo' : 'Retenção'}`, 'filter_list');
+        }
+
+        // ---- BUSCA DE ALUNO ----
+        let searchDebounce = null;
+        let allStudentsCache = null;
+
+        async function searchStudentInCampaigns(query) {
+            const spinner = document.getElementById('campSearchSpinner');
+            const resultsBox = document.getElementById('campSearchResults');
+
+            if (!query || query.trim().length < 2) {
+                resultsBox.classList.add('hidden');
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            spinner.classList.remove('hidden');
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(async () => {
+                try {
+                    // Usa cache para não sobrecarregar o banco
+                    if (!allStudentsCache) {
+                        const { data, error } = await window.supabaseClient
+                            .from('alunos')
+                            .select('id, nome_completo, plano, status, score_ia, situacao_financeira, data_matricula, cpf, telefone')
+                            .order('nome_completo', { ascending: true });
+                        if (error) throw error;
+                        allStudentsCache = data;
+                    }
+
+                    const q = query.toLowerCase();
+                    const matched = allStudentsCache.filter(s =>
+                        s.nome_completo && s.nome_completo.toLowerCase().includes(q)
+                    ).slice(0, 8);
+
+                    if (matched.length === 0) {
+                        resultsBox.innerHTML = `<div class="px-4 py-5 text-[11px] text-zinc-500 italic font-body">Nenhum aluno encontrado.</div>`;
+                        resultsBox.classList.remove('hidden');
+                        spinner.classList.add('hidden');
+                        return;
+                    }
+
+                    resultsBox.innerHTML = matched.map(s => {
+                        const initials = s.nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                        const statusColor = s.status === 'Ativo' ? 'text-emerald-400' : s.status === 'Em Risco' ? 'text-red-400' : 'text-zinc-400';
+                        return `
+                        <div onclick="showStudentTrace(${s.id})" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 cursor-pointer transition-all border-b border-white/5 last:border-0">
+                            <div class="w-9 h-9 rounded-xl bg-zinc-800 flex items-center justify-center font-black text-[11px] text-primary italic shrink-0">${initials}</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-black text-sm text-white uppercase italic font-headline truncate">${s.nome_completo}</p>
+                                <p class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">${s.plano || 'Sem plano'} • <span class="${statusColor}">${s.status}</span></p>
+                            </div>
+                            <span class="text-[9px] font-mono text-zinc-600 shrink-0">#${s.id}</span>
+                        </div>`;
+                    }).join('');
+
+                    resultsBox.classList.remove('hidden');
+                } catch(e) {
+                    console.error(e);
+                } finally {
+                    spinner.classList.add('hidden');
+                }
+            }, 300);
+        }
+
+        async function showStudentTrace(studentId) {
+            // Fechar dropdown
+            document.getElementById('campSearchResults').classList.add('hidden');
+            document.getElementById('campSearchInput').value = '';
+
+            const student = allStudentsCache && allStudentsCache.find(s => s.id === studentId);
+            if (!student) return;
+
+            // Preencher card
+            const initials = student.nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('traceAvatar').textContent = initials;
+            document.getElementById('traceName').textContent = student.nome_completo;
+            document.getElementById('traceId').textContent = `ID: ${student.id} • CPF: ${student.cpf || 'N/A'} • Tel: ${student.telefone || 'N/A'}`;
+            document.getElementById('tracePlan').textContent = student.plano || '—';
+
+            const statusEl = document.getElementById('traceStatus');
+            const statusColors = { 'Ativo': 'text-emerald-400', 'Em Risco': 'text-red-400', 'Inativo': 'text-zinc-400', 'Experimental': 'text-yellow-400' };
+            statusEl.textContent = student.status;
+            statusEl.className = `text-sm font-black italic mt-1 ${statusColors[student.status] || 'text-white'}`;
+
+            document.getElementById('traceScore').textContent = `${student.score_ia || 0}%`;
+
+            const finEl = document.getElementById('traceFinancial');
+            finEl.textContent = student.situacao_financeira || '—';
+            finEl.className = `text-sm font-black italic mt-1 ${student.situacao_financeira === 'inadimplente' ? 'text-red-400' : 'text-emerald-400'}`;
+
+            // Montar timeline de campanhas simulada com base no status
+            const campaigns = [];
+            if (student.data_matricula) {
+                campaigns.push({ icon: 'how_to_reg', color: 'text-emerald-400', label: 'Matriculado na Academia', date: new Date(student.data_matricula).toLocaleDateString('pt-BR') });
+            }
+            if (student.status === 'Em Risco' || (student.score_ia && student.score_ia < 60)) {
+                campaigns.push({ icon: 'campaign', color: 'text-yellow-400', label: 'Incluído: Campanha Recuperação Verão 2026', date: 'Automático IA' });
+            }
+            if (student.status === 'Ativo' && student.score_ia >= 80) {
+                campaigns.push({ icon: 'star', color: 'text-primary', label: 'Elegível: Campanha Upgrade VIP Premium', date: 'Score IA > 80%' });
+            }
+            if (student.situacao_financeira === 'inadimplente') {
+                campaigns.push({ icon: 'payments', color: 'text-red-400', label: 'Alerta: Régua de Cobrança Ativa', date: 'Situação Financeira' });
+            }
+            if (campaigns.length === 0) {
+                campaigns.push({ icon: 'info', color: 'text-zinc-500', label: 'Sem histórico de campanhas registrado', date: '—' });
+            }
+
+            document.getElementById('traceTimeline').innerHTML = campaigns.map(c => `
+                <div class="flex items-center gap-3 p-2.5 bg-black/30 rounded-lg border border-white/5">
+                    <span class="material-symbols-outlined ${c.color} text-[16px] shrink-0">${c.icon}</span>
+                    <p class="text-[11px] font-black text-white uppercase italic font-headline flex-1">${c.label}</p>
+                    <span class="text-[9px] font-mono text-zinc-500 shrink-0">${c.date}</span>
                 </div>
             `).join('');
+
+            document.getElementById('studentTraceCard').classList.remove('hidden');
+            document.getElementById('studentTraceCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#campSearchInput') && !e.target.closest('#campSearchResults')) {
+                document.getElementById('campSearchResults').classList.add('hidden');
+            }
+        });
     </script>
 </body>
-
 </html>

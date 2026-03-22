@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PlayFitness | Configurações</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <!-- API & Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="playfitness-api.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ef4444",
+                        "surface-dim": "#0a0a0a",
+                        "background": "#0a0a0a",
+                        "surface-container": "#161616",
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend"],
+                        "body": ["Plus Jakarta Sans"],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; overflow: hidden; }
+        .font-headline { font-family: 'Lexend', sans-serif; }
+        .glass-card { background: rgba(26, 25, 25, 0.4); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+    </style>
+</head>
+
+<body class="bg-background text-on-background antialiased flex h-screen">
+    <!-- SideNavBar -->
+    <nav class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-50 hidden md:flex shrink-0">
+        <div class="px-8 mb-12">
+            <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+            <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+        </div>
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Visão Geral</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="membros.html">
+                <span class="material-symbols-outlined">group</span>
+                <span>Alunos</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Financeiro</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
+                <span class="material-symbols-outlined">campaign</span>
+                <span>Campanhas</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="configuracoes.html">
+                <span class="material-symbols-outlined">settings</span>
+                <span>Configurações</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+        <header class="flex justify-between items-center h-20 px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-2 flex-1">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-xs italic">Painel de Administração Global</span>
+            </div>
+            <button onclick="saveAllConfigs()" class="bg-primary text-white font-headline text-[10px] font-black uppercase tracking-widest px-8 py-3 rounded-full hover:bg-red-600 transition-all shadow-lg shadow-primary/20">
+                Salvar Alterações
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto px-10 py-10 custom-scrollbar">
+            <h2 class="text-5xl font-black text-white font-headline tracking-tighter leading-none mb-10 italic">Configurações <span class="text-primary italic tracking-tight">Globais</span></h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Branding Card -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
+                    <div>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-4 font-headline italic">Branding & Identidade</h4>
+                        <div class="space-y-4">
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nome da Academia</label>
+                                <input id="confName" title="Nome oficial da academia" placeholder="Ex: Gaia Academia" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Slogan Estratégico</label>
+                                <input id="confSlogan" title="Slogan da marca" placeholder="Ex: Treino Inteligente" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor Primária</label>
+                                    <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4">
+                                        <input type="color" id="confColor" title="Escolher cor tema" class="w-10 h-10 border-none bg-transparent cursor-pointer rounded-lg">
+                                        <span id="colorHex" class="text-xs font-black italic">#EF4444</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Tamanho da Logo (px)</label>
+                                    <input type="number" id="confLogoSize" title="Altura da logo em pixels" placeholder="40" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Card -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
+                    <div>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-4 font-headline italic">Acesso do Administrador</h4>
+                        <div class="space-y-4">
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">E-mail de Login</label>
+                                <input id="confAdminEmail" title="E-mail de acesso master" placeholder="admin@exemplo.com" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nova Senha</label>
+                                <input type="password" id="confAdminPass" title="Mudar senha do administrador" placeholder="••••••••" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black">
+                            </div>
+                            <p class="text-[9px] text-zinc-600 italic leading-relaxed">* Note: Deixe a senha em branco se não quiser mudá-la.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Management Card -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                             <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 font-headline italic">Catálogo de Planos & Assinaturas</h4>
+                             <p class="text-[10px] text-zinc-400 mt-1">Gerencie os valores e durações das mensalidades</p>
+                        </div>
+                        <button onclick="openPlanModal()" class="bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest px-6 py-3 rounded-full hover:bg-white/10 transition-all">Novo Plano</button>
+                    </div>
+
+                    <div id="plansList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Plans will load here -->
+                    </div>
+                </div>
+
+                <!-- Students Policy Card -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                         <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 font-headline italic">Políticas de Segurança do Aluno</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-black/20 p-6 rounded-3xl border border-white/5 font-headline">
+                             <p class="text-xs font-black text-white italic mb-2">Segurança de Senha</p>
+                             <p class="text-[10px] text-zinc-500 mb-4">A senha padrão para novos alunos é "123456". Eles podem alterar no primeiro acesso via App Aluno.</p>
+                             <button onclick="resetAllStudentPasswords()" class="text-[10px] font-black text-primary uppercase tracking-widest border border-primary/30 px-6 py-3 rounded-full hover:bg-primary/10 transition-all">Redefinir Todas as Senhas para Padrão</button>
+                        </div>
+                        <div class="bg-black/20 p-6 rounded-3xl border border-white/5 font-headline">
+                             <p class="text-xs font-black text-white italic mb-2">Bloqueio Preventivo</p>
+                             <p class="text-[10px] text-zinc-500 mb-4">Alunos inadimplentes são bloqueados automaticamente na catraca física.</p>
+                             <div class="flex items-center gap-4">
+                                 <button onclick="bulkStatusUpdate('Inativo')" class="bg-zinc-800 text-white font-black text-[9px] uppercase tracking-widest px-6 py-3 rounded-full hover:bg-zinc-700 transition-all">Bloquear Todos Inativos</button>
+                                 <button onclick="bulkStatusUpdate('Ativo')" class="border border-white/10 text-white font-black text-[9px] uppercase tracking-widest px-6 py-3 rounded-full hover:bg-white/5 transition-all">Ativar Todos Verificados</button>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Plan Editor Modal -->
+    <div id="planModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-surface-container-low w-full max-w-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+            <h3 id="planModalTitle" class="text-2xl font-black text-white italic font-headline tracking-tighter mb-6">Novo Plano</h3>
+            <input type="hidden" id="planId">
+            <div class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nome do Plano</label>
+                    <input id="planName" title="Ex: VIP Premium" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Valor Mensal (R$)</label>
+                        <input type="number" step="0.01" id="planValue" title="Ex: 99.90" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Duração (Meses)</label>
+                        <input type="number" id="planDuration" title="Ex: 12" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-8">
+                    <button onclick="closePlanModal()" class="text-zinc-500 font-black text-[10px] uppercase px-6">Cancelar</button>
+                    <button onclick="savePlan()" class="bg-primary text-white font-black text-[10px] uppercase px-8 py-3 rounded-full shadow-lg shadow-primary/20">Salvar Plano</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', initConfigPage);
+
+        let currentConfigId = null;
+
+        async function initConfigPage() {
+            try {
+                const config = await PlayFitnessAPI.utils.getGymConfig();
+                currentConfigId = config.id;
+                
+                // Update UI Labels
+                document.getElementById('sidebarGymName').textContent = config.nome_academia;
+                document.getElementById('sidebarGymSlogan').textContent = config.slogan;
+                
+                // Fill Inputs
+                document.getElementById('confName').value = config.nome_academia;
+                document.getElementById('confSlogan').value = config.slogan;
+                document.getElementById('confColor').value = config.cor_primaria || '#ef4444';
+                document.getElementById('colorHex').textContent = (config.cor_primaria || '#ef4444').toUpperCase();
+                document.getElementById('confLogoSize').value = config.logo_altura || 40;
+
+                // Load Admin Info
+                const { data: admin } = await window.supabaseClient.from('usuarios_administrativos').select('email').limit(1).single();
+                if(admin) document.getElementById('confAdminEmail').value = admin.email;
+
+                // Sync color input to hex label
+                document.getElementById('confColor').addEventListener('input', (e) => {
+                    document.getElementById('colorHex').textContent = e.target.value.toUpperCase();
+                });
+
+                loadPlans();
+
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadPlans() {
+            try {
+                const plans = await PlayFitnessAPI.plans.list();
+                const container = document.getElementById('plansList');
+                container.innerHTML = '';
+                
+                plans.forEach(p => {
+                    container.innerHTML += `
+                        <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl hover:border-primary/30 transition-all group">
+                             <div class="flex justify-between items-start mb-4">
+                                 <span class="text-[8px] font-black bg-white/5 px-2 py-1 rounded text-zinc-500 uppercase tracking-tighter">ID: ${p.id.substring(0,6)}</span>
+                                 <button onclick="deletePlan('${p.id}')" class="text-zinc-700 hover:text-primary transition-colors">
+                                     <span class="material-symbols-outlined text-sm">delete</span>
+                                 </button>
+                             </div>
+                             <h5 class="text-lg font-black text-white italic font-headline">${p.nome}</h5>
+                             <p class="text-2xl font-black text-primary mt-1">R$ ${p.valor}</p>
+                             <p class="text-[9px] font-black text-zinc-500 uppercase tracking-widest mt-4">Duração: ${p.duracao_meses} Meses</p>
+                             <button onclick='openPlanModal(${JSON.stringify(p)})' class="w-full mt-6 py-3 border border-white/5 rounded-xl text-[9px] font-black uppercase text-zinc-400 group-hover:text-white group-hover:border-white/10 transition-all italic">Editar Definições</button>
+                        </div>
+                    `;
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        function openPlanModal(plan = null) {
+            const modal = document.getElementById('planModal');
+            document.getElementById('planModalTitle').textContent = plan ? 'Editar Plano' : 'Novo Plano';
+            document.getElementById('planId').value = plan ? plan.id : '';
+            document.getElementById('planName').value = plan ? plan.nome : '';
+            document.getElementById('planValue').value = plan ? plan.valor : '';
+            document.getElementById('planDuration').value = plan ? plan.duracao_meses : '';
+            modal.classList.remove('hidden');
+        }
+
+        function closePlanModal() {
+            document.getElementById('planModal').classList.add('hidden');
+        }
+
+        async function savePlan() {
+            try {
+                const id = document.getElementById('planId').value;
+                const payload = {
+                    nome: document.getElementById('planName').value,
+                    valor: parseFloat(document.getElementById('planValue').value),
+                    duracao_meses: parseInt(document.getElementById('planDuration').value),
+                    ativo: true
+                };
+
+                await PlayFitnessAPI.plans.save(id || null, payload);
+                PlayFitnessUI.toast('Plano Armazenado!', 'check_circle');
+                closePlanModal();
+                loadPlans();
+            } catch (err) {
+                PlayFitnessUI.toast('Erro ao salvar plano', 'error');
+            }
+        }
+
+        async function deletePlan(id) {
+            if(!confirm('Deseja realmente remover este plano?')) return;
+            try {
+                await PlayFitnessAPI.plans.delete(id);
+                PlayFitnessUI.toast('Plano Removido', 'delete');
+                loadPlans();
+            } catch (e) {
+                PlayFitnessUI.toast('Erro ao excluir', 'error');
+            }
+        }
+
+        async function saveAllConfigs() {
+            try {
+                const name = document.getElementById('confName').value;
+                const slogan = document.getElementById('confSlogan').value;
+                const color = document.getElementById('confColor').value;
+                const logoSize = parseInt(document.getElementById('confLogoSize').value);
+
+                // Update Branding
+                await window.supabaseClient.from('configuracoes').update({
+                    nome_academia: name,
+                    slogan: slogan,
+                    cor_primaria: color,
+                    logo_altura: logoSize
+                }).eq('id', currentConfigId);
+
+                // Update Admin Email
+                const newEmail = document.getElementById('confAdminEmail').value;
+                const newPass = document.getElementById('confAdminPass').value;
+                
+                const adminUpdate = { email: newEmail };
+                if(newPass) adminUpdate.senha = newPass;
+
+                await window.supabaseClient.from('usuarios_administrativos').update(adminUpdate).neq('id', '00000000-0000-0000-0000-000000000000');
+
+                PlayFitnessUI.toast('Configurações Salvas!', 'check_circle');
+                setTimeout(() => location.reload(), 1000);
+            } catch (err) {
+                console.error(err);
+                PlayFitnessUI.toast('Erro ao salvar', 'error');
+            }
+        }
+
+        async function resetAllStudentPasswords() {
+            if(!confirm('Deseja realmente redefinir a senha de TODOS os 600 alunos para "123456"?')) return;
+            try {
+                await window.supabaseClient.from('alunos').update({ senha: '123456' }).neq('id', 0);
+                PlayFitnessUI.toast('Senhas Redefinidas!', 'verified');
+            } catch (e) {
+                PlayFitnessUI.toast('Erro na redefinição', 'error');
+            }
+        }
+
+        async function bulkStatusUpdate(newStatus) {
+            try {
+                const query = window.supabaseClient.from('alunos').update({ status: newStatus });
+                if(newStatus === 'Inativo') {
+                    await query.eq('situacao_financeira', 'inadimplente');
+                    PlayFitnessUI.toast('Inadimplentes Bloqueados!', 'block');
+                } else {
+                    await query.eq('situacao_financeira', 'em dia');
+                    PlayFitnessUI.toast('Verificados Ativados!', 'verified');
+                }
+            } catch (e) {
+                 PlayFitnessUI.toast('Erro na atualização em massa', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
