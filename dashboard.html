@@ -59,15 +59,26 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
     </style>
 </head>
 
 <body class="bg-background text-on-background antialiased flex h-screen">
-    <!-- SideNavBar -->
-    <nav class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-50 hidden md:flex shrink-0">
-        <div class="px-8 mb-12">
-            <h1 id="gymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
-            <p id="gymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+    <!-- SideNavBar (Desktop & Mobile) -->
+    <nav id="sidebarNav" class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-[60] 
+        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:flex shrink-0">
+        <div class="px-8 mb-12 flex justify-between items-center">
+            <div>
+                <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+                <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+            </div>
+            <!-- Close button only on mobile -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
         <div class="flex flex-col gap-2 px-4 shadow-xl">
             <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="dashboard.html">
@@ -96,24 +107,34 @@
         </div>
     </nav>
 
+    <!-- Overlay for mobile menu -->
+    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden md:hidden"></div>
+
     <!-- Main Content Wrapper -->
     <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
         <!-- TopAppBar -->
-        <header class="flex justify-between items-center h-20 px-10 w-full sticky top-0 z-40 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
-            <div class="flex items-center gap-2 flex-1">
-                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                <span class="font-headline font-black text-[#ff8f76] uppercase tracking-widest text-xs italic">PlayFitness Dashboard Ativo</span>
+        <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-3 flex-1">
+                <!-- Mobile Menu Toggle -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span class="font-headline font-black text-primary uppercase tracking-widest text-[10px] md:text-xs italic truncate">PlayFitness Dashboard</span>
+                </div>
             </div>
-            <div class="flex items-center gap-8">
-                <button onclick="PlayFitnessUI.toast('Sincronizando Dados...', 'sync')" class="bg-primary hover:bg-primary-fixed-dim text-on-primary-fixed px-8 py-3 rounded-full font-headline text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/20">
-                    Treinar IA
+            <div class="flex items-center gap-4">
+                <button onclick="PlayFitnessUI.toast('Sincronizando Dados...', 'sync')" class="bg-primary hover:bg-red-600 text-white px-4 md:px-8 py-2 md:py-3 rounded-full font-headline text-[9px] md:text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    <span class="md:inline hidden">Treinar IA</span>
+                    <span class="md:hidden">IA</span>
                 </button>
             </div>
         </header>
 
         <!-- Page Content -->
-        <div class="flex-1 overflow-y-auto px-10 py-10 custom-scrollbar">
-            <h2 class="text-4xl font-black text-white font-headline tracking-tighter leading-none mb-10 italic">Inteligência <span class="text-primary tracking-tight">Estratégica</span></h2>
+        <div class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 custom-scrollbar">
+            <h2 class="text-3xl md:text-4xl font-black text-white font-headline tracking-tighter leading-none mb-6 md:mb-10 italic">Inteligência <span class="text-primary tracking-tight">Estratégica</span></h2>
 
             <!-- KPI Row -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -122,23 +143,39 @@
                     <span class="material-symbols-outlined text-primary mb-4">group</span>
                     <h3 class="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2 font-headline italic truncate">Total de Alunos</h3>
                     <p id="totalAlunos" class="text-3xl lg:text-3xl xl:text-4xl font-black font-headline tracking-tighter truncate">00</p>
+                    <p id="totalAlunosDiff" class="text-[8px] font-black uppercase tracking-widest mt-2 flex items-center gap-1 text-zinc-500">
+                        <span class="material-symbols-outlined text-[12px]">trending_up</span>
+                        <span>--% vs ano ant.</span>
+                    </p>
                 </div>
                 <div class="bg-surface-container-low p-5 rounded-[1.2rem] border border-white/5 relative overflow-hidden group">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all"></div>
                     <span class="material-symbols-outlined text-emerald-500 mb-4">verified</span>
                     <h3 class="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2 font-headline italic truncate">Saúde Média (Retenção)</h3>
                     <p id="avgScore" class="text-3xl lg:text-3xl xl:text-4xl font-black font-headline tracking-tighter text-emerald-500 truncate">00%</p>
+                    <p id="avgScoreDiff" class="text-[8px] font-black uppercase tracking-widest mt-2 flex items-center gap-1 text-zinc-500">
+                        <span class="material-symbols-outlined text-[12px]">trending_up</span>
+                        <span>--% vs ano ant.</span>
+                    </p>
                 </div>
                 <div class="bg-surface-container-low p-5 rounded-[1.2rem] border border-white/5 relative overflow-hidden group">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-error/5 rounded-full blur-2xl group-hover:bg-error/10 transition-all"></div>
                     <span class="material-symbols-outlined text-error mb-4">trending_down</span>
                     <h3 class="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2 font-headline italic truncate">Taxa de Cancelamentos</h3>
                     <p id="churnRate" class="text-3xl lg:text-3xl xl:text-4xl font-black font-headline tracking-tighter text-error truncate">00%</p>
+                    <p id="churnRateDiff" class="text-[8px] font-black uppercase tracking-widest mt-2 flex items-center gap-1 text-zinc-500">
+                        <span class="material-symbols-outlined text-[12px]">trending_down</span>
+                        <span>--% vs ano ant.</span>
+                    </p>
                 </div>
                 <div class="bg-surface-container-low p-5 rounded-[1.2rem] border border-white/5 relative overflow-hidden group border-primary/20 bg-primary/5">
                     <span class="material-symbols-outlined text-primary mb-4">payments</span>
                     <h3 class="text-[10px] font-black text-primary/60 uppercase tracking-[0.2em] mb-2 font-headline italic truncate">Receita Projetada</h3>
                     <p id="revenue" class="text-2xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-black font-headline tracking-tighter text-primary truncate">R$ 0,00</p>
+                    <p id="revenueDiff" class="text-[8px] font-black uppercase tracking-widest mt-2 flex items-center gap-1 text-zinc-500">
+                        <span class="material-symbols-outlined text-[12px]">trending_up</span>
+                        <span>--% vs ano ant.</span>
+                    </p>
                 </div>
             </div>
 
@@ -224,21 +261,47 @@
     <script>
         document.addEventListener('DOMContentLoaded', initializeDashboard);
 
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebarNav');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
         async function initializeDashboard() {
             try {
                 const config = await PlayFitnessAPI.utils.getGymConfig();
-                document.getElementById('gymName').textContent = config.nome_academia;
-                document.getElementById('gymSlogan').textContent = config.slogan;
+                const gymNameEl = document.getElementById('sidebarGymName');
+                const gymSloganEl = document.getElementById('sidebarGymSlogan');
+                
+                if (gymNameEl) gymNameEl.textContent = config.nome_academia || 'PlayFitness';
+                if (gymSloganEl) gymSloganEl.textContent = config.slogan || 'Central de Inteligência';
                 
                 const overview = await PlayFitnessAPI.kpis.getOverview();
                 const ranking = await PlayFitnessAPI.students.getReferralRanking();
                 const students = await PlayFitnessAPI.students.list();
 
                 // Populate KPIs
-                document.getElementById('totalAlunos').textContent = overview.total.toString().padStart(2, '0');
-                document.getElementById('avgScore').textContent = `${overview.avgScore}%`;
-                document.getElementById('churnRate').textContent = `${overview.churnRate}%`;
-                document.getElementById('revenue').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(overview.revenue);
+                if (document.getElementById('totalAlunos')) document.getElementById('totalAlunos').textContent = overview.total.toString().padStart(2, '0');
+                if (document.getElementById('avgScore')) document.getElementById('avgScore').textContent = `${overview.avgScore}%`;
+                if (document.getElementById('churnRate')) document.getElementById('churnRate').textContent = `${overview.churnRate}%`;
+                if (document.getElementById('revenue')) document.getElementById('revenue').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(overview.revenue);
+
+                // Populate Comparison Diffs
+                const setDiff = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const isPositive = val.toString().includes('+') || parseFloat(val) > 0;
+                    const colorClass = isPositive ? 'text-emerald-500' : 'text-error';
+                    const icon = isPositive ? 'trending_up' : 'trending_down';
+                    el.className = `text-[8px] font-black uppercase tracking-widest mt-2 flex items-center gap-1 ${colorClass}`;
+                    el.innerHTML = `<span class="material-symbols-outlined text-[12px]">${icon}</span><span>${val}% vs ano ant.</span>`;
+                };
+
+                setDiff('totalAlunosDiff', overview.totalDiff);
+                setDiff('avgScoreDiff', overview.avgScoreDiff);
+                setDiff('churnRateDiff', overview.churnRateDiff); 
+                setDiff('revenueDiff', overview.revenueDiff);
 
                 // Ambassador List
                 const ambList = document.getElementById('ambassadorList');

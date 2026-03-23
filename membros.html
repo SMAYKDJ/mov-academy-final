@@ -70,11 +70,18 @@
 </head>
 
 <body class="bg-background text-on-background antialiased flex h-screen">
-    <!-- SideNavBar -->
-    <nav class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-50 hidden md:flex shrink-0">
-        <div class="px-8 mb-12">
-            <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
-            <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+    <!-- SideNavBar (Desktop & Mobile) -->
+    <nav id="sidebarNav" class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-[60] 
+        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:flex shrink-0">
+        <div class="px-8 mb-12 flex justify-between items-center">
+            <div>
+                <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+                <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+            </div>
+            <!-- Close button only on mobile -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
         <div class="flex flex-col gap-2 px-4 shadow-xl">
             <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
@@ -103,38 +110,40 @@
         </div>
     </nav>
 
+    <!-- Overlay for mobile menu -->
+    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden md:hidden"></div>
+
     <!-- Main Content Wrapper -->
     <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
         <!-- TopAppBar -->
-        <header class="flex justify-between items-center h-20 px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
-            <div class="flex items-center gap-2 flex-1">
-                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-xs italic">PlayFitness — Roster Ativo</span>
+        <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-3 flex-1">
+                <!-- Mobile Menu Toggle -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-[10px] md:text-xs italic truncate">PlayFitness — Alunos</span>
+                </div>
             </div>
             
-            <div class="flex items-center gap-6">
-                <!-- Barra de Pesquisa -->
-                <div class="relative w-64 lg:w-96">
+            <div class="flex items-center gap-3 md:gap-6">
+                <!-- Barra de Pesquisa (Hidden on very small screens) -->
+                <div class="relative hidden sm:block w-32 md:w-64 lg:w-96">
                     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">search</span>
-                    <input id="searchInput" oninput="filterMembers()" class="w-full bg-[#1a1919] border-none text-[10px] py-2.5 pl-10 pr-4 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest" placeholder="PESQUISAR ATLETAS..." type="text"/>
+                    <input id="searchInput" oninput="filterMembers()" class="w-full bg-[#1a1919] border-none text-[10px] py-2 pl-10 pr-4 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest" placeholder="BUSCAR..." type="text"/>
                 </div>
 
-                <div class="flex items-center gap-4 border-l border-white/10 pl-6">
-                    <button onclick="PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-5 py-2.5 rounded-full font-headline text-xs font-black uppercase tracking-widest active:scale-95 transition-all outline-none">
+                <div class="flex items-center gap-2 md:gap-4 border-l border-white/10 pl-3 md:pl-6">
+                    <button onclick="PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')" title="Exportar CSV" class="flex items-center justify-center w-9 h-9 md:w-auto md:px-5 md:py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full font-headline text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all outline-none">
                         <span class="material-symbols-outlined text-[16px]">download</span>
-                        Exportar Alunos
+                        <span class="hidden md:inline ml-2">Exportar</span>
                     </button>
-                    <button onclick="openModal('add')" class="flex items-center gap-2 bg-primary hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-headline text-xs font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30">
+                    <button onclick="openModal('add')" title="Novo Aluno" class="flex items-center justify-center w-9 h-9 md:w-auto md:px-5 md:py-2.5 bg-primary hover:bg-red-600 text-white rounded-full font-headline text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30">
                         <span class="material-symbols-outlined text-[16px]">person_add</span>
-                        Novo Aluno
+                        <span class="hidden md:inline ml-2">Novo</span>
                     </button>
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-black text-[10px] text-white cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all">SM</div>
-                        <div class="hidden sm:block">
-                            <p class="text-xs font-black uppercase italic text-white font-headline leading-none">SMAYK TR</p>
-                            <p class="text-[9px] text-zinc-500 uppercase tracking-widest">Gestor Master</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </header>
@@ -406,7 +415,7 @@
                 const config = await PlayFitnessAPI.utils.getGymConfig();
                 document.getElementById('sidebarGymName').textContent = config.nome_academia;
                 document.getElementById('sidebarGymSlogan').textContent = config.slogan;
-                document.getElementById('pageTitle').textContent = `${config.nome_academia} — Roster Ativo`;
+                document.getElementById('pageTitle').textContent = `${config.nome_academia} — Alunos`;
 
                 allMembers = await PlayFitnessAPI.students.list();
                 renderMembers();
@@ -416,6 +425,13 @@
                 console.error(err);
                 PlayFitnessUI.toast('Erro na Sincronização', 'error');
             }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebarNav');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
         }
 
         function setFilter(filter) {
