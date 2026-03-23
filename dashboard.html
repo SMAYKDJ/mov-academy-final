@@ -291,10 +291,10 @@
                 const setDiff = (id, val) => {
                     const el = document.getElementById(id);
                     if (!el) return;
-                    const numVal = parseFloat(val);
-                    const isPositive = val.toString().includes('+') || numVal > 0;
-                    const colorClass = isPositive ? 'text-emerald-500' : 'text-[#ef4444]';
-                    const icon = isPositive ? 'trending_up' : 'trending_down';
+                    const isNeg = val.toString().includes('-');
+                    const colorClass = isNeg ? 'text-[#ef4444]' : 'text-emerald-500';
+                    const icon = isNeg ? 'trending_down' : 'trending_up';
+                    
                     el.className = `text-[8px] font-black uppercase tracking-widest mt-2 flex items-center gap-1 ${colorClass}`;
                     el.innerHTML = `<span class="material-symbols-outlined text-[12px]">${icon}</span><span>${val}% vs ano ant.</span>`;
                 };
