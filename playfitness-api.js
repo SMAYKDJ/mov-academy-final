@@ -182,20 +182,21 @@ const PlayFitnessAPI = {
                 if (!window.supabaseClient) return this.getFallbackRanking();
                 const { data, error } = await window.supabaseClient
                     .from('alunos')
-                    .select('id, indicado_por, nome_completo, status');
+                    .select('id, id_indicacao, nome_completo, status');
                 if (error) throw error;
 
                 const counts = {};
                 data.forEach(m => {
-                    if (m.indicado_por) {
-                        const name = m.indicado_por;
-                        counts[name] = (counts[name] || 0) + 1;
+                    if (m.id_indicacao) {
+                        const refId = m.id_indicacao;
+                        counts[refId] = (counts[refId] || 0) + 1;
                     }
                 });
 
                 const ranking = await Promise.all(Object.entries(counts)
-                    .map(async ([name, count]) => {
-                        const member = data.find(m => m.nome_completo === name);
+                    .map(async ([refId, count]) => {
+                        const member = data.find(m => m.id.toString() === refId.toString());
+                        const name = member ? member.nome_completo : `ID: ${refId}`;
                         const fidelity = member ? await PlayFitnessAPI.students.getFidelityScore(member.id) : 85;
                         return {
                             name: name,
@@ -207,6 +208,7 @@ const PlayFitnessAPI = {
 
                 return ranking.sort((a, b) => b.count - a.count);
             } catch (e) {
+                console.error("Referral ranking failed:", e);
                 return this.getFallbackRanking();
             }
         },
@@ -512,7 +514,64 @@ const PlayFitnessAPI = {
            // Aplica a cor tema globalmente se especificada
            if(config.cor_primaria) PlayFitnessAPI.utils.applyTheme(config.cor_primaria);
            
+           // Aplica tamanhos de fonte
+           PlayFitnessAPI.utils.applyFontSizes(PlayFitnessAPI.utils.getFontSizes());
+
+           // NOVO: Aplica White-Label Branding (Logo)
+           PlayFitnessUI.applyBranding(config);
+
+           // NOVO: Ativa barra de notificações inteligentes
+           PlayFitnessUI.initNotifications();
+           
            return config;
+        },
+
+        getFontSizes() {
+            const defaults = { headline: 1, body: 1, label: 1, sidebar: 1 };
+            try {
+                const stored = localStorage.getItem('playfitness_font_sizes');
+                return stored ? { ...defaults, ...JSON.parse(stored) } : defaults;
+            } catch (e) { return defaults; }
+        },
+
+        applyFontSizes(sizes) {
+            let style = document.getElementById('playfitness-fonts-theme');
+            if (!style) {
+                style = document.createElement('style');
+                style.id = 'playfitness-fonts-theme';
+                document.head.appendChild(style);
+            }
+
+            style.innerHTML = `
+                :root {
+                    --pf-scale-headline: ${sizes.headline};
+                    --pf-scale-body: ${sizes.body};
+                    --pf-scale-label: ${sizes.label};
+                    --pf-scale-sidebar: ${sizes.sidebar};
+                }
+
+                /* Headlines & Titles (Scaling based on usual sizes) */
+                .font-headline, h1, h2, h3, .text-3xl, .text-4xl, .text-2xl, .text-5xl { 
+                    font-size: calc(1.5rem * var(--pf-scale-headline)) !important; 
+                }
+                .text-xl { font-size: calc(1.25rem * var(--pf-scale-headline)) !important; }
+                .text-lg { font-size: calc(1.125rem * var(--pf-scale-headline)) !important; }
+
+                /* Body Text */
+                body, p, .text-sm, .text-base { 
+                    font-size: calc(1rem * var(--pf-scale-body)) !important; 
+                }
+
+                /* Small Labels & Details (Scaling based on micro sizes) */
+                .font-label, .text-xs, [class*="text-[8px]"], [class*="text-[9px]"], [class*="text-[10px]"] {
+                    font-size: calc(0.75rem * var(--pf-scale-label)) !important;
+                }
+
+                /* Sidebar / Navigation */
+                #sidebarNav a span, #sidebarNav button {
+                    font-size: calc(0.875rem * var(--pf-scale-sidebar)) !important;
+                }
+            `;
         },
 
         applyTheme(color) {
@@ -622,14 +681,19 @@ const PlayFitnessUI = {
             container.id = 'toast-container';
             document.body.appendChild(container);
         }
+        
+        // Remove existing toast if any, to avoid stacking too many
+        const existing = container.querySelectorAll('.pf-toast');
+        if (existing.length > 2) existing[0].remove();
+
         const toast = document.createElement('div');
-        toast.className = 'glass-card border border-white/10 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-fade-in fixed bottom-8 right-8 z-[1000] bg-surface/90 backdrop-blur-xl';
+        toast.className = 'pf-toast glass-card border border-white/10 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-fade-in fixed bottom-8 right-8 z-[1000] bg-surface/90 backdrop-blur-xl';
         toast.style.transform = 'translateY(100px)';
         toast.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         
         toast.innerHTML = `
             <span class="material-symbols-outlined text-primary">${iconName}</span>
-            <span class="text-sm font-bold uppercase tracking-wider">${message}</span>
+            <span class="text-sm font-bold uppercase tracking-wider text-white">${message}</span>
         `;
         container.appendChild(toast);
         setTimeout(() => toast.style.transform = 'translateY(0)', 10);
@@ -637,13 +701,188 @@ const PlayFitnessUI = {
             toast.style.opacity = '0';
             toast.style.transform = 'translateY(20px)';
             setTimeout(() => toast.remove(), 400);
-        }, 3000);
+        }, 4000);
     },
 
-    initHeader(activeLink = '') {
-        // Updated to be a no-op as the new dashboard has a hardcoded sidebar/header for better control
-        // But we keep it for potential integration on sub-pages
-        console.log('PlayFitnessUI: Header logic migrated to component-based architecture');
+    /**
+     * Initializes the White-Label branding (Logo)
+     */
+    applyBranding(config) {
+        const logoData = localStorage.getItem('playfitness_custom_logo');
+        const sideNavLogo = document.querySelector('#sidebarNav h1');
+        const sideNavSlogan = document.querySelector('#sidebarNav p');
+        const logoHeight = config.logo_altura || 40;
+        
+        if (logoData && sideNavLogo) {
+            // Replace text with image if custom logo exists
+            const img = document.createElement('img');
+            img.src = logoData;
+            img.style.height = `${logoHeight}px`;
+            img.className = 'w-auto object-contain mb-2';
+            img.alt = config.nome_academia;
+            
+            // If slogan exists, put it below
+            const container = sideNavLogo.parentElement;
+            container.innerHTML = '';
+            container.appendChild(img);
+            if (sideNavSlogan) {
+                sideNavSlogan.textContent = config.slogan || '';
+                container.appendChild(sideNavSlogan);
+            }
+        } else if (sideNavLogo) {
+            sideNavLogo.textContent = config.nome_academia || 'PlayFitness';
+            if (sideNavSlogan) sideNavSlogan.textContent = config.slogan || 'Central de Inteligência';
+        }
+    },
+
+    /**
+     * Initializes Smart Notifications Sidebar
+     */
+    async initNotifications() {
+        // 1. Inject CSS for notifications
+        if (!document.getElementById('pf-notify-styles')) {
+            const style = document.createElement('style');
+            style.id = 'pf-notify-styles';
+            style.innerHTML = `
+                #notify-sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; }
+                .notify-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid #0a0a0a; }
+                .notify-item { border-left: 3px solid transparent; transition: all 0.2s; }
+                .notify-item:hover { border-left-color: #ef4444; background: rgba(255,255,255,0.03); }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 2. Create Bell Button if not exists
+        const header = document.querySelector('header');
+        if (header && !document.getElementById('notify-bell-btn')) {
+            const bellContainer = document.createElement('div');
+            bellContainer.className = 'relative flex items-center mr-2';
+            bellContainer.innerHTML = `
+                <button id="notify-bell-btn" class="text-zinc-400 hover:text-primary transition-colors p-2 rounded-full hover:bg-white/5 relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span id="notify-badge" class="notify-dot hidden"></span>
+                </button>
+            `;
+            // Insert before the last child (usually the new/export buttons or profile)
+            header.insertBefore(bellContainer, header.lastElementChild);
+            
+            bellContainer.querySelector('button').onclick = () => this.toggleNotifications();
+        }
+
+        // 3. Create Sidebar if not exists
+        if (!document.getElementById('notify-sidebar')) {
+            const sidebar = document.createElement('div');
+            sidebar.id = 'notify-sidebar';
+            sidebar.className = 'fixed right-0 top-0 h-full w-80 bg-[#161616]/95 backdrop-blur-2xl border-l border-white/5 shadow-2xl translate-x-full flex flex-col';
+            sidebar.innerHTML = `
+                <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                    <h3 class="font-headline font-black italic uppercase text-primary tracking-tighter">Alertas Estratégicos</h3>
+                    <button onclick="PlayFitnessUI.toggleNotifications()" class="text-zinc-500 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div id="notify-content" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                    <p class="text-[10px] text-zinc-600 italic text-center py-10 uppercase tracking-widest">Analisando dados em tempo real...</p>
+                </div>
+                <div class="p-4 border-t border-white/10 bg-black/20">
+                    <button onclick="PlayFitnessUI.clearNotifications()" class="w-full py-3 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">Marcar todos como lidos</button>
+                </div>
+            `;
+            document.body.appendChild(sidebar);
+            
+            // 4. Overlay for clicking outside
+            const overlay = document.createElement('div');
+            overlay.id = 'notify-overlay';
+            overlay.className = 'fixed inset-0 bg-black/40 backdrop-blur-sm z-[190] hidden';
+            overlay.onclick = () => this.toggleNotifications();
+            document.body.appendChild(overlay);
+        }
+
+        // 5. Load automated alerts
+        this.refreshAlerts();
+    },
+
+    toggleNotifications() {
+        const sidebar = document.getElementById('notify-sidebar');
+        const overlay = document.getElementById('notify-overlay');
+        const isHidden = sidebar.classList.contains('translate-x-full');
+        
+        if (isHidden) {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+            this.refreshAlerts();
+        } else {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    },
+
+    async refreshAlerts() {
+        const container = document.getElementById('notify-content');
+        if (!container) return;
+
+        try {
+            const kpi = await PlayFitnessAPI.kpis.getOverview();
+            const students = await PlayFitnessAPI.students.list();
+            const alerts = [];
+
+            // Alert 1: Revenue vs Target (Mock target of 50k)
+            const target = 50000;
+            if (kpi.revenue < target * 0.9) {
+                alerts.push({
+                    type: 'error',
+                    icon: 'trending_down',
+                    title: 'Faturamento Abaixo da Meta',
+                    desc: `Estamos ${Math.round((1 - kpi.revenue/target)*100)}% abaixo da meta projetada para este período.`,
+                    action: () => location.href = 'financeiro.html'
+                });
+            }
+
+            // Alert 2: High Risk Students
+            const atRisk = students.filter(s => s.status === 'Em Risco').slice(0, 3);
+            if (atRisk.length > 0) {
+                alerts.push({
+                    type: 'warning',
+                    icon: 'priority_high',
+                    title: 'Risco de Churn Detectado',
+                    desc: `${atRisk.length} alunos apresentam score de retenção crítico. Recomenda-se contato imediato.`,
+                    action: () => location.href = 'membros.html'
+                });
+            }
+
+            // Alert 3: New Registrations (Always a good news)
+            alerts.push({
+                type: 'success',
+                icon: 'auto_awesome',
+                title: 'Desempenho de Vendas',
+                desc: 'A campanha "Verão 2026" converteu 5 novos alunos nas últimas 24 horas.',
+                action: () => location.href = 'campanhas.html'
+            });
+
+            // Update UI
+            if (alerts.length > 0) {
+                document.getElementById('notify-badge').classList.remove('hidden');
+                container.innerHTML = alerts.map((a, i) => `
+                    <div class="notify-item bg-white/[0.02] p-4 rounded-xl border border-white/5 cursor-pointer" onclick="(${a.action.toString()})()">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="material-symbols-outlined text-[18px] ${a.type === 'error' ? 'text-error' : a.type === 'warning' ? 'text-amber-500' : 'text-emerald-500'}">${a.icon}</span>
+                            <span class="text-[10px] font-black uppercase text-white/80">${a.title}</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-500 leading-relaxed">${a.desc}</p>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('notify-badge').classList.add('hidden');
+                container.innerHTML = '<p class="text-[10px] text-zinc-600 italic text-center py-10 uppercase tracking-widest">Nenhum alerta crítico no momento.</p>';
+            }
+
+        } catch (e) {
+            console.error("Failed to refresh alerts", e);
+        }
+    },
+
+    clearNotifications() {
+        document.getElementById('notify-badge').classList.add('hidden');
+        PlayFitnessUI.toast('Alertas marcados como lidos', 'done_all');
+        this.toggleNotifications();
     }
 };
 

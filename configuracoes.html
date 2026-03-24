@@ -110,11 +110,26 @@
             <h2 class="text-3xl md:text-5xl font-black text-white font-headline tracking-tighter leading-none mb-6 md:mb-10 italic">Configurações <span class="text-primary italic tracking-tight">Globais</span></h2>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Branding Card -->
                 <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
                     <div>
-                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-4 font-headline italic">Branding & Identidade</h4>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-4 font-headline italic">Branding & Identidade (White-Label)</h4>
                         <div class="space-y-4">
+                            <!-- Logo Upload -->
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Logo da Academia (PNG/JPG)</label>
+                                <div class="flex items-center gap-4 bg-[#1a1919] p-4 rounded-2xl border border-white/5">
+                                    <div id="logoPreviewContainer" class="w-12 h-12 bg-black/40 rounded-lg flex items-center justify-center overflow-hidden border border-white/10 group relative">
+                                        <img id="logoPreview" src="" alt="Preview" class="max-w-full max-h-full object-contain hidden">
+                                        <span id="logoPlaceholder" class="material-symbols-outlined text-zinc-700">fitbit</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" id="logoUpload" accept="image/*" class="hidden" onchange="handleLogoUpload(event)" title="Selecionar logo da academia">
+                                        <button onclick="document.getElementById('logoUpload').click()" class="text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20 px-4 py-2 rounded-full hover:bg-primary/20 transition-all italic">Escolher Imagem</button>
+                                        <button onclick="removeLogo()" id="btnRemoveLogo" class="hidden text-[9px] font-black uppercase text-zinc-600 px-4 py-2 hover:text-error transition-all italic ml-2">Remover</button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="space-y-1">
                                 <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nome da Academia</label>
                                 <input id="confName" title="Nome oficial da academia" placeholder="Ex: Gaia Academia" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
@@ -126,7 +141,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-1">
                                     <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor Primária</label>
-                                    <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4">
+                                    <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4 border border-white/5">
                                         <input type="color" id="confColor" title="Escolher cor tema" class="w-10 h-10 border-none bg-transparent cursor-pointer rounded-lg">
                                         <span id="colorHex" class="text-xs font-black italic">#EF4444</span>
                                     </div>
@@ -135,6 +150,46 @@
                                     <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Tamanho da Logo (px)</label>
                                     <input type="number" id="confLogoSize" title="Altura da logo em pixels" placeholder="40" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Font Size Adjustment Card (Added) -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 font-headline italic">Acessibilidade: Tamanhos de Fonte</h4>
+                            <button onclick="resetFontSizes()" class="text-[9px] font-black text-primary uppercase tracking-widest border border-primary/20 px-3 py-1 rounded-full hover:bg-primary/5 transition-all">Resetar para Padrão</button>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Títulos e Destaques (Headlines)</label>
+                                    <span id="labelScaleHeadline" class="text-[10px] font-black text-primary">100%</span>
+                                </div>
+                                <input type="range" id="sizeHeadline" title="Ajustar tamanho dos títulos" min="0.5" max="2" step="0.1" value="1" class="w-full accent-primary bg-zinc-800 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Textos de Conteúdo (Corpo)</label>
+                                    <span id="labelScaleBody" class="text-[10px] font-black text-primary">100%</span>
+                                </div>
+                                <input type="range" id="sizeBody" title="Ajustar tamanho do corpo de texto" min="0.5" max="2" step="0.1" value="1" class="w-full accent-primary bg-zinc-800 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Rótulos e Detalhes Micro</label>
+                                    <span id="labelScaleLabel" class="text-[10px] font-black text-primary">100%</span>
+                                </div>
+                                <input type="range" id="sizeLabel" title="Ajustar tamanho de rótulos e textos pequenos" min="0.5" max="2" step="0.1" value="1" class="w-full accent-primary bg-zinc-800 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Menus e Navegação</label>
+                                    <span id="labelScaleSidebar" class="text-[10px] font-black text-primary">100%</span>
+                                </div>
+                                <input type="range" id="sizeSidebar" title="Ajustar tamanho do menu lateral" min="0.5" max="2" step="0.1" value="1" class="w-full accent-primary bg-zinc-800 rounded-lg appearance-none cursor-pointer">
                             </div>
                         </div>
                     </div>
@@ -243,10 +298,6 @@
                 const config = await PlayFitnessAPI.utils.getGymConfig();
                 currentConfigId = config.id;
                 
-                // Update UI Labels
-                document.getElementById('sidebarGymName').textContent = config.nome_academia;
-                document.getElementById('sidebarGymSlogan').textContent = config.slogan;
-                
                 // Fill Inputs
                 document.getElementById('confName').value = config.nome_academia;
                 document.getElementById('confSlogan').value = config.slogan;
@@ -254,13 +305,46 @@
                 document.getElementById('colorHex').textContent = (config.cor_primaria || '#ef4444').toUpperCase();
                 document.getElementById('confLogoSize').value = config.logo_altura || 40;
 
-                // Load Admin Info
                 const { data: admin } = await window.supabaseClient.from('usuarios_administrativos').select('email').limit(1).single();
                 if(admin) document.getElementById('confAdminEmail').value = admin.email;
+
+                // Load Logo Preview
+                const customLogo = localStorage.getItem('playfitness_custom_logo');
+                if (customLogo) {
+                    const img = document.getElementById('logoPreview');
+                    img.src = customLogo;
+                    img.classList.remove('hidden');
+                    document.getElementById('logoPlaceholder').classList.add('hidden');
+                    document.getElementById('btnRemoveLogo').classList.remove('hidden');
+                }
 
                 // Sync color input to hex label
                 document.getElementById('confColor').addEventListener('input', (e) => {
                     document.getElementById('colorHex').textContent = e.target.value.toUpperCase();
+                });
+
+                // Load and Apply Font Sizes
+                const fontSizes = PlayFitnessAPI.utils.getFontSizes();
+                document.getElementById('sizeHeadline').value = fontSizes.headline;
+                document.getElementById('sizeBody').value = fontSizes.body;
+                document.getElementById('sizeLabel').value = fontSizes.label;
+                document.getElementById('sizeSidebar').value = fontSizes.sidebar;
+
+                updateFontSizeLabels();
+
+                // Listen for font changes (real-time preview)
+                ['Headline', 'Body', 'Label', 'Sidebar'].forEach(key => {
+                    const el = document.getElementById(`size${key}`);
+                    el.addEventListener('input', () => {
+                        const sizes = {
+                            headline: document.getElementById('sizeHeadline').value,
+                            body: document.getElementById('sizeBody').value,
+                            label: document.getElementById('sizeLabel').value,
+                            sidebar: document.getElementById('sizeSidebar').value
+                        };
+                        PlayFitnessAPI.utils.applyFontSizes(sizes);
+                        updateFontSizeLabels();
+                    });
                 });
 
                 loadPlans();
@@ -344,13 +428,20 @@
                 const color = document.getElementById('confColor').value;
                 const logoSize = parseInt(document.getElementById('confLogoSize').value);
 
-                // Update Branding
+                // Update Branding in Supabase
                 await window.supabaseClient.from('configuracoes').update({
                     nome_academia: name,
                     slogan: slogan,
                     cor_primaria: color,
                     logo_altura: logoSize
                 }).eq('id', currentConfigId);
+
+                // NOVO: Persistência do Logo Customizado (White-Label)
+                if (window.tempCustomLogo === "REMOVE") {
+                    localStorage.removeItem('playfitness_custom_logo');
+                } else if (window.tempCustomLogo) {
+                    localStorage.setItem('playfitness_custom_logo', window.tempCustomLogo);
+                }
 
                 // Update Admin Email
                 const newEmail = document.getElementById('confAdminEmail').value;
@@ -361,12 +452,70 @@
 
                 await window.supabaseClient.from('usuarios_administrativos').update(adminUpdate).neq('id', '00000000-0000-0000-0000-000000000000');
 
+                // Save Font Sizes
+                const fontSizes = {
+                    headline: document.getElementById('sizeHeadline').value,
+                    body: document.getElementById('sizeBody').value,
+                    label: document.getElementById('sizeLabel').value,
+                    sidebar: document.getElementById('sizeSidebar').value
+                };
+                localStorage.setItem('playfitness_font_sizes', JSON.stringify(fontSizes));
+
                 PlayFitnessUI.toast('Configurações Salvas!', 'check_circle');
                 setTimeout(() => location.reload(), 1000);
             } catch (err) {
                 console.error(err);
                 PlayFitnessUI.toast('Erro ao salvar', 'error');
             }
+        }
+
+        function updateFontSizeLabels() {
+            if(document.getElementById('labelScaleHeadline')) document.getElementById('labelScaleHeadline').textContent = `${Math.round(document.getElementById('sizeHeadline').value * 100)}%`;
+            if(document.getElementById('labelScaleBody')) document.getElementById('labelScaleBody').textContent = `${Math.round(document.getElementById('sizeBody').value * 100)}%`;
+            if(document.getElementById('labelScaleLabel')) document.getElementById('labelScaleLabel').textContent = `${Math.round(document.getElementById('sizeLabel').value * 100)}%`;
+            if(document.getElementById('labelScaleSidebar')) document.getElementById('labelScaleSidebar').textContent = `${Math.round(document.getElementById('sizeSidebar').value * 100)}%`;
+        }
+
+        function resetFontSizes() {
+            const defaults = { headline: 1, body: 1, label: 1, sidebar: 1 };
+            document.getElementById('sizeHeadline').value = defaults.headline;
+            document.getElementById('sizeBody').value = defaults.body;
+            document.getElementById('sizeLabel').value = defaults.label;
+            document.getElementById('sizeSidebar').value = defaults.sidebar;
+            
+            PlayFitnessAPI.utils.applyFontSizes(defaults);
+            updateFontSizeLabels();
+            PlayFitnessUI.toast('Fontes resetadas para o padrão', 'refresh');
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) return PlayFitnessUI.toast('Imagem muito grande (Max 2MB)', 'warning');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target.result;
+                const img = document.getElementById('logoPreview');
+                img.src = base64;
+                img.classList.remove('hidden');
+                document.getElementById('logoPlaceholder').classList.add('hidden');
+                document.getElementById('btnRemoveLogo').classList.remove('hidden');
+                
+                // We save on "Save All" but show preview now
+                window.tempCustomLogo = base64;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeLogo() {
+            document.getElementById('logoPreview').src = "";
+            document.getElementById('logoPreview').classList.add('hidden');
+            document.getElementById('logoPlaceholder').classList.remove('hidden');
+            document.getElementById('btnRemoveLogo').classList.add('hidden');
+            document.getElementById('logoUpload').value = "";
+            window.tempCustomLogo = "REMOVE";
         }
 
         async function resetAllStudentPasswords() {

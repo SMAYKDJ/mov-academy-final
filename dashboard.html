@@ -271,11 +271,6 @@
         async function initializeDashboard() {
             try {
                 const config = await PlayFitnessAPI.utils.getGymConfig();
-                const gymNameEl = document.getElementById('sidebarGymName');
-                const gymSloganEl = document.getElementById('sidebarGymSlogan');
-                
-                if (gymNameEl) gymNameEl.textContent = config.nome_academia || 'PlayFitness';
-                if (gymSloganEl) gymSloganEl.textContent = config.slogan || 'Central de Inteligência';
                 
                 const overview = await PlayFitnessAPI.kpis.getOverview();
                 const ranking = await PlayFitnessAPI.students.getReferralRanking();

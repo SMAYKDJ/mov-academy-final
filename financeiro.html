@@ -215,8 +215,6 @@
         async function initializeFinance() {
             try {
                 const config = await PlayFitnessAPI.utils.getGymConfig();
-                document.getElementById('sidebarGymName').textContent = config.nome_academia;
-                document.getElementById('sidebarGymSlogan').textContent = config.slogan;
                 document.getElementById('pageTitle').textContent = `${config.nome_academia} — Fluxo Financeiro`;
 
                 await loadFinanceData();
