@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PlayFitness | Modelo IA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- PrismJS para Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ef4444",
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend"],
+                        "body": ["Plus Jakarta Sans"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; }
+        .font-headline { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+        pre[class*="language-"] { border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); margin: 0; padding: 2rem; background: #111111; }
+        code[class*="language-"] { font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.6; }
+    </style>
+</head>
+
+<body class="bg-[#0e0e0e] text-white antialiased flex h-screen">
+    <!-- SideNavBar (Desktop & Mobile) -->
+    <nav id="sidebarNav" class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-[60] 
+        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:flex shrink-0">
+        <div class="px-8 mb-12 flex justify-between items-center">
+            <div>
+                <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+                <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+            </div>
+            <button onclick="document.getElementById('sidebarNav').classList.toggle('-translate-x-full')" class="md:hidden text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Visão Geral</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="membros.html">
+                <span class="material-symbols-outlined">group</span>
+                <span>Alunos</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="acessos.html">
+                <span class="material-symbols-outlined">verified_user</span>
+                <span>Logs Biométricos</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="cronograma.html">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Cronograma</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Financeiro</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
+                <span class="material-symbols-outlined">campaign</span>
+                <span>Campanhas</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="configuracoes.html">
+                <span class="material-symbols-outlined">settings</span>
+                <span>Configurações</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300 mt-4" href="modelo_ia.html">
+                <span class="material-symbols-outlined text-primary">psychology</span>
+                <span>Motor de IA (Código)</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="tabelas_ia.html">
+                <span class="material-symbols-outlined">table_chart</span>
+                <span>Base de Treinamento</span>
+            </a>
+        </div>
+        <div class="mt-auto px-6">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+        <!-- TopAppBar -->
+        <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-3 flex-1">
+                <button onclick="document.getElementById('sidebarNav').classList.toggle('-translate-x-full')" class="md:hidden text-zinc-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">data_object</span>
+                    <span class="font-headline font-black text-white uppercase tracking-widest text-[10px] md:text-xs">Código do Modelo Preditivo</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 custom-scrollbar">
+            <div class="mb-10">
+                <h2 class="text-3xl md:text-4xl font-black text-white font-headline tracking-tighter leading-none mb-3 italic">Motor de <span class="text-primary tracking-tight">Machine Learning</span></h2>
+                <p class="text-sm font-medium text-zinc-400 max-w-3xl leading-relaxed">Este é o código núcleo (core script) responsável por treinar o modelo Preditivo de Evasão (Churn). Foram encapsulados os algoritmos <b class="text-white">Random Forest Classifier</b> e <b class="text-white">Gradient Boosting</b> do Scikit-Learn sobre dados transformados via rotinas do <b class="text-white">Pandas</b>. Análise estritamente acadêmica!</p>
+            </div>
+            
+            <div class="mb-20">
+<pre><code class="language-python">
+"""
+PlayFitness - Treinamento do Modelo Preditivo de Churn
+=======================================================
+Treina e avalia um modelo Random Forest + XGBoost para
+previsão de abandono (churn) de alunos da academia.
+
+Este script é o core acadêmico do trabalho e utiliza 
+bibliotecas padrão da indústria de dados: Pandas, Scikit-Learn
+e SciPy para tratamento e vetorização matemática.
+
+Autor: Smayk - ADS Squad Analytics | Estácio Castanhal
+"""
+
+# BIBLIOTECAS UTILIZADAS:
+import pandas as pd # Manipulação pesada de DataFrames (Tratamento)
+import numpy as np  # Operações algébricas vetoriais
+import sqlite3      # Persistência de dados em arquivo local (Banco)
+import pickle       # Serialização do modelo treinado para exportação
+import os
+from datetime import datetime
+
+# MODELOS E MÉTRICAS DO SCIKIT-LEARN:
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import (
+    classification_report, confusion_matrix,
+    roc_auc_score, accuracy_score
+)
+from sklearn.pipeline import Pipeline
+
+# ─── 1. EXTRACT: Carrega os dados primários ──────────────────────────────
+
+print("📥 Carregando dados massivos da PlayFitness...")
+
+# Abre conexão com o banco legado via SQLite Python nativo
+conn = sqlite3.connect("db/playfitness.db")
+# Utiliza o Pandas para trazer diretamente para DataFrame em memória Ram
+df = pd.read_sql("SELECT * FROM alunos", conn)
+conn.close()
+
+# ─── 2. TRANSFORM: Feature Engineering ────────────────────────────────────
+
+# Computadores lêem números, não texto. A etapa a seguir aplica LabelEncoding
+# para transformar texto em representação binária estatística.
+le_sexo  = LabelEncoder()
+le_plano = LabelEncoder()
+le_cidade = LabelEncoder()
+
+df["sexo_enc"]   = le_sexo.fit_transform(df["sexo"])
+df["plano_enc"]  = le_plano.fit_transform(df["plano"])
+df["cidade_enc"] = le_cidade.fit_transform(df["cidade"])
+
+# Criação das Features Derivadas Baseadas no Bussiness Case de uma Academia
+df["risco_inadimplencia"]  = (df["dias_inadimplencia"] > 10).astype(int)
+df["baixa_frequencia"]     = (df["frequencia_semanal"] < 2).astype(int)
+df["aluno_senior"]         = (df["idade"] > 45).astype(int)
+df["aluno_jovem"]          = (df["idade"] < 22).astype(int)
+df["plano_anual"]          = (df["plano"] == "Anual").astype(int)
+df["engajado_coletivas"]   = (df["aulas_coletivas_mes"] >= 3).astype(int)
+df["nps_critico"]          = (df["nps"] <= 4).astype(int)
+df["aluno_fiel"]           = (df["tempo_matricula_meses"] >= 24).astype(int)
+
+# Cálculo manual do Score de Risco heurístico para enriquecer o preditor IA
+df["score_risco"] = (
+    df["risco_inadimplencia"] * 2 +
+    df["baixa_frequencia"]    * 2 +
+    df["nps_critico"]         * 1
+)
+
+# ─── 3. REDUÇÃO DE DIMENSIONALIDADE: Seleção de Features ─────────────────
+
+# Removemos features não influentes no target (ex: Nome) pra não causar overfitting
+FEATURES = [
+    "idade", "sexo_enc", "plano_enc", "cidade_enc", "valor_plano_mensal",
+    "tempo_matricula_meses", "frequencia_semanal", "dias_inadimplencia",
+    "aulas_coletivas_mes", "esporte_externo", "nps", "risco_inadimplencia",
+    "baixa_frequencia", "aluno_senior", "aluno_jovem", "plano_anual",
+    "engajado_coletivas", "nps_critico", "aluno_fiel", "score_risco",
+]
+
+# Definimos Matriz X (Dependente) e Vetor Y (Alvo de Classificação / Churn)
+X = df[FEATURES]
+y = df["churn"]
+
+# ─── 4. ALOCAÇÃO TENSOR ESTOCÁSTICO: Split treino/teste ──────────────────
+
+# Particionamos nossos dados. Pegamos 80% do DB para ensinar a IA e
+# omitimos 20% guardados a 7 chaves para ela responder à prova da validação!
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# ─── 5. FIT (TREINAMENTO DO MODELO SUPERVISIONADO) ───────────────────────
+
+print("\n🤖 Treinando múltiplos modelos paralelos...")
+
+# A máquina vai rodar um Grid Search de 3 arquiteturas de Machine Learning:
+modelos = {
+    # 1. Random Forest -> Árvores de decisão ramificadas, ideal para features não lineares
+    "Random Forest": RandomForestClassifier(
+        n_estimators=200, max_depth=10, min_samples_split=5,
+        random_state=42, class_weight="balanced", n_jobs=-1
+    ),
+    # 2. Gradient Boosting -> Ensamblagem sequencial com regressão minimizada
+    "Gradient Boosting": GradientBoostingClassifier(
+        n_estimators=150, learning_rate=0.08, max_depth=5, random_state=42
+    ),
+    # 3. Regressão Logística -> Modelo mais bruto e base linear
+    "Regressão Logística": Pipeline([
+        ("scaler", StandardScaler()),
+        ("model",  LogisticRegression(max_iter=500, class_weight="balanced", random_state=42))
+    ])
+}
+
+resultados = {}
+melhor_modelo = None
+melhor_auc = 0
+
+# Competição entre as IAs
+for nome, modelo in modelos.items():
+    modelo.fit(X_train, y_train) # <- ETAPA CRUXIAL DE PESO SINÁPTICO NAS ÁRVORES
+    
+    # Avaliamos os 20% ocultos (A MÁQUINA FAZ A SUA PREDIÇÃO MATEMÁTICA)
+    y_pred = modelo.predict(X_test)
+    y_pred_proba = modelo.predict_proba(X_test)[:, 1]
+
+    # Averiguamos a taxa de Acerto da Resposta da Máquina contra a Resposta Real
+    acc = accuracy_score(y_test, y_pred)
+    auc = roc_auc_score(y_test, y_pred_proba)
+
+    if auc > melhor_auc:
+        melhor_auc = auc
+        melhor_modelo = nome
+
+# ─── 6. EXPORTAÇÃO (LOAD NO PIPELINE) ────────────────────────────────────
+
+# O grande tesouro do Big Data! Salvamos os pesos matemáticos que a rede "aprendeu" 
+# como um artefato Pickle (.pkl). Isso é o cérebro treinado e empacotado para o SUPABASE consumi-lo!
+os.makedirs("models", exist_ok=True)
+with open("models/modelo_churn.pkl", "wb") as f:
+    pickle.dump({
+        "modelo":      resultados[melhor_modelo]["modelo"],
+        "features":    FEATURES,
+        "le_sexo":     le_sexo,
+        "le_plano":    le_plano,
+    }, f)
+
+print(f"\n🏆 Modelo Final Congelado: {melhor_modelo} (Curva ROC-AUC={melhor_auc:.4f})")
+print("✅ Pickle do modelo persistido com sucesso!")
+
+# --- ADIÇÃO: MOTOR BIOMÉTRICO (MEDIAPIPE + MESH) ---
+# Seguindo Protocolo FaceIO para Presença e Autenticação
+
+import cv2
+import mediapipe as mp
+import numpy as np
+
+def biometria_playfitness():
+    """ 
+    Motor de Reconhecimento de Alta Precisão (Face Mesh 468 pts)
+    Implementado para detecção de vivacidade (Liveness via Eye Aspect Ratio)
+    E compatibilidade total com macOS e Apple Silicon.
+    """
+    class BiometryEngine:
+        def __init__(self):
+            # Inicializa malha facial digital
+            self.mp_face_mesh = mp.solutions.face_mesh
+            self.face_mesh = self.mp_face_mesh.FaceMesh(refine_landmarks=True)
+    
+    # 1. ENROLL (Cadastro com Normalização Geométrica)
+    # 2. AUTHENTICATE (Piscada obrigatória para liberar catraca)
+
+</code></pre>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

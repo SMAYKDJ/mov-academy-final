@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PlayFitness | Cronograma Acadêmico</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <!-- API & Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="playfitness-api.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ef4444", "surface-bright": "#2a2a2a",
+                        "surface-dim": "#0a0a0a", "background": "#0a0a0a",
+                        "surface-container": "#161616", "surface-container-highest": "#242424",
+                        "surface-container-low": "#111111", "on-surface": "#ffffff",
+                    },
+                    fontFamily: { "headline": ["Lexend"], "body": ["Plus Jakarta Sans"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0c0c0c; color: #ffffff; overflow: hidden; }
+        .glass-card { background: rgba(30,30,30, 0.4); -webkit-backdrop-filter: blur(30px); backdrop-filter: blur(30px); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .kanban-column { min-height: 200px; transition: 0.2s; }
+        .kanban-column.drag-over { background: rgba(239,68,68,0.05); }
+        .kanban-card { cursor: grab; transition: all 0.3s; }
+        .kanban-card:active { cursor: grabbing; }
+        .kanban-card.dragging { opacity: 0.4; transform: scale(0.95); }
+        
+        .status-pendente .card-indicator { background: #71717a; }
+        .status-iniciado .card-indicator { background: var(--primary-dynamic, #ef4444); }
+        .status-concluido .card-indicator { background: #10b981; }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface antialiased flex h-screen">
+    <!-- SideNavBar (Desktop & Mobile) -->
+    <nav id="sidebarNav" class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-[60] 
+        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:flex shrink-0">
+        <div class="px-8 mb-12 flex justify-between items-center">
+            <div>
+                <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+                <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+            </div>
+            <!-- Close button only on mobile -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Visão Geral</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="membros.html">
+                <span class="material-symbols-outlined">group</span>
+                <span>Alunos</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-primary bg-[#1a0a0a] border-r-4 border-primary font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="cronograma.html">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Cronograma</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Financeiro</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
+                <span class="material-symbols-outlined">campaign</span>
+                <span>Campanhas</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="configuracoes.html">
+                <span class="material-symbols-outlined">settings</span>
+                <span>Configurações</span>
+            </a>
+        </div>
+        <div class="mt-auto px-6">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl transition-all">Sair do Sistema</button>
+        </div>
+    </nav>
+
+    <!-- Overlay for mobile menu -->
+    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden md:hidden"></div>
+
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+        <header class="h-20 px-4 md:px-10 border-b border-white/5 flex items-center justify-between bg-black/40 backdrop-blur-xl shrink-0">
+            <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span class="font-headline font-black text-primary uppercase tracking-widest text-[10px] md:text-sm italic">Cronograma de Entrega Acadêmica</span>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="resetToSyllabus()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-full font-headline text-[10px] font-black uppercase tracking-widest transition-all">Reset Ementa</button>
+                <button onclick="openCardModal('new')" class="bg-primary hover:opacity-90 text-white px-6 py-2 rounded-full font-headline text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">add</span>Nova Tarefa
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-x-auto p-4 md:p-10 flex gap-8 custom-scrollbar">
+            <!-- Columns injected by JS -->
+            <div class="w-80 shrink-0 flex flex-col gap-4">
+                <div class="flex items-center justify-between px-2"><h3 class="font-headline font-black text-[10px] uppercase tracking-widest text-zinc-500 italic">Pendente</h3><span id="count-pendente" class="text-[10px] bg-zinc-800 px-2 py-0.5 rounded font-black">0</span></div>
+                <div id="pendente" class="kanban-column flex-1 overflow-y-auto space-y-4 pr-1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+            <div class="w-80 shrink-0 flex flex-col gap-4">
+                <div class="flex items-center justify-between px-2"><h3 class="font-headline font-black text-[10px] uppercase tracking-widest text-primary italic">Iniciado</h3><span id="count-iniciado" class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded font-black">0</span></div>
+                <div id="iniciado" class="kanban-column flex-1 overflow-y-auto space-y-4 pr-1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+            <div class="w-80 shrink-0 flex flex-col gap-4">
+                <div class="flex items-center justify-between px-2"><h3 class="font-headline font-black text-[10px] uppercase tracking-widest text-emerald-500 italic">Concluído</h3><span id="count-concluido" class="text-[10px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded font-black">0</span></div>
+                <div id="concluido" class="kanban-column flex-1 overflow-y-auto space-y-4 pr-1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal e Scripts omitidos aqui para brevidade, mantendo-os inalterados -->
+    <div id="cardModal" class="fixed inset-0 z-[100] hidden items-start justify-center p-4 md:p-10 bg-black/90 backdrop-blur-2xl overflow-y-auto" onclick="if(event.target===this) closeCardModal()">
+        <div class="bg-[#1e1e1e] w-full max-w-5xl rounded-2xl border border-white/5 shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] mt-8">
+            <div class="flex-1 p-8 md:p-10 border-r border-white/5 space-y-10 text-on-background">
+                <div class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-zinc-400 mt-1">description</span>
+                    <div class="flex-1">
+                        <textarea id="modalCardTitle" title="Título da Tarefa" class="w-full bg-transparent border-none text-3xl font-black font-headline text-white outline-none resize-none leading-tight" rows="1"></textarea>
+                        <p class="text-[10px] text-zinc-500 uppercase tracking-widest font-black mt-1">Status: <span id="modalListTitle" class="text-primary italic">PENDENTE</span></p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 text-zinc-400">
+                    <button class="bg-white/5 px-3 py-1.5 rounded-lg text-[10px] font-black border border-white/5 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">person_add</span> MEMBROS</button>
+                    <button class="bg-white/5 px-3 py-1.5 rounded-lg text-[10px] font-black border border-white/5 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">sell</span> ETIQUETAS</button>
+                    <button class="bg-white/5 px-3 py-1.5 rounded-lg text-[10px] font-black border border-white/5 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">check_box</span> CHECKLIST</button>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2 font-headline italic"><span class="material-symbols-outlined text-sm">calendar_today</span> Criação</h4>
+                        <p id="modalCreatedAt" class="text-xs font-black text-zinc-300 bg-white/5 p-3 rounded-xl border border-white/5 italic">--/--/--</p>
+                    </div>
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-primary uppercase tracking-widest flex items-center gap-2 font-headline italic"><span class="material-symbols-outlined text-sm">schedule</span> Entrega</h4>
+                        <input type="datetime-local" id="modalDueDate" title="Data de Entrega" class="w-full bg-primary/10 border border-primary/20 rounded-xl p-3 text-xs font-black text-white outline-none focus:border-primary">
+                    </div>
+                </div>
+                <!-- ... resta do conteudo ... -->
+                <div class="space-y-4">
+                    <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2 font-headline italic"><span class="material-symbols-outlined text-sm">subject</span> Descrição do Objetivo</h4>
+                    <textarea id="modalCardDesc" title="Descrição" placeholder="O que precisa ser feito nesta etapa?" class="w-full bg-white/5 border border-white/5 rounded-2xl p-6 text-sm text-zinc-300 outline-none focus:border-primary/50 min-h-[150px] resize-none transition-all"></textarea>
+                </div>
+                 <div class="flex gap-4 pt-4 border-t border-white/5">
+                    <button onclick="deleteCard()" class="text-on-surface opacity-50 font-black text-[10px] uppercase tracking-widest hover:underline">Remover Etapa</button>
+                    <button onclick="saveCard()" class="flex-1 bg-primary text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/30 active:scale-95 transition-all">Salvar Alterações</button>
+                </div>
+            </div>
+            <div class="w-full md:w-96 bg-black/20 p-8 md:p-10 space-y-8 flex flex-col">
+                <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2 font-headline italic"><span class="material-symbols-outlined text-sm">history</span> Log de Execução</h4>
+                <div id="activityLog" class="flex-1 overflow-y-auto space-y-6 custom-scrollbar pr-2 text-zinc-400"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SYLLABUS_STAGES = [
+            { id: 10, title: "1. GRUPO E STAKEHOLDER", status: "concluido", desc: "Definição do grupo e diagnóstico.", assigned: ["Smayk"], createdAt: "2026-03-20", dueDate: "2026-03-25", activity: [] },
+            { id: 20, title: "2. TEORIZAÇÃO", status: "iniciado", desc: "Conforme roteiro de extensão.", assigned: ["Antonio"], createdAt: "2026-03-22", dueDate: "2026-04-10", activity: [] },
+            { id: 30, title: "3. PLANEJAMENTO", status: "pendente", desc: "Conforme roteiro de extensão.", assigned: ["João"], createdAt: "2026-03-27", dueDate: "2026-04-20", activity: [] },
+            { id: 40, title: "4. DESENVOLVIMENTO", status: "pendente", desc: "Implementação das funcionalidades.", assigned: ["Diego"], createdAt: "2026-03-27", dueDate: "2026-05-20", activity: [] }
+        ];
+
+        const TEAM = { "Smayk": "S", "Diego": "D", "Antonio": "A", "João": "J" };
+        let boardData = JSON.parse(localStorage.getItem('playfitness_kanban_syll')) || SYLLABUS_STAGES;
+        let currentEditingId = null;
+
+        function saveToStorage() { localStorage.setItem('playfitness_kanban_syll', JSON.stringify(boardData)); updateCounts(); }
+        function resetToSyllabus() { if(confirm("Resetar cronograma?")) { boardData = SYLLABUS_STAGES; saveToStorage(); renderBoard(); } }
+
+        function createCardElement(card) {
+            const el = document.createElement('div');
+            el.className = 'kanban-card bg-[#1a1a1a] p-5 rounded-2xl border border-white/5 shadow-xl hover:border-primary/40 group mb-4';
+            el.draggable = true; el.id = `card-${card.id}`;
+            el.setAttribute('ondragstart', 'drag(event)');
+            
+            const avatars = (card.assigned || []).map(n => `<div class='w-6 h-6 rounded-full bg-zinc-800 border border-[#1a1a1a] flex items-center justify-center text-[8px] font-black text-primary uppercase'>${TEAM[n] || n[0]}</div>`).join('');
+            const dueFormatted = card.dueDate ? new Date(card.dueDate).toLocaleDateString() : '--/--';
+
+            el.innerHTML = `
+                <div class="flex flex-col gap-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-3"><div class="w-1.5 h-6 rounded-full card-indicator"></div><p class="font-black text-white text-[11px] leading-none uppercase italic tracking-tighter">${card.title}</p></div>
+                        <button onclick="openCardModal(${card.id})" class="text-zinc-600 hover:text-white transition-all"><span class="material-symbols-outlined text-sm">visibility</span></button>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-[8px] font-black text-primary uppercase flex items-center gap-1 border border-primary/20 px-2 py-0.5 rounded-full italic bg-primary/5">ATÉ: ${dueFormatted}</span>
+                        <div class="flex -space-x-1.5">${avatars}</div>
+                    </div>
+                </div>
+            `;
+            return el;
+        }
+
+        function renderBoard() {
+            ['pendente', 'iniciado', 'concluido'].forEach(id => document.getElementById(id).innerHTML = '');
+            boardData.forEach(card => {
+                const col = document.getElementById(card.status);
+                if (col) col.appendChild(createCardElement(card));
+            });
+            updateCounts();
+        }
+
+        function openCardModal(id) {
+            const modal = document.getElementById('cardModal');
+            if (id === 'new') {
+                const newId = Date.now();
+                boardData.push({ id: newId, title: "Nova Etapa", status: "pendente", desc: "", assigned: ["Smayk"], createdAt: new Date().toISOString().split('T')[0], dueDate: "", activity: [] });
+                currentEditingId = newId;
+            } else { currentEditingId = id; }
+            const card = boardData.find(c => c.id === currentEditingId);
+            document.getElementById('modalCardTitle').value = card.title;
+            document.getElementById('modalCardDesc').value = card.desc;
+            document.getElementById('modalDueDate').value = card.dueDate || "";
+            document.getElementById('modalCreatedAt').textContent = card.createdAt || "--/--/--";
+            document.getElementById('modalListTitle').textContent = card.status.toUpperCase();
+            modal.classList.remove('hidden');
+        }
+
+        function saveCard() {
+            const card = boardData.find(c => c.id === currentEditingId);
+            card.title = document.getElementById('modalCardTitle').value;
+            card.desc = document.getElementById('modalCardDesc').value;
+            card.dueDate = document.getElementById('modalDueDate').value;
+            saveToStorage(); renderBoard(); closeCardModal();
+        }
+
+        function deleteCard() { if (confirm('Remover?')) { boardData = boardData.filter(c => c.id !== currentEditingId); saveToStorage(); renderBoard(); closeCardModal(); } }
+        function closeCardModal() { document.getElementById('cardModal').classList.add('hidden'); }
+        function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id.replace('card-','')); }
+        function drop(ev) {
+            ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+            const id = parseInt(ev.dataTransfer.getData("text"));
+            const columnId = ev.currentTarget.id;
+            const card = boardData.find(c => c.id === id);
+            if (card) { card.status = columnId; saveToStorage(); renderBoard(); }
+        }
+        function updateCounts() { ['pendente','iniciado','concluido'].forEach(s => document.getElementById(`count-${s}`).textContent = boardData.filter(c => c.status === s).length); }
+        function toggleMobileMenu() { document.getElementById('sidebarNav').classList.toggle('-translate-x-full'); }
+
+        document.addEventListener('DOMContentLoaded', renderBoard);
+    </script>
+</body>
+</html>

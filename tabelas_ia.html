@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PlayFitness | Tabela de Treinamento</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- API & Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="playfitness-api.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ef4444",
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend"],
+                        "body": ["Plus Jakarta Sans"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; }
+        .font-headline { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+        .glass-table th { background-color: #1a1a1a; position: sticky; top: 0; z-index: 10; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #a3a3a3; padding: 16px; text-align: left; }
+        .glass-table td { padding: 16px; font-size: 13px; color: #d4d4d4; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-table tr:hover { background-color: rgba(255,255,255,0.02); }
+    </style>
+</head>
+
+<body class="bg-[#0e0e0e] text-white antialiased flex h-screen">
+    <!-- SideNavBar -->
+    <nav id="sidebarNav" class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-[60] 
+        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:flex shrink-0">
+        <div class="px-8 mb-12 flex justify-between items-center">
+            <div>
+                <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
+                <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
+            </div>
+            <button onclick="document.getElementById('sidebarNav').classList.toggle('-translate-x-full')" class="md:hidden text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex flex-col gap-2 px-4 shadow-xl">
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span><span>Visão Geral</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="membros.html">
+                <span class="material-symbols-outlined">group</span><span>Alunos</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="cronograma.html">
+                <span class="material-symbols-outlined">calendar_today</span><span>Cronograma</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
+                <span class="material-symbols-outlined">payments</span><span>Financeiro</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
+                <span class="material-symbols-outlined">campaign</span><span>Campanhas</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="configuracoes.html">
+                <span class="material-symbols-outlined">settings</span><span>Configurações</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl mt-4" href="modelo_ia.html">
+                <span class="material-symbols-outlined text-zinc-500">psychology</span><span>Motor de IA (Código)</span>
+            </a>
+            <!-- nova aba ativada -->
+            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="tabelas_ia.html">
+                <span class="material-symbols-outlined">table_chart</span><span>Base de Treinamento</span>
+            </a>
+        </div>
+        <div class="mt-auto px-6">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+        <!-- TopAppBar -->
+        <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-3 flex-1">
+                <button onclick="document.getElementById('sidebarNav').classList.toggle('-translate-x-full')" class="md:hidden text-zinc-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">table_rows</span>
+                    <span class="font-headline font-black text-white uppercase tracking-widest text-[10px] md:text-xs">Data Warehouse (Dataframe Original)</span>
+                </div>
+            </div>
+            <div>
+                <button class="bg-primary/10 text-primary border border-primary/20 px-4 py-2 rounded-full font-headline text-xs font-bold uppercase tracking-widest flex items-center gap-2" id="totalRowsBadge">
+                    Carregando...
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 custom-scrollbar flex flex-col">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-black text-white font-headline tracking-tighter leading-none mb-3 italic">Data<span class="text-primary tracking-tight">Frame</span> de ML</h2>
+                <p class="text-sm font-medium text-zinc-400 max-w-4xl leading-relaxed">
+                    Esta visualização é um espelho dinâmico da tabela <code class="bg-[#242424] px-2 py-1 rounded text-primary text-xs">alunos</code> armazenada no Supabase PostgreSQL. Estes são os exatos vetores matemáticos alimentados no script Python local para as bibliotecas de Machine Learning realizarem a previsão (<i>Fit & Predict</i>).
+                </p>
+            </div>
+            
+            <div class="flex-1 mb-20 bg-[#111111] rounded-2xl border border-white/5 overflow-hidden flex flex-col">
+                <div class="overflow-auto flex-1 custom-scrollbar">
+                    <table class="w-full text-left border-collapse glass-table" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Nome Completo</th>
+                                <th>Plano</th>
+                                <th>Idade</th>
+                                <th>Sexo</th>
+                                <th>Frequência (Semanal)</th>
+                                <th>Atraso (Dias)</th>
+                                <th>Avaliação NPS</th>
+                                <th>Alvo (Score_IA Atual)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataBody">
+                            <tr><td colspan="8" class="text-center py-10">Carregando dados da Nuvem...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const students = await PlayFitnessAPI.students.list();
+                const tbody = document.getElementById('dataBody');
+                tbody.innerHTML = ''; // Limpa "carregando"
+                
+                document.getElementById('totalRowsBadge').innerHTML = `<span class="material-symbols-outlined text-[16px]">database</span> ${students.length} Registros`;
+
+                students.forEach(student => {
+                    // Trata alguns valores numéricos nulos de teste, se houver
+                    const idade = student.idade || 0;
+                    const freq = student.frequencia_semanal || 0;
+                    const descPlano = student.plano || 'N/A';
+                    const score = student.score_ia || 0;
+                    const nps = student.nps || 'N/A';
+                    const sexo = student.sexo || 'N/A';
+                    const dias = student.dias_inadimplencia || 0;
+                    
+                    let scoreHtml;
+                    if(score >= 70) scoreHtml = `<span class="bg-red-500/20 text-red-500 font-bold px-2 py-1 rounded">🔴 CRÍTICO (${score}%)</span>`;
+                    else if (score >= 40) scoreHtml = `<span class="bg-yellow-500/20 text-yellow-500 font-bold px-2 py-1 rounded">🟡 ALERTA (${score}%)</span>`;
+                    else scoreHtml = `<span class="bg-green-500/20 text-green-500 font-bold px-2 py-1 rounded">🟢 ESTÁVEL (${score}%)</span>`;
+
+                    const row = `
+                        <tr>
+                            <td class="font-bold text-white">${student.nome_completo || 'Sem Nome'}</td>
+                            <td><span class="bg-[#2a2a2a] px-2 py-1 rounded text-xs border border-white/5">${descPlano}</span></td>
+                            <td>${idade} anos</td>
+                            <td>${sexo}</td>
+                            <td>${freq}x</td>
+                            <td class="${dias > 0 ? 'text-red-400 font-bold' : 'text-zinc-500'}">${dias > 0 ? dias : 'Em dia'}</td>
+                            <td>${nps} ★</td>
+                            <td>${scoreHtml}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Erro renderizando tabela:", error);
+                document.getElementById('dataBody').innerHTML = `<tr><td colspan="8" class="text-center py-10 text-red-500">Falha ao carregar banco de dados. Verifique a conexão.</td></tr>`;
+            }
+        });
+    </script>
+</body>
+</html>

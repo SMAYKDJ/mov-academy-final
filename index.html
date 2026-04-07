@@ -28,7 +28,7 @@
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffffff; }
-        .glass-card { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(24px); }
+        .glass-card { background: rgba(20, 20, 20, 0.7); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
         .glow-soft { box-shadow: 0 0 80px rgba(220, 38, 38, 0.08); }
     </style>
 </head>
@@ -47,12 +47,12 @@
         <div class="glass-card p-10 rounded-xl border border-white/5 glow-soft space-y-8">
             <div class="space-y-6">
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1 italic">Acesso Restrito</label>
-                    <input type="text" value="SMAYK TR" readonly class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm font-bold uppercase italic text-white/50 cursor-not-allowed">
+                    <label for="username" class="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1 italic">Acesso Restrito</label>
+                    <input id="username" title="Acesso Restrito" placeholder="Nome de usuário" type="text" value="SMAYK TR" readonly class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm font-bold uppercase italic text-white/50 cursor-not-allowed">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1 italic">Chave de Segurança</label>
-                    <input type="password" value="••••••••" readonly class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm font-bold italic text-white/50 cursor-not-allowed">
+                    <label for="password" class="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1 italic">Chave de Segurança</label>
+                    <input id="password" title="Chave de Segurança" placeholder="Senha" type="password" value="••••••••" readonly class="w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-sm font-bold italic text-white/50 cursor-not-allowed">
                 </div>
             </div>
 

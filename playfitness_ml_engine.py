@@ -60,17 +60,21 @@ def analyze_and_plot(data):
     plt.figure(figsize=(12, 7))
     plt.style.use('dark_background')
     
-    colors = ['#dc2626' if s > 75 else ('#f59e0b' if s > 45 else '#10b981') for s in df['risk_score']]
+    # Filtrar apenas os top 15 de maior risco para n\u00e3o poluir o visual
+    top_risk_df = df.sort_values('risk_score', ascending=False).head(15)
     
-    bars = plt.bar(df['nome_completo'], df['risk_score'], color=colors, alpha=0.9)
+    colors = ['#dc2626' if s > 75 else ('#f59e0b' if s > 45 else '#10b981') for s in top_risk_df['risk_score']]
+    
+    bars = plt.bar(top_risk_df['nome_completo'], top_risk_df['risk_score'], color=colors, alpha=0.9)
     plt.axhline(y=75, color='#dc2626', linestyle='--', alpha=0.5, label='Zona Crítica')
     plt.axhline(y=45, color='#f59e0b', linestyle='--', alpha=0.5, label='Zona de Alerta')
     
-    plt.title('DISTRIBUIÇÃO PREDITIVA DE RISCO (CHURN)', fontsize=16, fontweight='black', color='white', pad=25)
+    plt.title('TOP 15: ALUNOS COM MAIOR RISCO DE CHURN', fontsize=16, fontweight='black', color='white', pad=25)
     plt.ylabel('Score de Risco (%)', fontsize=12, fontweight='bold', color='#94a3b8')
     plt.xticks(rotation=45, ha='right', fontsize=10, color='#94a3b8')
     plt.ylim(0, 105)
     plt.legend(frameon=False)
+    plt.tight_layout()
     plt.grid(axis='y', alpha=0.05)
     
     plt.tight_layout()
@@ -111,6 +115,6 @@ def sync_back(data):
 if __name__ == "__main__":
     data = get_data()
     analyze_and_plot(data)
-    # Tentativa de sync final
-    # sync_back(data)
-    print("\n🚀 PlayFitness ML Engine: Ciclo Finalizado com Sucesso.")
+    # Sincronização final dos Scores de Risco com o Banco de Dados Nuvem (Supabase)
+    sync_back(data)
+    print("\n🚀 PlayFitness ML Engine: Ciclo de IA + Sync Cloud Finalizado com Sucesso.")

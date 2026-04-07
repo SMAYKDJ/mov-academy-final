@@ -7,9 +7,31 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        /* Webcam Flash Animation */
+        @keyframes flash {
+            0% { background-color: transparent; }
+            50% { background-color: white; opacity: 1; }
+            100% { background-color: transparent; }
+        }
+        .camera-flash { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+        .is-flashing { animation: flash 0.3s ease-out forwards; }
+    </style>
     
     <!-- API & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <style>
+        /* Webcam Flash Animation */
+        @keyframes flashEffect {
+            0% { background-color: transparent; }
+            50% { background-color: white; opacity: 1; }
+            100% { background-color: transparent; }
+        }
+        .camera-flash { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+        .is-flashing { animation: flashEffect 0.3s ease-out forwards; }
+    </style>
     <script src="supabase.js"></script>
     <script src="playfitness-api.js"></script>
 
@@ -92,6 +114,14 @@
                 <span class="material-symbols-outlined">group</span>
                 <span>Alunos</span>
             </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="acessos.html">
+                <span class="material-symbols-outlined">verified_user</span>
+                <span>Logs Biométricos</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="cronograma.html">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Cronograma</span>
+            </a>
             <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
                 <span class="material-symbols-outlined">payments</span>
                 <span>Financeiro</span>
@@ -100,14 +130,48 @@
                 <span class="material-symbols-outlined">campaign</span>
                 <span>Campanhas</span>
             </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="relatorios.html">
+                <span class="material-symbols-outlined">analytics</span>
+                <span>Relatórios</span>
+            </a>
             <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="configuracoes.html">
                 <span class="material-symbols-outlined">settings</span>
                 <span>Configurações</span>
             </a>
         </div>
-        <div class="mt-auto px-6">
-            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        <div class="mt-auto px-6 pb-24 lg:pb-8">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-2xl hover:text-error transition-all bg-white/[0.02]">Sair do Sistema</button>
         </div>
+    </nav>
+    
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/90 backdrop-blur-2xl border-t border-white/5 h-16 flex md:hidden justify-around items-center z-[60] px-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">dashboard</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Home</span>
+        </a>
+        <a href="membros.html" class="flex flex-col items-center gap-1 text-primary group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">group</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Alunos</span>
+        </a>
+        <a href="relatorios.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">analytics</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Relatórios</span>
+        </a>
+        <a href="modelo_ia.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <div class="p-2 -mt-6 bg-primary rounded-full shadow-lg shadow-primary/30 border-4 border-[#0a0a0a]">
+                <span class="material-symbols-outlined text-white text-[20px]">psychology</span>
+            </div>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">IA Engine</span>
+        </a>
+        <a href="campanhas.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">campaign</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Marketing</span>
+        </a>
+        <a href="configuracoes.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">settings</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Ajustes</span>
+        </a>
     </nav>
 
     <!-- Overlay for mobile menu -->
@@ -117,31 +181,31 @@
     <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
         <!-- TopAppBar -->
         <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
-            <div class="flex items-center gap-3 flex-1">
+            <div class="flex items-center gap-2 md:gap-3 flex-1 overflow-hidden">
                 <!-- Mobile Menu Toggle -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors">
+                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors shrink-0">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                    <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-[10px] md:text-xs italic truncate">PlayFitness — Alunos</span>
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0"></span>
+                    <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-[8px] xs:text-[10px] md:text-xs italic truncate">Alunos</span>
                 </div>
             </div>
             
-            <div class="flex items-center gap-3 md:gap-6">
-                <!-- Barra de Pesquisa (Hidden on very small screens) -->
-                <div class="relative hidden sm:block w-32 md:w-64 lg:w-96">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">search</span>
-                    <input id="searchInput" oninput="filterMembers()" class="w-full bg-[#1a1919] border-none text-[10px] py-2 pl-10 pr-4 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest" placeholder="BUSCAR..." type="text"/>
+            <div class="flex items-center gap-2 md:gap-6 shrink-0">
+                <!-- Barra de Pesquisa (Optimized for Mobile) -->
+                <div class="relative hidden xs:block w-24 sm:w-32 md:w-64 lg:w-96">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-[12px]">search</span>
+                    <input id="searchInput" oninput="filterMembers()" class="w-full bg-[#1a1919] border-none text-[8px] sm:text-[10px] py-1.5 pl-8 pr-3 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest" placeholder="BUSCAR..." type="text"/>
                 </div>
 
-                <div class="flex items-center gap-2 md:gap-4 border-l border-white/10 pl-3 md:pl-6">
-                    <button onclick="PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')" title="Exportar CSV" class="flex items-center justify-center w-9 h-9 md:w-auto md:px-5 md:py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full font-headline text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all outline-none">
-                        <span class="material-symbols-outlined text-[16px]">download</span>
+                <div class="flex items-center gap-2 md:gap-4 border-l border-white/10 pl-2 md:pl-6 shrink-0 pr-1 sm:pr-0">
+                    <button onclick="PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')" title="Exportar CSV" class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-auto md:px-5 md:py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all outline-none shrink-0 border border-white/5">
+                        <span class="material-symbols-outlined text-[14px] md:text-[16px]">download</span>
                         <span class="hidden md:inline ml-2">Exportar</span>
                     </button>
-                    <button onclick="openModal('add')" title="Novo Aluno" class="flex items-center justify-center w-9 h-9 md:w-auto md:px-5 md:py-2.5 bg-primary hover:bg-red-600 text-white rounded-full font-headline text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30">
-                        <span class="material-symbols-outlined text-[16px]">person_add</span>
+                    <button onclick="openModal('add')" title="Novo Aluno" class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-auto md:px-5 md:py-2.5 bg-primary hover:bg-red-600 text-white rounded-full font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30 shrink-0 border border-primary/20">
+                        <span class="material-symbols-outlined text-[14px] md:text-[16px]">person_add</span>
                         <span class="hidden md:inline ml-2">Novo</span>
                     </button>
                 </div>
@@ -149,14 +213,14 @@
         </header>
 
         <!-- Page Content -->
-        <section class="flex-1 overflow-y-auto px-10 py-10 custom-scrollbar">
+        <section class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 pb-28 md:pb-10 custom-scrollbar overscroll-contain">
             <!-- Header Section -->
-            <div class="mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+            <div class="mb-8 md:mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-6 md:gap-8">
                 <div>
-                    <h2 class="text-4xl font-black text-white font-headline tracking-tighter leading-none mb-3 italic">Roster de <span class="text-primary tracking-tight">Alunos</span></h2>
-                    <p class="text-zinc-500 font-body text-xs">Gestão tática de performance e retenção</p>
+                    <h2 class="text-3xl md:text-4xl font-black text-white font-headline tracking-tighter leading-none mb-2 md:mb-3 italic">Roster de <span class="text-primary tracking-tight">Alunos</span></h2>
+                    <p class="text-zinc-500 font-body text-[10px] md:text-xs">Gestão tática de performance e retenção</p>
                 </div>
-                <div class="flex flex-wrap gap-1.5 p-1.5 bg-white/[0.02] rounded-3xl border border-white/5 no-scrollbar">
+                <div class="flex gap-1.5 p-1.5 bg-white/[0.02] rounded-3xl border border-white/5 overflow-x-auto no-scrollbar scroll-smooth snap-x">
                     <button onclick="setFilter('All')" class="filter-btn flex items-center px-3 py-2 rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all active-filter whitespace-nowrap">
                         <span>Todos</span>
                         <span id="count-All" class="ml-1.5 px-1.5 py-0.5 bg-black/20 rounded-full text-[8px] text-black font-bold">0</span>
@@ -191,29 +255,29 @@
         </section>
 
         <!-- Bottom Status Bar -->
-        <footer class="h-24 px-10 border-t border-white/5 flex justify-between items-center bg-[#0e0e0e] shrink-0">
-            <div class="flex gap-16">
+        <footer class="h-auto md:h-24 px-4 md:px-10 py-4 md:py-0 border-t border-white/5 flex flex-col md:flex-row justify-between items-center bg-[#0e0e0e] shrink-0 gap-4 md:gap-0">
+            <div class="flex gap-8 md:gap-16 w-full md:w-auto justify-between md:justify-start">
                 <div>
-                    <span class="text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Total Geral</span>
-                    <p id="totalCount" class="text-3xl font-black text-white font-headline tracking-tighter">00</p>
+                    <span class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Total Geral</span>
+                    <p id="totalCount" class="text-xl md:text-3xl font-black text-white font-headline tracking-tighter">00</p>
                 </div>
                 <div>
-                    <span class="text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Média Score IA</span>
-                    <p id="avgScore" class="text-3xl font-black text-primary font-headline tracking-tighter">00%</p>
+                    <span class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Média Score IA</span>
+                    <p id="avgScore" class="text-xl md:text-3xl font-black text-primary font-headline tracking-tighter">00%</p>
                 </div>
                 <div class="hidden sm:block">
-                    <span class="text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Retenção Ativa</span>
-                    <p class="text-3xl font-black text-white font-headline tracking-tighter">94.2%</p>
+                    <span class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Retenção Ativa</span>
+                    <p class="text-xl md:text-3xl font-black text-white font-headline tracking-tighter">94.2%</p>
                 </div>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="flex -space-x-3 items-center">
-                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-800 flex items-center justify-center font-black text-[10px]">MT</div>
-                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-700 flex items-center justify-center font-black text-[10px]">RS</div>
-                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-600 flex items-center justify-center font-black text-[10px]">PL</div>
-                    <div class="w-10 h-10 rounded-full border-2 border-[#0e0e0e] bg-primary flex items-center justify-center text-[10px] font-black text-black">+24</div>
+            <div class="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-end">
+                <div class="flex -space-x-2 md:-space-x-3 items-center">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-800 flex items-center justify-center font-black text-[8px] md:text-[10px]">MT</div>
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-700 flex items-center justify-center font-black text-[8px] md:text-[10px]">RS</div>
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-600 flex items-center justify-center font-black text-[8px] md:text-[10px]">PL</div>
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-primary flex items-center justify-center text-[8px] md:text-[10px] font-black text-black">+24</div>
                 </div>
-                <p class="text-[10px] font-headline font-black uppercase tracking-widest text-zinc-600 italic">Membros <span class="text-emerald-500">Live</span></p>
+                <p class="text-[8px] md:text-[10px] font-headline font-black uppercase tracking-widest text-zinc-600 italic">Membros <span class="text-emerald-500">Live</span></p>
             </div>
         </footer>
     </main>
@@ -235,7 +299,14 @@
                 </div>
                 <div>
                     <h3 id="modalTitle" class="text-2xl font-black italic uppercase font-headline tracking-tighter text-primary">Operação Aluno</h3>
-                    <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-0.5">Clique na câmera para trocar a foto</p>
+                    <div class="flex gap-2 mt-2">
+                        <button type="button" onclick="document.getElementById('photoInput').click()" class="bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-xl text-[8px] uppercase font-black border border-white/5 transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[12px]">attach_file</span> Arquivo
+                        </button>
+                        <button type="button" onclick="openWebcam()" class="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-xl text-[8px] uppercase font-black border border-primary/20 transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[12px]">photo_camera</span> Webcam
+                        </button>
+                    </div>
                 </div>
             </div>
             <form id="memberForm" class="space-y-4" onsubmit="handleFormSubmit(event)">
@@ -302,10 +373,18 @@
                     </div>
                 </div>
 
-                <!-- HISTÓRICO DE MEDIDAS -->
+                <!-- HISTÓRICO DE MEDIDAS & GRÁFICO -->
                 <div class="mt-8 pt-6 border-t border-white/5 lg:col-span-2">
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-4 font-headline italic">Histórico de Medidas (Evolução)</h4>
-                    <div id="assessmentHistoryList" class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Evolução de Peso (Últimas Medições)</h4>
+                        <span class="text-[8px] bg-primary/10 text-primary px-2 py-0.5 rounded italic font-black uppercase">Frequência: Semanal</span>
+                    </div>
+                    
+                    <div class="bg-black/20 rounded-3xl p-6 border border-white/5 mb-6">
+                        <canvas id="weightHistoryChart" height="120"></canvas>
+                    </div>
+
+                    <div id="assessmentHistoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                         <p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>
                     </div>
                 </div>
@@ -382,7 +461,112 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- SEÇÃO: IMPACTO DE INDICAÇÕES (Dinamico) -->
+                <div id="ambassadorStatsSection" class="hidden">
+                    <div class="flex items-center gap-3 mb-4 mt-6">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#ffd709] shadow-[0_0_10px_#ffd709]"></span>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-[#ffd709] font-headline italic">Impacto de Indicações (Embaixador)</h4>
+                    </div>
+                    <div class="bg-[#ffd709]/10 border border-[#ffd709]/20 p-5 rounded-3xl flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-[#ffd709] flex items-center justify-center">
+                                <span class="material-symbols-outlined text-black text-2xl [font-variation-settings:'FILL'_1]">stars</span>
+                            </div>
+                            <div>
+                                <p id="memberReferralCount" class="text-xl font-black text-white font-headline italic leading-none">0 INDICAÇÕES</p>
+                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">Líder de Performance na Unidade</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p id="memberReferralFidelity" class="text-lg font-black text-[#ffd709] font-headline italic leading-none">98%</p>
+                            <p class="text-[7px] text-zinc-500 uppercase tracking-widest mt-1">Fidelidade de Rede</p>
+                        </div>
+                    </div>
+                    <!-- Benefícios -->
+                    <div class="mt-3 flex gap-3">
+                        <div class="flex-1 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl flex items-center gap-3">
+                            <span class="material-symbols-outlined text-emerald-500 text-[18px]">workspace_premium</span>
+                            <div>
+                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest leading-tight">Benefício Ativo</p>
+                                <p id="memberBenefitName" class="text-[10px] font-black text-white italic uppercase truncate">BÔNUS: 01 MÊS GRÁTIS</p>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-primary/10 border border-primary/20 p-4 rounded-2xl flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-[18px]">hourglass_empty</span>
+                            <div>
+                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest leading-tight">Expira em</p>
+                                <p id="memberBenefitExpiry" class="text-[10px] font-black text-white italic uppercase">23 DIAS RESTANTES</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: AVALIAÇÃO ANTROPOMÉTRICA (NEW) -->
+                <div class="flex items-center gap-3 mb-4 mt-8">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/80 font-headline italic">Avaliação Antropométrica (Medidas)</h4>
+                </div>
+
+                <div class="bg-white/[0.02] border border-white/5 rounded-3xl p-6 space-y-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">ABDÔMEN</label>
+                            <input type="number" step="0.1" id="evalAbd" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">TÓRAX</label>
+                            <input type="number" step="0.1" id="evalTorax" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">CINTURA</label>
+                            <input type="number" step="0.1" id="evalCintura" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">QUADRIL</label>
+                            <input type="number" step="0.1" id="evalQuadril" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-4">
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">BRAÇO (D)</label>
+                            <input type="number" step="0.1" id="evalBracoD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">BRAÇO (E)</label>
+                            <input type="number" step="0.1" id="evalBracoE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">ANTEBR (D)</label>
+                            <input type="number" step="0.1" id="evalAnteBracoD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">ANTEBR (E)</label>
+                            <input type="number" step="0.1" id="evalAnteBracoE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-4">
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">COXA (D)</label>
+                            <input type="number" step="0.1" id="evalCoxaD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">COXA (E)</label>
+                            <input type="number" step="0.1" id="evalCoxaE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">PANT (D)</label>
+                            <input type="number" step="0.1" id="evalPantD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">PANT (E)</label>
+                            <input type="number" step="0.1" id="evalPantE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
                     <div class="space-y-1 opacity-70">
                         <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 text-primary/80">Data de Cadastro (Imutável) 🔒</label>
                         <input type="date" id="memberJoinDate" readonly title="Data de Cadastro"
@@ -403,8 +587,45 @@
         </div>
     </div>
 
+    <!-- Scanner Biométrico Facial (MODAL) -->
+    <div id="biometryOverlay" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-black/95 backdrop-blur-3xl">
+        <div class="glass-card w-full max-w-lg rounded-[3rem] p-10 border border-primary/20 flex flex-col items-center text-center shadow-[0_0_100px_rgba(239,68,68,0.2)]">
+            <div class="relative w-64 h-64 mb-8">
+                <!-- Video Feed -->
+                <div class="absolute inset-0 rounded-full border-4 border-primary/20 overflow-hidden bg-black flex items-center justify-center">
+                    <video id="biometryVideo" autoplay muted playsinline class="w-full h-full object-cover grayscale"></video>
+                    <canvas id="biometryCanvas" class="absolute inset-0 pointer-events-none"></canvas>
+                </div>
+                
+                <!-- Scanner UI Overlay -->
+                <div class="absolute -inset-4 border border-primary/30 rounded-full animate-[spin_10s_linear_infinite] pointer-events-none"></div>
+                <div class="absolute -inset-2 border-2 border-dashed border-primary/40 rounded-full animate-[spin_15s_linear_reverse_infinite] pointer-events-none"></div>
+                
+                <!-- Scanning Line -->
+                <div id="scanLine" class="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_#ef4444] rounded-full animate-[scan_2s_ease-in-out_infinite] hidden"></div>
+            </div>
+
+            <h3 class="text-2xl font-black italic uppercase font-headline tracking-tighter text-white mb-2">Escaneamento Biométrico</h3>
+            <p id="biometryStatus" class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-black mb-8 italic">Aguardando enquadramento...</p>
+            
+            <div class="flex gap-4 w-full">
+                <button onclick="stopBiometry()" class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-zinc-600 hover:text-white transition-all bg-white/[0.03] rounded-2xl border border-white/5">Cancelar</button>
+                <button id="btnCaptureFace" onclick="captureFace()" disabled class="flex-[2] py-4 bg-primary text-white rounded-2xl font-black text-xs uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all opacity-50 cursor-not-allowed">Capturar Biometria</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes scan {
+            0%, 100% { top: 0; opacity: 0.1; }
+            50% { top: 100%; opacity: 1; }
+        }
+        canvas { position: absolute; top: 0; left: 0; }
+    </style>
+
     <script>
         let allMembers = [];
+        let referralRanking = [];
         let currentFilter = 'All';
 
         document.addEventListener('DOMContentLoaded', initializeMembros);
@@ -416,6 +637,8 @@
                 document.getElementById('pageTitle').textContent = `${config.nome_academia} — Alunos`;
 
                 allMembers = await PlayFitnessAPI.students.list();
+                referralRanking = await PlayFitnessAPI.students.getReferralRanking();
+                
                 renderMembers();
                 updateStats();
                 loadPlansIntoSelect(); // Load plans on page load
@@ -498,8 +721,15 @@
 
         function createMemberCard(member) {
             const div = document.createElement('div');
-            div.className = 'bg-surface-container-low p-4 rounded-[1.2rem] relative overflow-hidden group hover:bg-[#1a1919] transition-all duration-500 border border-white/5 fade-in';
+            // NOVO: Design arredondado premium com vidro
+            div.className = 'bg-white/[0.03] backdrop-blur-xl border border-white/5 p-6 rounded-[2.5rem] hover:border-primary/40 transition-all group relative overflow-hidden shadow-2xl shadow-black/20';
             
+            // Check if ambassador
+            const ambassador = referralRanking.find(r => r.id == member.id || (member.nome_completo && r.name === member.nome_completo));
+            const badge = ambassador ? `
+                <div class="absolute top-4 left-4 bg-[#ffd709] text-black text-[7px] font-black uppercase px-2 py-0.5 rounded italic shadow-lg z-10 animate-pulse border border-black/10">EMBAIXADOR ELITE</div>
+            ` : '';
+
             const isHighRisk = (member.score_ia || 0) < 60;
             const scoreColor = isHighRisk ? 'text-error' : 'text-primary';
             const barBg = isHighRisk ? 'bg-error' : 'bg-primary';
@@ -515,14 +745,17 @@
             const sc = statusColors[member.status] || 'text-zinc-400 bg-white/5';
 
             div.innerHTML = `
-                <button onclick="openModal('edit', '${member.id}')" class="absolute top-4 right-4 text-zinc-600 hover:text-primary material-symbols-outlined transition-colors z-10 text-base">tune</button>
+                ${badge}
+                <div class="absolute top-4 right-4 flex gap-2 z-10">
+                    <button onclick="startBiometry('${member.id}')" title="Registrar Biometria Facial" class="text-zinc-600 hover:text-primary material-symbols-outlined transition-colors text-base p-1 bg-black/40 rounded-lg border border-white/5">face_retouching_natural</button>
+                    <button onclick="openModal('edit', '${member.id}')" title="Editar Cadastro" class="text-zinc-600 hover:text-primary material-symbols-outlined transition-colors text-base p-1 bg-black/40 rounded-lg border border-white/5">tune</button>
+                </div>
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="relative shrink-0">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=dc2626&color=fff&size=128&bold=true&format=svg"
+                    <div class="relative shrink-0 w-12 h-12 group-hover:scale-105 transition-all duration-500">
+                        <img src="https://i.pravatar.cc/150?u=${member.id ? member.id + 1000 : Math.random()}"
                              alt="${member.nome_completo}"
-                             class="w-12 h-12 rounded-full object-cover border-2 border-white/10 shadow-md shadow-primary/10"
-                             onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent((member.nome_completo||'AL').substring(0,2))}&background=dc2626&color=fff'">
-                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#111111] ${member.status === 'Ativo' ? 'bg-emerald-500' : member.status === 'Em Risco' ? 'bg-red-500' : 'bg-zinc-500'}"></span>
+                             class="w-full h-full rounded-full object-cover border-2 border-white/10 shadow-md shadow-primary/10 transition-all duration-500">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#111111] z-10 ${member.status === 'Ativo' ? 'bg-emerald-500' : member.status === 'Em Risco' ? 'bg-error' : 'bg-zinc-500'}"></span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="text-sm font-black font-headline text-white leading-tight break-words whitespace-normal italic">${member.nome_completo}</h3>
@@ -628,26 +861,70 @@
                     updateFrequencyHighlight();
 
                     // Set avatar preview
-                    document.getElementById('modalAvatarPreview').src =
-                        `https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome_completo)}&background=dc2626&color=fff&size=128&bold=true`;
+                    document.getElementById('modalAvatarPreview').src = `https://i.pravatar.cc/150?u=${member.id ? member.id + 1000 : Math.random()}`;
 
-                    // Load History
+                    // Ambassador stats
+                    const ambassador = referralRanking.find(r => r.id == id || r.name === member.nome_completo);
+                    const statsSection = document.getElementById('ambassadorStatsSection');
+                    if (ambassador) {
+                        statsSection.classList.remove('hidden');
+                        document.getElementById('memberReferralCount').textContent = `${ambassador.count} INDICAÇÕES`;
+                        document.getElementById('memberReferralFidelity').textContent = `${ambassador.fidelity}%`;
+                        
+                        // Lógica de Benefícios (Mockada com base em indicações)
+                        let benefit = "Acesso VIP Premium"; let expiry = "12 Dias";
+                        if (ambassador.count >= 10) { benefit = "Isenção: 03 Meses"; expiry = "85 Dias"; }
+                        else if (ambassador.count >= 5) { benefit = "Bônus: 01 Mês Grátis"; expiry = "23 Dias"; }
+                        
+                        document.getElementById('memberBenefitName').textContent = benefit;
+                        document.getElementById('memberBenefitExpiry').textContent = `${expiry} RESTANTES`;
+                    } else {
+                        statsSection.classList.add('hidden');
+                    }
+
+                    // Load History (Weight Chart)
                     const history = await PlayFitnessAPI.students.getAssessmentHistory(id);
+                    renderWeightEvolutionChart(history); 
+
+                    // Load Anthropometric History (NEW)
+                    const assessments = await PlayFitnessAPI.students.listAssessments(member.cpf);
                     const hContainer = document.getElementById('assessmentHistoryList');
-                    hContainer.innerHTML = history.length ? '' : '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
+                    hContainer.innerHTML = (history.length || assessments.length) ? '' : '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
                     
+                    // Render weight entries
                     history.forEach(item => {
                         const date = item.data_avaliacao ? new Date(item.data_avaliacao).toLocaleDateString('pt-BR') : 'S/D';
                         const imc = item.imc ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-[8px] font-black ml-2">IMC ${item.imc}</span>` : '';
                         
                         hContainer.innerHTML += `
                             <div class="flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 rounded-xl">
-                                <div class="flex items-center gap-4">
-                                    <span class="text-[10px] font-black text-white/40 uppercase">${date}</span>
-                                    <span class="text-xs font-black italic text-white">${item.peso}kg / ${item.altura}m</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[8px] font-black text-white/30 uppercase">${date}</span>
+                                    <span class="text-[10px] font-black italic text-white">PESO: ${item.peso}kg</span>
                                     ${imc}
                                 </div>
-                                <span class="material-symbols-outlined text-[14px] text-zinc-700">monitoring</span>
+                                <span class="material-symbols-outlined text-[12px] text-zinc-700">scale</span>
+                            </div>
+                        `;
+                    });
+
+                    // Render anthropometric entries (NEW)
+                    assessments.forEach(item => {
+                        const dateStr = item.data || 'S/D';
+                        hContainer.innerHTML += `
+                            <div class="p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[8px] font-black text-emerald-500/60 uppercase">AVALIAÇÃO #${item.numeroDaAvaliacao || '0'} — ${dateStr}</span>
+                                    <span class="material-symbols-outlined text-[12px] text-emerald-500/50">straighten</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 text-[8px] font-bold text-zinc-400 uppercase tracking-widest italic">
+                                    <span>Abd: <b class="text-white">${item.circunferenciaAbdominal || 0}cm</b></span>
+                                    <span>Tór: <b class="text-white">${item.torax || 0}cm</b></span>
+                                    <span>Cint: <b class="text-white">${item.cintura || 0}cm</b></span>
+                                    <span>Br(D): <b class="text-white">${item.bracoDireito || 0}cm</b></span>
+                                    <span>Br(E): <b class="text-white">${item.bracoEsquerdo || 0}cm</b></span>
+                                    <span>Qdr: <b class="text-white">${item.quadril || 0}cm</b></span>
+                                </div>
                             </div>
                         `;
                     });
@@ -655,6 +932,78 @@
             } catch (err) {
                 console.error(err);
             }
+        }
+
+        let weightChartInstance = null;
+        function renderWeightEvolutionChart(history) {
+            const ctx = document.getElementById('weightHistoryChart').getContext('2d');
+            if (weightChartInstance) weightChartInstance.destroy();
+
+            // Mock de dados semanais se não houver registros suficientes
+            let dataPoints = history.length > 0 ? history : [
+                { data_avaliacao: '2026-03-01', peso: 78.5 },
+                { data_avaliacao: '2026-03-08', peso: 77.2 },
+                { data_avaliacao: '2026-03-15', peso: 76.8 },
+                { data_avaliacao: '2026-03-22', peso: 76.5 },
+                { data_avaliacao: '2026-03-29', peso: 75.2 }
+            ];
+
+            // Ordenar por data
+            dataPoints.sort((a, b) => new Date(a.data_avaliacao) - new Date(b.data_avaliacao));
+
+            // Filtrar para ficar visualmente limpo
+            const lastData = dataPoints.slice(-6);
+            
+            const bestWeight = Math.min(...lastData.map(d => d.peso));
+            
+            const labels = lastData.map(d => {
+                const date = new Date(d.data_avaliacao);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = date.toLocaleString('pt-BR', { month: 'short' }).replace('.', '');
+                const isPreviousMonth = date.getMonth() !== new Date().getMonth();
+                return isPreviousMonth ? `${day} ${month}` : `${day}`;
+            });
+
+            const weights = lastData.map(d => d.peso);
+
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-dynamic') || '#ef4444';
+
+            weightChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: weights,
+                        backgroundColor: weights.map(w => w === Math.min(...weights) ? primaryColor : 'rgba(255, 255, 255, 0.05)'),
+                        borderRadius: 8,
+                        barThickness: 30,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: false, 
+                            display: false 
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { 
+                                color: '#525252', 
+                                font: { size: 9, family: 'Lexend', weight: '900' },
+                                padding: 10
+                            }
+                        }
+                    },
+                    animation: { duration: 2000, easing: 'easeOutQuart' }
+                }
+            });
         }
 
         function closeModal() {
@@ -668,8 +1017,9 @@
 
         function updateModalAvatar() {
             const name = document.getElementById('memberName').value || 'Novo Aluno';
+            const id = document.getElementById('memberId').value;
             document.getElementById('modalAvatarPreview').src =
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=dc2626&color=fff&size=128&bold=true`;
+                `https://i.pravatar.cc/150?u=${id ? parseInt(id) + 1000 : Math.random()}`;
         }
 
         function handlePhotoChange(event) {
@@ -716,6 +1066,33 @@
                     }
                 }
 
+                // Novo: Salva Avaliação Antropométrica se campos estiverem preenchidos
+                if (payload.cpf) {
+                    const evalData = {
+                        codCliente: payload.cpf,
+                        data: new Date().toLocaleDateString('pt-BR'),
+                        numeroDaAvaliacao: Math.floor(Math.random() * 999), // Placeholder logic
+                        circunferenciaAbdominal: parseFloat(document.getElementById('evalAbd').value),
+                        torax: parseFloat(document.getElementById('evalTorax').value),
+                        cintura: parseFloat(document.getElementById('evalCintura').value),
+                        quadril: parseFloat(document.getElementById('evalQuadril').value),
+                        bracoDireito: parseFloat(document.getElementById('evalBracoD').value),
+                        bracoEsquerdo: parseFloat(document.getElementById('evalBracoE').value),
+                        antebracoDireito: parseFloat(document.getElementById('evalAnteBracoD').value),
+                        antebracoEsquerdo: parseFloat(document.getElementById('evalAnteBracoE').value),
+                        coxaDireita: parseFloat(document.getElementById('evalCoxaD').value),
+                        coxaEsquerda: parseFloat(document.getElementById('evalCoxaE').value),
+                        panturrilhaDireita: parseFloat(document.getElementById('evalPantD').value),
+                        panturrilhaEsquerda: parseFloat(document.getElementById('evalPantE').value)
+                    };
+
+                    // Só salva se pelo menos um campo de medida foi preenchido
+                    const hasData = Object.values(evalData).some(v => typeof v === 'number' && !isNaN(v));
+                    if (hasData) {
+                        await PlayFitnessAPI.students.saveAssessment(evalData);
+                    }
+                }
+
                 PlayFitnessUI.toast(action === 'edit' ? 'Aluno Atualizado!' : 'Novo Aluno Cadastrado!', 'success');
                 closeModal();
                 loadMembers();
@@ -740,6 +1117,220 @@
                 console.error("Failed to load plans:", err);
                 PlayFitnessUI.toast('Falha ao carregar planos', 'error');
             }
+        }
+
+        // ==========================================
+        // BIOMETRIA FACIAL (IA)
+        // ==========================================
+        let faceApiLoaded = false;
+        let currentStream = null;
+        let biometryActive = false;
+        let recordingAlunoId = null;
+
+        async function loadFaceApi() {
+            if (faceApiLoaded) return true;
+            PlayFitnessUI.toast('Iniciando Motor de IA...', 'psychology');
+            try {
+                // Carregar modelos via CDN
+                const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
+                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                faceApiLoaded = true;
+                return true;
+            } catch (e) {
+                console.error("Erro ao carregar IA:", e);
+                PlayFitnessUI.toast('Erro ao carregar modelos de IA', 'error');
+                return false;
+            }
+        }
+
+        async function startBiometry(alunoId) {
+            recordingAlunoId = alunoId;
+            const ok = await loadFaceApi();
+            if (!ok) return;
+
+            document.getElementById('biometryOverlay').classList.remove('hidden');
+            document.getElementById('biometryOverlay').classList.add('flex');
+            document.getElementById('scanLine').classList.remove('hidden');
+            
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('biometryVideo');
+                video.srcObject = currentStream;
+                biometryActive = true;
+                detectFaceLoop();
+            } catch (e) {
+                PlayFitnessUI.toast('Câmera não encontrada', 'error');
+                stopBiometry();
+            }
+        }
+
+        function stopBiometry() {
+            biometryActive = false;
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('biometryOverlay').classList.add('hidden');
+            document.getElementById('biometryOverlay').classList.remove('flex');
+            document.getElementById('scanLine').classList.add('hidden');
+            document.getElementById('btnCaptureFace').disabled = true;
+            document.getElementById('btnCaptureFace').classList.add('opacity-50');
+        }
+
+        async function detectFaceLoop() {
+            if (!biometryActive) return;
+            
+            const video = document.getElementById('biometryVideo');
+            const canvas = document.getElementById('biometryCanvas');
+            const status = document.getElementById('biometryStatus');
+            const btn = document.getElementById('btnCaptureFace');
+            
+            const displaySize = { width: video.offsetWidth, height: video.offsetHeight };
+            faceapi.matchDimensions(canvas, displaySize);
+
+            const detections = await faceapi.detectAllFaces(video).withFaceLandmarks().withFaceDescriptors();
+            const resizedDetections = faceapi.resizeResults(detections, displaySize);
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            faceapi.draw.drawDetections(canvas, resizedDetections);
+
+            if (detections.length > 0) {
+                status.textContent = "Face detectada! Mantenha-se estável.";
+                status.classList.add('text-emerald-500');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                status.textContent = "Enquadre seu rosto no círculo...";
+                status.classList.remove('text-emerald-500');
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+            if (biometryActive) setTimeout(detectFaceLoop, 100);
+        }
+
+        async function captureFace() {
+            const video = document.getElementById('biometryVideo');
+            PlayFitnessUI.toast('Extraindo Biometria...', 'sync');
+            
+            const fullDetection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
+            
+            if (!fullDetection) {
+                PlayFitnessUI.toast('Erro na captura. Tente novamente.', 'error');
+                return;
+            }
+
+            const descriptorArray = Array.from(fullDetection.descriptor); // Converte Float32Array para Array normal
+            
+            try {
+                // Atualiza o aluno no Supabase
+                const { error } = await window.supabaseClient
+                    .from('alunos')
+                    .update({ biometria_facial: descriptorArray })
+                    .eq('id', recordingAlunoId);
+                
+                if (error) throw error;
+                
+                PlayFitnessUI.toast('Biometria Registrada com Sucesso!', 'verified');
+                stopBiometry();
+                initializeMembros();
+            } catch (e) {
+                console.error(e);
+                PlayFitnessUI.toast('Erro ao salvar no banco', 'error');
+            }
+        }
+    </script>
+
+    <!-- WEBCAM CAPTURE MODAL (FOOTER APPENDED) -->
+    <div id="webcamCaptureModal" class="fixed inset-0 z-[300] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closeWebcam()"></div>
+        <div class="relative bg-zinc-900 border border-white/10 rounded-[3rem] w-full max-w-sm overflow-hidden shadow-3xl">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <h4 class="font-headline font-black italic text-lg uppercase">Foto <span class="text-primary italic">Live</span></h4>
+                <button onclick="closeWebcam()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-error transition-all">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <div class="relative aspect-square rounded-[2rem] overflow-hidden border-2 border-primary/20 bg-black group shadow-inner">
+                    <video id="captureVideo" autoplay muted playsinline class="w-full h-full object-cover grayscale focus:grayscale-0"></video>
+                    <div class="absolute inset-0 border-4 border-dashed border-primary/10 rounded-[2rem] pointer-events-none"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 border-2 border-primary/30 rounded-[3rem] pointer-events-none opacity-50"></div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-white/5 flex gap-4">
+                <button onclick="closeWebcam()" class="flex-1 py-3 border border-white/5 rounded-2xl text-[9px] font-black uppercase tracking-widest">Cancelar</button>
+                <button onclick="takeSnapshot()" class="flex-[2] py-4 bg-primary text-white rounded-2xl font-black font-headline uppercase tracking-widest text-[9px] shadow-lg flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[16px]">photo_camera</span> Capturar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="cameraFlash" class="camera-flash"></div>
+
+    <script>
+        let captureStream = null;
+
+        async function openWebcam() {
+            const modal = document.getElementById('webcamCaptureModal');
+            const video = document.getElementById('captureVideo');
+            modal.classList.remove('hidden');
+            
+            try {
+                captureStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 800, height: 800, facingMode: "user" } 
+                });
+                video.srcObject = captureStream;
+            } catch (err) {
+                PlayFitnessUI.toast("Erro na câmera: " + err.message, "error");
+                closeWebcam();
+            }
+        }
+
+        function closeWebcam() {
+            document.getElementById('webcamCaptureModal').classList.add('hidden');
+            if (captureStream) {
+                captureStream.getTracks().forEach(t => t.stop());
+                captureStream = null;
+            }
+        }
+
+        function takeSnapshot() {
+            const video = document.getElementById('captureVideo');
+            const canvas = document.createElement('canvas');
+            const flash = document.getElementById('cameraFlash');
+            
+            flash.classList.add('is-flashing');
+            setTimeout(() => flash.classList.remove('is-flashing'), 300);
+
+            canvas.width = 600;
+            canvas.height = 600;
+            const ctx = canvas.getContext('2d');
+            
+            // Mirror & Crop
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            
+            const vW = video.videoWidth;
+            const vH = video.videoHeight;
+            const size = Math.min(vW, vH);
+            const x = (vW - size) / 2;
+            const y = (vH - size) / 2;
+            
+            ctx.drawImage(video, x, y, size, size, 0, 0, canvas.width, canvas.height);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            document.getElementById('modalAvatarPreview').src = dataUrl;
+            
+            // Injeta o arquivo no fluxo do formulário
+            currentPhotoData = dataUrl; 
+            
+            PlayFitnessUI.toast("Foto de Perfil Atualizada!", "camera_alt");
+            closeWebcam();
         }
     </script>
 </body>

@@ -66,6 +66,10 @@
                 <span class="material-symbols-outlined">group</span>
                 <span>Alunos</span>
             </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="cronograma.html">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Cronograma</span>
+            </a>
             <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
                 <span class="material-symbols-outlined">payments</span>
                 <span>Financeiro</span>
@@ -80,9 +84,35 @@
             </a>
         </div>
         <!-- Logout button moved to bottom of sidebar -->
-        <div class="mt-auto px-6">
-            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-xl hover:text-error transition-all">Sair do Sistema</button>
+        <div class="mt-auto px-6 pb-24 lg:pb-8">
+            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-2xl hover:text-error transition-all bg-white/[0.02]">Sair do Sistema</button>
         </div>
+    </nav>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/90 backdrop-blur-2xl border-t border-white/5 h-16 flex md:hidden justify-around items-center z-[60] px-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">dashboard</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Home</span>
+        </a>
+        <a href="membros.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">group</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Alunos</span>
+        </a>
+        <a href="modelo_ia.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <div class="p-2 -mt-6 bg-primary rounded-full shadow-lg shadow-primary/30 border-4 border-[#0a0a0a]">
+                <span class="material-symbols-outlined text-white text-[20px]">psychology</span>
+            </div>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">IA Engine</span>
+        </a>
+        <a href="campanhas.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">campaign</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Marketing</span>
+        </a>
+        <a href="configuracoes.html" class="flex flex-col items-center gap-1 text-primary group">
+            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">settings</span>
+            <span class="text-[8px] font-black uppercase tracking-widest italic">Ajustes</span>
+        </a>
     </nav>
 
     <!-- Overlay for mobile menu -->
@@ -90,27 +120,27 @@
 
     <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
         <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
-            <div class="flex items-center gap-3 flex-1">
+            <div class="flex items-center gap-3 flex-1 overflow-hidden">
                 <!-- Mobile Menu Toggle -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors">
+                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors shrink-0">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                    <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-[10px] md:text-xs italic truncate">Painel de Administração Global</span>
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0"></span>
+                    <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-[8px] xs:text-[10px] md:text-xs italic truncate">Configurações</span>
                 </div>
             </div>
-            <button onclick="saveAllConfigs()" class="bg-primary hover:bg-red-600 text-white font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest px-4 md:px-8 py-2 md:py-3 rounded-full transition-all shadow-lg shadow-primary/20">
+            <button onclick="saveAllConfigs()" class="bg-primary hover:bg-red-600 text-white font-headline text-[8px] xs:text-[9px] md:text-[10px] font-black uppercase tracking-widest px-3 xs:px-4 md:px-8 py-2 md:py-3 rounded-full transition-all shadow-lg shadow-primary/20 shrink-0 pr-1 sm:pr-0 border border-primary/20">
                 <span class="md:inline hidden">Salvar Alterações</span>
-                <span class="md:hidden">Salvar</span>
+                <span class="md:hidden uppercase">Salvar</span>
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 custom-scrollbar">
-            <h2 class="text-3xl md:text-5xl font-black text-white font-headline tracking-tighter leading-none mb-6 md:mb-10 italic">Configurações <span class="text-primary italic tracking-tight">Globais</span></h2>
+        <div class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 pb-28 md:pb-10 custom-scrollbar overscroll-contain">
+            <h2 class="text-3xl md:text-5xl font-black text-white font-headline tracking-tighter leading-none mb-6 md:mb-10 italic">Core <span class="text-primary italic tracking-tight">System</span></h2>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
+                <div class="bg-white/[0.03] backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6 shadow-2xl shadow-black/20">
                     <div>
                         <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-4 font-headline italic">Branding & Identidade (White-Label)</h4>
                         <div class="space-y-4">
@@ -138,25 +168,48 @@
                                 <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Slogan Estratégico</label>
                                 <input id="confSlogan" title="Slogan da marca" placeholder="Ex: Treino Inteligente" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="space-y-1">
-                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor Primária</label>
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor Primária (Botoes/Destaques)</label>
                                     <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4 border border-white/5">
                                         <input type="color" id="confColor" title="Escolher cor tema" class="w-10 h-10 border-none bg-transparent cursor-pointer rounded-lg">
                                         <span id="colorHex" class="text-xs font-black italic">#EF4444</span>
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Tamanho da Logo (px)</label>
-                                    <input type="number" id="confLogoSize" title="Altura da logo em pixels" placeholder="40" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor de Fundo da Página</label>
+                                    <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4 border border-white/5">
+                                        <input type="color" id="confBgColor" title="Escolher cor de fundo" class="w-10 h-10 border-none bg-transparent cursor-pointer rounded-lg">
+                                        <span id="bgColorHex" class="text-xs font-black italic">#0A0A0B</span>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor das Fontes (Texto)</label>
+                                    <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4 border border-white/5">
+                                        <input type="color" id="confTxtColor" title="Escolher cor do texto" class="w-10 h-10 border-none bg-transparent cursor-pointer rounded-lg">
+                                        <span id="txtColorHex" class="text-xs font-black italic">#FFFFFF</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Cor do Texto nos Botões</label>
+                                    <div class="flex gap-2 items-center bg-[#1a1919] rounded-2xl p-4 border border-white/5">
+                                        <input type="color" id="confBtnTxtColor" title="Escolher cor do texto dos botões" class="w-10 h-10 border-none bg-transparent cursor-pointer rounded-lg">
+                                        <span id="btnTxtColorHex" class="text-xs font-black italic">#FFFFFF</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Tamanho da Logo (px)</label>
+                                <input type="number" id="confLogoSize" title="Altura da logo em pixels" placeholder="40" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black italic">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Font Size Adjustment Card (Added) -->
-                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
+                <div class="bg-white/[0.03] backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6 shadow-2xl shadow-black/20">
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 font-headline italic">Acessibilidade: Tamanhos de Fonte</h4>
@@ -195,8 +248,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Card -->
-                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-white/5 space-y-6">
+                <div class="bg-white/[0.03] backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6 shadow-2xl shadow-black/20">
                     <div>
                         <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-4 font-headline italic">Acesso do Administrador</h4>
                         <div class="space-y-4">
@@ -209,6 +261,134 @@
                                 <input type="password" id="confAdminPass" title="Mudar senha do administrador" placeholder="••••••••" class="w-full bg-[#1a1919] border-none text-sm py-4 rounded-2xl focus:ring-1 focus:ring-primary/50 text-white font-black">
                             </div>
                             <p class="text-[9px] text-zinc-600 italic leading-relaxed">* Note: Deixe a senha em branco se não quiser mudá-la.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggested Themes Card (EXPANDED TO TWO ROWS) -->
+                <div class="bg-white/[0.03] backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6 lg:col-span-2 shadow-2xl shadow-black/20">
+                    <div>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-6 font-headline italic text-center">Galeria de Temas Sugeridos (Presets Premium)</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            <!-- Theme: Glover Group (Black/Yellow) -->
+                            <button onclick="applyThemePreset('#facc15', '#000000', '#facc15', '#000000')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-yellow-400/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#facc15]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#000000] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-yellow-400">Glover Group</span>
+                            </button>
+
+                            <!-- Theme: Red Velocity (Dark/Red) -->
+                            <button onclick="applyThemePreset('#ef4444', '#0a0a0b', '#ffffff', '#ffffff')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-red-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#ef4444]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#0a0a0b] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-red-500">Red Velocity</span>
+                            </button>
+
+                            <!-- Theme: Neon Cyber (Dark/Cyan) -->
+                            <button onclick="applyThemePreset('#06b6d4', '#020617', '#ffffff', '#000000')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-cyan-400/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#06b6d4]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#020617] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-cyan-400">Neon Cyber</span>
+                            </button>
+
+                            <!-- Theme: Emerald Luxe (Dark/Green) -->
+                            <button onclick="applyThemePreset('#10b981', '#061a12', '#d1fae5', '#000000')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-emerald-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#10b981]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#061a12] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-emerald-500">Emerald Luxe</span>
+                            </button>
+
+                            <!-- Theme: Sunset Orange -->
+                            <button onclick="applyThemePreset('#f97316', '#0f172a', '#ffffff', '#ffffff')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-orange-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#f97316]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#0f172a] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-orange-500">Sunset Orange</span>
+                            </button>
+
+                            <!-- Theme: Arctic White (Clean) -->
+                            <button onclick="applyThemePreset('#3b82f6', '#f8fafc', '#1e293b', '#ffffff')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-blue-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#3b82f6]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#f8fafc] border border-zinc-200"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-blue-600">Arctic White</span>
+                            </button>
+
+                            <!-- Theme: Gold Standard (Luxe) -->
+                            <button onclick="applyThemePreset('#fbbf24', '#1c1917', '#fbbf24', '#1c1917')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-yellow-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#fbbf24]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#1c1917] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-amber-500">Gold Standard</span>
+                            </button>
+
+                            <!-- Theme: Monocrom Carbon -->
+                            <button onclick="applyThemePreset('#d4d4d8', '#000000', '#d4d4d8', '#000000')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-zinc-400/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#d4d4d8]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#000000] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300">Total Carbon</span>
+                            </button>
+
+                            <!-- Theme: Industrial Steel -->
+                            <button onclick="applyThemePreset('#64748b', '#0f172a', '#94a3b8', '#ffffff')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-slate-400/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#64748b]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#0f172a] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-slate-400">Industrial Steel</span>
+                            </button>
+
+                             <!-- Theme: Sakura Rose -->
+                            <button onclick="applyThemePreset('#ec4899', '#18181b', '#f9a8d4', '#ffffff')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-pink-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#ec4899]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#18181b] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-pink-500">Sakura Night</span>
+                            </button>
+
+                            <!-- Theme: Ocean Breeze -->
+                            <button onclick="applyThemePreset('#0d9488', '#042f2e', '#99f6e4', '#000000')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-teal-500/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#0d9488]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#042f2e] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-teal-400">Ocean Breeze</span>
+                            </button>
+
+                            <!-- Theme: Midnight Sun -->
+                            <button onclick="applyThemePreset('#facc15', '#020617', '#ffffff', '#000000')" 
+                                class="flex flex-col items-center gap-3 p-4 bg-black/40 rounded-3xl border border-white/5 hover:border-yellow-400/50 transition-all group">
+                                <div class="flex gap-1">
+                                    <span class="w-4 h-4 rounded-full bg-[#facc15]"></span>
+                                    <span class="w-4 h-4 rounded-full bg-[#020617] border border-white/10"></span>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-yellow-400">Midnight Sun</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -303,13 +483,19 @@
                 document.getElementById('confSlogan').value = config.slogan;
                 document.getElementById('confColor').value = config.cor_primaria || '#ef4444';
                 document.getElementById('colorHex').textContent = (config.cor_primaria || '#ef4444').toUpperCase();
+                document.getElementById('confBgColor').value = config.cor_background || '#0a0a0b';
+                document.getElementById('bgColorHex').textContent = (config.cor_background || '#0a0a0b').toUpperCase();
+                document.getElementById('confTxtColor').value = config.cor_texto || '#ffffff';
+                document.getElementById('txtColorHex').textContent = (config.cor_texto || '#ffffff').toUpperCase();
+                document.getElementById('confBtnTxtColor').value = config.cor_texto_botao || '#ffffff';
+                document.getElementById('btnTxtColorHex').textContent = (config.cor_texto_botao || '#ffffff').toUpperCase();
                 document.getElementById('confLogoSize').value = config.logo_altura || 40;
 
                 const { data: admin } = await window.supabaseClient.from('usuarios_administrativos').select('email').limit(1).single();
                 if(admin) document.getElementById('confAdminEmail').value = admin.email;
 
                 // Load Logo Preview
-                const customLogo = localStorage.getItem('playfitness_custom_logo');
+                const customLogo = config.logo_url || localStorage.getItem('playfitness_custom_logo');
                 if (customLogo) {
                     const img = document.getElementById('logoPreview');
                     img.src = customLogo;
@@ -318,18 +504,38 @@
                     document.getElementById('btnRemoveLogo').classList.remove('hidden');
                 }
 
-                // Sync color input to hex label
+                // Sync color inputs to hex labels and apply theme
+                const updateAllColors = () => {
+                    const primary = document.getElementById('confColor').value;
+                    const bg = document.getElementById('confBgColor').value;
+                    const txt = document.getElementById('confTxtColor').value;
+                    const btnTxt = document.getElementById('confBtnTxtColor').value;
+                    PlayFitnessAPI.utils.applyTheme(primary, bg, txt, btnTxt);
+                };
+
                 document.getElementById('confColor').addEventListener('input', (e) => {
                     document.getElementById('colorHex').textContent = e.target.value.toUpperCase();
+                    updateAllColors();
+                });
+                document.getElementById('confBgColor').addEventListener('input', (e) => {
+                    document.getElementById('bgColorHex').textContent = e.target.value.toUpperCase();
+                    updateAllColors();
+                });
+                document.getElementById('confTxtColor').addEventListener('input', (e) => {
+                    document.getElementById('txtColorHex').textContent = e.target.value.toUpperCase();
+                    updateAllColors();
+                });
+                document.getElementById('confBtnTxtColor').addEventListener('input', (e) => {
+                    document.getElementById('btnTxtColorHex').textContent = e.target.value.toUpperCase();
+                    updateAllColors();
                 });
 
                 // Load and Apply Font Sizes
-                const fontSizes = PlayFitnessAPI.utils.getFontSizes();
+                const fontSizes = PlayFitnessAPI.utils.getFontSizes(config);
                 document.getElementById('sizeHeadline').value = fontSizes.headline;
                 document.getElementById('sizeBody').value = fontSizes.body;
                 document.getElementById('sizeLabel').value = fontSizes.label;
                 document.getElementById('sizeSidebar').value = fontSizes.sidebar;
-
                 updateFontSizeLabels();
 
                 // Listen for font changes (real-time preview)
@@ -426,22 +632,45 @@
                 const name = document.getElementById('confName').value;
                 const slogan = document.getElementById('confSlogan').value;
                 const color = document.getElementById('confColor').value;
+                const bgColor = document.getElementById('confBgColor').value;
+                const txtColor = document.getElementById('confTxtColor').value;
+                const btnTxtColor = document.getElementById('confBtnTxtColor').value;
                 const logoSize = parseInt(document.getElementById('confLogoSize').value);
 
-                // Update Branding in Supabase
-                await window.supabaseClient.from('configuracoes').update({
+                // Save Font Sizes
+                const fontSizes = {
+                    headline: parseFloat(document.getElementById('sizeHeadline').value),
+                    body: parseFloat(document.getElementById('sizeBody').value),
+                    label: parseFloat(document.getElementById('sizeLabel').value),
+                    sidebar: parseFloat(document.getElementById('sizeSidebar').value)
+                };
+ 
+                // Prepare Supabase Update for Branding
+                const brandingUpdates = {
                     nome_academia: name,
                     slogan: slogan,
                     cor_primaria: color,
-                    logo_altura: logoSize
-                }).eq('id', currentConfigId);
+                    cor_background: bgColor,
+                    cor_texto: txtColor,
+                    cor_texto_botao: btnTxtColor,
+                    logo_altura: logoSize,
+                    escala_fontes: fontSizes
+                };
 
-                // NOVO: Persistência do Logo Customizado (White-Label)
+                // Handle Logo Update in Supabase
                 if (window.tempCustomLogo === "REMOVE") {
+                    brandingUpdates.logo_url = null;
                     localStorage.removeItem('playfitness_custom_logo');
                 } else if (window.tempCustomLogo) {
+                    brandingUpdates.logo_url = window.tempCustomLogo;
                     localStorage.setItem('playfitness_custom_logo', window.tempCustomLogo);
                 }
+
+                // Push to Supabase
+                await window.supabaseClient.from('configuracoes').update(brandingUpdates).eq('id', currentConfigId);
+
+                // Local Backup for Speed
+                localStorage.setItem('playfitness_font_sizes', JSON.stringify(fontSizes));
 
                 // Update Admin Email
                 const newEmail = document.getElementById('confAdminEmail').value;
@@ -451,15 +680,6 @@
                 if(newPass) adminUpdate.senha = newPass;
 
                 await window.supabaseClient.from('usuarios_administrativos').update(adminUpdate).neq('id', '00000000-0000-0000-0000-000000000000');
-
-                // Save Font Sizes
-                const fontSizes = {
-                    headline: document.getElementById('sizeHeadline').value,
-                    body: document.getElementById('sizeBody').value,
-                    label: document.getElementById('sizeLabel').value,
-                    sidebar: document.getElementById('sizeSidebar').value
-                };
-                localStorage.setItem('playfitness_font_sizes', JSON.stringify(fontSizes));
 
                 PlayFitnessUI.toast('Configurações Salvas!', 'check_circle');
                 setTimeout(() => location.reload(), 1000);
@@ -541,6 +761,23 @@
             } catch (e) {
                  PlayFitnessUI.toast('Erro na atualização em massa', 'error');
             }
+        }
+        function applyThemePreset(primary, bg, text, btnText) {
+            document.getElementById('confColor').value = primary;
+            document.getElementById('colorHex').textContent = primary.toUpperCase();
+            
+            document.getElementById('confBgColor').value = bg;
+            document.getElementById('bgColorHex').textContent = bg.toUpperCase();
+            
+            document.getElementById('confTxtColor').value = text;
+            document.getElementById('txtColorHex').textContent = text.toUpperCase();
+            
+            document.getElementById('confBtnTxtColor').value = btnText;
+            document.getElementById('btnTxtColorHex').textContent = btnText.toUpperCase();
+            
+            // Apply real-time preview
+            PlayFitnessAPI.utils.applyTheme(primary, bg, text, btnText);
+            PlayFitnessUI.toast(`Preset Aplicado!`, 'palette');
         }
     </script>
 </body>

@@ -193,18 +193,19 @@ const PlayFitnessAPI = {
                     }
                 });
 
-                const ranking = await Promise.all(Object.entries(counts)
-                    .map(async ([refId, count]) => {
+                // OPTIMIZATION: Don't call fidelity for all referrers in a loop to avoid rate limits
+                const ranking = Object.entries(counts)
+                    .map(([refId, count]) => {
                         const member = data.find(m => m.id.toString() === refId.toString());
                         const name = member ? member.nome_completo : `ID: ${refId}`;
-                        const fidelity = member ? await PlayFitnessAPI.students.getFidelityScore(member.id) : 85;
                         return {
+                            id: refId,
                             name: name,
                             count: count,
-                            fidelity: fidelity,
-                            foto: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=dc2626&color=fff`
+                            fidelity: 85, // Default baseline for list, calculation moved to detail calls
+                            foto: `https://i.pravatar.cc/150?u=${member ? member.id + 1000 : Math.random()}`
                         };
-                    }));
+                    });
 
                 return ranking.sort((a, b) => b.count - a.count);
             } catch (e) {
@@ -239,8 +240,11 @@ const PlayFitnessAPI = {
                 
                 let tenureScore = 0;
                 if(aluno && aluno.data_matricula) {
-                    const days = (new Date() - new Date(aluno.data_matricula)) / (1000 * 60 * 60 * 24);
-                    tenureScore = Math.min((days / 365) * 100, 100); // 1 ano = 100 no tenure
+                    const matDate = new Date(aluno.data_matricula);
+                    if (!isNaN(matDate.getTime())) {
+                        const days = (new Date() - matDate) / (1000 * 60 * 60 * 24);
+                        tenureScore = Math.max(0, Math.min((days / 365) * 100, 100)); // 1 ano = 100 no tenure
+                    }
                 }
 
                 // Score Final: 70% frequência atual + 30% longevidade
@@ -252,10 +256,43 @@ const PlayFitnessAPI = {
 
         getFallbackRanking() {
             return [
-                { name: 'SMAYK TR', count: 12, fidelity: 98, foto: 'https://ui-avatars.com/api/?name=SMAYK+TR&background=dc2626&color=fff' },
-                { name: 'Lucas Silva', count: 8, fidelity: 92, foto: 'https://ui-avatars.com/api/?name=Lucas+Silva' },
-                { name: 'Ana Paula', count: 5, fidelity: 88, foto: 'https://ui-avatars.com/api/?name=Ana+Paula' }
+                { id: 1, name: 'Dra. Maria Alice Aragão', count: 12, fidelity: 99, foto: 'https://i.pravatar.cc/150?u=1001' },
+                { id: 101, name: 'SMAYK TR', count: 8, fidelity: 98, foto: 'https://i.pravatar.cc/150?u=1201' },
+                { id: 102, name: 'Lucas Silva', count: 5, fidelity: 92, foto: 'https://i.pravatar.cc/150?u=1202' }
             ];
+        },
+
+        // --- NEW: Anthropometric Assessment (Avaliação Antropométrica) ---
+        async listAssessments(cpf) {
+            if (!window.supabaseClient || !cpf) return [];
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('avaliacao')
+                    .select('*')
+                    .eq('codCliente', cpf)
+                    .order('data', { ascending: false });
+                if (error) throw error;
+                return data || [];
+            } catch (e) {
+                console.error("Error listing assessments:", e);
+                return [];
+            }
+        },
+
+        async saveAssessment(payload) {
+            if (!window.supabaseClient) return;
+            try {
+                const clean = PlayFitnessAPI.utils.cleanPayload(payload);
+                const { data, error } = await window.supabaseClient
+                    .from('avaliacao')
+                    .insert([clean])
+                    .select();
+                if (error) throw error;
+                return data;
+            } catch (e) {
+                console.error("Error saving assessment:", e);
+                throw e;
+            }
         }
     },
 
@@ -302,15 +339,15 @@ const PlayFitnessAPI = {
                     .from('transacoes')
                     .select('valor, tipo, data');
                 
-                const revenueNow = tErr ? 0 : transacoes
+                const revenueNow = tErr ? 0 : (transacoes || [])
                     .filter(t => t.tipo === 'Receita')
                     .reduce((acc, curr) => acc + (curr.valor || 0), 0);
 
-                const revenueLastYear = tErr ? 0 : transacoes
+                const revenueLastYear = tErr ? 0 : (transacoes || [])
                     .filter(t => {
                         if (t.tipo !== 'Receita' || !t.data) return false;
                         const tDate = new Date(t.data);
-                        return tDate <= lastYear;
+                        return !isNaN(tDate.getTime()) && tDate <= lastYear;
                     })
                     .reduce((acc, curr) => acc + (curr.valor || 0), 0);
 
@@ -408,6 +445,7 @@ const PlayFitnessAPI = {
                     const cancNoMes = alunos.filter(a => {
                          if(a.status !== 'Inativo' || !a.data_cancelamento) return false;
                          const cancD = new Date(a.data_cancelamento);
+                         if(isNaN(cancD.getTime())) return false;
                          return cancD.getMonth() === targetMonthDate.getMonth() && cancD.getFullYear() === targetMonthDate.getFullYear();
                     }).length;
                     
@@ -512,10 +550,12 @@ const PlayFitnessAPI = {
            const config = (error || !data) ? { nome_academia: 'Gaia Academia', cor_primaria: '#ef4444' } : data;
            
            // Aplica a cor tema globalmente se especificada
-           if(config.cor_primaria) PlayFitnessAPI.utils.applyTheme(config.cor_primaria);
+           if(config.cor_primaria || config.cor_background || config.cor_texto || config.cor_texto_botao) {
+               PlayFitnessAPI.utils.applyTheme(config.cor_primaria, config.cor_background, config.cor_texto, config.cor_texto_botao);
+           }
            
            // Aplica tamanhos de fonte
-           PlayFitnessAPI.utils.applyFontSizes(PlayFitnessAPI.utils.getFontSizes());
+           PlayFitnessAPI.utils.applyFontSizes(PlayFitnessAPI.utils.getFontSizes(config));
 
            // NOVO: Aplica White-Label Branding (Logo)
            PlayFitnessUI.applyBranding(config);
@@ -526,9 +566,14 @@ const PlayFitnessAPI = {
            return config;
         },
 
-        getFontSizes() {
+        getFontSizes(config = null) {
             const defaults = { headline: 1, body: 1, label: 1, sidebar: 1 };
             try {
+                // 1. Prioriza o que veio do Banco de Dados
+                if (config && config.escala_fontes) {
+                    return { ...defaults, ...config.escala_fontes };
+                }
+                // 2. Fallback para LocalStorage
                 const stored = localStorage.getItem('playfitness_font_sizes');
                 return stored ? { ...defaults, ...JSON.parse(stored) } : defaults;
             } catch (e) { return defaults; }
@@ -542,39 +587,39 @@ const PlayFitnessAPI = {
                 document.head.appendChild(style);
             }
 
+            // Proportional scaling based on root font size instead of overriding everything
+            const baseScale = sizes.body || 1;
+            const headlineScale = sizes.headline || 1;
+
             style.innerHTML = `
                 :root {
-                    --pf-scale-headline: ${sizes.headline};
-                    --pf-scale-body: ${sizes.body};
-                    --pf-scale-label: ${sizes.label};
-                    --pf-scale-sidebar: ${sizes.sidebar};
+                    --pf-scale-headline: ${headlineScale};
+                    --pf-scale-body: ${baseScale};
+                    --pf-scale-label: ${sizes.label || 1};
+                    --pf-scale-sidebar: ${sizes.sidebar || 1};
                 }
 
-                /* Headlines & Titles (Scaling based on usual sizes) */
-                .font-headline, h1, h2, h3, .text-3xl, .text-4xl, .text-2xl, .text-5xl { 
-                    font-size: calc(1.5rem * var(--pf-scale-headline)) !important; 
-                }
-                .text-xl { font-size: calc(1.25rem * var(--pf-scale-headline)) !important; }
-                .text-lg { font-size: calc(1.125rem * var(--pf-scale-headline)) !important; }
-
-                /* Body Text */
-                body, p, .text-sm, .text-base { 
-                    font-size: calc(1rem * var(--pf-scale-body)) !important; 
+                /* Proportional scaling without breaking Tailwind rems */
+                body {
+                    font-size: calc(16px * var(--pf-scale-body));
                 }
 
-                /* Small Labels & Details (Scaling based on micro sizes) */
-                .font-label, .text-xs, [class*="text-[8px]"], [class*="text-[9px]"], [class*="text-[10px]"] {
-                    font-size: calc(0.75rem * var(--pf-scale-label)) !important;
+                .font-headline {
+                    font-size: calc(1.2em * var(--pf-scale-headline));
                 }
 
-                /* Sidebar / Navigation */
+                .font-label {
+                    font-size: calc(1em * var(--pf-scale-label));
+                }
+
+                /* Sidebar scaling */
                 #sidebarNav a span, #sidebarNav button {
-                    font-size: calc(0.875rem * var(--pf-scale-sidebar)) !important;
+                    font-size: calc(0.875rem * var(--pf-scale-sidebar));
                 }
             `;
         },
 
-        applyTheme(color) {
+        applyTheme(color, bgColor, txtColor, btnTxtColor) {
             // Cria ou atualiza uma tag de estilo global para sobrescrever a cor primária do Tailwind
             let style = document.getElementById('playfitness-dynamic-theme');
             if (!style) {
@@ -582,17 +627,64 @@ const PlayFitnessAPI = {
                 style.id = 'playfitness-dynamic-theme';
                 document.head.appendChild(style);
             }
-            // Injeta a variável CSS e sobrescreve as classes do Tailwind que usam #ef4444
-            style.innerHTML = `
-                :root { --primary-dynamic: ${color}; }
-                .text-primary { color: ${color} !important; }
-                .bg-primary { background-color: ${color} !important; }
-                .border-primary { border-color: ${color} !important; }
-                .ring-primary { --tw-ring-color: ${color} !important; }
-                .shadow-primary\\/20 { --tw-shadow-color: ${color} !important; }
-                .shadow-primary\\/30 { --tw-shadow-color: ${color} !important; }
-                .text-\\[\\#ef4444\\] { color: ${color} !important; }
+            
+            let css = '';
+            if (color) {
+                css += `
+                    :root { 
+                        --primary-dynamic: ${color}; 
+                        --pf-primary: ${color};
+                    }
+                    /* Texto e Opacidade */
+                    .text-primary, .text-\\[\\#ef4444\\], .text-emerald-500, .text-amber-500, .text-error, [id*="Slogan"], [id*="slogan"] { color: ${color} !important; }
+                    [class*="text-primary/"], [class*="text-red-500/"], [class*="text-emerald-500/"], [class*="text-error/"], [class*="text-emerald-500/"] { color: ${color}cc !important; }
+                    
+                    /* Fundos e Opacidade */
+                    .bg-primary, .bg-\\[\\#ef4444\\], .bg-emerald-500, .bg-amber-500, .bg-error, [class*="bg-primary"] { background-color: ${color} !important; }
+                    [class*="bg-primary/"], [class*="bg-red-500/"], [class*="bg-emerald-500/"], [class*="bg-error/"], [class*="bg-emerald-500/"] { background-color: ${color}1a !important; }
+                    
+                    /* Bordas */
+                    .border-primary, .border-\\[\\#ef4444\\], .border-emerald-500, .border-amber-500, .border-error { border-color: ${color} !important; border-right-color: ${color} !important; }
+                    [class*="border-primary/"], [class*="border-red-500/"], [class*="border-error/"], [class*="border-emerald-500/"] { border-color: ${color}40 !important; }
+                    
+                    /* Ícones e Inputs */
+                    .ring-primary { --tw-ring-color: ${color} !important; }
+                    .material-symbols-outlined.text-primary { color: ${color} !important; }
+                `;
+            }
+            
+            if (bgColor) {
+                css += `
+                    body, .bg-background, .bg-surface-dim, .bg-surface, .bg-\\[\\#0a0a0a\\], .bg-\\[\\#0e0e0e\\], .bg-\\[\\#131313\\], .bg-\\[\\#0A0A0B\\], .bg-\\[\\#020617\\], .bg-\\[\\#061a12\\] {
+                        background-color: ${bgColor} !important;
+                    }
+                `;
+            }
+
+            if (txtColor) {
+                css += `
+                    body, .text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400, .text-zinc-500, .text-zinc-600 {
+                        color: ${txtColor} !important;
+                    }
+                    /* Forçar opacidade em labels secundários */
+                    .text-zinc-500, .text-zinc-600 { opacity: 0.7; }
+                `;
+            }
+
+            if (btnTxtColor) {
+                css += `
+                    .bg-primary, .bg-\\[\\#ef4444\\], button.bg-primary, .text-on-primary-fixed, [class*="bg-primary"] {
+                        color: ${btnTxtColor} !important;
+                    }
+                `;
+            }
+
+            // Estilização de Fontes e Cores específicas (SEM SOBRESCREVER FUNDO DE CARDS)
+            css += `
+                canvas { filter: hue-rotate(0deg); } /* Placeholder for chart accent logic */
             `;
+            
+            style.innerHTML = css;
         },
 
         cleanPayload(payload) {
@@ -708,12 +800,18 @@ const PlayFitnessUI = {
      * Initializes the White-Label branding (Logo)
      */
     applyBranding(config) {
-        const logoData = localStorage.getItem('playfitness_custom_logo');
+        // PRIORIDADES: 1. DB (logo_url), 2. LocalStorage (cache), 3. Texto Padrão
+        const logoData = config.logo_url || localStorage.getItem('playfitness_custom_logo');
         const sideNavLogo = document.querySelector('#sidebarNav h1');
         const sideNavSlogan = document.querySelector('#sidebarNav p');
         const logoHeight = config.logo_altura || 40;
         
         if (logoData && sideNavLogo) {
+            // Se veio do DB mas não está no cache, atualiza o cache para rapidez na próxima carga
+            if (config.logo_url && !localStorage.getItem('playfitness_custom_logo')) {
+                localStorage.setItem('playfitness_custom_logo', config.logo_url);
+            }
+
             // Replace text with image if custom logo exists
             const img = document.createElement('img');
             img.src = logoData;
@@ -820,8 +918,9 @@ const PlayFitnessUI = {
         if (!container) return;
 
         try {
-            const kpi = await PlayFitnessAPI.kpis.getOverview();
-            const students = await PlayFitnessAPI.students.list();
+            // OPTIMIZATION: Pull data from already loaded globals if possible or use local fallback
+            const kpi = PlayFitnessAPI.cachedOverview || await PlayFitnessAPI.kpis.getOverview();
+            const students = PlayFitnessAPI.cachedList || await PlayFitnessAPI.students.list();
             const alerts = [];
 
             // Alert 1: Revenue vs Target (Mock target of 50k)

@@ -97,6 +97,10 @@
                 <span class="material-symbols-outlined">group</span>
                 <span>Alunos</span>
             </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="cronograma.html">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Cronograma</span>
+            </a>
             <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
                 <span class="material-symbols-outlined">payments</span>
                 <span>Financeiro</span>
@@ -133,7 +137,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button onclick="PlayFitnessUI.toast('Criando Campanha IA...', 'rocket_launch')" class="bg-primary hover:bg-red-600 text-white px-4 md:px-8 py-2 md:py-3 rounded-full font-headline text-[10px] md:text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/20">
+                <button onclick="PlayFitnessUI.toast('Criando Campanha IA...', 'rocket_launch')" class="bg-primary hover:opacity-90 text-white px-4 md:px-8 py-2 md:py-3 rounded-full font-headline text-[10px] md:text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/20">
                     <span class="md:inline hidden">Nova Campanha</span>
                     <span class="md:hidden">Nova</span>
                 </button>
@@ -169,7 +173,7 @@
             <div id="studentTraceCard" class="hidden mb-10 p-6 bg-surface-container-low rounded-[1.5rem] border border-primary/20 shadow-xl">
                 <div class="flex items-start justify-between mb-5">
                     <div class="flex items-center gap-4">
-                        <div id="traceAvatar" class="w-14 h-14 rounded-2xl bg-zinc-800 border border-primary/30 flex items-center justify-center font-black text-xl text-primary italic shadow-lg"></div>
+                        <div id="traceAvatar" class="w-14 h-14 rounded-2xl bg-zinc-800 border border-primary/30 flex items-center justify-center shadow-lg overflow-hidden shrink-0"></div>
                         <div>
                             <p id="traceName" class="font-black text-lg text-white uppercase italic font-headline leading-tight"></p>
                             <p id="traceId" class="text-[9px] text-zinc-500 font-mono mt-0.5"></p>
@@ -306,17 +310,117 @@
                 </div>
 
                 <!-- Ambassador Ranking -->
-                <div id="ambassadorRankingCard" class="col-span-12 lg:col-span-4 bg-surface-container-low p-10 rounded-[2.5rem] border border-white/5 shadow-2xl relative z-20 transition-all duration-500">
-                    <h4 class="text-2xl font-black font-headline tracking-tighter mb-10 italic">Embaixadores <span class="text-primary italic">Elite</span></h4>
-                    <div id="rankingContainer" class="space-y-6">
-                        <!-- Dynamically populated -->
-                    </div>
-                    <div class="mt-auto pt-10">
-                        <div class="p-6 bg-primary/5 rounded-[2rem] border border-primary/10 flex items-start gap-4">
-                            <span class="material-symbols-outlined text-primary italic">rewarded_ads</span>
-                            <p class="text-[10px] font-black text-zinc-400 leading-relaxed uppercase italic font-headline"><span class="text-primary italic">Promo:</span> Ofereça um mês grátis para embaixadores que atingirem <span class="text-white">5 indicações</span> validadas.</p>
+                <div id="ambassadorRankingCard" class="col-span-12 lg:col-span-4 bg-[#161616] p-6 rounded-[2.5rem] border border-white/5 shadow-2xl relative z-20 transition-all duration-500">
+                    <!-- Hero Section -->
+                    <section class="mb-6 text-center">
+                        <div class="flex items-center justify-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-[#FF3131] text-xl" data-icon="leaderboard">leaderboard</span>
+                            <h1 class="font-headline font-bold italic tracking-tighter uppercase text-[#FF3131] dark:text-[#e51a22] text-lg">EMBAIXADORES ELITE</h1>
+                        </div>
+                        <span class="text-[#e51a22] italic font-extrabold tracking-widest text-[10px] uppercase bg-[#e51a22]/10 px-3 py-1 rounded-full">Temporada Atual</span>
+                        <h2 class="text-2xl font-headline italic font-extrabold mt-4 tracking-tighter text-white uppercase leading-none">Líderes de Performance</h2>
+                    </section>
+                    <!-- Ranking List -->
+                    <div class="space-y-2">
+                        <!-- Rank #1 - The Gold Tier -->
+                        <div class="relative group cursor-pointer" onclick="expandAmbassador(this, 0, 'Dra. Maria Alice Aragão')">
+                            <!-- Badge Overlap -->
+                            <div class="absolute -top-2 -left-2 z-10 bg-[#ffd709] text-[#453900] italic font-extrabold px-2 py-0.5 rounded-lg text-[10px] shadow-[0_4px_20px_rgba(255,215,9,0.3)] transform -rotate-12">
+                                #1
+                            </div>
+                            <div class="bg-[#242424] p-4 rounded-xl flex items-center justify-between transition-all duration-300 hover:bg-[#2a2a2a]">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full ring-2 ring-[#ffd709] overflow-hidden">
+                                        <img alt="Dra. Maria Alice Aragão" class="w-full h-full object-cover" src="https://i.pravatar.cc/150?u=1001"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-headline italic font-extrabold uppercase tracking-tight text-white/90 group-hover:text-white">DRA. MARIA ALICE ARAGÃO</span>
+                                        <span class="text-[#e51a22] italic font-bold text-[10px] tracking-widest">3 INDICAÇÕES</span>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined text-[#ffd709] text-2xl border-[0px] [font-variation-settings:'FILL'_1]">stars</span>
+                            </div>
+                        </div>
+                        <!-- Rank #2 - Silver/Red Tier -->
+                        <div class="relative group cursor-pointer" onclick="expandAmbassador(this, 1, 'Ricardo Cavalcanti')">
+                            <div class="absolute -top-1 -left-1.5 z-10 bg-[#e51a22] text-black italic font-extrabold px-2 py-0.5 rounded-lg text-[9px] transform -rotate-6">
+                                #2
+                            </div>
+                            <div class="bg-[#201f1f] p-3 rounded-xl flex items-center justify-between border-l-2 border-[#e51a22]/30 transition-all duration-300 hover:bg-[#2a2a2a]">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full ring-1 ring-[#e51a22]/50 overflow-hidden">
+                                        <img alt="Ricardo Cavalcanti" class="w-full h-full object-cover" src="https://i.pravatar.cc/150?u=1002"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs font-headline italic font-extrabold uppercase tracking-tight text-white/80 group-hover:text-white">RICARDO CAVALCANTI</span>
+                                        <span class="text-[#e51a22] italic font-bold text-[9px] tracking-widest">3 INDICAÇÕES</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Rank #3 - Bronze/Gray Tier -->
+                        <div class="relative group cursor-pointer" onclick="expandAmbassador(this, 2, 'Ana Luiza Mendes')">
+                            <div class="absolute -top-1 -left-1.5 z-10 bg-[#464747] text-[#d1d0d0] italic font-extrabold px-2 py-0.5 rounded-lg text-[9px] transform -rotate-6">
+                                #3
+                            </div>
+                            <div class="bg-[#1a1919] p-3 rounded-xl flex items-center justify-between opacity-90 transition-all duration-300 hover:bg-[#2a2a2a]">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full ring-1 ring-[#484847]/50 overflow-hidden">
+                                        <img alt="Ana Luiza Mendes" class="w-full h-full object-cover" src="https://i.pravatar.cc/150?u=1003"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs font-headline italic font-extrabold uppercase tracking-tight text-white/80 group-hover:text-white">ANA LUIZA MENDES</span>
+                                        <span class="text-[#e51a22] italic font-bold text-[9px] tracking-widest">3 INDICAÇÕES</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Asymmetric Separator -->
+                        <div class="bg-[#242424] h-[1px] w-[30%] mx-auto my-6"></div>
+                        <!-- Other Participants (Simplified Rows) -->
+                        <div class="space-y-1.5 pt-2">
+                            <div class="flex items-center justify-between px-4 py-3 bg-[#131313]/50 rounded-lg cursor-pointer transition-all duration-300 hover:bg-[#2a2a2a]" onclick="expandAmbassador(this, 3, 'Fabio Silva')">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[#adaaaa] font-bold italic w-4 text-xs">4</span>
+                                    <div class="w-8 h-8 rounded-full overflow-hidden border border-[#484847]">
+                                        <img alt="Fabio Silva" class="w-full h-full object-cover" src="https://i.pravatar.cc/150?u=1201"/>
+                                    </div>
+                                    <span class="italic font-bold uppercase font-headline text-[#adaaaa] text-[10px]">FABIO SILVA</span>
+                                </div>
+                                <span class="text-[#adaaaa] italic text-[9px]">2 INDICAÇÕES</span>
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3 bg-[#131313]/50 rounded-lg cursor-pointer transition-all duration-300 hover:bg-[#2a2a2a]" onclick="expandAmbassador(this, 4, 'Julia Paiva')">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[#adaaaa] font-bold italic w-4 text-xs">5</span>
+                                    <div class="w-8 h-8 rounded-full overflow-hidden border border-[#484847]">
+                                        <img alt="Julia Paiva" class="w-full h-full object-cover" src="https://i.pravatar.cc/150?u=1202"/>
+                                    </div>
+                                    <span class="italic font-bold uppercase font-headline text-[#adaaaa] text-[10px]">JULIA PAIVA</span>
+                                </div>
+                                <span class="text-[#adaaaa] italic text-[9px]">2 INDICAÇÕES</span>
+                            </div>
                         </div>
                     </div>
+                    <!-- Promotional Callout -->
+                    <section class="mt-8">
+                        <div class="bg-[#a70138] p-5 rounded-xl shadow-[0_20px_40px_rgba(167,1,56,0.3)] relative overflow-hidden group">
+                            <!-- Abstract Texture Decor -->
+                            <div class="absolute -right-10 -bottom-10 w-24 h-24 bg-[#ffb2b9]/10 rounded-full blur-2xl group-hover:bg-[#ffb2b9]/20 transition-all duration-700"></div>
+                            <div class="relative z-10 flex items-start gap-4">
+                                <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[#ff8e83] text-[20px] border-[0px] [font-variation-settings:'FILL'_1]">trophy</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-headline italic font-extrabold text-[10px] tracking-tight uppercase leading-snug">
+                                        PROMO: OFEREÇA UM MÊS GRÁTIS PARA EMBAIXADORES QUE ATINGIREM 5 INDICAÇÕES
+                                    </h3>
+                                    <button class="mt-3 bg-white text-[#a70138] px-4 py-1.5 rounded-full font-headline italic font-extrabold text-[9px] tracking-widest uppercase active:scale-95 transition-transform">
+                                        Regulamento
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Detalhes do Embaixador (Deep Layer UI) -->
@@ -356,33 +460,8 @@
         async function loadCampaigns() {
             try {
                 const ranking = await PlayFitnessAPI.students.getReferralRanking();
-                const container = document.getElementById('rankingContainer');
-                
-                container.innerHTML = ranking.slice(0, 3).map((item, idx) => {
-                    const medals = ['text-yellow-400', 'text-zinc-400', 'text-amber-600'];
-                    const medal = idx < 3 ? medals[idx] : 'text-zinc-600';
-                    const initials = item.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                    
-                    return `
-                    <div onclick="expandAmbassador(this, ${idx}, '${item.name}')" class="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-all active:scale-95">
-                        <div class="flex items-center gap-5">
-                            <div class="relative">
-                                <div class="w-14 h-14 rounded-2xl bg-zinc-800 border ${idx === 0 ? 'border-yellow-400/30' : 'border-white/10'} flex items-center justify-center font-headline font-black text-xl text-primary italic shadow-lg">
-                                    ${initials}
-                                </div>
-                                <div class="absolute -top-2 -right-2 ${idx === 0 ? 'bg-yellow-400 text-black' : 'bg-primary text-white'} text-[9px] font-black px-2 py-0.5 rounded-full font-headline shadow-lg">#${idx + 1}</div>
-                            </div>
-                            <div>
-                                <p class="font-black text-sm font-headline uppercase italic leading-tight text-white/80 group-hover:text-white transition-colors">${item.name}</p>
-                                <p class="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-1">${item.count} Indicações</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                             <span class="material-symbols-outlined ${medal} text-base italic animate-pulse">workspace_premium</span>
-                        </div>
-                    </div>
-                    `;
-                }).join('');
+                // O ranking dinâmico foi temporariamente substituído pela interface estática
+                // para exibir o novo design do painel Embaixadores Elite.
 
                 // Buscar alunos para simular o Rastro
                 const students = await PlayFitnessAPI.students.list();
@@ -402,8 +481,8 @@
 
                     return `
                     <div class="w-full flex items-center gap-3 bg-black/40 p-3 rounded-xl border border-white/5 hover:border-primary/30 transition-all cursor-pointer">
-                        <div class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center font-black text-[11px] text-primary italic shrink-0 shadow-lg border border-white/5">
-                            ${student.nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                        <div class="w-10 h-10 rounded-full border border-white/10 overflow-hidden shrink-0 shadow-lg">
+                            <img src="https://i.pravatar.cc/150?u=${student.id ? student.id + 1000 : Math.random()}" alt="${student.nome_completo}" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex flex-col justify-center w-full">
                             <div class="flex justify-between items-center w-full gap-2">
@@ -455,8 +534,8 @@
                 referredBox.innerHTML = referred.map((s, i) => `
                     <div class="bg-black/40 border border-white/5 p-4 rounded-2xl shadow-lg hover:border-primary/40 transition-all stagger-item" style="animation-delay: ${i * 100}ms">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center font-black text-[10px] text-primary italic border border-white/10 shrink-0">
-                                ${s.nome_completo.split(' ').map(n => n[0]).join('').toUpperCase()}
+                            <div class="w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 flex items-center justify-center font-black text-[10px] text-primary italic border border-white/10 shrink-0">
+                                <img src="https://i.pravatar.cc/150?u=${s.id + 1000}" alt="${s.nome_completo}" class="w-full h-full object-cover transition-all"/>
                             </div>
                             <div class="min-w-0">
                                 <p class="text-[11px] font-black text-white italic truncate uppercase">${s.nome_completo}</p>
@@ -529,8 +608,10 @@
                         const initials = s.nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                         const statusColor = s.status === 'Ativo' ? 'text-emerald-400' : s.status === 'Em Risco' ? 'text-red-400' : 'text-zinc-400';
                         return `
-                        <div onclick="showStudentTrace(${s.id})" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 cursor-pointer transition-all border-b border-white/5 last:border-0">
-                            <div class="w-9 h-9 rounded-xl bg-zinc-800 flex items-center justify-center font-black text-[11px] text-primary italic shrink-0">${initials}</div>
+                        <div onclick="showStudentTrace(${s.id})" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 cursor-pointer transition-all border-b border-white/5 last:border-0 group">
+                            <div class="w-9 h-9 rounded-xl overflow-hidden bg-zinc-800 flex items-center justify-center shrink-0 border border-white/5">
+                                <img src="https://i.pravatar.cc/150?u=${s.id + 1000}" alt="${s.nome_completo}" class="w-full h-full object-cover transition-all"/>
+                            </div>
                             <div class="flex-1 min-w-0">
                                 <p class="font-black text-sm text-white uppercase italic font-headline truncate">${s.nome_completo}</p>
                                 <p class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">${s.plano || 'Sem plano'} • <span class="${statusColor}">${s.status}</span></p>
@@ -557,8 +638,7 @@
             if (!student) return;
 
             // Preencher card
-            const initials = student.nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('traceAvatar').textContent = initials;
+            document.getElementById('traceAvatar').innerHTML = `<img src="https://i.pravatar.cc/150?u=${student.id ? student.id + 1000 : Math.random()}" alt="${student.nome_completo}" class="w-full h-full object-cover"/>`;
             document.getElementById('traceName').textContent = student.nome_completo;
             document.getElementById('traceId').textContent = `ID: ${student.id} • CPF: ${student.cpf || 'N/A'} • Tel: ${student.telefone || 'N/A'}`;
             document.getElementById('tracePlan').textContent = student.plano || '—';
