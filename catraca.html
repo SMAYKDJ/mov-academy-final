@@ -218,7 +218,8 @@
 
         async function processMatch(match, landmarks) {
             if (match.label === 'unknown') {
-                updateUI('Desconhecido', 'Acesso Negado', 'close', 'Aluno não identificado na base.', 'denied');
+                updateUI('Desconhecido', 'Acesso Negado', 'close', 'Este rosto não consta na base.', 'denied');
+                logAcesso(null, 'tentativa_negada', 'Rosto desconhecido capturado.');
                 return;
             }
 
@@ -252,7 +253,15 @@
             lastId = data.id;
             livenessStatus = 'confirmed';
             
-            updateUI(data.nome_completo, 'Acesso Liberado', 'verified', `Bem-vindo! Bom treino.`, 'granted');
+            // MENSAGEM VIP / MENSAGEM DE PLANO (UX do tutorial)
+            let personalizedMsg = "Bem-vindo! Bom treino.";
+            if (data.plano?.toLowerCase().includes('vip')) {
+                personalizedMsg = `🏆 VIP DETECTADO: Excelente treino, ${data.nome_completo.split(' ')[0]}!`;
+            } else if (data.status === 'Em Risco') {
+                personalizedMsg = "⚠️ Notamos sua frequência baixa. Que bom te ver de volta!";
+            }
+
+            updateUI(data.nome_completo, 'Acesso Liberado', 'verified', personalizedMsg, 'granted');
             document.getElementById('audioSuccess').play();
             
             logAcesso(data.id, 'liberado', null);
