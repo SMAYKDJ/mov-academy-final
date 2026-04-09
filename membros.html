@@ -134,6 +134,18 @@
                 <span class="material-symbols-outlined">analytics</span>
                 <span>Relatórios</span>
             </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="laboratorio_ia.html">
+                <span class="material-symbols-outlined">science</span>
+                <span>Laboratório de IA (Visual)</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl mt-4" href="modelo_ia.html">
+                <span class="material-symbols-outlined text-zinc-500">psychology</span>
+                <span>Motor de IA (Código)</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="tabelas_ia.html">
+                <span class="material-symbols-outlined">table_chart</span>
+                <span>Base de Treinamento</span>
+            </a>
             <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="configuracoes.html">
                 <span class="material-symbols-outlined">settings</span>
                 <span>Configurações</span>
@@ -593,7 +605,7 @@
             <div class="relative w-64 h-64 mb-8">
                 <!-- Video Feed -->
                 <div class="absolute inset-0 rounded-full border-4 border-primary/20 overflow-hidden bg-black flex items-center justify-center">
-                    <video id="biometryVideo" autoplay muted playsinline class="w-full h-full object-cover grayscale"></video>
+                    <video id="biometryVideo" autoplay muted playsinline title="Câmera de Escaneamento Biométrico" class="w-full h-full object-cover grayscale"></video>
                     <canvas id="biometryCanvas" class="absolute inset-0 pointer-events-none"></canvas>
                 </div>
                 
@@ -936,74 +948,91 @@
 
         let weightChartInstance = null;
         function renderWeightEvolutionChart(history) {
-            const ctx = document.getElementById('weightHistoryChart').getContext('2d');
-            if (weightChartInstance) weightChartInstance.destroy();
+            // Pequeno delay para garantir que o modal esteja visível e o canvas tenha dimensões
+            setTimeout(() => {
+                const canvas = document.getElementById('weightHistoryChart');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                if (weightChartInstance) weightChartInstance.destroy();
 
-            // Mock de dados semanais se não houver registros suficientes
-            let dataPoints = history.length > 0 ? history : [
-                { data_avaliacao: '2026-03-01', peso: 78.5 },
-                { data_avaliacao: '2026-03-08', peso: 77.2 },
-                { data_avaliacao: '2026-03-15', peso: 76.8 },
-                { data_avaliacao: '2026-03-22', peso: 76.5 },
-                { data_avaliacao: '2026-03-29', peso: 75.2 }
-            ];
+                // Mock de dados semanais se não houver registros suficientes
+                let dataPoints = history.length > 0 ? history : [
+                    { data_avaliacao: '2026-03-01', peso: 78.5 },
+                    { data_avaliacao: '2026-03-08', peso: 77.2 },
+                    { data_avaliacao: '2026-03-15', peso: 76.8 },
+                    { data_avaliacao: '2026-03-22', peso: 76.5 },
+                    { data_avaliacao: '2026-03-29', peso: 75.2 }
+                ];
 
-            // Ordenar por data
-            dataPoints.sort((a, b) => new Date(a.data_avaliacao) - new Date(b.data_avaliacao));
+                // Ordenar por data
+                dataPoints.sort((a, b) => new Date(a.data_avaliacao) - new Date(b.data_avaliacao));
 
-            // Filtrar para ficar visualmente limpo
-            const lastData = dataPoints.slice(-6);
-            
-            const bestWeight = Math.min(...lastData.map(d => d.peso));
-            
-            const labels = lastData.map(d => {
-                const date = new Date(d.data_avaliacao);
-                const day = date.getDate().toString().padStart(2, '0');
-                const month = date.toLocaleString('pt-BR', { month: 'short' }).replace('.', '');
-                const isPreviousMonth = date.getMonth() !== new Date().getMonth();
-                return isPreviousMonth ? `${day} ${month}` : `${day}`;
-            });
+                // Filtrar para ficar visualmente limpo (últimos 6 registros)
+                const lastData = dataPoints.slice(-6);
+                const labels = lastData.map(d => {
+                    const date = new Date(d.data_avaliacao);
+                    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '');
+                });
 
-            const weights = lastData.map(d => d.peso);
+                const weights = lastData.map(d => d.peso);
+                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-dynamic').trim() || '#ef4444';
 
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-dynamic') || '#ef4444';
-
-            weightChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: weights,
-                        backgroundColor: weights.map(w => w === Math.min(...weights) ? primaryColor : 'rgba(255, 255, 255, 0.05)'),
-                        borderRadius: 8,
-                        barThickness: 30,
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: true }
+                weightChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: weights,
+                            backgroundColor: (context) => {
+                                const val = context.raw;
+                                const minVal = Math.min(...weights);
+                                return val === minVal ? primaryColor : 'rgba(255, 255, 255, 0.08)';
+                            },
+                            borderRadius: 12,
+                            borderWidth: 0,
+                            barPercentage: 0.6
+                        }]
                     },
-                    scales: {
-                        y: { 
-                            beginAtZero: false, 
-                            display: false 
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { 
-                                color: '#525252', 
-                                font: { size: 9, family: 'Lexend', weight: '900' },
-                                padding: 10
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: { padding: { top: 20 } },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#131313',
+                                titleFont: { family: 'Lexend', size: 10 },
+                                bodyFont: { family: 'Lexend', size: 12, weight: '900' },
+                                padding: 12,
+                                displayColors: false,
+                                callbacks: {
+                                    label: (ctx) => `PESO: ${ctx.raw} kg`
+                                }
                             }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: false, 
+                                display: false,
+                                grid: { display: false }
+                            },
+                            x: {
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: { 
+                                    color: '#525252', 
+                                    font: { size: 9, family: 'Lexend', weight: '900' },
+                                    padding: 10
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1200,
+                            easing: 'easeOutQuart'
                         }
-                    },
-                    animation: { duration: 2000, easing: 'easeOutQuart' }
-                }
-            });
+                    }
+                });
+            }, 100);
         }
 
         function closeModal() {
@@ -1256,7 +1285,7 @@
             
             <div class="p-6">
                 <div class="relative aspect-square rounded-[2rem] overflow-hidden border-2 border-primary/20 bg-black group shadow-inner">
-                    <video id="captureVideo" autoplay muted playsinline class="w-full h-full object-cover grayscale focus:grayscale-0"></video>
+                    <video id="captureVideo" autoplay muted playsinline title="Câmera para Foto de Perfil" class="w-full h-full object-cover grayscale focus:grayscale-0"></video>
                     <div class="absolute inset-0 border-4 border-dashed border-primary/10 rounded-[2rem] pointer-events-none"></div>
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 border-2 border-primary/30 rounded-[3rem] pointer-events-none opacity-50"></div>
                 </div>

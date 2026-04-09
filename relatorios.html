@@ -64,6 +64,10 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
     </style>
 </head>
 
@@ -121,19 +125,19 @@
 
             <!-- Dashboard Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="glass-card rounded-[2rem] p-6 fade-in" style="animation-delay: 0.1s">
+                <div class="glass-card rounded-[2rem] p-6 fade-in delay-100">
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2 italic">Acessos (Hoje)</p>
                     <h3 id="kpiAcessos" class="text-3xl font-black italic tracking-tighter">0</h3>
                 </div>
-                <div class="glass-card rounded-[2rem] p-6 fade-in" style="animation-delay: 0.2s">
+                <div class="glass-card rounded-[2rem] p-6 fade-in delay-200">
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2 italic">Bloqueios</p>
                     <h3 id="kpiBloqueios" class="text-3xl font-black italic tracking-tighter text-primary">0</h3>
                 </div>
-                <div class="glass-card rounded-[2rem] p-6 fade-in" style="animation-delay: 0.3s">
+                <div class="glass-card rounded-[2rem] p-6 fade-in delay-300">
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2 italic">Pico de Horário</p>
                     <h3 id="kpiPico" class="text-3xl font-black italic tracking-tighter">--:--</h3>
                 </div>
-                <div class="glass-card rounded-[2rem] p-6 fade-in" style="animation-delay: 0.4s">
+                <div class="glass-card rounded-[2rem] p-6 fade-in delay-400">
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2 italic">Eficiência IA</p>
                     <h3 class="text-xl font-black italic tracking-tighter text-emerald-500">99.8%</h3>
                 </div>

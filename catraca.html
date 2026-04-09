@@ -34,7 +34,7 @@
     <!-- Digital Header -->
     <div class="absolute top-10 flex flex-col items-center">
         <h1 class="text-3xl font-black italic tracking-tighter uppercase text-primary">PlayFitness</h1>
-        <p class="text-[10px] tracking-[0.4em] text-zinc-500 uppercase font-black">Biometric Access Protocol <span class="bg-primary/20 text-primary px-1.5 py-0.5 rounded ml-2 animate-pulse">Dual Engine (JS+PY)</span></p>
+        <p class="text-[10px] tracking-[0.4em] text-zinc-500 uppercase font-black">Biometric Access Protocol <span class="bg-primary/20 text-primary px-1.5 py-0.5 rounded ml-2 animate-pulse">Legacy PCA Engine (UFC)</span></p>
     </div>
 
     <!-- Scanner Main Unit -->
@@ -45,7 +45,7 @@
         
         <!-- Video Container -->
         <div class="absolute inset-0 rounded-full overflow-hidden border-4 border-white/10 bg-zinc-900 shadow-[0_0_80px_rgba(239,68,68,0.1)]">
-            <video id="webcam" autoplay muted playsinline class="w-full h-full object-cover grayscale"></video>
+            <video id="webcam" autoplay muted playsinline title="Câmera de Reconhecimento Facial" class="w-full h-full object-cover grayscale"></video>
             <canvas id="overlay" class="absolute inset-0 pointer-events-none"></canvas>
             <div class="scanner-line"></div>
         </div>
@@ -57,8 +57,8 @@
         <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary/40 rounded-br-3xl"></div>
 
         <!-- Biometric HUD elements -->
-        <div class="absolute -top-12 -left-12 text-[8px] font-black text-primary/40 tracking-[0.2em] uppercase origin-left rotate-90 hidden md:block">Vector: 0.2838.12</div>
-        <div class="absolute -bottom-12 -right-12 text-[8px] font-black text-primary/40 tracking-[0.2em] uppercase origin-right -rotate-90 hidden md:block">Neural Engine: Active</div>
+        <div class="absolute -top-12 -left-12 text-[8px] font-black text-primary/40 tracking-[0.2em] uppercase origin-left rotate-90 hidden md:block">Algorithm: PCA / Eigenfaces</div>
+        <div class="absolute -bottom-12 -right-12 text-[8px] font-black text-primary/40 tracking-[0.2em] uppercase origin-right -rotate-90 hidden md:block">UFC Russas | LTI Lab</div>
         </div>
         
         <!-- Instruction Tooltip -->
@@ -283,7 +283,7 @@
                         aluno_id: alunoId,
                         status_acesso: status,
                         motivo_bloqueio: motivo,
-                        metodo: 'biometria_facial'
+                        metodo: 'pca_legacy_ufc'
                     });
             } catch (e) { console.error("Erro ao registrar log:", e); }
         }
