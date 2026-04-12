@@ -1,55 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlayFitness Messenger Footer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moviment Academia Messenger Footer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Inter', sans-serif;
-            background: #ffffff;
-        }
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: "Inter", sans-serif;
+        background: #ffffff;
+      }
 
-        .status-icon-rect {
-            width: 14px;
-            height: 9px;
-            border: 1.5px solid #ef4444;
-            border-radius: 2px;
-        }
+      .status-icon-rect {
+        width: 14px;
+        height: 9px;
+        border: 1.5px solid #ef4444;
+        border-radius: 2px;
+      }
 
-        .btn-quantum-active {
-            background: #059669;
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 800;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 11px;
-            box-shadow: 0 5px 15px -5px rgba(5, 150, 105, 0.4);
-        }
+      .btn-quantum-active {
+        background: #059669;
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 800;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 11px;
+        box-shadow: 0 5px 15px -5px rgba(5, 150, 105, 0.4);
+      }
     </style>
-</head>
+  </head>
 
-<body class="p-4 flex flex-col gap-3 border-t border-slate-100">
+  <body class="p-4 flex flex-col gap-3 border-t border-slate-100">
     <div class="bg-red-50 p-2.5 rounded-xl flex items-center gap-2">
-        <div class="status-icon-rect"></div>
-        <span class="text-xs text-emerald-600 font-extrabold uppercase tracking-widest">● HUD ATIVO: MOLDURA
-            FIXA</span>
+      <div class="status-icon-rect"></div>
+      <span
+        class="text-xs text-emerald-600 font-extrabold uppercase tracking-widest"
+        >● HUD ATIVO: MOLDURA FIXA</span
+      >
     </div>
     <div class="btn-quantum-active">CONVERSA EM ANDAMENTO</div>
-    <p class="text-xs text-center text-slate-400 uppercase font-bold tracking-[2px] opacity-60">Abertura em Janela
-        Integrada (Seamless)</p>
+    <p
+      class="text-xs text-center text-slate-400 uppercase font-bold tracking-[2px] opacity-60"
+    >
+      Abertura em Janela Integrada (Seamless)
+    </p>
     <script>
-        setInterval(() => { if (!window.opener || window.opener.closed) window.close(); }, 1000);
-        window.onclick = () => window.focus();
+      setInterval(() => {
+        if (!window.opener || window.opener.closed) window.close();
+      }, 1000);
+      window.onclick = () => window.focus();
     </script>
-</body>
-
+  </body>
 </html>

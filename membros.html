@@ -1,762 +1,1759 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="dark" lang="pt-BR">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>PlayFitness | Roster de Alunos</title>
+    <title>Moviment Academia | Roster de Alunos</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        /* Webcam Flash Animation */
-        @keyframes flash {
-            0% { background-color: transparent; }
-            50% { background-color: white; opacity: 1; }
-            100% { background-color: transparent; }
+      /* Webcam Flash Animation */
+      @keyframes flash {
+        0% {
+          background-color: transparent;
         }
-        .camera-flash { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
-        .is-flashing { animation: flash 0.3s ease-out forwards; }
+        50% {
+          background-color: white;
+          opacity: 1;
+        }
+        100% {
+          background-color: transparent;
+        }
+      }
+      .camera-flash {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        pointer-events: none;
+      }
+      .is-flashing {
+        animation: flash 0.3s ease-out forwards;
+      }
+
+      /* Feedback Badges */
+      .badge-feedback {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 8px;
+        font-weight: 900;
+        font-style: italic;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      .badge-feedback.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .badge-pos {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+      .badge-neg {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+      .badge-neu {
+        background: rgba(255, 255, 255, 0.05);
+        color: #a3a3a3;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
     </style>
-    
+
     <!-- API & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <style>
-        /* Webcam Flash Animation */
-        @keyframes flashEffect {
-            0% { background-color: transparent; }
-            50% { background-color: white; opacity: 1; }
-            100% { background-color: transparent; }
+      /* Webcam Flash Animation */
+      @keyframes flashEffect {
+        0% {
+          background-color: transparent;
         }
-        .camera-flash { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
-        .is-flashing { animation: flashEffect 0.3s ease-out forwards; }
+        50% {
+          background-color: white;
+          opacity: 1;
+        }
+        100% {
+          background-color: transparent;
+        }
+      }
+      .camera-flash {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        pointer-events: none;
+      }
+      .is-flashing {
+        animation: flashEffect 0.3s ease-out forwards;
+      }
     </style>
     <script src="supabase.js"></script>
     <script src="playfitness-api.js"></script>
+    <script>
+      PlayFitnessAPI.boot();
+    </script>
 
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#ef4444",
-                        "on-primary-fixed": "#ffffff",
-                        "surface-bright": "#2a2a2a",
-                        "secondary-dim": "#dc2626",
-                        "surface-dim": "#0a0a0a",
-                        "background": "#0a0a0a",
-                        "surface-container": "#161616",
-                        "surface-container-highest": "#242424",
-                        "primary-fixed-dim": "#b91c1c",
-                        "surface-container-low": "#111111",
-                        "primary-dim": "#dc2626",
-                        "on-surface-variant": "#a3a3a3",
-                        "on-surface": "#ffffff",
-                        "surface-tint": "#ef4444",
-                        "primary-fixed": "#dc2626",
-                        "surface-container-lowest": "#000000",
-                        "secondary": "#dc2626",
-                        "error": "#f87171",
-                        "on-background": "#ffffff",
-                        "surface-variant": "#242424",
-                    },
-                    fontFamily: {
-                        "headline": ["Lexend"],
-                        "body": ["Plus Jakarta Sans"],
-                        "label": ["Lexend"]
-                    },
-                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#FF3131",
+              "primary-dark": "#D70000",
+              "on-primary-fixed": "#ffffff",
+              "surface-bright": "#222222",
+              "surface-dim": "#080808",
+              background: "#080808",
+              "surface-container": "#121212",
+              "surface-container-highest": "#1A1A1A",
+              "surface-container-low": "#0C0C0C",
+              "on-surface-variant": "#A1A1AA",
+              "on-surface": "#FFFFFF",
+              error: "#FF4D4D",
             },
-        }
+            fontFamily: {
+              headline: ["Lexend"],
+              body: ["Plus Jakarta Sans"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+              lg: "1.25rem",
+              xl: "2rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0e0e0e; color: #ffffff; overflow: hidden; }
-        .font-headline { font-family: 'Lexend', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: rgba(26, 25, 25, 0.4); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+      :root {
+        --primary: #ff3131;
+        --primary-rgb: 255, 49, 49;
+        --background: #080808;
+        --surface: #0c0c0c;
+        --surface-container: #121212;
+        --error: #ff4d4d;
+      }
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: var(--background);
+        color: #ffffff;
+        overflow: hidden;
+      }
+      .font-headline {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 300,
+          "GRAD" 0,
+          "opsz" 24;
+      }
 
-        .active-filter { background-color: #ef4444 !important; color: #ffffff !important; }
-        
-        /* Animation */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+      .glass-card {
+        background: rgba(18, 18, 18, 0.6);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow:
+          0 4px 30px rgba(0, 0, 0, 0.5),
+          inset 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+
+      .premium-border {
+        position: relative;
+      }
+      .premium-border::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1),
+          transparent,
+          rgba(255, 49, 49, 0.1)
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1a1a1a;
+        border-radius: 10px;
+      }
+
+      .active-filter {
+        background-color: var(--primary) !important;
+        color: #ffffff !important;
+      }
+
+      @keyframes subtlePulse {
+        0% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.5;
+        }
+      }
+      .pulse-soft {
+        animation: subtlePulse 3s infinite ease-in-out;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+      }
     </style>
-</head>
+  </head>
 
-<body class="bg-background text-on-background antialiased flex h-screen">
+  <body class="bg-background text-on-background antialiased flex h-screen">
     <!-- SideNavBar (Desktop & Mobile) -->
-    <nav id="sidebarNav" class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#131313] w-64 border-r border-white/5 shadow-2xl z-[60] 
-        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:flex shrink-0">
-        <div class="px-8 mb-12 flex justify-between items-center">
-            <div>
-                <h1 id="sidebarGymName" class="text-2xl font-black text-white italic font-headline tracking-tighter">PlayFitness</h1>
-                <p id="sidebarGymSlogan" class="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-label mt-1">Central de Inteligência</p>
-            </div>
-            <!-- Close button only on mobile -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-white">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+    <nav
+      id="sidebarNav"
+      class="flex flex-col fixed left-0 top-0 h-full py-8 bg-[#0a0a0a] w-64 border-r border-white/5 shadow-2xl z-[60] -translate-x-full md:translate-x-0 transition-transform duration-500 ease-in-out md:flex shrink-0"
+    >
+      <div class="px-8 mb-12 flex justify-between items-center">
+        <div class="group cursor-pointer">
+          <h1
+            id="sidebarGymName"
+            class="text-2xl font-black text-white italic font-headline tracking-tighter group-hover:text-primary transition-colors"
+          >
+            Moviment Academia
+          </h1>
+          <p
+            id="sidebarGymSlogan"
+            class="text-[9px] uppercase tracking-[0.4em] text-primary/60 font-label mt-1 font-bold"
+          >
+            Intelligence Ops
+          </p>
         </div>
-        <div class="flex flex-col gap-2 px-4 shadow-xl">
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="dashboard.html">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span>Visão Geral</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-[#ef4444] bg-[#1a0a0a] border-r-4 border-[#ef4444] font-headline text-xs uppercase tracking-widest rounded-l-xl transition-all duration-300" href="membros.html">
-                <span class="material-symbols-outlined">group</span>
-                <span>Alunos</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="acessos.html">
-                <span class="material-symbols-outlined">verified_user</span>
-                <span>Logs Biométricos</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="cronograma.html">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span>Cronograma</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="financeiro.html">
-                <span class="material-symbols-outlined">payments</span>
-                <span>Financeiro</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="campanhas.html">
-                <span class="material-symbols-outlined">campaign</span>
-                <span>Campanhas</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="relatorios.html">
-                <span class="material-symbols-outlined">analytics</span>
-                <span>Relatórios</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="laboratorio_ia.html">
-                <span class="material-symbols-outlined">science</span>
-                <span>Laboratório de IA (Visual)</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl mt-4" href="modelo_ia.html">
-                <span class="material-symbols-outlined text-zinc-500">psychology</span>
-                <span>Motor de IA (Código)</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="tabelas_ia.html">
-                <span class="material-symbols-outlined">table_chart</span>
-                <span>Base de Treinamento</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-zinc-200 hover:bg-[#2c2c2c] transition-all duration-300 font-headline text-xs uppercase tracking-widest rounded-xl" href="configuracoes.html">
-                <span class="material-symbols-outlined">settings</span>
-                <span>Configurações</span>
-            </a>
-        </div>
-        <div class="mt-auto px-6 pb-24 lg:pb-8">
-            <button onclick="location.href='index.html'" class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-2xl hover:text-error transition-all bg-white/[0.02]">Sair do Sistema</button>
-        </div>
+        <!-- Close button only on mobile -->
+        <button
+          onclick="toggleMobileMenu()"
+          class="md:hidden text-white/50 hover:text-white transition-colors"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div
+        class="flex flex-col gap-1 px-4 overflow-y-auto custom-scrollbar pr-2 h-[calc(100vh-250px)] font-headline"
+      >
+        <a
+          id="nav-dashboard"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="dashboard.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">dashboard</span>
+          <span>Visão Geral</span>
+        </a>
+        <a
+          id="nav-membros"
+          class="flex items-center gap-4 px-5 py-3.5 text-primary bg-primary/10 border-r-2 border-primary text-[10px] uppercase font-black tracking-widest rounded-l-xl transition-all duration-300"
+          href="membros.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">group</span>
+          <span>Alunos</span>
+        </a>
+        <a
+          id="nav-acessos"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="acessos.html"
+        >
+          <span class="material-symbols-outlined text-[20px]"
+            >verified_user</span
+          >
+          <span>Logs Biométricos</span>
+        </a>
+        <a
+          id="nav-cronograma"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="cronograma.html"
+        >
+          <span class="material-symbols-outlined text-[20px]"
+            >calendar_today</span
+          >
+          <span>Cronograma</span>
+        </a>
+        <a
+          id="nav-financeiro"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="financeiro.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">payments</span>
+          <span>Financeiro</span>
+        </a>
+        <a
+          id="nav-campanhas"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="campanhas.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">campaign</span>
+          <span>Campanhas</span>
+        </a>
+        <a
+          id="nav-relatorios"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="relatorios.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">analytics</span>
+          <span>Relatórios</span>
+        </a>
+
+        <div class="h-px bg-white/5 my-4 mx-4"></div>
+
+        <a
+          id="nav-laboratorio"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="laboratorio_ia.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">science</span>
+          <span>Laboratório de IA (Visual)</span>
+        </a>
+        <a
+          id="nav-chat"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="chat_gemma.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">forum</span>
+          <span>Chat Gemma 2B (Online)</span>
+        </a>
+        <a
+          id="nav-modelo"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="modelo_ia.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">code</span>
+          <span>Motor de IA (Código)</span>
+        </a>
+        <a
+          id="nav-tabelas"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="tabelas_ia.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">dataset</span>
+          <span>Base de Treinamento</span>
+        </a>
+
+        <div class="h-px bg-white/5 my-4 mx-4"></div>
+
+        <a
+          id="nav-config"
+          class="flex items-center gap-4 px-5 py-3.5 text-zinc-500 hover:text-white hover:bg-white/[0.03] transition-all duration-300 text-[10px] uppercase font-black tracking-widest rounded-xl"
+          href="configuracoes.html"
+        >
+          <span class="material-symbols-outlined text-[20px]">settings</span>
+          <span>Configurações</span>
+        </a>
+      </div>
+      <div class="mt-auto px-6 pb-24 lg:pb-10">
+        <button
+          onclick="location.href = 'index.html'"
+          class="w-full py-4 bg-white/5 border border-white/5 text-zinc-500 font-headline text-[10px] uppercase font-black tracking-widest rounded-2xl hover:text-error hover:bg-error/10 transition-all flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined text-sm">logout</span>
+          Sair do Sistema
+        </button>
+      </div>
     </nav>
-    
+    <div class="mt-auto px-6 pb-24 lg:pb-8">
+      <button
+        onclick="location.href = 'index.html'"
+        class="w-full py-4 border border-white/5 text-zinc-600 font-headline text-[10px] uppercase tracking-widest rounded-2xl hover:text-error transition-all bg-white/[0.02]"
+      >
+        Sair do Sistema
+      </button>
+    </div>
+
     <!-- Bottom Navigation (Mobile Only) -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/90 backdrop-blur-2xl border-t border-white/5 h-16 flex md:hidden justify-around items-center z-[60] px-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
-            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">dashboard</span>
-            <span class="text-[8px] font-black uppercase tracking-widest italic">Home</span>
-        </a>
-        <a href="membros.html" class="flex flex-col items-center gap-1 text-primary group">
-            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">group</span>
-            <span class="text-[8px] font-black uppercase tracking-widest italic">Alunos</span>
-        </a>
-        <a href="relatorios.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
-            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">analytics</span>
-            <span class="text-[8px] font-black uppercase tracking-widest italic">Relatórios</span>
-        </a>
-        <a href="modelo_ia.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
-            <div class="p-2 -mt-6 bg-primary rounded-full shadow-lg shadow-primary/30 border-4 border-[#0a0a0a]">
-                <span class="material-symbols-outlined text-white text-[20px]">psychology</span>
-            </div>
-            <span class="text-[8px] font-black uppercase tracking-widest italic">IA Engine</span>
-        </a>
-        <a href="campanhas.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
-            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">campaign</span>
-            <span class="text-[8px] font-black uppercase tracking-widest italic">Marketing</span>
-        </a>
-        <a href="configuracoes.html" class="flex flex-col items-center gap-1 text-zinc-500 group">
-            <span class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110">settings</span>
-            <span class="text-[8px] font-black uppercase tracking-widest italic">Ajustes</span>
-        </a>
+    <nav
+      class="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/90 backdrop-blur-2xl border-t border-white/5 h-16 flex md:hidden justify-around items-center z-[60] px-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+    >
+      <a
+        href="dashboard.html"
+        class="flex flex-col items-center gap-1 text-zinc-500 group"
+      >
+        <span
+          class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110"
+          >dashboard</span
+        >
+        <span class="text-[8px] font-black uppercase tracking-widest italic"
+          >Home</span
+        >
+      </a>
+      <a
+        href="membros.html"
+        class="flex flex-col items-center gap-1 text-primary group"
+      >
+        <span
+          class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110"
+          >group</span
+        >
+        <span class="text-[8px] font-black uppercase tracking-widest italic"
+          >Alunos</span
+        >
+      </a>
+      <a
+        href="relatorios.html"
+        class="flex flex-col items-center gap-1 text-zinc-500 group"
+      >
+        <span
+          class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110"
+          >analytics</span
+        >
+        <span class="text-[8px] font-black uppercase tracking-widest italic"
+          >Relatórios</span
+        >
+      </a>
+      <a
+        href="modelo_ia.html"
+        class="flex flex-col items-center gap-1 text-zinc-500 group"
+      >
+        <div
+          class="p-2 -mt-6 bg-primary rounded-full shadow-lg shadow-primary/30 border-4 border-[#0a0a0a]"
+        >
+          <span class="material-symbols-outlined text-white text-[20px]"
+            >psychology</span
+          >
+        </div>
+        <span class="text-[8px] font-black uppercase tracking-widest italic"
+          >IA Engine</span
+        >
+      </a>
+      <a
+        href="campanhas.html"
+        class="flex flex-col items-center gap-1 text-zinc-500 group"
+      >
+        <span
+          class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110"
+          >campaign</span
+        >
+        <span class="text-[8px] font-black uppercase tracking-widest italic"
+          >Marketing</span
+        >
+      </a>
+      <a
+        href="configuracoes.html"
+        class="flex flex-col items-center gap-1 text-zinc-500 group"
+      >
+        <span
+          class="material-symbols-outlined text-[20px] transition-transform group-active:scale-110"
+          >settings</span
+        >
+        <span class="text-[8px] font-black uppercase tracking-widest italic"
+          >Ajustes</span
+        >
+      </a>
     </nav>
 
     <!-- Overlay for mobile menu -->
-    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden md:hidden"></div>
+    <div
+      id="sidebarOverlay"
+      onclick="toggleMobileMenu()"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden md:hidden"
+    ></div>
 
     <!-- Main Content Wrapper -->
     <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
-        <!-- TopAppBar -->
-        <header class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0">
-            <div class="flex items-center gap-2 md:gap-3 flex-1 overflow-hidden">
-                <!-- Mobile Menu Toggle -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white transition-colors shrink-0">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
-                <div class="flex items-center gap-2 min-w-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0"></span>
-                    <span id="pageTitle" class="font-headline font-black text-primary uppercase tracking-widest text-[8px] xs:text-[10px] md:text-xs italic truncate">Alunos</span>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2 md:gap-6 shrink-0">
-                <!-- Barra de Pesquisa (Optimized for Mobile) -->
-                <div class="relative hidden xs:block w-24 sm:w-32 md:w-64 lg:w-96">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-[12px]">search</span>
-                    <input id="searchInput" oninput="filterMembers()" class="w-full bg-[#1a1919] border-none text-[8px] sm:text-[10px] py-1.5 pl-8 pr-3 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest" placeholder="BUSCAR..." type="text"/>
-                </div>
+      <!-- TopAppBar -->
+      <header
+        class="flex justify-between items-center h-20 px-4 md:px-10 w-full sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shrink-0"
+      >
+        <div class="flex items-center gap-2 md:gap-3 flex-1 overflow-hidden">
+          <!-- Mobile Menu Toggle -->
+          <button
+            onclick="toggleMobileMenu()"
+            class="md:hidden text-zinc-400 hover:text-white transition-colors shrink-0"
+          >
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <div class="flex items-center gap-2 min-w-0">
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0"
+            ></span>
+            <span
+              id="pageTitle"
+              class="font-headline font-black text-primary uppercase tracking-widest text-[8px] xs:text-[10px] md:text-xs italic truncate"
+              >Alunos</span
+            >
+          </div>
+        </div>
 
-                <div class="flex items-center gap-2 md:gap-4 border-l border-white/10 pl-2 md:pl-6 shrink-0 pr-1 sm:pr-0">
-                    <button onclick="PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')" title="Exportar CSV" class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-auto md:px-5 md:py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all outline-none shrink-0 border border-white/5">
-                        <span class="material-symbols-outlined text-[14px] md:text-[16px]">download</span>
-                        <span class="hidden md:inline ml-2">Exportar</span>
-                    </button>
-                    <button onclick="openModal('add')" title="Novo Aluno" class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-auto md:px-5 md:py-2.5 bg-primary hover:bg-red-600 text-white rounded-full font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30 shrink-0 border border-primary/20">
-                        <span class="material-symbols-outlined text-[14px] md:text-[16px]">person_add</span>
-                        <span class="hidden md:inline ml-2">Novo</span>
-                    </button>
-                </div>
-            </div>
-        </header>
+        <div class="flex items-center gap-2 md:gap-6 shrink-0">
+          <!-- Barra de Pesquisa (Optimized for Mobile) -->
+          <div class="relative hidden xs:block w-24 sm:w-32 md:w-64 lg:w-96">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-[12px]"
+              >search</span
+            >
+            <input
+              id="searchInput"
+              oninput="filterMembers()"
+              class="w-full bg-[#1a1919] border-none text-[8px] sm:text-[10px] py-1.5 pl-8 pr-3 rounded-full focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 font-body uppercase tracking-widest"
+              placeholder="BUSCAR..."
+              type="text"
+            />
+          </div>
 
-        <!-- Page Content -->
-        <section class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 pb-28 md:pb-10 custom-scrollbar overscroll-contain">
-            <!-- Header Section -->
-            <div class="mb-8 md:mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-6 md:gap-8">
-                <div>
-                    <h2 class="text-3xl md:text-4xl font-black text-white font-headline tracking-tighter leading-none mb-2 md:mb-3 italic">Roster de <span class="text-primary tracking-tight">Alunos</span></h2>
-                    <p class="text-zinc-500 font-body text-[10px] md:text-xs">Gestão tática de performance e retenção</p>
-                </div>
-                <div class="flex gap-1.5 p-1.5 bg-white/[0.02] rounded-3xl border border-white/5 overflow-x-auto no-scrollbar scroll-smooth snap-x">
-                    <button onclick="setFilter('All')" class="filter-btn flex items-center px-3 py-2 rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all active-filter whitespace-nowrap">
-                        <span>Todos</span>
-                        <span id="count-All" class="ml-1.5 px-1.5 py-0.5 bg-black/20 rounded-full text-[8px] text-black font-bold">0</span>
-                    </button>
-                    <button onclick="setFilter('Ativo')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
-                        <span>Ativos</span>
-                        <span id="count-Ativo" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold">0</span>
-                    </button>
-                    <button onclick="setFilter('Prospect')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
-                        <span>Prospecção</span>
-                        <span id="count-Prospect" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold">0</span>
-                    </button>
-                    <button onclick="setFilter('Experimental')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
-                        <span>Experimental</span>
-                        <span id="count-Experimental" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold">0</span>
-                    </button>
-                    <button onclick="setFilter('Em Risco')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-error rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
-                        <span>Risco IA</span>
-                        <span id="count-EmRisco" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-error font-bold">0</span>
-                    </button>
-                    <button onclick="setFilter('Inativo')" class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap">
-                        <span>Inativos</span>
-                        <span id="count-Inativo" class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-zinc-400 font-bold">0</span>
-                    </button>
-                </div>
-            </div>
+          <div
+            class="flex items-center gap-2 md:gap-4 border-l border-white/10 pl-2 md:pl-6 shrink-0 pr-1 sm:pr-0"
+          >
+            <button
+              onclick="
+                PlayFitnessAPI.utils.exportCSV(allMembers, 'roster_alunos.csv')
+              "
+              title="Exportar CSV"
+              class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-auto md:px-5 md:py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all outline-none shrink-0 border border-white/5"
+            >
+              <span class="material-symbols-outlined text-[14px] md:text-[16px]"
+                >download</span
+              >
+              <span class="hidden md:inline ml-2">Exportar</span>
+            </button>
+            <button
+              onclick="openModal('add')"
+              title="Novo Aluno"
+              class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-auto md:px-5 md:py-2.5 bg-primary hover:bg-red-600 text-white rounded-full font-headline text-[9px] md:text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-primary/30 shrink-0 border border-primary/20"
+            >
+              <span class="material-symbols-outlined text-[14px] md:text-[16px]"
+                >person_add</span
+              >
+              <span class="hidden md:inline ml-2">Novo</span>
+            </button>
+          </div>
+        </div>
+      </header>
 
-            <!-- Roster Grid -->
-            <div id="rosterContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 pb-20">
-                <!-- Dynamically populated -->
-            </div>
-        </section>
+      <!-- Page Content -->
+      <section
+        class="flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-10 pb-28 md:pb-10 custom-scrollbar overscroll-contain"
+      >
+        <!-- Header Section -->
+        <div
+          class="mb-8 md:mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-6 md:gap-8"
+        >
+          <div>
+            <h2
+              class="text-3xl md:text-4xl font-black text-white font-headline tracking-tighter leading-none mb-2 md:mb-3 italic"
+            >
+              Roster de <span class="text-primary tracking-tight">Alunos</span>
+            </h2>
+            <p class="text-zinc-500 font-body text-[10px] md:text-xs">
+              Gestão tática de performance e retenção
+            </p>
+          </div>
+          <div
+            class="flex gap-1.5 p-1.5 bg-white/[0.02] rounded-3xl border border-white/5 overflow-x-auto no-scrollbar scroll-smooth snap-x"
+          >
+            <button
+              onclick="setFilter('All')"
+              class="filter-btn flex items-center px-3 py-2 rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all active-filter whitespace-nowrap"
+            >
+              <span>Todos</span>
+              <span
+                id="count-All"
+                class="ml-1.5 px-1.5 py-0.5 bg-black/20 rounded-full text-[8px] text-black font-bold"
+                >0</span
+              >
+            </button>
+            <button
+              onclick="setFilter('Ativo')"
+              class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap"
+            >
+              <span>Ativos</span>
+              <span
+                id="count-Ativo"
+                class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold"
+                >0</span
+              >
+            </button>
+            <button
+              onclick="setFilter('Prospect')"
+              class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap"
+            >
+              <span>Prospecção</span>
+              <span
+                id="count-Prospect"
+                class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold"
+                >0</span
+              >
+            </button>
+            <button
+              onclick="setFilter('Experimental')"
+              class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap"
+            >
+              <span>Experimental</span>
+              <span
+                id="count-Experimental"
+                class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-primary font-bold"
+                >0</span
+              >
+            </button>
+            <button
+              onclick="setFilter('Em Risco')"
+              class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-error rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap"
+            >
+              <span>Risco IA</span>
+              <span
+                id="count-EmRisco"
+                class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-error font-bold"
+                >0</span
+              >
+            </button>
+            <button
+              onclick="setFilter('Inativo')"
+              class="filter-btn flex items-center px-3 py-2 text-zinc-500 hover:text-white rounded-full text-[9px] font-black font-label uppercase tracking-widest transition-all whitespace-nowrap"
+            >
+              <span>Inativos</span>
+              <span
+                id="count-Inativo"
+                class="ml-1.5 px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-zinc-400 font-bold"
+                >0</span
+              >
+            </button>
+          </div>
+        </div>
 
-        <!-- Bottom Status Bar -->
-        <footer class="h-auto md:h-24 px-4 md:px-10 py-4 md:py-0 border-t border-white/5 flex flex-col md:flex-row justify-between items-center bg-[#0e0e0e] shrink-0 gap-4 md:gap-0">
-            <div class="flex gap-8 md:gap-16 w-full md:w-auto justify-between md:justify-start">
-                <div>
-                    <span class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Total Geral</span>
-                    <p id="totalCount" class="text-xl md:text-3xl font-black text-white font-headline tracking-tighter">00</p>
-                </div>
-                <div>
-                    <span class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Média Score IA</span>
-                    <p id="avgScore" class="text-xl md:text-3xl font-black text-primary font-headline tracking-tighter">00%</p>
-                </div>
-                <div class="hidden sm:block">
-                    <span class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1">Retenção Ativa</span>
-                    <p class="text-xl md:text-3xl font-black text-white font-headline tracking-tighter">94.2%</p>
-                </div>
+        <!-- Roster Grid -->
+        <div
+          id="rosterContainer"
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 pb-20"
+        >
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- Bottom Status Bar -->
+      <footer
+        class="h-auto md:h-24 px-4 md:px-10 py-4 md:py-0 border-t border-white/5 flex flex-col md:flex-row justify-between items-center bg-[#0e0e0e] shrink-0 gap-4 md:gap-0"
+      >
+        <div
+          class="flex gap-8 md:gap-16 w-full md:w-auto justify-between md:justify-start"
+        >
+          <div>
+            <span
+              class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1"
+              >Total Geral</span
+            >
+            <p
+              id="totalCount"
+              class="text-xl md:text-3xl font-black text-white font-headline tracking-tighter"
+            >
+              00
+            </p>
+          </div>
+          <div>
+            <span
+              class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1"
+              >Média Score IA</span
+            >
+            <p
+              id="avgScore"
+              class="text-xl md:text-3xl font-black text-primary font-headline tracking-tighter"
+            >
+              00%
+            </p>
+          </div>
+          <div class="hidden sm:block">
+            <span
+              class="text-[8px] md:text-[9px] font-label text-zinc-600 uppercase tracking-widest block mb-1"
+              >Retenção Ativa</span
+            >
+            <p
+              class="text-xl md:text-3xl font-black text-white font-headline tracking-tighter"
+            >
+              94.2%
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-end"
+        >
+          <div class="flex -space-x-2 md:-space-x-3 items-center">
+            <div
+              class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-800 flex items-center justify-center font-black text-[8px] md:text-[10px]"
+            >
+              MT
             </div>
-            <div class="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-end">
-                <div class="flex -space-x-2 md:-space-x-3 items-center">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-800 flex items-center justify-center font-black text-[8px] md:text-[10px]">MT</div>
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-700 flex items-center justify-center font-black text-[8px] md:text-[10px]">RS</div>
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-600 flex items-center justify-center font-black text-[8px] md:text-[10px]">PL</div>
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-primary flex items-center justify-center text-[8px] md:text-[10px] font-black text-black">+24</div>
-                </div>
-                <p class="text-[8px] md:text-[10px] font-headline font-black uppercase tracking-widest text-zinc-600 italic">Membros <span class="text-emerald-500">Live</span></p>
+            <div
+              class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-700 flex items-center justify-center font-black text-[8px] md:text-[10px]"
+            >
+              RS
             </div>
-        </footer>
+            <div
+              class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-zinc-600 flex items-center justify-center font-black text-[8px] md:text-[10px]"
+            >
+              PL
+            </div>
+            <div
+              class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0e0e0e] bg-primary flex items-center justify-center text-[8px] md:text-[10px] font-black text-black"
+            >
+              +24
+            </div>
+          </div>
+          <p
+            class="text-[8px] md:text-[10px] font-headline font-black uppercase tracking-widest text-zinc-600 italic"
+          >
+            Membros <span class="text-emerald-500">Live</span>
+          </p>
+        </div>
+      </footer>
     </main>
 
     <!-- Modal de Aluno (Novo / Editar) -->
-    <div id="modalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-2xl" onclick="handleOverlayClick(event)">
-        <div class="glass-card w-full max-w-2xl rounded-[2rem] p-8 border border-white/10 max-h-[90vh] overflow-y-auto custom-scrollbar" id="modalContent">
+    <div
+      id="modalOverlay"
+      class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-2xl"
+      onclick="handleOverlayClick(event)"
+    >
+      <div
+        class="glass-card w-full max-w-2xl rounded-[2rem] p-8 border border-white/10 max-h-[90vh] overflow-y-auto custom-scrollbar"
+        id="modalContent"
+      >
+        <!-- Photo area -->
+        <div class="flex items-center gap-5 mb-6">
+          <div class="relative shrink-0">
+            <img
+              id="modalAvatarPreview"
+              src=""
+              alt="Foto do Aluno"
+              class="w-20 h-20 rounded-full object-cover border-2 border-primary/40 shadow-xl shadow-primary/10"
+            />
+            <button
+              type="button"
+              onclick="document.getElementById('photoInput').click()"
+              class="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+            >
+              <span class="material-symbols-outlined text-white text-[14px]"
+                >photo_camera</span
+              >
+            </button>
+            <input
+              type="file"
+              id="photoInput"
+              accept="image/*"
+              title="Escolher foto"
+              class="hidden"
+              onchange="handlePhotoChange(event)"
+            />
+          </div>
+          <div>
+            <h3
+              id="modalTitle"
+              class="text-2xl font-black italic uppercase font-headline tracking-tighter text-primary"
+            >
+              Operação Aluno
+            </h3>
+            <div class="flex gap-2 mt-2">
+              <button
+                type="button"
+                onclick="document.getElementById('photoInput').click()"
+                class="bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-xl text-[8px] uppercase font-black border border-white/5 transition-all flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[12px]"
+                  >attach_file</span
+                >
+                Arquivo
+              </button>
+              <button
+                type="button"
+                onclick="openWebcam()"
+                class="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-xl text-[8px] uppercase font-black border border-primary/20 transition-all flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[12px]"
+                  >photo_camera</span
+                >
+                Webcam
+              </button>
+            </div>
+          </div>
+        </div>
+        <form
+          id="memberForm"
+          class="space-y-4"
+          onsubmit="handleFormSubmit(event)"
+        >
+          <input type="hidden" id="formAction" />
+          <input type="hidden" id="memberId" />
 
-            <!-- Photo area -->
-            <div class="flex items-center gap-5 mb-6">
-                <div class="relative shrink-0">
-                    <img id="modalAvatarPreview" src="" alt="Foto do Aluno"
-                        class="w-20 h-20 rounded-full object-cover border-2 border-primary/40 shadow-xl shadow-primary/10">
-                    <button type="button" onclick="document.getElementById('photoInput').click()"
-                        class="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors">
-                        <span class="material-symbols-outlined text-white text-[14px]">photo_camera</span>
-                    </button>
-                    <input type="file" id="photoInput" accept="image/*" title="Escolher foto" class="hidden" onchange="handlePhotoChange(event)">
+          <!-- SEÇÃO: DADOS PESSOAIS -->
+          <div class="flex items-center gap-3 mb-4 mt-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <h4
+              class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic"
+            >
+              Dados Pessoais & Contato
+            </h4>
+          </div>
+
+          <!-- Nome e Telefone -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Nome Completo *</label
+              >
+              <input
+                type="text"
+                id="memberName"
+                required
+                placeholder="Ex: Ana Paula Silva"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors"
+                oninput="updateModalAvatar()"
+              />
+            </div>
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >WhatsApp *</label
+              >
+              <input
+                type="tel"
+                id="memberPhone"
+                required
+                placeholder="(91) 9XXXX-XXXX"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- Email, CPF e Nascimento -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >E-mail</label
+              >
+              <input
+                type="email"
+                id="memberEmail"
+                placeholder="email@exemplo.com"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors"
+              />
+            </div>
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >CPF *</label
+              >
+              <input
+                type="text"
+                id="memberCPF"
+                required
+                placeholder="000.000.000-00"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+              />
+            </div>
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Nascimento *</label
+              >
+              <input
+                type="date"
+                id="memberDOB"
+                required
+                title="Data de Nascimento"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- SEÇÃO: SAÚDE & FISIOLOGIA -->
+          <div class="flex items-center gap-3 mb-4 mt-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <h4
+              class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic"
+            >
+              Saúde & Fisiologia
+            </h4>
+          </div>
+
+          <!-- SEÇÃO: ENGAJAMENTO & FREQUÊNCIA -->
+          <div class="flex items-center gap-3 mb-4 mt-6">
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"
+            ></span>
+            <h4
+              class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic"
+            >
+              Frequência & Engajamento
+            </h4>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Última Visita *</label
+              >
+              <input
+                type="date"
+                id="memberLastVisit"
+                required
+                onchange="updateFrequencyHighlight()"
+                title="Data da última visita registrada na catraca"
+                placeholder="AAAA-MM-DD"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 block mb-2"
+                >Padrão Semanal</label
+              >
+              <div class="flex gap-2" id="weeklyFrequencyGrid">
+                <!-- Mon-Sun dots -->
+                <div
+                  data-day="1"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all"
+                >
+                  S
+                </div>
+                <div
+                  data-day="2"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all"
+                >
+                  T
+                </div>
+                <div
+                  data-day="3"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all"
+                >
+                  Q
+                </div>
+                <div
+                  data-day="4"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all"
+                >
+                  Q
+                </div>
+                <div
+                  data-day="5"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all"
+                >
+                  S
+                </div>
+                <div
+                  data-day="6"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all"
+                >
+                  S
+                </div>
+                <div
+                  data-day="0"
+                  class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all text-error/60"
+                >
+                  D
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO: GESTÃO CONTRATUAL -->
+          <div class="flex items-center gap-3 mb-4 mt-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <h4
+              class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic"
+            >
+              Gestão Contratual & Financeira
+            </h4>
+          </div>
+
+          <!-- Plano, Senha de Acesso -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Plano</label
+              >
+              <select
+                id="memberPlan"
+                title="Selecionar Plano"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm uppercase font-black italic appearance-none focus:border-primary/50 outline-none"
+              >
+                <option value="">Carregando Planos...</option>
+              </select>
+            </div>
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Senha de Acesso *</label
+              >
+              <input
+                type="password"
+                id="memberPassword"
+                required
+                placeholder="••••••••"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black focus:border-primary/50 outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- Status da Conta, Situação Financeira -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Status da Conta *</label
+              >
+              <select
+                id="memberStatus"
+                required
+                title="Selecionar status da conta"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors appearance-none"
+              >
+                <option value="Ativo">Ativo</option>
+                <option value="Em Risco">Em Risco</option>
+                <option value="Experimental">Experimental</option>
+                <option value="Inativo">Inativo (Bloqueado)</option>
+              </select>
+            </div>
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                >Situação Financeira *</label
+              >
+              <select
+                id="memberFinancial"
+                required
+                title="Selecionar situação financeira"
+                class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors appearance-none"
+              >
+                <option value="em dia">Mensalidade em Dia</option>
+                <option value="inadimplente">
+                  Inadimplente (Bloqueio Automático)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SEÇÃO: IMPACTO DE INDICAÇÕES (Dinamico) -->
+          <div id="ambassadorStatsSection" class="hidden">
+            <div class="flex items-center gap-3 mb-4 mt-6">
+              <span
+                class="w-1.5 h-1.5 rounded-full bg-[#ffd709] shadow-[0_0_10px_#ffd709]"
+              ></span>
+              <h4
+                class="text-[10px] font-black uppercase tracking-[0.3em] text-[#ffd709] font-headline italic"
+              >
+                Impacto de Indicações (Embaixador)
+              </h4>
+            </div>
+            <div
+              class="bg-[#ffd709]/10 border border-[#ffd709]/20 p-5 rounded-3xl flex items-center justify-between"
+            >
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-12 h-12 rounded-full bg-[#ffd709] flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-black text-2xl [font-variation-settings:'FILL'_1]"
+                    >stars</span
+                  >
                 </div>
                 <div>
-                    <h3 id="modalTitle" class="text-2xl font-black italic uppercase font-headline tracking-tighter text-primary">Operação Aluno</h3>
-                    <div class="flex gap-2 mt-2">
-                        <button type="button" onclick="document.getElementById('photoInput').click()" class="bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-xl text-[8px] uppercase font-black border border-white/5 transition-all flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[12px]">attach_file</span> Arquivo
-                        </button>
-                        <button type="button" onclick="openWebcam()" class="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-xl text-[8px] uppercase font-black border border-primary/20 transition-all flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[12px]">photo_camera</span> Webcam
-                        </button>
-                    </div>
+                  <p
+                    id="memberReferralCount"
+                    class="text-xl font-black text-white font-headline italic leading-none"
+                  >
+                    0 INDICAÇÕES
+                  </p>
+                  <p
+                    class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1"
+                  >
+                    Líder de Performance na Unidade
+                  </p>
                 </div>
+              </div>
+              <div class="text-right">
+                <p
+                  id="memberReferralFidelity"
+                  class="text-lg font-black text-[#ffd709] font-headline italic leading-none"
+                >
+                  98%
+                </p>
+                <p
+                  class="text-[7px] text-zinc-500 uppercase tracking-widest mt-1"
+                >
+                  Fidelidade de Rede
+                </p>
+              </div>
             </div>
-            <form id="memberForm" class="space-y-4" onsubmit="handleFormSubmit(event)">
-                <input type="hidden" id="formAction">
-                <input type="hidden" id="memberId">
-
-                <!-- SEÇÃO: DADOS PESSOAIS -->
-                <div class="flex items-center gap-3 mb-4 mt-6">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Dados Pessoais & Contato</h4>
+            <!-- Benefícios -->
+            <div class="mt-3 flex gap-3">
+              <div
+                class="flex-1 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl flex items-center gap-3"
+              >
+                <span
+                  class="material-symbols-outlined text-emerald-500 text-[18px]"
+                  >workspace_premium</span
+                >
+                <div>
+                  <p
+                    class="text-[9px] text-zinc-500 uppercase tracking-widest leading-tight"
+                  >
+                    Benefício Ativo
+                  </p>
+                  <p
+                    id="memberBenefitName"
+                    class="text-[10px] font-black text-white italic uppercase truncate"
+                  >
+                    BÔNUS: 01 MÊS GRÁTIS
+                  </p>
                 </div>
-
-                <!-- Nome e Telefone -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nome Completo *</label>
-                        <input type="text" id="memberName" required placeholder="Ex: Ana Paula Silva"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors"
-                            oninput="updateModalAvatar()">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">WhatsApp *</label>
-                        <input type="tel" id="memberPhone" required placeholder="(91) 9XXXX-XXXX"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
-                    </div>
+              </div>
+              <div
+                class="flex-1 bg-primary/10 border border-primary/20 p-4 rounded-2xl flex items-center gap-3"
+              >
+                <span class="material-symbols-outlined text-primary text-[18px]"
+                  >hourglass_empty</span
+                >
+                <div>
+                  <p
+                    class="text-[9px] text-zinc-500 uppercase tracking-widest leading-tight"
+                  >
+                    Expira em
+                  </p>
+                  <p
+                    id="memberBenefitExpiry"
+                    class="text-[10px] font-black text-white italic uppercase"
+                  >
+                    23 DIAS RESTANTES
+                  </p>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                <!-- Email e CPF -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">E-mail</label>
-                        <input type="email" id="memberEmail" placeholder="email@exemplo.com"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">CPF *</label>
-                        <input type="text" id="memberCPF" required placeholder="000.000.000-00"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-mono focus:border-primary/50 outline-none transition-colors">
-                    </div>
+          <!-- HISTÓRICO DE MEDIDAS & GRÁFICO -->
+          <div class="mt-8 pt-6 border-t border-white/5 lg:col-span-2">
+            <div class="flex items-center justify-between mb-4">
+              <h4
+                class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic"
+              >
+                Evolução de Peso (Últimas Medições)
+              </h4>
+              <span
+                class="text-[8px] bg-primary/10 text-primary px-2 py-0.5 rounded italic font-black uppercase"
+                >Frequência: Semanal</span
+              >
+            </div>
+
+            <div
+              class="relative bg-black/20 rounded-3xl p-6 border border-white/5 mb-6 h-[180px]"
+            >
+              <canvas id="weightHistoryChart"></canvas>
+            </div>
+
+            <div
+              id="assessmentHistoryList"
+              class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar"
+            >
+              <p class="text-[10px] text-zinc-600 italic">
+                Nenhum registro histórico no banco...
+              </p>
+            </div>
+          </div>
+
+          <!-- SEÇÃO: AVALIAÇÃO ANTROPOMÉTRICA (NEW) -->
+          <div class="flex items-center gap-3 mb-4 mt-8">
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"
+            ></span>
+            <h4
+              class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/80 font-headline italic"
+            >
+              Avaliação Antropométrica (Medidas)
+            </h4>
+          </div>
+
+          <div
+            class="bg-white/[0.02] border border-white/5 rounded-3xl p-6 space-y-8"
+          >
+            <!-- DADOS DE BASE -->
+            <div class="grid grid-cols-2 gap-6 mb-6">
+              <div class="space-y-1 relative">
+                <label
+                  class="text-[8px] font-black text-emerald-500 uppercase tracking-widest ml-1"
+                  >PESO ATUAL (KG) *</label
+                >
+                <input
+                  type="number"
+                  id="memberWeight"
+                  step="0.1"
+                  required
+                  placeholder="00.0"
+                  oninput="runBiometricCheck(this)"
+                  class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-xl font-black text-white focus:border-emerald-500 outline-none transition-all"
+                />
+                <span
+                  id="feedback-memberWeight"
+                  class="badge-feedback !top-4 !right-4"
+                ></span>
+              </div>
+              <div class="space-y-1">
+                <label
+                  class="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1"
+                  >ALTURA (METROS) *</label
+                >
+                <input
+                  type="number"
+                  id="memberHeight"
+                  step="0.01"
+                  required
+                  placeholder="0.00"
+                  class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-xl font-black text-white focus:border-emerald-500 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- GRUPO: CORE & CONTROLE -->
+            <div>
+              <div class="flex items-center gap-2 mb-4">
+                <span
+                  class="material-symbols-outlined text-[14px] text-amber-500"
+                  >speed</span
+                >
+                <span
+                  class="text-[9px] font-black text-amber-500 uppercase tracking-widest"
+                  >Grupo: Core & Controle (Foco: Redução)</span
+                >
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >ABDÔMEN</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalAbd"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-amber-500/30"
+                  />
+                  <span id="feedback-evalAbd" class="badge-feedback"></span>
                 </div>
-
-                <!-- SEÇÃO: SAÚDE & FISIOLOGIA -->
-                <div class="flex items-center gap-3 mb-4 mt-6">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Saúde & Fisiologia</h4>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >CINTURA</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalCintura"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-amber-500/30"
+                  />
+                  <span id="feedback-evalCintura" class="badge-feedback"></span>
                 </div>
-
-                <!-- Peso, Altura e Nascimento -->
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Última Pesagem *</label>
-                        <input type="number" id="memberWeight" step="0.001" required placeholder="70.400"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Altura (m) *</label>
-                        <input type="number" id="memberHeight" step="0.01" required placeholder="1.65"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm placeholder:text-white/20 font-black italic focus:border-primary/50 outline-none transition-colors">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Nascimento *</label>
-                        <input type="date" id="memberDOB" required title="Data de Nascimento"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors">
-                    </div>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >QUADRIL</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalQuadril"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-amber-500/30"
+                  />
+                  <span id="feedback-evalQuadril" class="badge-feedback"></span>
                 </div>
+              </div>
+            </div>
 
-                <!-- HISTÓRICO DE MEDIDAS & GRÁFICO -->
-                <div class="mt-8 pt-6 border-t border-white/5 lg:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Evolução de Peso (Últimas Medições)</h4>
-                        <span class="text-[8px] bg-primary/10 text-primary px-2 py-0.5 rounded italic font-black uppercase">Frequência: Semanal</span>
-                    </div>
-                    
-                    <div class="bg-black/20 rounded-3xl p-6 border border-white/5 mb-6">
-                        <canvas id="weightHistoryChart" height="120"></canvas>
-                    </div>
-
-                    <div id="assessmentHistoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
-                        <p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>
-                    </div>
+            <!-- GRUPO: POWER & VOLUME -->
+            <div class="border-t border-white/5 pt-6">
+              <div class="flex items-center gap-2 mb-4">
+                <span
+                  class="material-symbols-outlined text-[14px] text-emerald-500"
+                  >fitness_center</span
+                >
+                <span
+                  class="text-[9px] font-black text-emerald-500 uppercase tracking-widest"
+                  >Grupo: Power & Volume (Foco: Hipertrofia)</span
+                >
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >TÓRAX</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalTorax"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span id="feedback-evalTorax" class="badge-feedback"></span>
                 </div>
-
-                <!-- SEÇÃO: ENGAJAMENTO & FREQUÊNCIA -->
-                <div class="flex items-center gap-3 mb-4 mt-6">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Frequência & Engajamento</h4>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >BRAÇO (D)</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalBracoD"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span id="feedback-evalBracoD" class="badge-feedback"></span>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Última Visita *</label>
-                        <input type="date" id="memberLastVisit" required onchange="updateFrequencyHighlight()"
-                            title="Data da última visita registrada na catraca"
-                            placeholder="AAAA-MM-DD"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors">
-                    </div>
-                    <div>
-                         <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 block mb-2">Padrão Semanal</label>
-                         <div class="flex gap-2" id="weeklyFrequencyGrid">
-                             <!-- Mon-Sun dots -->
-                             <div data-day="1" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">S</div>
-                             <div data-day="2" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">T</div>
-                             <div data-day="3" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">Q</div>
-                             <div data-day="4" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">Q</div>
-                             <div data-day="5" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">S</div>
-                             <div data-day="6" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all">S</div>
-                             <div data-day="0" class="w-8 h-8 rounded-full border border-white/5 bg-white/5 flex items-center justify-center text-[10px] font-black transition-all text-error/60">D</div>
-                         </div>
-                    </div>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >BRAÇO (E)</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalBracoE"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span id="feedback-evalBracoE" class="badge-feedback"></span>
                 </div>
-
-                <!-- SEÇÃO: GESTÃO CONTRATUAL -->
-                <div class="flex items-center gap-3 mb-4 mt-6">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-headline italic">Gestão Contratual & Financeira</h4>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >ANTEBR (D)</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalAnteBracoD"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span
+                    id="feedback-evalAnteBracoD"
+                    class="badge-feedback"
+                  ></span>
                 </div>
+              </div>
 
-                <!-- Plano, Senha de Acesso -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Plano</label>
-                        <select id="memberPlan" title="Selecionar Plano" class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm uppercase font-black italic appearance-none focus:border-primary/50 outline-none">
-                            <option value="">Carregando Planos...</option>
-                        </select>
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Senha de Acesso *</label>
-                        <input type="password" id="memberPassword" required placeholder="••••••••"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black focus:border-primary/50 outline-none transition-colors">
-                    </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >ANTEBR (E)</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalAnteBracoE"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span
+                    id="feedback-evalAnteBracoE"
+                    class="badge-feedback"
+                  ></span>
                 </div>
-
-                <!-- Status da Conta, Situação Financeira -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Status da Conta *</label>
-                        <select id="memberStatus" required title="Selecionar status da conta"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors appearance-none">
-                            <option value="Ativo">Ativo</option>
-                            <option value="Em Risco">Em Risco</option>
-                            <option value="Experimental">Experimental</option>
-                            <option value="Inativo">Inativo (Bloqueado)</option>
-                        </select>
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Situação Financeira *</label>
-                        <select id="memberFinancial" required title="Selecionar situação financeira"
-                            class="w-full bg-surface-container-highest border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic focus:border-primary/50 outline-none transition-colors appearance-none">
-                            <option value="em dia">Mensalidade em Dia</option>
-                            <option value="inadimplente">Inadimplente (Bloqueio Automático)</option>
-                        </select>
-                    </div>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >COXA (D)</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalCoxaD"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span id="feedback-evalCoxaD" class="badge-feedback"></span>
                 </div>
-
-                <!-- SEÇÃO: IMPACTO DE INDICAÇÕES (Dinamico) -->
-                <div id="ambassadorStatsSection" class="hidden">
-                    <div class="flex items-center gap-3 mb-4 mt-6">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#ffd709] shadow-[0_0_10px_#ffd709]"></span>
-                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-[#ffd709] font-headline italic">Impacto de Indicações (Embaixador)</h4>
-                    </div>
-                    <div class="bg-[#ffd709]/10 border border-[#ffd709]/20 p-5 rounded-3xl flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-[#ffd709] flex items-center justify-center">
-                                <span class="material-symbols-outlined text-black text-2xl [font-variation-settings:'FILL'_1]">stars</span>
-                            </div>
-                            <div>
-                                <p id="memberReferralCount" class="text-xl font-black text-white font-headline italic leading-none">0 INDICAÇÕES</p>
-                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">Líder de Performance na Unidade</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p id="memberReferralFidelity" class="text-lg font-black text-[#ffd709] font-headline italic leading-none">98%</p>
-                            <p class="text-[7px] text-zinc-500 uppercase tracking-widest mt-1">Fidelidade de Rede</p>
-                        </div>
-                    </div>
-                    <!-- Benefícios -->
-                    <div class="mt-3 flex gap-3">
-                        <div class="flex-1 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl flex items-center gap-3">
-                            <span class="material-symbols-outlined text-emerald-500 text-[18px]">workspace_premium</span>
-                            <div>
-                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest leading-tight">Benefício Ativo</p>
-                                <p id="memberBenefitName" class="text-[10px] font-black text-white italic uppercase truncate">BÔNUS: 01 MÊS GRÁTIS</p>
-                            </div>
-                        </div>
-                        <div class="flex-1 bg-primary/10 border border-primary/20 p-4 rounded-2xl flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-[18px]">hourglass_empty</span>
-                            <div>
-                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest leading-tight">Expira em</p>
-                                <p id="memberBenefitExpiry" class="text-[10px] font-black text-white italic uppercase">23 DIAS RESTANTES</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >COXA (E)</label
+                  >
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="evalCoxaE"
+                    placeholder="00.0"
+                    oninput="runBiometricCheck(this)"
+                    class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30"
+                  />
+                  <span id="feedback-evalCoxaE" class="badge-feedback"></span>
                 </div>
-
-                <!-- SEÇÃO: AVALIAÇÃO ANTROPOMÉTRICA (NEW) -->
-                <div class="flex items-center gap-3 mb-4 mt-8">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/80 font-headline italic">Avaliação Antropométrica (Medidas)</h4>
+                <div class="space-y-1 relative">
+                  <label
+                    class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1"
+                    >PANT (D/E)</label
+                  >
+                  <div class="flex gap-1">
+                    <input
+                      type="number"
+                      step="0.1"
+                      id="evalPantD"
+                      placeholder="D"
+                      oninput="runBiometricCheck(this)"
+                      class="w-1/2 bg-black/20 border border-white/5 rounded-xl py-2 px-2 text-[10px] font-black text-white outline-none focus:border-emerald-500/30"
+                    />
+                    <input
+                      type="number"
+                      step="0.1"
+                      id="evalPantE"
+                      placeholder="E"
+                      oninput="runBiometricCheck(this)"
+                      class="w-1/2 bg-black/20 border border-white/5 rounded-xl py-2 px-2 text-[10px] font-black text-white outline-none focus:border-emerald-500/30"
+                    />
+                  </div>
+                  <span id="feedback-evalPantD" class="badge-feedback"></span>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                <div class="bg-white/[0.02] border border-white/5 rounded-3xl p-6 space-y-6">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">ABDÔMEN</label>
-                            <input type="number" step="0.1" id="evalAbd" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">TÓRAX</label>
-                            <input type="number" step="0.1" id="evalTorax" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">CINTURA</label>
-                            <input type="number" step="0.1" id="evalCintura" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">QUADRIL</label>
-                            <input type="number" step="0.1" id="evalQuadril" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                    </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            <div class="space-y-1 opacity-70">
+              <label
+                class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 text-primary/80"
+                >Data de Cadastro (Imutável) 🔒</label
+              >
+              <input
+                type="date"
+                id="memberJoinDate"
+                readonly
+                title="Data de Cadastro"
+                class="w-full bg-black/40 border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic cursor-not-allowed outline-none"
+              />
+            </div>
+          </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-4">
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">BRAÇO (D)</label>
-                            <input type="number" step="0.1" id="evalBracoD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">BRAÇO (E)</label>
-                            <input type="number" step="0.1" id="evalBracoE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">ANTEBR (D)</label>
-                            <input type="number" step="0.1" id="evalAnteBracoD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">ANTEBR (E)</label>
-                            <input type="number" step="0.1" id="evalAnteBracoE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-4">
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">COXA (D)</label>
-                            <input type="number" step="0.1" id="evalCoxaD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">COXA (E)</label>
-                            <input type="number" step="0.1" id="evalCoxaE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">PANT (D)</label>
-                            <input type="number" step="0.1" id="evalPantD" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-black text-zinc-600 uppercase tracking-widest ml-1">PANT (E)</label>
-                            <input type="number" step="0.1" id="evalPantE" placeholder="00.0" class="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-xs font-black text-white outline-none focus:border-emerald-500/30">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                    <div class="space-y-1 opacity-70">
-                        <label class="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1 text-primary/80">Data de Cadastro (Imutável) 🔒</label>
-                        <input type="date" id="memberJoinDate" readonly title="Data de Cadastro"
-                            class="w-full bg-black/40 border border-white/5 rounded-2xl py-3 px-5 text-sm font-black italic cursor-not-allowed outline-none">
-                    </div>
-                </div>
-
-                <!-- Botões -->
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeModal()" class="flex-1 py-3 text-xs font-black uppercase tracking-widest text-zinc-600 hover:text-white transition-colors font-headline border border-white/10 rounded-2xl">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="flex-[2] bg-primary text-white py-4 rounded-2xl font-black text-sm uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all font-headline hover:bg-red-600">
-                        Salvar Aluno
-                    </button>
-                </div>
-            </form>
-        </div>
+          <!-- Botões -->
+          <div class="flex gap-4 pt-4">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="flex-1 py-3 text-xs font-black uppercase tracking-widest text-zinc-600 hover:text-white transition-colors font-headline border border-white/10 rounded-2xl"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="flex-[2] bg-primary text-white py-4 rounded-2xl font-black text-sm uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all font-headline hover:bg-red-600"
+            >
+              Salvar Aluno
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Scanner Biométrico Facial (MODAL) -->
-    <div id="biometryOverlay" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-black/95 backdrop-blur-3xl">
-        <div class="glass-card w-full max-w-lg rounded-[3rem] p-10 border border-primary/20 flex flex-col items-center text-center shadow-[0_0_100px_rgba(239,68,68,0.2)]">
-            <div class="relative w-64 h-64 mb-8">
-                <!-- Video Feed -->
-                <div class="absolute inset-0 rounded-full border-4 border-primary/20 overflow-hidden bg-black flex items-center justify-center">
-                    <video id="biometryVideo" autoplay muted playsinline title="Câmera de Escaneamento Biométrico" class="w-full h-full object-cover grayscale"></video>
-                    <canvas id="biometryCanvas" class="absolute inset-0 pointer-events-none"></canvas>
-                </div>
-                
-                <!-- Scanner UI Overlay -->
-                <div class="absolute -inset-4 border border-primary/30 rounded-full animate-[spin_10s_linear_infinite] pointer-events-none"></div>
-                <div class="absolute -inset-2 border-2 border-dashed border-primary/40 rounded-full animate-[spin_15s_linear_reverse_infinite] pointer-events-none"></div>
-                
-                <!-- Scanning Line -->
-                <div id="scanLine" class="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_#ef4444] rounded-full animate-[scan_2s_ease-in-out_infinite] hidden"></div>
-            </div>
+    <div
+      id="biometryOverlay"
+      class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-black/95 backdrop-blur-3xl"
+    >
+      <div
+        class="glass-card w-full max-w-lg rounded-[3rem] p-10 border border-primary/20 flex flex-col items-center text-center shadow-[0_0_100px_rgba(239,68,68,0.2)]"
+      >
+        <div class="relative w-64 h-64 mb-8">
+          <!-- Video Feed -->
+          <div
+            class="absolute inset-0 rounded-full border-4 border-primary/20 overflow-hidden bg-black flex items-center justify-center"
+          >
+            <video
+              id="biometryVideo"
+              autoplay
+              muted
+              title="Câmera de Escaneamento Biométrico"
+              class="w-full h-full object-cover grayscale"
+            ></video>
+            <canvas
+              id="biometryCanvas"
+              class="absolute inset-0 pointer-events-none"
+            ></canvas>
+          </div>
 
-            <h3 class="text-2xl font-black italic uppercase font-headline tracking-tighter text-white mb-2">Escaneamento Biométrico</h3>
-            <p id="biometryStatus" class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-black mb-8 italic">Aguardando enquadramento...</p>
-            
-            <div class="flex gap-4 w-full">
-                <button onclick="stopBiometry()" class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-zinc-600 hover:text-white transition-all bg-white/[0.03] rounded-2xl border border-white/5">Cancelar</button>
-                <button id="btnCaptureFace" onclick="captureFace()" disabled class="flex-[2] py-4 bg-primary text-white rounded-2xl font-black text-xs uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all opacity-50 cursor-not-allowed">Capturar Biometria</button>
-            </div>
+          <!-- Scanner UI Overlay -->
+          <div
+            class="absolute -inset-4 border border-primary/30 rounded-full animate-[spin_10s_linear_infinite] pointer-events-none"
+          ></div>
+          <div
+            class="absolute -inset-2 border-2 border-dashed border-primary/40 rounded-full animate-[spin_15s_linear_reverse_infinite] pointer-events-none"
+          ></div>
+
+          <!-- Scanning Line -->
+          <div
+            id="scanLine"
+            class="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_#ef4444] rounded-full animate-[scan_2s_ease-in-out_infinite] hidden"
+          ></div>
         </div>
+
+        <h3
+          class="text-2xl font-black italic uppercase font-headline tracking-tighter text-white mb-2"
+        >
+          Escaneamento Biométrico
+        </h3>
+        <p
+          id="biometryStatus"
+          class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-black mb-8 italic"
+        >
+          Aguardando enquadramento...
+        </p>
+
+        <div class="flex gap-4 w-full">
+          <button
+            onclick="stopBiometry()"
+            class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-zinc-600 hover:text-white transition-all bg-white/[0.03] rounded-2xl border border-white/5"
+          >
+            Cancelar
+          </button>
+          <button
+            id="btnCaptureFace"
+            onclick="captureFace()"
+            disabled
+            class="flex-[2] py-4 bg-primary text-white rounded-2xl font-black text-xs uppercase italic shadow-2xl shadow-primary/30 active:scale-95 transition-all opacity-50 cursor-not-allowed"
+          >
+            Capturar Biometria
+          </button>
+        </div>
+      </div>
     </div>
 
     <style>
-        @keyframes scan {
-            0%, 100% { top: 0; opacity: 0.1; }
-            50% { top: 100%; opacity: 1; }
+      @keyframes scan {
+        0%,
+        100% {
+          top: 0;
+          opacity: 0.1;
         }
-        canvas { position: absolute; top: 0; left: 0; }
+        50% {
+          top: 100%;
+          opacity: 1;
+        }
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
     </style>
 
     <script>
-        let allMembers = [];
-        let referralRanking = [];
-        let currentFilter = 'All';
+      let allMembers = [];
+      let referralRanking = [];
+      let currentFilter = "All";
 
-        document.addEventListener('DOMContentLoaded', initializeMembros);
+      document.addEventListener("DOMContentLoaded", initializeMembros);
 
-        async function initializeMembros() {
-            try {
-                // Config
-                const config = await PlayFitnessAPI.utils.getGymConfig();
-                document.getElementById('pageTitle').textContent = `${config.nome_academia} — Alunos`;
+      async function initializeMembros() {
+        try {
+          // Config
+          const config = await PlayFitnessAPI.utils.getGymConfig();
+          document.getElementById("pageTitle").textContent =
+            `${config.nome_academia} — Alunos`;
 
-                allMembers = await PlayFitnessAPI.students.list();
-                referralRanking = await PlayFitnessAPI.students.getReferralRanking();
-                
-                renderMembers();
-                updateStats();
-                loadPlansIntoSelect(); // Load plans on page load
-            } catch (err) {
-                console.error(err);
-                PlayFitnessUI.toast('Erro na Sincronização', 'error');
-            }
+          allMembers = await PlayFitnessAPI.students.list();
+          referralRanking = await PlayFitnessAPI.students.getReferralRanking();
+
+          renderMembers();
+          updateStats();
+          loadPlansIntoSelect(); // Load plans on page load
+        } catch (err) {
+          console.error(err);
+          PlayFitnessUI.toast("Erro na Sincronização", "error");
         }
+      }
 
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebarNav');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
+      function toggleMobileMenu() {
+        const sidebar = document.getElementById("sidebarNav");
+        const overlay = document.getElementById("sidebarOverlay");
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
 
-        function setFilter(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active-filter');
-                btn.classList.add('text-zinc-500');
-                if (btn.textContent.trim().includes(filter === 'All' ? 'Todos' : (filter === 'Em Risco' ? 'Risco IA' : filter))) {
-                    btn.classList.add('active-filter');
-                    btn.classList.remove('text-zinc-500');
-                }
-            });
-            renderMembers();
-        }
+      function setFilter(filter) {
+        currentFilter = filter;
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.remove("active-filter");
+          btn.classList.add("text-zinc-500");
+          if (
+            btn.textContent
+              .trim()
+              .includes(
+                filter === "All"
+                  ? "Todos"
+                  : filter === "Em Risco"
+                    ? "Risco IA"
+                    : filter,
+              )
+          ) {
+            btn.classList.add("active-filter");
+            btn.classList.remove("text-zinc-500");
+          }
+        });
+        renderMembers();
+      }
 
-        function filterMembers() {
-            renderMembers();
-        }
+      function filterMembers() {
+        renderMembers();
+      }
 
-        function renderMembers() {
-            const container = document.getElementById('rosterContainer');
-            const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            if (!container) return;
-            container.innerHTML = '';
+      function renderMembers() {
+        const container = document.getElementById("rosterContainer");
+        const search = (
+          document.getElementById("searchInput")?.value || ""
+        ).toLowerCase();
+        if (!container) return;
+        container.innerHTML = "";
 
-            if (!Array.isArray(allMembers)) return;
+        if (!Array.isArray(allMembers)) return;
 
-            const filtered = allMembers.filter(m => {
-                if (!m) return false;
-                const matchesSearch = (m.nome_completo || '').toLowerCase().includes(search);
-                const matchesStatus = currentFilter === 'All' || m.status === currentFilter;
-                return matchesSearch && matchesStatus;
-            });
+        const filtered = allMembers.filter((m) => {
+          if (!m) return false;
+          const matchesSearch = (m.nome_completo || "")
+            .toLowerCase()
+            .includes(search);
+          const matchesStatus =
+            currentFilter === "All" || m.status === currentFilter;
+          return matchesSearch && matchesStatus;
+        });
 
-            filtered.forEach(m => container.appendChild(createMemberCard(m)));
-        }
+        filtered.forEach((m) => container.appendChild(createMemberCard(m)));
+      }
 
-        function updateStats() {
-            if (!Array.isArray(allMembers)) return;
-            const total = allMembers.length;
-            
-            const countEl = document.getElementById('totalCount');
-            if (countEl) countEl.textContent = total.toString().padStart(2, '0');
-            
-            const avg = total > 0 ? Math.round(allMembers.reduce((acc, m) => acc + (m ? (m.score_ia || 0) : 0), 0) / total) : 0;
-            const avgEl = document.getElementById('avgScore');
-            if (avgEl) avgEl.textContent = `${avg}%`;
+      function updateStats() {
+        if (!Array.isArray(allMembers)) return;
+        const total = allMembers.length;
 
-            // Element count updates
-            const counts = {
-                All: total,
-                Ativo: allMembers.filter(m => m && m.status === 'Ativo').length,
-                Prospect: allMembers.filter(m => m && m.status === 'Prospect').length,
-                Experimental: allMembers.filter(m => m && m.status === 'Experimental').length,
-                EmRisco: allMembers.filter(m => m && (m.status === 'Em Risco' || (m.score_ia && m.score_ia < 60))).length,
-                Inativo: allMembers.filter(m => m && m.status === 'Inativo').length
-            };
+        const countEl = document.getElementById("totalCount");
+        if (countEl) countEl.textContent = total.toString().padStart(2, "0");
 
-            if (document.getElementById('count-All')) document.getElementById('count-All').textContent = counts.All;
-            if (document.getElementById('count-Ativo')) document.getElementById('count-Ativo').textContent = counts.Ativo;
-            if (document.getElementById('count-Prospect')) document.getElementById('count-Prospect').textContent = counts.Prospect;
-            if (document.getElementById('count-Experimental')) document.getElementById('count-Experimental').textContent = counts.Experimental;
-            if (document.getElementById('count-EmRisco')) document.getElementById('count-EmRisco').textContent = counts.EmRisco;
-            if (document.getElementById('count-Inativo')) document.getElementById('count-Inativo').textContent = counts.Inativo;
-        }
+        const avg =
+          total > 0
+            ? Math.round(
+                allMembers.reduce(
+                  (acc, m) => acc + (m ? m.score_ia || 0 : 0),
+                  0,
+                ) / total,
+              )
+            : 0;
+        const avgEl = document.getElementById("avgScore");
+        if (avgEl) avgEl.textContent = `${avg}%`;
 
-        function createMemberCard(member) {
-            const div = document.createElement('div');
-            // NOVO: Design arredondado premium com vidro
-            div.className = 'bg-white/[0.03] backdrop-blur-xl border border-white/5 p-6 rounded-[2.5rem] hover:border-primary/40 transition-all group relative overflow-hidden shadow-2xl shadow-black/20';
-            
-            // Check if ambassador
-            const ambassador = referralRanking.find(r => r.id == member.id || (member.nome_completo && r.name === member.nome_completo));
-            const badge = ambassador ? `
+        // Element count updates
+        const counts = {
+          All: total,
+          Ativo: allMembers.filter((m) => m && m.status === "Ativo").length,
+          Prospect: allMembers.filter((m) => m && m.status === "Prospect")
+            .length,
+          Experimental: allMembers.filter(
+            (m) => m && m.status === "Experimental",
+          ).length,
+          EmRisco: allMembers.filter(
+            (m) =>
+              m && (m.status === "Em Risco" || (m.score_ia && m.score_ia < 60)),
+          ).length,
+          Inativo: allMembers.filter((m) => m && m.status === "Inativo").length,
+        };
+
+        if (document.getElementById("count-All"))
+          document.getElementById("count-All").textContent = counts.All;
+        if (document.getElementById("count-Ativo"))
+          document.getElementById("count-Ativo").textContent = counts.Ativo;
+        if (document.getElementById("count-Prospect"))
+          document.getElementById("count-Prospect").textContent =
+            counts.Prospect;
+        if (document.getElementById("count-Experimental"))
+          document.getElementById("count-Experimental").textContent =
+            counts.Experimental;
+        if (document.getElementById("count-EmRisco"))
+          document.getElementById("count-EmRisco").textContent = counts.EmRisco;
+        if (document.getElementById("count-Inativo"))
+          document.getElementById("count-Inativo").textContent = counts.Inativo;
+      }
+
+      function createMemberCard(member) {
+        const div = document.createElement("div");
+        // NOVO: Design arredondado premium com vidro
+        div.className =
+          "bg-white/[0.03] backdrop-blur-xl border border-white/5 p-6 rounded-[2.5rem] hover:border-primary/40 transition-all group relative overflow-hidden shadow-2xl shadow-black/20";
+
+        // Check if ambassador
+        const ambassador = referralRanking.find(
+          (r) =>
+            r.id == member.id ||
+            (member.nome_completo && r.name === member.nome_completo),
+        );
+        const badge = ambassador
+          ? `
                 <div class="absolute top-4 left-4 bg-[#ffd709] text-black text-[7px] font-black uppercase px-2 py-0.5 rounded italic shadow-lg z-10 animate-pulse border border-black/10">EMBAIXADOR ELITE</div>
-            ` : '';
+            `
+          : "";
 
-            const isHighRisk = (member.score_ia || 0) < 60;
-            const scoreColor = isHighRisk ? 'text-error' : 'text-primary';
-            const barBg = isHighRisk ? 'bg-error' : 'bg-primary';
+        const isHighRisk = (member.score_ia || 0) < 60;
+        const scoreColor = isHighRisk ? "text-error" : "text-primary";
+        const barBg = isHighRisk ? "bg-error" : "bg-primary";
 
-            // Status colors
-            const statusColors = {
-                'Ativo': 'text-emerald-500 bg-emerald-500/10',
-                'Em Risco': 'text-error bg-error/10',
-                'Prospect': 'text-blue-400 bg-blue-400/10',
-                'Experimental': 'text-amber-400 bg-amber-400/10',
-                'Inativo': 'text-zinc-400 bg-zinc-400/10'
-            };
-            const sc = statusColors[member.status] || 'text-zinc-400 bg-white/5';
+        // Status colors
+        const statusColors = {
+          Ativo: "text-emerald-500 bg-emerald-500/10",
+          "Em Risco": "text-error bg-error/10",
+          Prospect: "text-blue-400 bg-blue-400/10",
+          Experimental: "text-amber-400 bg-amber-400/10",
+          Inativo: "text-zinc-400 bg-zinc-400/10",
+        };
+        const sc = statusColors[member.status] || "text-zinc-400 bg-white/5";
 
-            div.innerHTML = `
+        div.innerHTML = `
                 ${badge}
                 <div class="absolute top-4 right-4 flex gap-2 z-10">
                     <button onclick="startBiometry('${member.id}')" title="Registrar Biometria Facial" class="text-zinc-600 hover:text-primary material-symbols-outlined transition-colors text-base p-1 bg-black/40 rounded-lg border border-white/5">face_retouching_natural</button>
@@ -767,148 +1764,215 @@
                         <img src="https://i.pravatar.cc/150?u=${member.id ? member.id + 1000 : Math.random()}"
                              alt="${member.nome_completo}"
                              class="w-full h-full rounded-full object-cover border-2 border-white/10 shadow-md shadow-primary/10 transition-all duration-500">
-                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#111111] z-10 ${member.status === 'Ativo' ? 'bg-emerald-500' : member.status === 'Em Risco' ? 'bg-error' : 'bg-zinc-500'}"></span>
+                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#111111] z-10 ${member.status === "Ativo" ? "bg-emerald-500" : member.status === "Em Risco" ? "bg-error" : "bg-zinc-500"}"></span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="text-sm font-black font-headline text-white leading-tight break-words whitespace-normal italic">${member.nome_completo}</h3>
-                        <span class="text-[8px] font-black font-label text-zinc-500 uppercase tracking-widest italic leading-none">#${member.id || '---'}</span>
+                        <span class="text-[8px] font-black font-label text-zinc-500 uppercase tracking-widest italic leading-none">#${member.id || "---"}</span>
                     </div>
                 </div>
                 <div class="space-y-4">
                     <div>
                         <label class="text-[7px] font-black font-label text-zinc-500 uppercase tracking-widest block mb-1">PLANO</label>
-                        <p class="text-[10px] font-black text-zinc-100 italic uppercase truncate">${member.plano || 'VIP'}</p>
+                        <p class="text-[10px] font-black text-zinc-100 italic uppercase truncate">${member.plano || "VIP"}</p>
                     </div>
                     <div>
                         <div class="flex justify-between items-end mb-1.5">
                             <label class="text-[7px] font-black font-label text-zinc-500 uppercase tracking-widest">IA SCORE</label>
-                            <span class="text-base font-black ${scoreColor} font-headline italic">${member.score_ia || '0'}%</span>
+                            <span class="text-base font-black ${scoreColor} font-headline italic">${member.score_ia || "0"}%</span>
                         </div>
                         <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
                             <div class="h-full ${barBg} rounded-full transition-all duration-1000" style="width: ${member.score_ia || 0}%"></div>
                         </div>
                     </div>
                     <div class="flex items-center justify-between pt-1">
-                         <span class="text-[8px] font-black px-3 py-1 ${sc} rounded-full uppercase tracking-widest italic">${member.status || 'STATUS'}</span>
-                         <span class="text-[8px] text-zinc-500 font-mono">${member.telefone ? member.telefone.substring(0,13) : ''}</span>
+                         <span class="text-[8px] font-black px-3 py-1 ${sc} rounded-full uppercase tracking-widest italic">${member.status || "STATUS"}</span>
+                         <span class="text-[8px] text-zinc-500 font-mono">${member.telefone ? member.telefone.substring(0, 13) : ""}</span>
                     </div>
                 </div>
             `;
-            return div;
+        return div;
+      }
+
+      function openModal(action, id = "") {
+        const overlay = document.getElementById("modalOverlay");
+        overlay.classList.remove("hidden");
+        overlay.classList.add("flex");
+        document.getElementById("formAction").value = action;
+        document.getElementById("memberId").value = id;
+        document.getElementById("photoInput").value = ""; // reset file input
+        loadPlansIntoSelect(); // Ensure plans are loaded when modal opens
+
+        if (action === "edit") {
+          document.getElementById("modalTitle").textContent = "Editar Aluno";
+          loadMemberDetails(id);
+        } else {
+          document.getElementById("modalTitle").textContent = "Novo Aluno";
+          document.getElementById("memberForm").reset();
+          document.getElementById("modalAvatarPreview").src =
+            "https://ui-avatars.com/api/?name=Novo+Aluno&background=dc2626&color=fff&size=128&bold=true";
+
+          // Auto-fill today's date for new student
+          const today = new Date().toISOString().substring(0, 10);
+          document.getElementById("memberJoinDate").value = today;
+          document.getElementById("memberLastVisit").value = "";
+          document.getElementById("memberPassword").value = "123456";
+          updateFrequencyHighlight();
+          document.getElementById("assessmentHistoryList").innerHTML =
+            '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
         }
+      }
 
-        function openModal(action, id = '') {
-            const overlay = document.getElementById('modalOverlay');
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex');
-            document.getElementById('formAction').value = action;
-            document.getElementById('memberId').value = id;
-            document.getElementById('photoInput').value = ''; // reset file input
-            loadPlansIntoSelect(); // Ensure plans are loaded when modal opens
+      function updateFrequencyHighlight() {
+        const dateVal = document.getElementById("memberLastVisit").value;
+        const dots = document.querySelectorAll(
+          "#weeklyFrequencyGrid [data-day]",
+        );
 
-            if (action === 'edit') {
-                document.getElementById('modalTitle').textContent = 'Editar Aluno';
-                loadMemberDetails(id);
+        // Reset all
+        dots.forEach((dot) => {
+          dot.classList.remove(
+            "bg-primary",
+            "border-primary/40",
+            "text-white",
+            "shadow-lg",
+            "shadow-primary/20",
+            "scale-110",
+          );
+          dot.classList.add("bg-white/5", "border-white/5");
+        });
+
+        if (dateVal) {
+          // Adjusting for timezone to get the correct day
+          const dateParts = dateVal.split("-");
+          const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+          const day = date.getDay(); // 0 (Sun) to 6 (Sat)
+          const activeDot = document.querySelector(
+            `#weeklyFrequencyGrid [data-day="${day}"]`,
+          );
+          if (activeDot) {
+            activeDot.classList.remove("bg-white/5", "border-white/5");
+            activeDot.classList.add(
+              "bg-primary",
+              "border-primary/40",
+              "text-white",
+              "shadow-lg",
+              "shadow-primary/20",
+              "scale-110",
+            );
+          }
+        }
+      }
+
+      async function loadMemberDetails(id) {
+        try {
+          const member = await PlayFitnessAPI.students.getById(id);
+          // Busca a última visita real do log da catraca
+          const lastVisit = await PlayFitnessAPI.students.getLastVisit(id);
+
+          if (member) {
+            document.getElementById("memberName").value =
+              member.nome_completo || "";
+            document.getElementById("memberPhone").value =
+              member.telefone || member.whatsapp || "";
+            document.getElementById("memberEmail").value = member.email || "";
+            document.getElementById("memberCPF").value = member.cpf || "";
+            document.getElementById("memberWeight").value = member.peso || "";
+            document.getElementById("memberHeight").value = member.altura || "";
+            document.getElementById("memberDOB").value = member.data_nascimento
+              ? member.data_nascimento.substring(0, 10)
+              : "";
+            document.getElementById("memberPlan").value =
+              member.plano || "Mensal Básico";
+            document.getElementById("memberStatus").value =
+              member.status || "Ativo";
+            document.getElementById("memberFinancial").value =
+              member.situacao_financeira || "em dia";
+            document.getElementById("memberJoinDate").value =
+              member.data_matricula
+                ? member.data_matricula.substring(0, 10)
+                : "";
+            document.getElementById("memberPassword").value =
+              member.senha || "123456";
+
+            // Prioriza o log da catraca para a última visita
+            document.getElementById("memberLastVisit").value = lastVisit
+              ? lastVisit.substring(0, 10)
+              : "";
+
+            updateFrequencyHighlight();
+
+            // Set avatar preview
+            document.getElementById("modalAvatarPreview").src =
+              `https://i.pravatar.cc/150?u=${member.id ? member.id + 1000 : Math.random()}`;
+
+            // Ambassador stats
+            const ambassador = referralRanking.find(
+              (r) => r.id == id || r.name === member.nome_completo,
+            );
+            const statsSection = document.getElementById(
+              "ambassadorStatsSection",
+            );
+            if (ambassador) {
+              statsSection.classList.remove("hidden");
+              document.getElementById("memberReferralCount").textContent =
+                `${ambassador.count} INDICAÇÕES`;
+              document.getElementById("memberReferralFidelity").textContent =
+                `${ambassador.fidelity}%`;
+
+              // Lógica de Benefícios (Mockada com base em indicações)
+              let benefit = "Acesso VIP Premium";
+              let expiry = "12 Dias";
+              if (ambassador.count >= 10) {
+                benefit = "Isenção: 03 Meses";
+                expiry = "85 Dias";
+              } else if (ambassador.count >= 5) {
+                benefit = "Bônus: 01 Mês Grátis";
+                expiry = "23 Dias";
+              }
+
+              document.getElementById("memberBenefitName").textContent =
+                benefit;
+              document.getElementById("memberBenefitExpiry").textContent =
+                `${expiry} RESTANTES`;
             } else {
-                document.getElementById('modalTitle').textContent = 'Novo Aluno';
-                document.getElementById('memberForm').reset();
-                document.getElementById('modalAvatarPreview').src = 'https://ui-avatars.com/api/?name=Novo+Aluno&background=dc2626&color=fff&size=128&bold=true';
-                
-                // Auto-fill today's date for new student
-                const today = new Date().toISOString().substring(0, 10);
-                document.getElementById('memberJoinDate').value = today;
-                document.getElementById('memberLastVisit').value = '';
-                document.getElementById('memberPassword').value = '123456';
-                updateFrequencyHighlight();
-                document.getElementById('assessmentHistoryList').innerHTML = '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
+              statsSection.classList.add("hidden");
             }
-        }
 
-        function updateFrequencyHighlight() {
-            const dateVal = document.getElementById('memberLastVisit').value;
-            const dots = document.querySelectorAll('#weeklyFrequencyGrid [data-day]');
-            
-            // Reset all
-            dots.forEach(dot => {
-                dot.classList.remove('bg-primary', 'border-primary/40', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-110');
-                dot.classList.add('bg-white/5', 'border-white/5');
-            });
+            // Load History (Weight Chart)
+            const history =
+              await PlayFitnessAPI.students.getAssessmentHistory(id);
+            renderWeightEvolutionChart(history);
 
-            if (dateVal) {
-                // Adjusting for timezone to get the correct day
-                const dateParts = dateVal.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                const day = date.getDay(); // 0 (Sun) to 6 (Sat)
-                const activeDot = document.querySelector(`#weeklyFrequencyGrid [data-day="${day}"]`);
-                if (activeDot) {
-                    activeDot.classList.remove('bg-white/5', 'border-white/5');
-                    activeDot.classList.add('bg-primary', 'border-primary/40', 'text-white', 'shadow-lg', 'shadow-primary/20', 'scale-110');
-                }
-            }
-        }
+            // Armazena a última avaliação para comparação em tempo real
+            lastAssessmentData =
+              history.length > 0 ? history[history.length - 1] : null;
 
-        async function loadMemberDetails(id) {
-            try {
-                const member = await PlayFitnessAPI.students.getById(id);
-                // Busca a última visita real do log da catraca
-                const lastVisit = await PlayFitnessAPI.students.getLastVisit(id);
-                
-                if (member) {
-                    document.getElementById('memberName').value = member.nome_completo || '';
-                    document.getElementById('memberPhone').value = member.telefone || member.whatsapp || '';
-                    document.getElementById('memberEmail').value = member.email || '';
-                    document.getElementById('memberCPF').value = member.cpf || '';
-                    document.getElementById('memberWeight').value = member.peso || '';
-                    document.getElementById('memberHeight').value = member.altura || '';
-                    document.getElementById('memberDOB').value = member.data_nascimento ? member.data_nascimento.substring(0,10) : '';
-                    document.getElementById('memberPlan').value = member.plano || 'Mensal Básico';
-                    document.getElementById('memberStatus').value = member.status || 'Ativo';
-                    document.getElementById('memberFinancial').value = member.situacao_financeira || 'em dia';
-                    document.getElementById('memberJoinDate').value = member.data_matricula ? member.data_matricula.substring(0,10) : '';
-                    document.getElementById('memberPassword').value = member.senha || '123456';
-                    
-                    // Prioriza o log da catraca para a última visita
-                    document.getElementById('memberLastVisit').value = lastVisit ? lastVisit.substring(0,10) : '';
-                    
-                    updateFrequencyHighlight();
+            // Limpa feedbacks anteriores
+            document
+              .querySelectorAll(".badge-feedback")
+              .forEach((el) => el.classList.remove("show"));
 
-                    // Set avatar preview
-                    document.getElementById('modalAvatarPreview').src = `https://i.pravatar.cc/150?u=${member.id ? member.id + 1000 : Math.random()}`;
+            // Load Anthropometric History (NEW)
+            const assessments = await PlayFitnessAPI.students.listAssessments(
+              member.cpf,
+            );
+            const hContainer = document.getElementById("assessmentHistoryList");
+            hContainer.innerHTML =
+              history.length || assessments.length
+                ? ""
+                : '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
 
-                    // Ambassador stats
-                    const ambassador = referralRanking.find(r => r.id == id || r.name === member.nome_completo);
-                    const statsSection = document.getElementById('ambassadorStatsSection');
-                    if (ambassador) {
-                        statsSection.classList.remove('hidden');
-                        document.getElementById('memberReferralCount').textContent = `${ambassador.count} INDICAÇÕES`;
-                        document.getElementById('memberReferralFidelity').textContent = `${ambassador.fidelity}%`;
-                        
-                        // Lógica de Benefícios (Mockada com base em indicações)
-                        let benefit = "Acesso VIP Premium"; let expiry = "12 Dias";
-                        if (ambassador.count >= 10) { benefit = "Isenção: 03 Meses"; expiry = "85 Dias"; }
-                        else if (ambassador.count >= 5) { benefit = "Bônus: 01 Mês Grátis"; expiry = "23 Dias"; }
-                        
-                        document.getElementById('memberBenefitName').textContent = benefit;
-                        document.getElementById('memberBenefitExpiry').textContent = `${expiry} RESTANTES`;
-                    } else {
-                        statsSection.classList.add('hidden');
-                    }
+            // Render weight entries
+            history.forEach((item) => {
+              const date = item.data_avaliacao
+                ? new Date(item.data_avaliacao).toLocaleDateString("pt-BR")
+                : "S/D";
+              const imc = item.imc
+                ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-[8px] font-black ml-2">IMC ${item.imc}</span>`
+                : "";
 
-                    // Load History (Weight Chart)
-                    const history = await PlayFitnessAPI.students.getAssessmentHistory(id);
-                    renderWeightEvolutionChart(history); 
-
-                    // Load Anthropometric History (NEW)
-                    const assessments = await PlayFitnessAPI.students.listAssessments(member.cpf);
-                    const hContainer = document.getElementById('assessmentHistoryList');
-                    hContainer.innerHTML = (history.length || assessments.length) ? '' : '<p class="text-[10px] text-zinc-600 italic">Nenhum registro histórico no banco...</p>';
-                    
-                    // Render weight entries
-                    history.forEach(item => {
-                        const date = item.data_avaliacao ? new Date(item.data_avaliacao).toLocaleDateString('pt-BR') : 'S/D';
-                        const imc = item.imc ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-[8px] font-black ml-2">IMC ${item.imc}</span>` : '';
-                        
-                        hContainer.innerHTML += `
+              hContainer.innerHTML += `
                             <div class="flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 rounded-xl">
                                 <div class="flex items-center gap-3">
                                     <span class="text-[8px] font-black text-white/30 uppercase">${date}</span>
@@ -918,15 +1982,15 @@
                                 <span class="material-symbols-outlined text-[12px] text-zinc-700">scale</span>
                             </div>
                         `;
-                    });
+            });
 
-                    // Render anthropometric entries (NEW)
-                    assessments.forEach(item => {
-                        const dateStr = item.data || 'S/D';
-                        hContainer.innerHTML += `
+            // Render anthropometric entries (NEW)
+            assessments.forEach((item) => {
+              const dateStr = item.data || "S/D";
+              hContainer.innerHTML += `
                             <div class="p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl space-y-2">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-[8px] font-black text-emerald-500/60 uppercase">AVALIAÇÃO #${item.numeroDaAvaliacao || '0'} — ${dateStr}</span>
+                                    <span class="text-[8px] font-black text-emerald-500/60 uppercase">AVALIAÇÃO #${item.numeroDaAvaliacao || "0"} — ${dateStr}</span>
                                     <span class="material-symbols-outlined text-[12px] text-emerald-500/50">straighten</span>
                                 </div>
                                 <div class="grid grid-cols-3 gap-2 text-[8px] font-bold text-zinc-400 uppercase tracking-widest italic">
@@ -939,428 +2003,674 @@
                                 </div>
                             </div>
                         `;
-                    });
-                }
-            } catch (err) {
-                console.error(err);
-            }
+            });
+          }
+        } catch (err) {
+          console.error(err);
         }
+      }
 
-        let weightChartInstance = null;
-        function renderWeightEvolutionChart(history) {
-            // Pequeno delay para garantir que o modal esteja visível e o canvas tenha dimensões
-            setTimeout(() => {
-                const canvas = document.getElementById('weightHistoryChart');
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                if (weightChartInstance) weightChartInstance.destroy();
+      let weightChartInstance = null;
+      function renderWeightEvolutionChart(history) {
+        // Delay de 500ms para aguardar a animação 'fade-in' do modal (0.4s) completar
+        // Isso garante que o canvas tenha as dimensões finais e posição correta no DOM.
+        setTimeout(() => {
+          const canvas = document.getElementById("weightHistoryChart");
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+          if (weightChartInstance) weightChartInstance.destroy();
 
-                // Mock de dados semanais se não houver registros suficientes
-                let dataPoints = history.length > 0 ? history : [
-                    { data_avaliacao: '2026-03-01', peso: 78.5 },
-                    { data_avaliacao: '2026-03-08', peso: 77.2 },
-                    { data_avaliacao: '2026-03-15', peso: 76.8 },
-                    { data_avaliacao: '2026-03-22', peso: 76.5 },
-                    { data_avaliacao: '2026-03-29', peso: 75.2 }
+          // Mock de dados semanais se não houver registros suficientes
+          let dataPoints =
+            history.length > 0
+              ? history
+              : [
+                  { data_avaliacao: "2026-03-01", peso: 78.5 },
+                  { data_avaliacao: "2026-03-08", peso: 77.2 },
+                  { data_avaliacao: "2026-03-15", peso: 76.8 },
+                  { data_avaliacao: "2026-03-22", peso: 76.5 },
+                  { data_avaliacao: "2026-03-29", peso: 75.2 },
                 ];
 
-                // Ordenar por data
-                dataPoints.sort((a, b) => new Date(a.data_avaliacao) - new Date(b.data_avaliacao));
+          // Ordenar por data
+          dataPoints.sort(
+            (a, b) => new Date(a.data_avaliacao) - new Date(b.data_avaliacao),
+          );
 
-                // Filtrar para ficar visualmente limpo (últimos 6 registros)
-                const lastData = dataPoints.slice(-6);
-                const labels = lastData.map(d => {
-                    const date = new Date(d.data_avaliacao);
-                    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '');
-                });
+          // Filtrar para ficar visualmente limpo (últimos 6 registros)
+          const lastData = dataPoints.slice(-6);
+          const labels = lastData.map((d) => {
+            const date = new Date(d.data_avaliacao);
+            return date
+              .toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })
+              .replace(".", "");
+          });
 
-                const weights = lastData.map(d => d.peso);
-                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-dynamic').trim() || '#ef4444';
+          const weights = lastData.map((d) => d.peso);
+          const rawColor = getComputedStyle(document.documentElement)
+            .getPropertyValue("--primary-dynamic")
+            .trim();
+          const primaryColor =
+            rawColor && rawColor.length > 3 ? rawColor : "#ef4444";
 
-                weightChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: weights,
-                            backgroundColor: (context) => {
-                                const val = context.raw;
-                                const minVal = Math.min(...weights);
-                                return val === minVal ? primaryColor : 'rgba(255, 255, 255, 0.08)';
-                            },
-                            borderRadius: 12,
-                            borderWidth: 0,
-                            barPercentage: 0.6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: { padding: { top: 20 } },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#131313',
-                                titleFont: { family: 'Lexend', size: 10 },
-                                bodyFont: { family: 'Lexend', size: 12, weight: '900' },
-                                padding: 12,
-                                displayColors: false,
-                                callbacks: {
-                                    label: (ctx) => `PESO: ${ctx.raw} kg`
-                                }
-                            }
-                        },
-                        scales: {
-                            y: { 
-                                beginAtZero: false, 
-                                display: false,
-                                grid: { display: false }
-                            },
-                            x: {
-                                grid: { display: false },
-                                border: { display: false },
-                                ticks: { 
-                                    color: '#525252', 
-                                    font: { size: 9, family: 'Lexend', weight: '900' },
-                                    padding: 10
-                                }
-                            }
-                        },
-                        animation: {
-                            duration: 1200,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                });
-            }, 100);
+          weightChartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  data: weights,
+                  backgroundColor: (context) => {
+                    const val = context.raw;
+                    const minVal = Math.min(...weights);
+                    // Se for o peso mais baixo (meta), brilha com a cor da academia
+                    return val === minVal
+                      ? primaryColor
+                      : "rgba(255, 255, 255, 0.08)";
+                  },
+                  borderRadius: {
+                    topLeft: 12,
+                    topRight: 12,
+                    bottomLeft: 12,
+                    bottomRight: 12,
+                  },
+                  borderWidth: 0,
+                  barPercentage: 0.5,
+                  categoryPercentage: 0.8,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              layout: { padding: { top: 25, bottom: 0 } },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: "#131313",
+                  titleFont: { family: "Lexend", size: 10 },
+                  bodyFont: { family: "Lexend", size: 12, weight: "900" },
+                  padding: 12,
+                  displayColors: false,
+                  borderColor: "rgba(255,255,255,0.1)",
+                  borderWidth: 1,
+                  callbacks: {
+                    label: (ctx) => `PESO: ${ctx.raw} kg`,
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  grid: { display: false },
+                  display: false,
+                  beginAtZero: false,
+                  suggestedMin: Math.min(...weights) - 5,
+                  suggestedMax: Math.max(...weights) + 5,
+                },
+                x: {
+                  grid: { display: false },
+                  border: { display: false },
+                  ticks: {
+                    color: "#525252",
+                    font: { size: 9, family: "Lexend", weight: "900" },
+                    padding: 10,
+                  },
+                },
+              },
+              animation: {
+                duration: 1200,
+                easing: "easeOutQuart",
+              },
+            },
+            plugins: [
+              {
+                id: "barLabels",
+                afterDatasetsDraw(chart) {
+                  const { ctx, data } = chart;
+                  ctx.save();
+                  ctx.textAlign = "center";
+                  ctx.font = "900 9px Lexend";
+
+                  data.datasets[0].data.forEach((value, index) => {
+                    const bar = chart.getDatasetMeta(0).data[index];
+                    const minVal = Math.min(...data.datasets[0].data);
+                    ctx.fillStyle =
+                      value === minVal ? primaryColor : "rgba(255,255,255,0.2)";
+                    ctx.fillText(`${value} KG`, bar.x, bar.y - 10);
+                  });
+                  ctx.restore();
+                },
+              },
+            ],
+          });
+        }, 500);
+      }
+
+      let lastAssessmentData = null;
+
+      function runBiometricCheck(input) {
+        const id = input.id;
+        const currentVal = parseFloat(input.value);
+        const feedbackEl = document.getElementById(`feedback-${id}`);
+        if (!feedbackEl || !lastAssessmentData) return;
+
+        // Busca o valor anterior correspondente no banco
+        const dbFields = {
+          memberWeight: "peso",
+          evalAbd: "abdomen",
+          evalTorax: "torax",
+          evalCintura: "cintura",
+          evalQuadril: "quadril",
+          evalBracoD: "braco_d",
+          evalBracoE: "braco_e",
+          evalAnteBracoD: "antebraco_d",
+          evalAnteBracoE: "antebraco_e",
+          evalCoxaD: "coxa_d",
+          evalCoxaE: "coxa_e",
+          evalPantD: "panturrilha_d",
+          evalPantE: "panturrilha_e",
+        };
+        const prevVal = parseFloat(lastAssessmentData[dbFields[id]] || 0);
+
+        if (!currentVal || prevVal === 0) {
+          feedbackEl.classList.remove("show");
+          return;
         }
 
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.add('hidden');
-            document.getElementById('modalOverlay').classList.remove('flex');
+        const diff = (currentVal - prevVal).toFixed(1);
+        const isMuscleGainField = [
+          "memberWeight",
+          "evalTorax",
+          "evalBracoD",
+          "evalBracoE",
+          "evalAnteBracoD",
+          "evalAnteBracoE",
+          "evalCoxaD",
+          "evalCoxaE",
+          "evalPantD",
+          "evalPantE",
+        ].includes(id);
+        const isFatLossField = [
+          "evalAbd",
+          "evalCintura",
+          "evalQuadril",
+        ].includes(id);
+
+        feedbackEl.classList.add("show");
+        feedbackEl.className = "badge-feedback show"; // reset classes
+
+        if (diff > 0) {
+          // Ganho
+          if (isMuscleGainField) {
+            feedbackEl.innerHTML = `▲ +${diff} 💪 HIPERTROFIA!`;
+            feedbackEl.classList.add("badge-pos");
+          } else {
+            feedbackEl.innerHTML = `▲ +${diff} ⚠️ GANHO GORDURA`;
+            feedbackEl.classList.add("badge-neg");
+          }
+        } else if (diff < 0) {
+          // Perda
+          if (isFatLossField) {
+            feedbackEl.innerHTML = `▼ ${diff} 🔥 QUEIMA DE GORDURA!`;
+            feedbackEl.classList.add("badge-pos");
+          } else {
+            feedbackEl.innerHTML = `▼ ${diff} 📉 PERDA MASSA`;
+            feedbackEl.classList.add("badge-neg");
+          }
+        } else {
+          feedbackEl.innerHTML = `= Estável`;
+          feedbackEl.classList.add("badge-neu");
+        }
+      }
+
+      function closeModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+        document.getElementById("modalOverlay").classList.remove("flex");
+      }
+
+      function handleOverlayClick(e) {
+        if (e.target === document.getElementById("modalOverlay")) closeModal();
+      }
+
+      function updateModalAvatar() {
+        const name =
+          document.getElementById("memberName").value || "Novo Aluno";
+        const id = document.getElementById("memberId").value;
+        document.getElementById("modalAvatarPreview").src =
+          `https://i.pravatar.cc/150?u=${id ? parseInt(id) + 1000 : Math.random()}`;
+      }
+
+      function handlePhotoChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById("modalAvatarPreview").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      async function handleFormSubmit(event) {
+        event.preventDefault();
+        const action = document.getElementById("formAction").value;
+        const id = document.getElementById("memberId").value;
+
+        // Cálculo de idade para o banco
+        const dob = document.getElementById("memberDOB").value;
+        let ageCount = null;
+        if (dob) {
+          const birthDate = new Date(dob);
+          const today = new Date();
+          ageCount = today.getFullYear() - birthDate.getFullYear();
+          const m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))
+            ageCount--;
         }
 
-        function handleOverlayClick(e) {
-            if (e.target === document.getElementById('modalOverlay')) closeModal();
-        }
+        const payload = {
+          id: id ? parseInt(id) : undefined, // Garante que o ID seja número
+          codigo: id
+            ? id.toString()
+            : Math.floor(Math.random() * 9999).toString(), // Campo obrigatório em alguns esquemas
+          nome_completo: document.getElementById("memberName").value,
+          telefone: document.getElementById("memberPhone").value,
+          cpf: document.getElementById("memberCPF").value,
+          peso: parseFloat(document.getElementById("memberWeight").value || 0),
+          altura: parseFloat(
+            document.getElementById("memberHeight").value || 0,
+          ),
+          idade: ageCount,
+          plano: document.getElementById("memberPlan").value,
+          status: document.getElementById("memberStatus").value,
+          situacao_financeira: document.getElementById("memberFinancial").value,
+          data_matricula: document.getElementById("memberJoinDate").value,
+          senha: document.getElementById("memberPassword").value,
+          score_ia: Math.floor(Math.random() * 41) + 60,
+        };
 
-        function updateModalAvatar() {
-            const name = document.getElementById('memberName').value || 'Novo Aluno';
-            const id = document.getElementById('memberId').value;
-            document.getElementById('modalAvatarPreview').src =
-                `https://i.pravatar.cc/150?u=${id ? parseInt(id) + 1000 : Math.random()}`;
-        }
+        try {
+          // 1. Salva o Aluno
+          const result = await PlayFitnessAPI.students.save(
+            action === "edit" ? id : null,
+            payload,
+          );
+          const savedStudent = result && result.length > 0 ? result[0] : null;
 
-        function handlePhotoChange(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('modalAvatarPreview').src = e.target.result;
+          // 2. Salva histórico básico (Peso/Altura) se houver dados
+          if (savedStudent && (payload.peso || payload.altura)) {
+            await PlayFitnessAPI.students.addAssessment(
+              savedStudent.id,
+              payload.peso,
+              payload.altura,
+            );
+          }
+
+          // 3. Salva Avaliação Antropométrica se houver medidas
+          if (payload.cpf) {
+            const evalData = {
+              codcliente: payload.cpf, // Corrigido para minúsculo
+              data: new Date().toLocaleDateString("pt-BR"),
+              numero_avaliacao: Math.floor(Math.random() * 999),
+              abdomen: parseFloat(
+                document.getElementById("evalAbd").value || 0,
+              ),
+              torax: parseFloat(
+                document.getElementById("evalTorax").value || 0,
+              ),
+              cintura: parseFloat(
+                document.getElementById("evalCintura").value || 0,
+              ),
+              quadril: parseFloat(
+                document.getElementById("evalQuadril").value || 0,
+              ),
+              braco_direito: parseFloat(
+                document.getElementById("evalBracoD").value || 0,
+              ),
+              braco_esquerdo: parseFloat(
+                document.getElementById("evalBracoE").value || 0,
+              ),
+              antebraco_direito: parseFloat(
+                document.getElementById("evalAnteBracoD").value || 0,
+              ),
+              antebraco_esquerdo: parseFloat(
+                document.getElementById("evalAnteBracoE").value || 0,
+              ),
+              coxa_direita: parseFloat(
+                document.getElementById("evalCoxaD").value || 0,
+              ),
+              coxa_esquerda: parseFloat(
+                document.getElementById("evalCoxaE").value || 0,
+              ),
+              panturrilha_direita: parseFloat(
+                document.getElementById("evalPantD").value || 0,
+              ),
+              panturrilha_esquerda: parseFloat(
+                document.getElementById("evalPantE").value || 0,
+              ),
             };
-            reader.readAsDataURL(file);
+
+            const hasMeasurements = Object.values(evalData).some(
+              (v) => typeof v === "number" && v > 0,
+            );
+            if (hasMeasurements) {
+              try {
+                await PlayFitnessAPI.students.saveAssessment(evalData);
+              } catch (evalErr) {
+                console.warn(
+                  "Aviso: Falha ao salvar medidas detalhadas, mas perfil básico foi salvo:",
+                  evalErr,
+                );
+              }
+            }
+          }
+
+          PlayFitnessUI.toast(
+            action === "edit" ? "Perfil Atualizado!" : "Novo Aluno Registrado!",
+            "success",
+          );
+          closeModal();
+          await initializeMembros(); // Chamada correta aqui
+          loadPlansIntoSelect();
+        } catch (err) {
+          console.error("Erro detalhado:", err);
+          const msg = err.message || err.details || "Erro desconhecido";
+          alert("Falha Crítica no Banco: " + msg);
+          PlayFitnessUI.toast("Erro ao Gravar no Banco", "error");
+        }
+      }
+
+      async function loadPlansIntoSelect() {
+        try {
+          const plans = await PlayFitnessAPI.plans.list();
+          const select = document.getElementById("memberPlan");
+          select.innerHTML = "";
+          plans.forEach((p) => {
+            if (p.ativo) {
+              select.innerHTML += `<option value="${p.nome}">${p.nome} — R$ ${p.valor}</option>`;
+            }
+          });
+        } catch (err) {
+          console.error("Failed to load plans:", err);
+          PlayFitnessUI.toast("Falha ao carregar planos", "error");
+        }
+      }
+
+      // ==========================================
+      // BIOMETRIA FACIAL (IA)
+      // ==========================================
+      let faceApiLoaded = false;
+      let currentStream = null;
+      let biometryActive = false;
+      let recordingAlunoId = null;
+
+      async function loadFaceApi() {
+        if (faceApiLoaded) return true;
+        PlayFitnessUI.toast("Iniciando Motor de IA...", "psychology");
+        try {
+          // Carregar modelos via CDN
+          const MODEL_URL =
+            "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights";
+          await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+          await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+          await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+          faceApiLoaded = true;
+          return true;
+        } catch (e) {
+          console.error("Erro ao carregar IA:", e);
+          PlayFitnessUI.toast("Erro ao carregar modelos de IA", "error");
+          return false;
+        }
+      }
+
+      async function startBiometry(alunoId) {
+        recordingAlunoId = alunoId;
+        const ok = await loadFaceApi();
+        if (!ok) return;
+
+        document.getElementById("biometryOverlay").classList.remove("hidden");
+        document.getElementById("biometryOverlay").classList.add("flex");
+        document.getElementById("scanLine").classList.remove("hidden");
+
+        try {
+          currentStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          const video = document.getElementById("biometryVideo");
+          video.srcObject = currentStream;
+          biometryActive = true;
+          detectFaceLoop();
+        } catch (e) {
+          PlayFitnessUI.toast("Câmera não encontrada", "error");
+          stopBiometry();
+        }
+      }
+
+      function stopBiometry() {
+        biometryActive = false;
+        if (currentStream) {
+          currentStream.getTracks().forEach((track) => track.stop());
+        }
+        document.getElementById("biometryOverlay").classList.add("hidden");
+        document.getElementById("biometryOverlay").classList.remove("flex");
+        document.getElementById("scanLine").classList.add("hidden");
+        document.getElementById("btnCaptureFace").disabled = true;
+        document.getElementById("btnCaptureFace").classList.add("opacity-50");
+      }
+
+      async function detectFaceLoop() {
+        if (!biometryActive) return;
+
+        const video = document.getElementById("biometryVideo");
+        const canvas = document.getElementById("biometryCanvas");
+        const status = document.getElementById("biometryStatus");
+        const btn = document.getElementById("btnCaptureFace");
+
+        const displaySize = {
+          width: video.offsetWidth,
+          height: video.offsetHeight,
+        };
+        faceapi.matchDimensions(canvas, displaySize);
+
+        const detections = await faceapi
+          .detectAllFaces(video)
+          .withFaceLandmarks()
+          .withFaceDescriptors();
+        const resizedDetections = faceapi.resizeResults(
+          detections,
+          displaySize,
+        );
+
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        faceapi.draw.drawDetections(canvas, resizedDetections);
+
+        if (detections.length > 0) {
+          status.textContent = "Face detectada! Mantenha-se estável.";
+          status.classList.add("text-emerald-500");
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          status.textContent = "Enquadre seu rosto no círculo...";
+          status.classList.remove("text-emerald-500");
+          btn.disabled = true;
+          btn.classList.add("opacity-50", "cursor-not-allowed");
         }
 
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            const action = document.getElementById('formAction').value;
-            const id = document.getElementById('memberId').value;
+        if (biometryActive) setTimeout(detectFaceLoop, 100);
+      }
 
-            const payload = {
-                nome_completo: document.getElementById('memberName').value,
-                whatsapp: document.getElementById('memberPhone').value,
-                telefone: document.getElementById('memberPhone').value,
-                email: document.getElementById('memberEmail').value,
-                cpf: document.getElementById('memberCPF').value,
-                peso: parseFloat(document.getElementById('memberWeight').value),
-                altura: parseFloat(document.getElementById('memberHeight').value),
-                data_nascimento: document.getElementById('memberDOB').value || null,
-                plano: document.getElementById('memberPlan').value,
-                status: document.getElementById('memberStatus').value,
-                situacao_financeira: document.getElementById('memberFinancial').value,
-                data_matricula: document.getElementById('memberJoinDate').value,
-                ultima_visita: document.getElementById('memberLastVisit').value || null,
-                senha: document.getElementById('memberPassword').value,
-                score_ia: Math.floor(Math.random() * 41) + 60
-            };
+      async function captureFace() {
+        const video = document.getElementById("biometryVideo");
+        PlayFitnessUI.toast("Extraindo Biometria...", "sync");
 
-            try {
-                const result = await PlayFitnessAPI.students.save(action === 'edit' ? id : null, payload);
-                
-                // NOVO: Salva histórico de evolução se tiver dados físicos
-                if (result && result.length > 0) {
-                    const studentId = result[0].id;
-                    if (payload.peso || payload.altura) {
-                        await PlayFitnessAPI.students.addAssessment(studentId, payload.peso, payload.altura);
-                    }
-                }
+        const fullDetection = await faceapi
+          .detectSingleFace(video)
+          .withFaceLandmarks()
+          .withFaceDescriptor();
 
-                // Novo: Salva Avaliação Antropométrica se campos estiverem preenchidos
-                if (payload.cpf) {
-                    const evalData = {
-                        codCliente: payload.cpf,
-                        data: new Date().toLocaleDateString('pt-BR'),
-                        numeroDaAvaliacao: Math.floor(Math.random() * 999), // Placeholder logic
-                        circunferenciaAbdominal: parseFloat(document.getElementById('evalAbd').value),
-                        torax: parseFloat(document.getElementById('evalTorax').value),
-                        cintura: parseFloat(document.getElementById('evalCintura').value),
-                        quadril: parseFloat(document.getElementById('evalQuadril').value),
-                        bracoDireito: parseFloat(document.getElementById('evalBracoD').value),
-                        bracoEsquerdo: parseFloat(document.getElementById('evalBracoE').value),
-                        antebracoDireito: parseFloat(document.getElementById('evalAnteBracoD').value),
-                        antebracoEsquerdo: parseFloat(document.getElementById('evalAnteBracoE').value),
-                        coxaDireita: parseFloat(document.getElementById('evalCoxaD').value),
-                        coxaEsquerda: parseFloat(document.getElementById('evalCoxaE').value),
-                        panturrilhaDireita: parseFloat(document.getElementById('evalPantD').value),
-                        panturrilhaEsquerda: parseFloat(document.getElementById('evalPantE').value)
-                    };
-
-                    // Só salva se pelo menos um campo de medida foi preenchido
-                    const hasData = Object.values(evalData).some(v => typeof v === 'number' && !isNaN(v));
-                    if (hasData) {
-                        await PlayFitnessAPI.students.saveAssessment(evalData);
-                    }
-                }
-
-                PlayFitnessUI.toast(action === 'edit' ? 'Aluno Atualizado!' : 'Novo Aluno Cadastrado!', 'success');
-                closeModal();
-                loadMembers();
-                loadPlansIntoSelect();
-            } catch (err) {
-                console.error(err);
-                PlayFitnessUI.toast('Falha na operação', 'error');
-            }
+        if (!fullDetection) {
+          PlayFitnessUI.toast("Erro na captura. Tente novamente.", "error");
+          return;
         }
 
-        async function loadPlansIntoSelect() {
-            try {
-                const plans = await PlayFitnessAPI.plans.list();
-                const select = document.getElementById('memberPlan');
-                select.innerHTML = '';
-                plans.forEach(p => {
-                    if(p.ativo) {
-                        select.innerHTML += `<option value="${p.nome}">${p.nome} — R$ ${p.valor}</option>`;
-                    }
-                });
-            } catch (err) {
-                console.error("Failed to load plans:", err);
-                PlayFitnessUI.toast('Falha ao carregar planos', 'error');
-            }
+        const descriptorArray = Array.from(fullDetection.descriptor); // Converte Float32Array para Array normal
+
+        try {
+          // Atualiza o aluno no Supabase
+          const { error } = await window.supabaseClient
+            .from("alunos")
+            .update({ biometria_facial: descriptorArray })
+            .eq("id", recordingAlunoId);
+
+          if (error) throw error;
+
+          PlayFitnessUI.toast("Biometria Registrada com Sucesso!", "verified");
+          stopBiometry();
+          initializeMembros();
+        } catch (e) {
+          console.error(e);
+          PlayFitnessUI.toast("Erro ao salvar no banco", "error");
         }
-
-        // ==========================================
-        // BIOMETRIA FACIAL (IA)
-        // ==========================================
-        let faceApiLoaded = false;
-        let currentStream = null;
-        let biometryActive = false;
-        let recordingAlunoId = null;
-
-        async function loadFaceApi() {
-            if (faceApiLoaded) return true;
-            PlayFitnessUI.toast('Iniciando Motor de IA...', 'psychology');
-            try {
-                // Carregar modelos via CDN
-                const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
-                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-                faceApiLoaded = true;
-                return true;
-            } catch (e) {
-                console.error("Erro ao carregar IA:", e);
-                PlayFitnessUI.toast('Erro ao carregar modelos de IA', 'error');
-                return false;
-            }
-        }
-
-        async function startBiometry(alunoId) {
-            recordingAlunoId = alunoId;
-            const ok = await loadFaceApi();
-            if (!ok) return;
-
-            document.getElementById('biometryOverlay').classList.remove('hidden');
-            document.getElementById('biometryOverlay').classList.add('flex');
-            document.getElementById('scanLine').classList.remove('hidden');
-            
-            try {
-                currentStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                const video = document.getElementById('biometryVideo');
-                video.srcObject = currentStream;
-                biometryActive = true;
-                detectFaceLoop();
-            } catch (e) {
-                PlayFitnessUI.toast('Câmera não encontrada', 'error');
-                stopBiometry();
-            }
-        }
-
-        function stopBiometry() {
-            biometryActive = false;
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-            document.getElementById('biometryOverlay').classList.add('hidden');
-            document.getElementById('biometryOverlay').classList.remove('flex');
-            document.getElementById('scanLine').classList.add('hidden');
-            document.getElementById('btnCaptureFace').disabled = true;
-            document.getElementById('btnCaptureFace').classList.add('opacity-50');
-        }
-
-        async function detectFaceLoop() {
-            if (!biometryActive) return;
-            
-            const video = document.getElementById('biometryVideo');
-            const canvas = document.getElementById('biometryCanvas');
-            const status = document.getElementById('biometryStatus');
-            const btn = document.getElementById('btnCaptureFace');
-            
-            const displaySize = { width: video.offsetWidth, height: video.offsetHeight };
-            faceapi.matchDimensions(canvas, displaySize);
-
-            const detections = await faceapi.detectAllFaces(video).withFaceLandmarks().withFaceDescriptors();
-            const resizedDetections = faceapi.resizeResults(detections, displaySize);
-            
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            faceapi.draw.drawDetections(canvas, resizedDetections);
-
-            if (detections.length > 0) {
-                status.textContent = "Face detectada! Mantenha-se estável.";
-                status.classList.add('text-emerald-500');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            } else {
-                status.textContent = "Enquadre seu rosto no círculo...";
-                status.classList.remove('text-emerald-500');
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-
-            if (biometryActive) setTimeout(detectFaceLoop, 100);
-        }
-
-        async function captureFace() {
-            const video = document.getElementById('biometryVideo');
-            PlayFitnessUI.toast('Extraindo Biometria...', 'sync');
-            
-            const fullDetection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
-            
-            if (!fullDetection) {
-                PlayFitnessUI.toast('Erro na captura. Tente novamente.', 'error');
-                return;
-            }
-
-            const descriptorArray = Array.from(fullDetection.descriptor); // Converte Float32Array para Array normal
-            
-            try {
-                // Atualiza o aluno no Supabase
-                const { error } = await window.supabaseClient
-                    .from('alunos')
-                    .update({ biometria_facial: descriptorArray })
-                    .eq('id', recordingAlunoId);
-                
-                if (error) throw error;
-                
-                PlayFitnessUI.toast('Biometria Registrada com Sucesso!', 'verified');
-                stopBiometry();
-                initializeMembros();
-            } catch (e) {
-                console.error(e);
-                PlayFitnessUI.toast('Erro ao salvar no banco', 'error');
-            }
-        }
+      }
     </script>
 
     <!-- WEBCAM CAPTURE MODAL (FOOTER APPENDED) -->
-    <div id="webcamCaptureModal" class="fixed inset-0 z-[300] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closeWebcam()"></div>
-        <div class="relative bg-zinc-900 border border-white/10 rounded-[3rem] w-full max-w-sm overflow-hidden shadow-3xl">
-            <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                <h4 class="font-headline font-black italic text-lg uppercase">Foto <span class="text-primary italic">Live</span></h4>
-                <button onclick="closeWebcam()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-error transition-all">
-                    <span class="material-symbols-outlined text-sm">close</span>
-                </button>
-            </div>
-            
-            <div class="p-6">
-                <div class="relative aspect-square rounded-[2rem] overflow-hidden border-2 border-primary/20 bg-black group shadow-inner">
-                    <video id="captureVideo" autoplay muted playsinline title="Câmera para Foto de Perfil" class="w-full h-full object-cover grayscale focus:grayscale-0"></video>
-                    <div class="absolute inset-0 border-4 border-dashed border-primary/10 rounded-[2rem] pointer-events-none"></div>
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 border-2 border-primary/30 rounded-[3rem] pointer-events-none opacity-50"></div>
-                </div>
-            </div>
-
-            <div class="p-6 border-t border-white/5 flex gap-4">
-                <button onclick="closeWebcam()" class="flex-1 py-3 border border-white/5 rounded-2xl text-[9px] font-black uppercase tracking-widest">Cancelar</button>
-                <button onclick="takeSnapshot()" class="flex-[2] py-4 bg-primary text-white rounded-2xl font-black font-headline uppercase tracking-widest text-[9px] shadow-lg flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[16px]">photo_camera</span> Capturar
-                </button>
-            </div>
+    <div
+      id="webcamCaptureModal"
+      class="fixed inset-0 z-[300] hidden flex items-center justify-center p-4"
+    >
+      <div
+        class="absolute inset-0 bg-black/90 backdrop-blur-xl"
+        onclick="closeWebcam()"
+      ></div>
+      <div
+        class="relative bg-zinc-900 border border-white/10 rounded-[3rem] w-full max-w-sm overflow-hidden shadow-3xl"
+      >
+        <div
+          class="p-6 border-b border-white/5 flex justify-between items-center"
+        >
+          <h4 class="font-headline font-black italic text-lg uppercase">
+            Foto <span class="text-primary italic">Live</span>
+          </h4>
+          <button
+            onclick="closeWebcam()"
+            class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-error transition-all"
+          >
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
         </div>
+
+        <div class="p-6">
+          <div
+            class="relative aspect-square rounded-[2rem] overflow-hidden border-2 border-primary/20 bg-black group shadow-inner"
+          >
+            <video
+              id="captureVideo"
+              autoplay
+              muted
+              title="Câmera para Foto de Perfil"
+              class="w-full h-full object-cover grayscale focus:grayscale-0"
+            ></video>
+            <div
+              class="absolute inset-0 border-4 border-dashed border-primary/10 rounded-[2rem] pointer-events-none"
+            ></div>
+            <div
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 border-2 border-primary/30 rounded-[3rem] pointer-events-none opacity-50"
+            ></div>
+          </div>
+        </div>
+
+        <div class="p-6 border-t border-white/5 flex gap-4">
+          <button
+            onclick="closeWebcam()"
+            class="flex-1 py-3 border border-white/5 rounded-2xl text-[9px] font-black uppercase tracking-widest"
+          >
+            Cancelar
+          </button>
+          <button
+            onclick="takeSnapshot()"
+            class="flex-[2] py-4 bg-primary text-white rounded-2xl font-black font-headline uppercase tracking-widest text-[9px] shadow-lg flex items-center justify-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[16px]"
+              >photo_camera</span
+            >
+            Capturar
+          </button>
+        </div>
+      </div>
     </div>
     <div id="cameraFlash" class="camera-flash"></div>
 
     <script>
-        let captureStream = null;
+      let captureStream = null;
 
-        async function openWebcam() {
-            const modal = document.getElementById('webcamCaptureModal');
-            const video = document.getElementById('captureVideo');
-            modal.classList.remove('hidden');
-            
-            try {
-                captureStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 800, height: 800, facingMode: "user" } 
-                });
-                video.srcObject = captureStream;
-            } catch (err) {
-                PlayFitnessUI.toast("Erro na câmera: " + err.message, "error");
-                closeWebcam();
-            }
+      async function openWebcam() {
+        const modal = document.getElementById("webcamCaptureModal");
+        const video = document.getElementById("captureVideo");
+        modal.classList.remove("hidden");
+
+        try {
+          captureStream = await navigator.mediaDevices.getUserMedia({
+            video: { width: 800, height: 800, facingMode: "user" },
+          });
+          video.srcObject = captureStream;
+        } catch (err) {
+          PlayFitnessUI.toast("Erro na câmera: " + err.message, "error");
+          closeWebcam();
         }
+      }
 
-        function closeWebcam() {
-            document.getElementById('webcamCaptureModal').classList.add('hidden');
-            if (captureStream) {
-                captureStream.getTracks().forEach(t => t.stop());
-                captureStream = null;
-            }
+      function closeWebcam() {
+        document.getElementById("webcamCaptureModal").classList.add("hidden");
+        if (captureStream) {
+          captureStream.getTracks().forEach((t) => t.stop());
+          captureStream = null;
         }
+      }
 
-        function takeSnapshot() {
-            const video = document.getElementById('captureVideo');
-            const canvas = document.createElement('canvas');
-            const flash = document.getElementById('cameraFlash');
-            
-            flash.classList.add('is-flashing');
-            setTimeout(() => flash.classList.remove('is-flashing'), 300);
+      function takeSnapshot() {
+        const video = document.getElementById("captureVideo");
+        const canvas = document.createElement("canvas");
+        const flash = document.getElementById("cameraFlash");
 
-            canvas.width = 600;
-            canvas.height = 600;
-            const ctx = canvas.getContext('2d');
-            
-            // Mirror & Crop
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            
-            const vW = video.videoWidth;
-            const vH = video.videoHeight;
-            const size = Math.min(vW, vH);
-            const x = (vW - size) / 2;
-            const y = (vH - size) / 2;
-            
-            ctx.drawImage(video, x, y, size, size, 0, 0, canvas.width, canvas.height);
-            
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-            document.getElementById('modalAvatarPreview').src = dataUrl;
-            
-            // Injeta o arquivo no fluxo do formulário
-            currentPhotoData = dataUrl; 
-            
-            PlayFitnessUI.toast("Foto de Perfil Atualizada!", "camera_alt");
-            closeWebcam();
-        }
+        flash.classList.add("is-flashing");
+        setTimeout(() => flash.classList.remove("is-flashing"), 300);
+
+        canvas.width = 600;
+        canvas.height = 600;
+        const ctx = canvas.getContext("2d");
+
+        // Mirror & Crop
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+
+        const vW = video.videoWidth;
+        const vH = video.videoHeight;
+        const size = Math.min(vW, vH);
+        const x = (vW - size) / 2;
+        const y = (vH - size) / 2;
+
+        ctx.drawImage(
+          video,
+          x,
+          y,
+          size,
+          size,
+          0,
+          0,
+          canvas.width,
+          canvas.height,
+        );
+
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        document.getElementById("modalAvatarPreview").src = dataUrl;
+
+        // Injeta o arquivo no fluxo do formulário
+        currentPhotoData = dataUrl;
+
+        PlayFitnessUI.toast("Foto de Perfil Atualizada!", "camera_alt");
+        closeWebcam();
+      }
     </script>
-</body>
+  </body>
 </html>

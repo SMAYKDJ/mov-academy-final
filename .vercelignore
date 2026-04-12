@@ -1,0 +1,9 @@
+*.zip
+node_modules
+.venv
+.git
+.vscode
+*.task
+*.pt
+*.png
+*.pdf
