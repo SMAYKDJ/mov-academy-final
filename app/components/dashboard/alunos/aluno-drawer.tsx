@@ -1,0 +1,225 @@
+'use client';
+
+import React, { useEffect, useRef } from 'react';
+import {
+  X, Phone, Mail, MapPin, Calendar, CreditCard, Target,
+  TrendingUp, Activity, ShieldAlert, Edit3, UserX
+} from 'lucide-react';
+import { cn } from '@/utils/cn';
+import { StatusBadge, PlanBadge, RiskIndicator } from './status-badge';
+import type { Aluno } from '@/types/aluno';
+
+interface AlunoDrawerProps {
+  aluno: Aluno | null;
+  open: boolean;
+  onClose: () => void;
+  onEdit: (aluno: Aluno) => void;
+}
+
+export function AlunoDrawer({ aluno, open, onClose, onEdit }: AlunoDrawerProps) {
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (open) {
+      document.addEventListener('keydown', handler);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [open, onClose]);
+
+  // Focus trap
+  useEffect(() => {
+    if (open && drawerRef.current) {
+      drawerRef.current.focus();
+    }
+  }, [open]);
+
+  if (!open || !aluno) return null;
+
+  const getInitials = (name: string) => {
+    const parts = name.split(' ');
+    return (parts[0]?.[0] || '') + (parts[parts.length - 1]?.[0] || '');
+  };
+
+  const avatarColors = [
+    'from-primary-500 to-indigo-600',
+    'from-emerald-500 to-teal-600',
+    'from-amber-500 to-orange-600',
+    'from-pink-500 to-rose-600',
+    'from-violet-500 to-purple-600',
+    'from-sky-500 to-blue-600',
+  ];
+
+  const infoItems = [
+    { icon: Phone, label: 'Telefone', value: aluno.telefone },
+    { icon: Mail, label: 'Email', value: aluno.email },
+    { icon: MapPin, label: 'Endereço', value: aluno.endereco },
+    { icon: Calendar, label: 'Nascimento', value: aluno.dataNascimento },
+    { icon: Calendar, label: 'Matrícula', value: aluno.dataMatricula },
+    { icon: Target, label: 'Objetivo', value: aluno.objetivo },
+  ];
+
+  const paymentMethodLabels: Record<string, string> = {
+    pix: 'PIX',
+    cartao: 'Cartão',
+    boleto: 'Boleto',
+    dinheiro: 'Dinheiro',
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label={`Detalhes de ${aluno.nome}`}>
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Drawer Panel */}
+      <div
+        ref={drawerRef}
+        tabIndex={-1}
+        className={cn(
+          "absolute right-0 top-0 h-full w-full sm:w-[480px] bg-white dark:bg-[#0f1117] shadow-2xl flex flex-col",
+          "animate-slide-in-right"
+        )}
+      >
+        {/* Header */}
+        <div className="p-6 border-b border-gray-100 dark:border-[#1e2235] flex items-start justify-between">
+          <div className="flex items-center gap-4">
+            <div className={cn(
+              "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center text-white font-bold text-lg shrink-0 shadow-lg",
+              avatarColors[aluno.id % avatarColors.length]
+            )}>
+              {getInitials(aluno.nome)}
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{aluno.nome}</h2>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">CPF: {aluno.cpf}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <StatusBadge status={aluno.status} />
+                <PlanBadge plan={aluno.plano} />
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            aria-label="Fechar"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50 dark:bg-[#1a1d27] rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Frequência</span>
+              </div>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">{aluno.frequencia}x</p>
+              <p className="text-[10px] text-gray-400">por semana</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-[#1a1d27] rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <ShieldAlert className="w-4 h-4 text-amber-500" />
+                <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Risco Churn</span>
+              </div>
+              <RiskIndicator risk={aluno.risco} />
+            </div>
+          </div>
+
+          {/* Info List */}
+          <div>
+            <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
+              Informações Pessoais
+            </h3>
+            <div className="space-y-3">
+              {infoItems.map(item => (
+                <div key={item.label} className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-gray-50 dark:bg-[#1a1d27] rounded-lg flex items-center justify-center shrink-0">
+                    <item.icon className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <div className="min-w-0 pt-1">
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">{item.label}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 break-words">{item.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment History */}
+          <div>
+            <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
+              Histórico de Pagamentos
+            </h3>
+            <div className="space-y-2">
+              {aluno.historicoPagamentos.map(pag => (
+                <div
+                  key={pag.id}
+                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#1a1d27] rounded-xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center",
+                      pag.status === 'pago' ? "bg-emerald-50 dark:bg-green-900/20" : "bg-amber-50 dark:bg-amber-900/20"
+                    )}>
+                      <CreditCard className={cn(
+                        "w-4 h-4",
+                        pag.status === 'pago' ? "text-emerald-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"
+                      )} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        R$ {pag.amount.toFixed(2).replace('.', ',')}
+                      </p>
+                      <p className="text-[10px] text-gray-400">{pag.date} · {paymentMethodLabels[pag.method] || pag.method}</p>
+                    </div>
+                  </div>
+                  <span className={cn(
+                    "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full",
+                    pag.status === 'pago'
+                      ? "bg-emerald-50 dark:bg-green-900/20 text-emerald-700 dark:text-green-400"
+                      : pag.status === 'pendente'
+                      ? "bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400"
+                      : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400"
+                  )}>
+                    {pag.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex gap-3">
+          <button
+            onClick={() => { onEdit(aluno); onClose(); }}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+          >
+            <Edit3 className="w-4 h-4" />
+            Editar Aluno
+          </button>
+          <button
+            className="flex items-center justify-center gap-2 px-4 py-3 border border-danger-500 text-danger-600 dark:text-red-400 rounded-xl text-sm font-bold hover:bg-danger-50 dark:hover:bg-red-900/10 transition-all focus-visible:ring-2 focus-visible:ring-danger-500 focus-visible:ring-offset-2"
+          >
+            <UserX className="w-4 h-4" />
+            Cancelar Plano
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

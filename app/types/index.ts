@@ -1,0 +1,43 @@
+/**
+ * Core type definitions for the Moviment Academia Dashboard.
+ * All interfaces are centralized here for maintainability.
+ */
+
+export interface Student {
+  id: string;
+  name: string;
+  email: string;
+  status: 'active' | 'inactive' | 'at_risk';
+  score: number;
+  plan: 'Black VIP' | 'Platinum' | 'Basic Fit';
+  lastVisit: string;
+  payments: 'up_to_date' | 'overdue';
+  joinDate: string;
+  avatar?: string;
+}
+
+export interface KPIStat {
+  id: string;
+  label: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down';
+  icon: 'Users' | 'DollarSign' | 'TrendingDown' | 'UserPlus';
+  description: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  user: string;
+  action: string;
+  time: string;
+  type: 'checkin' | 'payment' | 'signup' | 'alert';
+}
+
+export interface ChartData {
+  label: string;
+  value: number;
+}
+
+export type SortDirection = 'asc' | 'desc' | null;
+export type SortField = 'name' | 'status' | 'plan' | 'score' | 'lastVisit';

@@ -1,9 +1,4 @@
-*.zip
+.tmp.driveupload
 node_modules
-.venv
-.git
-.vscode
-*.task
-*.pt
-*.png
-*.pdf
+.next
+legacy_html
