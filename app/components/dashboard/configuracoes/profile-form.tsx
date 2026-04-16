@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User, Camera, Save } from 'lucide-react';
+import { User, Camera, Save, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
-import type { UserProfile } from '@/types/configuracoes';
+import { supabase } from '@/lib/supabase';
+import type { UserProfile } from '@/types/auth';
 
 interface ProfileFormProps {
   profile: UserProfile;
@@ -13,9 +14,37 @@ const roleLabelMap = { admin: 'Administrador', instrutor: 'Instrutor', recepcao:
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const { showToast } = useToast();
-  const [form, setForm] = useState({ nome: profile.nome, telefone: profile.telefone });
+  const [form, setForm] = useState({ nome: profile.nome || '', email: profile.email || '' });
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = () => showToast('Perfil atualizado com sucesso!', 'success', 'Salvo');
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      // 1. O e-mail fica no auth e o nome na tabela profiles + auth metadata
+      const updates = [];
+      
+      if (form.email !== profile.email) {
+        updates.push(supabase.auth.updateUser({ email: form.email }));
+      }
+      
+      if (form.nome !== profile.nome) {
+        updates.push(supabase.auth.updateUser({ data: { nome: form.nome } }));
+        updates.push(supabase.from('profiles').update({ nome: form.nome }).eq('id', profile.id));
+      }
+
+      await Promise.all(updates);
+      
+      if (form.email !== profile.email) {
+        showToast('Confirme a alteração no seu novo e-mail.', 'warning', 'Verificação Enviada');
+      } else {
+        showToast('Perfil atualizado com sucesso!', 'success', 'Salvo');
+      }
+    } catch (error) {
+      showToast('Erro ao atualizar perfil.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -39,10 +68,10 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           </button>
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 dark:text-white">{form.nome}</p>
+          <p className="text-sm font-bold text-gray-900 dark:text-white">{profile.nome}</p>
           <p className="text-xs text-gray-400">{profile.email}</p>
           <span className="inline-block mt-1 px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-[9px] font-bold uppercase tracking-widest rounded-md">
-            {roleLabelMap[profile.role]}
+            {roleLabelMap[profile.role as keyof typeof roleLabelMap] || profile.role}
           </span>
         </div>
       </div>
@@ -60,15 +89,15 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           />
         </div>
         <div>
-          <label htmlFor="profile-email" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">E-mail</label>
+          <label htmlFor="profile-email" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">E-mail de Acesso</label>
           <input 
             id="profile-email"
             type="email" 
-            value={profile.email} 
-            readOnly
-            title="Seu endereço de e-mail (não alterável)"
+            value={form.email} 
+            onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+            title="Seu endereço de e-mail"
             placeholder="E-mail"
-            className="w-full px-3 py-2.5 bg-gray-100 dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed" 
+            className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
           />
         </div>
         <div>
@@ -82,11 +111,11 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           />
         </div>
         <div>
-          <label htmlFor="profile-role" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Cargo</label>
+          <label htmlFor="profile-role" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Cargo / Vínculo</label>
           <input 
             id="profile-role"
             type="text" 
-            value={roleLabelMap[profile.role]} 
+            value={roleLabelMap[profile.role as keyof typeof roleLabelMap] || profile.role} 
             readOnly
             title="Seu cargo no sistema"
             placeholder="Cargo"
@@ -95,8 +124,13 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         </div>
       </div>
 
-      <button onClick={handleSave} className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2">
-        <Save className="w-4 h-4" /> Salvar Alterações
+      <button 
+        onClick={handleSave} 
+        disabled={loading}
+        className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 disabled:opacity-70"
+      >
+        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </div>
   );

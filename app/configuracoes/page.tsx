@@ -10,9 +10,10 @@ import { UserManagement } from '@/components/dashboard/configuracoes/user-manage
 import { Integrations } from '@/components/dashboard/configuracoes/integrations';
 import { PreferencesSettings } from '@/components/dashboard/configuracoes/preferences-settings';
 import { currentProfile, gymSettingsData, systemUsersData, integrationsData } from '@/utils/configuracoes-data';
-import { User, Building2, Shield, Users, Plug, Settings2 } from 'lucide-react';
+import { User, Building2, Shield, Users, Plug, Settings2, Loader2 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { SettingsTab } from '@/types/configuracoes';
+import { useAuth } from '@/hooks/use-auth';
 
 const tabs: { id: SettingsTab; label: string; icon: React.ElementType; description: string }[] = [
   { id: 'perfil', label: 'Perfil', icon: User, description: 'Dados pessoais' },
@@ -26,12 +27,15 @@ const tabs: { id: SettingsTab; label: string; icon: React.ElementType; descripti
 export default function ConfiguracoesPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<SettingsTab>('perfil');
+  const { user } = useAuth();
 
   const renderContent = () => {
+    if (!user) return <div className="p-8 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+
     switch (activeTab) {
-      case 'perfil': return <ProfileForm profile={currentProfile} />;
+      case 'perfil': return <ProfileForm profile={user as any} />;
       case 'academia': return <GymForm settings={gymSettingsData} />;
-      case 'seguranca': return <SecuritySettings />;
+      case 'seguranca': return <SecuritySettings userEmail={user.email} />;
       case 'usuarios': return <UserManagement users={systemUsersData} />;
       case 'integracoes': return <Integrations integrations={integrationsData} />;
       case 'preferencias': return <PreferencesSettings />;

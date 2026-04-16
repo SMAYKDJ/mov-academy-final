@@ -1,13 +1,57 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Lock, Shield, LogOut, Eye, EyeOff, Save } from 'lucide-react';
+import { Lock, Shield, LogOut, Eye, EyeOff, Save, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
-export function SecuritySettings() {
+interface SecuritySettingsProps {
+  userEmail?: string;
+}
+
+export function SecuritySettings({ userEmail }: SecuritySettingsProps) {
   const { showToast } = useToast();
   const [showPw, setShowPw] = useState(false);
   const [twoFA, setTwoFA] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleUpdatePassword = async () => {
+    if (!password || password.length < 6) {
+      showToast('A senha deve ter pelo menos 6 caracteres.', 'error');
+      return;
+    }
+    if (password !== confirmPassword) {
+      showToast('As senhas não coincidem.', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      
+      showToast('Senha alterada com sucesso!', 'success', 'Segurança');
+      setPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      showToast(error.message || 'Erro ao alterar senha.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignOutAll = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/login');
+    } catch (error) {
+      showToast('Erro ao encerrar sessões.', 'error');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -31,6 +75,8 @@ export function SecuritySettings() {
           <div className="relative">
             <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Nova Senha</label>
             <input type={showPw ? 'text' : 'password'} placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               className="w-full px-3 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all pr-10" />
             <button 
               onClick={() => setShowPw(!showPw)} 
@@ -44,11 +90,18 @@ export function SecuritySettings() {
           <div>
             <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Confirmar Senha</label>
             <input type="password" placeholder="••••••••"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
               className="w-full px-3 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
           </div>
         </div>
-        <button onClick={() => showToast('Senha alterada com sucesso!', 'success', 'Segurança')} className="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700 transition-all flex items-center gap-2">
-          <Save className="w-3.5 h-3.5" /> Atualizar Senha
+        <button 
+          onClick={handleUpdatePassword} 
+          disabled={loading}
+          className="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700 transition-all flex items-center gap-2 disabled:opacity-70"
+        >
+          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} 
+          {loading ? 'Atualizando...' : 'Atualizar Senha'}
         </button>
       </div>
 
@@ -86,7 +139,7 @@ export function SecuritySettings() {
               <p className="text-[10px] text-gray-400">Desconectar de todos os dispositivos</p>
             </div>
           </div>
-          <button onClick={() => showToast('Todas as sessões foram encerradas', 'info', 'Sessões')}
+          <button onClick={handleSignOutAll}
             className="px-4 py-2 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl text-xs font-bold hover:bg-red-100 dark:hover:bg-red-900/20 transition-all">
             Encerrar
           </button>
