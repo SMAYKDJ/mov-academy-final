@@ -17,6 +17,7 @@ import { useLocalStorage } from "@/utils/persistence";
 import { Calendar as CalendarIcon, Plus, ArrowUpRight, Brain, ShieldAlert } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
+import type { Student } from "@/types";
 
 /**
  * Main Dashboard Page.
@@ -171,10 +172,12 @@ export default function DashboardPage() {
                   id: String(a.id),
                   name: a.nome,
                   email: a.email,
-                  status: a.status === 'em_dia' ? 'active' : a.status === 'pendente' ? 'at_risk' : 'inactive',
-                  plan: a.plano,
-                  score: Math.round(generateRealChurnSummary(alunos).predictions.find(p => p.studentName === a.nome)?.probability || a.risco || 0),
-                  lastVisit: a.ultimoPagamento
+                  status: a.status === 'ativo' ? 'active' : a.status === 'pendente' ? 'at_risk' : 'inactive',
+                  plan: a.plano as Student['plan'],
+                  score: Math.round(generateRealChurnSummary(alunos).predictions.find(p => p.studentName === a.nome)?.probability || (a as any).risco || 0),
+                  lastVisit: a.ultimoPagamento,
+                  payments: (a.status === 'ativo' ? 'up_to_date' : 'overdue') as Student['payments'],
+                  joinDate: (a as any).dataMatricula || a.ultimoPagamento || '',
                 }))} 
               />
             </div>

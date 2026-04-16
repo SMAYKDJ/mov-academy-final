@@ -52,7 +52,7 @@ export function generateRealChurnSummary(alunos: Aluno[]): ChurnSummary {
       lastPresence: a.ultimoPagamento, // Using this as proxy
       daysSinceLastVisit: Math.floor(Math.random() * 15), // Simulated for now since we don't track visits yet
       weeklyFrequency: a.frequencia,
-      paymentStatus: a.status === 'em_dia' ? 'up_to_date' : 'overdue',
+      paymentStatus: a.status === 'ativo' ? 'up_to_date' : 'overdue',
       enrollmentMonths: 12, // Placeholder
       updatedAt: new Date().toLocaleDateString('pt-BR'),
     };
