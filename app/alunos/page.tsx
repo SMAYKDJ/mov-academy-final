@@ -11,6 +11,7 @@ import { AlunoForm } from '@/components/dashboard/alunos/aluno-form';
 import { alunosData } from '@/utils/alunos-data';
 import { useToast } from '@/components/ui/toast';
 import { Plus, Download, Upload } from 'lucide-react';
+import { useLocalStorage, exportToCSV } from '@/utils/persistence';
 import type { Aluno, AlunosFilterState, AlunoFormData } from '@/types/aluno';
 
 /**
@@ -21,8 +22,8 @@ export default function AlunosPage() {
   const [loading] = useState(false);
   const { showToast } = useToast();
 
-  // Data state
-  const [alunos, setAlunos] = useState<Aluno[]>(alunosData);
+  // Data state with persistence
+  const [alunos, setAlunos, isLoaded] = useLocalStorage<Aluno[]>('moviment-alunos', alunosData);
 
   // Filter state
   const [filters, setFilters] = useState<AlunosFilterState>({
@@ -146,11 +147,17 @@ export default function AlunosPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2">
+              <button 
+                onClick={() => exportToCSV(alunos, 'alunos-moviment-academy')}
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
+              >
                 <Download className="w-4 h-4" />
                 Exportar
               </button>
-              <button className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2">
+              <button 
+                onClick={() => showToast('Selecione um arquivo CSV/XLS para importar', 'info', 'Importar Alunos')}
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
+              >
                 <Upload className="w-4 h-4" />
                 Importar
               </button>
@@ -177,7 +184,7 @@ export default function AlunosPage() {
           {/* Table */}
           <AlunosTable
             data={filtered}
-            loading={loading}
+            loading={!isLoaded || loading}
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}

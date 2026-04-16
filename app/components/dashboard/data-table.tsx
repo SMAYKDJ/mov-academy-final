@@ -288,11 +288,13 @@ export function DataTable({ data }: { data: Student[] }) {
                               "h-full rounded-full transition-all duration-1000",
                               student.score > 70 ? "bg-danger-500" : student.score > 30 ? "bg-warning-500" : "bg-success-500"
                             )}
-                            style={{ width: `${student.score}%` }}
+                            style={{ width: `var(--risk-w, ${student.score}%)` } as React.CSSProperties}
                             role="progressbar"
-                            aria-valuenow={student.score}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
+                            {...({
+                              'aria-valuenow': student.score,
+                              'aria-valuemin': 0,
+                              'aria-valuemax': 100
+                            })}
                             aria-label={`Risco de churn: ${student.score}%`}
                           />
                         </div>

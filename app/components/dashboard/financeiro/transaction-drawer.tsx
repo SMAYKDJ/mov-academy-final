@@ -7,7 +7,8 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { getWALink, generateWAMessage } from '@/utils/whatsapp-helper';
+import { openWhatsApp, generateWAMessage, notifyManager } from '@/utils/whatsapp-helper';
+import { alunosData } from '@/utils/alunos-data';
 import type { Transaction, TransactionStatus, PaymentMethod } from '@/types/financeiro';
 
 interface TransactionDrawerProps {
@@ -192,8 +193,10 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
               </button>
               <button 
                 onClick={() => {
-                  const msg = generateWAMessage('lembrete', txn.alunoNome || 'Aluno', txn.valor.toString(), txn.vencimento);
-                  window.open(getWALink('5511999999999', msg), '_blank');
+                  const student = alunosData.find(s => s.id === txn.alunoId);
+                  const phone = student?.telefone || '5521999999999';
+                  const msg = generateWAMessage(txn.status === 'atrasado' ? 'cobranca' : 'lembrete', txn.alunoNome || 'Aluno', txn.valor, txn.vencimento);
+                  openWhatsApp(phone, msg);
                 }}
                 className="px-4 py-3 border border-emerald-200 dark:border-green-800 text-emerald-600 dark:text-green-400 rounded-xl text-sm font-semibold hover:bg-emerald-50 dark:hover:bg-green-900/10 transition-all flex items-center gap-2"
               >
@@ -205,6 +208,30 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
             <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none">
               <FileText className="w-4 h-4" />
               Gerar Recibo
+            </button>
+          )}
+
+          {/* New Confirmation Action */}
+          {txn.status === 'pago' && txn.alunoId && (
+            <button 
+              onClick={() => {
+                const student = alunosData.find(s => s.id === txn.alunoId);
+                const phone = student?.telefone || '5521999999999';
+                const msgStudent = generateWAMessage('pagamento_confirmado', txn.alunoNome || 'Aluno', txn.valor);
+                
+                // Open student confirmation
+                openWhatsApp(phone, msgStudent);
+                
+                // Then notify manager (after a small delay to not block browsers)
+                setTimeout(() => {
+                  notifyManager(txn.alunoNome || 'Aluno', txn.valor);
+                }, 1000);
+              }}
+              className="px-4 py-3 border border-emerald-200 dark:border-green-800 text-emerald-600 dark:text-green-400 rounded-xl text-sm font-semibold hover:bg-emerald-50 dark:hover:bg-green-900/10 transition-all flex items-center gap-2"
+              title="Notificar Aluno e Gestor"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Notificar Recebimento
             </button>
           )}
         </div>

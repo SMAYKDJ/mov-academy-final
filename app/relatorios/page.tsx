@@ -14,9 +14,11 @@ import {
   dailyCheckinsData 
 } from '@/utils/relatorios-data';
 import { FileDown, Calendar, Filter, Sparkles } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 export default function RelatoriosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { showToast } = useToast();
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
@@ -42,11 +44,17 @@ export default function RelatoriosPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2">
+              <button 
+                onClick={() => showToast('Seletor de meses aberto', 'info', 'Filtro Temporal')}
+                className="px-4 py-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
+              >
                 <Calendar className="w-4 h-4" />
                 Abril, 2026
               </button>
-              <button className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg flex items-center gap-2">
+              <button 
+                onClick={() => showToast('Gerando relatório consolidado de BI...', 'success', 'Exportar BI')}
+                className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg flex items-center gap-2"
+              >
                 <FileDown className="w-4 h-4" />
                 Exportar BI
               </button>
@@ -83,7 +91,10 @@ export default function RelatoriosPage() {
                 Detectamos uma queda de 4% na frequência de alunos do plano "Trimestral" nas segundas-feiras. 
                 Recomendamos uma campanha de reengajamento via WhatsApp para 42 alunos identificados com alto risco de churn.
               </p>
-              <button className="mt-6 px-6 py-2.5 bg-white text-primary-700 rounded-xl text-sm font-bold hover:bg-primary-50 transition-all">
+              <button 
+                onClick={() => showToast('Plano de ação exportado para o WhatsApp do time comercial', 'success', 'IA Strategy')}
+                className="mt-6 px-6 py-2.5 bg-white text-primary-700 rounded-xl text-sm font-bold hover:bg-primary-50 transition-all"
+              >
                 Ver Plano de Ação
               </button>
             </div>

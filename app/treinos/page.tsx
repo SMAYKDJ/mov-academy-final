@@ -9,15 +9,19 @@ import { TreinoCard } from '@/components/dashboard/treinos/treino-card';
 import { TreinoDrawer } from '@/components/dashboard/treinos/treino-drawer';
 import { MuscleDetailDrawer } from '@/components/dashboard/treinos/muscle-detail-drawer';
 import { treinosKPIData, muscleMapData, workoutPlansData } from '@/utils/treinos-data';
+import { Plus, Sparkles } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
+import { StudentSelector } from '@/components/dashboard/student-selector';
+import { useLocalStorage } from '@/utils/persistence';
 import type { WorkoutPlan, MuscleData } from '@/types/treinos';
+import { UserCircle2 } from 'lucide-react';
 
-/**
- * Treinos (Workouts) page — Complete workout management with interactive body map.
- * Features: KPIs, gamification XP, SVG body heatmap, workout cards, detail drawers.
- */
 export default function TreinosPage() {
+  const { showToast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Data Persistence
+  const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', workoutPlansData);
 
   // Drawer states
   const [selectedPlan, setSelectedPlan] = useState<WorkoutPlan | null>(null);
@@ -41,6 +45,17 @@ export default function TreinosPage() {
 
       <div className="flex-1 md:ml-64 transition-all duration-300">
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
+
+        {/* Global Context Selector */}
+        <div className="bg-white dark:bg-[#0f1117] border-b border-gray-100 dark:border-[#1e2235] px-4 md:px-8 py-3 flex items-center justify-between sticky top-16 z-30 animate-fade-in shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200/50 dark:border-white/5">
+              <UserCircle2 className="w-4 h-4 text-gray-400" />
+              <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Modo Individual</span>
+            </div>
+            <StudentSelector />
+          </div>
+        </div>
 
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-6">
           {/* Page Header */}

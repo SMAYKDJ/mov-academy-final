@@ -70,7 +70,11 @@ export default function StudentWorkoutPage() {
                   </h4>
                 </div>
                 {ex.videoUrl && (
-                  <button className="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-xl text-primary-600">
+                  <button 
+                    title="Ver vídeo demonstrativo"
+                    aria-label={`Ver vídeo de ${ex.nome}`}
+                    className="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-xl text-primary-600"
+                  >
                     <Play className="w-4 h-4 fill-current" />
                   </button>
                 )}

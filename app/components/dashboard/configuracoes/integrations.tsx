@@ -58,7 +58,14 @@ export function Integrations({ integrations }: IntegrationsProps) {
               {int.url && (
                 <div className="flex items-center gap-2 bg-white dark:bg-[#0f1117] rounded-xl px-3 py-2 border border-gray-200 dark:border-[#2d3348] mb-2">
                   <code className="flex-1 text-[11px] text-gray-600 dark:text-gray-300 truncate font-mono">{int.url}</code>
-                  <button onClick={() => copyToClipboard(int.url!)} className="text-gray-400 hover:text-primary-600 transition-colors"><Copy className="w-3.5 h-3.5" /></button>
+                  <button 
+                    onClick={() => copyToClipboard(int.url!)} 
+                    title="Copiar URL"
+                    aria-label="Copiar URL para área de transferência"
+                    className="text-gray-400 hover:text-primary-600 transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               )}
 
@@ -67,7 +74,14 @@ export function Integrations({ integrations }: IntegrationsProps) {
                   <code className="flex-1 text-[11px] text-gray-600 dark:text-gray-300 truncate font-mono">
                     {int.apiKey.slice(0, 12)}{'•'.repeat(20)}
                   </code>
-                  <button onClick={() => copyToClipboard(int.apiKey!)} className="text-gray-400 hover:text-primary-600 transition-colors"><Copy className="w-3.5 h-3.5" /></button>
+                  <button 
+                    onClick={() => copyToClipboard(int.apiKey!)} 
+                    title="Copiar segredo"
+                    aria-label="Copiar segredo para área de transferência"
+                    className="text-gray-400 hover:text-primary-600 transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               )}
 

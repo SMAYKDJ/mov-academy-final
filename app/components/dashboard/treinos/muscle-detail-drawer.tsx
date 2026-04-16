@@ -65,7 +65,7 @@ export function MuscleDetailDrawer({ muscle, open, onClose }: MuscleDetailDrawer
             <div className="flex items-center gap-4">
               <div
                 className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
-                style={{ background: color }}
+                style={{ background: `var(--intensity-bg, ${color})` } as React.CSSProperties}
               >
                 <Dumbbell className="w-7 h-7 text-white" />
               </div>
@@ -74,7 +74,12 @@ export function MuscleDetailDrawer({ muscle, open, onClose }: MuscleDetailDrawer
                 <p className="text-xl font-bold text-gray-900 dark:text-white">{labelMap[muscle.grupo]}</p>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400">
+            <button 
+              onClick={onClose} 
+              title="Fechar detalhes"
+              aria-label="Fechar gaveta de detalhes corporais"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"
+            >
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -97,7 +102,7 @@ export function MuscleDetailDrawer({ muscle, open, onClose }: MuscleDetailDrawer
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-black text-gray-900 dark:text-white">{muscle.intensidade}%</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color }}>{getIntensityLabel(muscle.intensidade)}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: `var(--intensity-color, ${color})` } as React.CSSProperties}>{getIntensityLabel(muscle.intensidade)}</span>
               </div>
             </div>
           </div>

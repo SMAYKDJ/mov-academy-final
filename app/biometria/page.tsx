@@ -9,11 +9,14 @@ import { BodyComposition } from '@/components/dashboard/biometria/body-compositi
 import { BiometriaHistory } from '@/components/dashboard/biometria/biometria-history';
 import { BiometriaForm } from '@/components/dashboard/biometria/biometria-form';
 import { biometriaKPIData, evaluationHistory, evolutionData } from '@/utils/biometria-data';
-import { Plus, FileDown, Sparkles, AlertTriangle, TrendingDown } from 'lucide-react';
+import { StudentSelector } from '@/components/dashboard/student-selector';
+import { Plus, FileDown, Sparkles, AlertTriangle, TrendingDown, UserCircle2 } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 export default function BiometriaPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const { showToast } = useToast();
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
@@ -21,6 +24,20 @@ export default function BiometriaPage() {
 
       <div className="flex-1 md:ml-64 transition-all duration-300">
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
+
+        {/* Global Context Selector */}
+        <div className="bg-white dark:bg-[#0f1117] border-b border-gray-100 dark:border-[#1e2235] px-4 md:px-8 py-3 flex items-center justify-between sticky top-16 z-30 animate-fade-in shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200/50 dark:border-white/5">
+              <UserCircle2 className="w-4 h-4 text-gray-400" />
+              <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Modo Individual</span>
+            </div>
+            <StudentSelector />
+          </div>
+          <div className="hidden sm:block text-right">
+            <p className="text-[10px] text-gray-400 uppercase font-black italic tracking-tighter">Sincronizado com o Banco Central</p>
+          </div>
+        </div>
 
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-6">
           {/* Page Header */}
@@ -39,7 +56,10 @@ export default function BiometriaPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2">
+              <button 
+                onClick={() => showToast('Gerando laudo antropométrico em PDF...', 'info', 'Biometria')}
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
+              >
                 <FileDown className="w-4 h-4" />
                 Exportar PDF
               </button>

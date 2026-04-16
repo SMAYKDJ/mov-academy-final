@@ -136,23 +136,15 @@ const hotspotZones: HotspotZone[] = [
  */
 export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
   const [hoveredMuscle, setHoveredMuscle] = useState<MuscleData | null>(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   const getMuscleData = (grupo: MuscleGroup): MuscleData | undefined => {
     return muscleData.find(m => m.grupo === grupo);
   };
 
-  const handleMouseEnter = (zone: HotspotZone, e: React.MouseEvent) => {
+  const handleMouseEnter = (zone: HotspotZone) => {
     const data = getMuscleData(zone.grupo);
     if (data) {
       setHoveredMuscle(data);
-      const rect = (e.currentTarget as HTMLElement).closest('.body-map-container')?.getBoundingClientRect();
-      if (rect) {
-        setTooltipPos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-      }
     }
   };
 
@@ -160,7 +152,7 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6 relative">
       <div className="flex flex-col xl:flex-row items-start gap-8">
         {/* Body Map Image with Hotspots */}
-        <div className="body-map-container relative flex-shrink-0 w-full xl:w-auto mx-auto" style={{ maxWidth: '660px' }}>
+        <div className="body-map-container relative flex-shrink-0 w-full xl:w-auto mx-auto" style={{ maxWidth: '660px' } as React.CSSProperties}>
           {/* View Labels */}
           <div className="flex justify-between px-12 mb-2">
             <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Frontal</span>
@@ -208,17 +200,17 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
                     top: `${zone.top}%`,
                     width: `${zone.width}%`,
                     height: `${zone.height}%`,
-                    background: isHovered
-                      ? `${color}40`
-                      : `${color}20`,
+                    '--muscle-bg': isHovered ? `${color}40` : `${color}20`,
+                    background: 'var(--muscle-bg)',
                     ...(shouldGlow ? {
-                      animation: `muscle-glow ${intensity >= 80 ? '1.2s' : intensity >= 60 ? '1.8s' : '2.5s'} ease-in-out infinite`,
+                      '--glow-dur': intensity >= 80 ? '1.2s' : intensity >= 60 ? '1.8s' : '2.5s',
+                      animation: 'muscle-glow var(--glow-dur) ease-in-out infinite',
                       '--glow-color': hexToRgba(color, 0.4),
                       '--glow-bg': hexToRgba(color, 0.12),
                       '--glow-bg-peak': hexToRgba(color, 0.35),
-                    } as React.CSSProperties : {}),
-                  }}
-                  onMouseEnter={(e) => handleMouseEnter(zone, e)}
+                    } : {}),
+                  } as React.CSSProperties}
+                  onMouseEnter={() => handleMouseEnter(zone)}
                   onMouseLeave={() => setHoveredMuscle(null)}
                   onClick={() => {
                     if (data && onMuscleClick) onMuscleClick(data);
@@ -228,45 +220,6 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
               );
             })}
 
-            {/* Hover Tooltip */}
-            {hoveredMuscle && (
-              <div
-                className="absolute z-30 pointer-events-none animate-scale-in"
-                style={{
-                  left: `${Math.min(Math.max(tooltipPos.x, 90), 570)}px`,
-                  top: `${Math.max(tooltipPos.y - 100, 10)}px`,
-                }}
-              >
-                <div className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl p-3.5 shadow-2xl min-w-[200px] border border-gray-700 dark:border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div
-                      className="w-3 h-3 rounded-full ring-2 ring-offset-1 ring-offset-gray-900 dark:ring-offset-white"
-                      style={{ background: getIntensityColor(hoveredMuscle.intensidade) }}
-                    />
-                    <p className="text-sm font-bold">{labelMap[hoveredMuscle.grupo]}</p>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-[10px]">
-                      <span className="opacity-60">Intensidade</span>
-                      <span className="font-bold" style={{ color: getIntensityColor(hoveredMuscle.intensidade) }}>
-                        {hoveredMuscle.intensidade}% — {getIntensityLabel(hoveredMuscle.intensidade)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-[10px]">
-                      <span className="opacity-60">Último treino</span>
-                      <span className="font-bold">{hoveredMuscle.ultimoTreino}</span>
-                    </div>
-                    <div className="flex justify-between text-[10px]">
-                      <span className="opacity-60">Volume/semana</span>
-                      <span className="font-bold">{hoveredMuscle.volumeSemanal} séries</span>
-                    </div>
-                  </div>
-                  <div className="mt-2 pt-2 border-t border-white/10 dark:border-gray-200">
-                    <p className="text-[9px] opacity-50 uppercase tracking-widest font-bold">Clique para ver exercícios</p>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -289,7 +242,7 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
                 { color: '#ef4444', label: 'Sobrecarga' },
               ].map(item => (
                 <div key={item.label} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full h-3 rounded-full" style={{ background: item.color }} />
+                  <div className="w-full h-3 rounded-full" style={{ background: `var(--legend-c, ${item.color})` } as React.CSSProperties} />
                   <span className="text-[9px] font-bold text-gray-400">{item.label}</span>
                 </div>
               ))}
@@ -316,14 +269,14 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
                 >
                   <div
                     className="w-4 h-4 rounded-full shrink-0 ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0f1117]"
-                    style={{ background: getIntensityColor(muscle.intensidade) }}
+                    style={{ background: `var(--muscle-c, ${getIntensityColor(muscle.intensidade)})` } as React.CSSProperties}
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">{labelMap[muscle.grupo]}</p>
                     <p className="text-[10px] text-gray-400">{muscle.ultimoTreino} · {muscle.volumeSemanal} séries/sem</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: getIntensityColor(muscle.intensidade) }}>
+                    <p className="text-sm font-bold" style={{ color: `var(--muscle-c, ${getIntensityColor(muscle.intensidade)})` } as React.CSSProperties}>
                       {muscle.intensidade}%
                     </p>
                     <p className="text-[9px] text-gray-400 font-bold uppercase">{getIntensityLabel(muscle.intensidade)}</p>

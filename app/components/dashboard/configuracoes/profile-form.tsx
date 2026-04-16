@@ -30,7 +30,11 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg">
             {form.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
           </div>
-          <button className="absolute -bottom-1 -right-1 w-7 h-7 bg-white dark:bg-[#1a1d27] rounded-full border-2 border-gray-200 dark:border-[#2d3348] flex items-center justify-center text-gray-400 hover:text-primary-600 transition-colors shadow-sm">
+          <button 
+            title="Alterar foto de perfil"
+            aria-label="Upload de nova foto de perfil"
+            className="absolute -bottom-1 -right-1 w-7 h-7 bg-white dark:bg-[#1a1d27] rounded-full border-2 border-gray-200 dark:border-[#2d3348] flex items-center justify-center text-gray-400 hover:text-primary-600 transition-colors shadow-sm"
+          >
             <Camera className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -47,23 +51,47 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Nome Completo</label>
-          <input type="text" value={form.nome} onChange={e => setForm(p => ({ ...p, nome: e.target.value }))}
-            className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+          <input 
+            type="text" 
+            value={form.nome} 
+            onChange={e => setForm(p => ({ ...p, nome: e.target.value }))}
+            title="Seu nome completo"
+            className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+          />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">E-mail</label>
-          <input type="email" value={profile.email} readOnly
-            className="w-full px-3 py-2.5 bg-gray-100 dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed" />
+          <label htmlFor="profile-email" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">E-mail</label>
+          <input 
+            id="profile-email"
+            type="email" 
+            value={profile.email} 
+            readOnly
+            title="Seu endereço de e-mail (não alterável)"
+            placeholder="E-mail"
+            className="w-full px-3 py-2.5 bg-gray-100 dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed" 
+          />
         </div>
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Telefone</label>
-          <input type="text" value={form.telefone} onChange={e => setForm(p => ({ ...p, telefone: e.target.value }))}
-            className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+          <input 
+            type="text" 
+            value={form.telefone} 
+            onChange={e => setForm(p => ({ ...p, telefone: e.target.value }))}
+            title="Seu número de telefone"
+            className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+          />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Cargo</label>
-          <input type="text" value={roleLabelMap[profile.role]} readOnly
-            className="w-full px-3 py-2.5 bg-gray-100 dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed" />
+          <label htmlFor="profile-role" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Cargo</label>
+          <input 
+            id="profile-role"
+            type="text" 
+            value={roleLabelMap[profile.role]} 
+            readOnly
+            title="Seu cargo no sistema"
+            placeholder="Cargo"
+            className="w-full px-3 py-2.5 bg-gray-100 dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed" 
+          />
         </div>
       </div>
 

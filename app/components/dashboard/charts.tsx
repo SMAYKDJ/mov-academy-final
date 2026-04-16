@@ -46,9 +46,9 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
                   "group-hover:shadow-lg group-hover:shadow-primary-200 dark:group-hover:shadow-none"
                 )}
                 style={{
-                  height: `${height}%`,
+                  height: `var(--bar-height, ${height}%)`,
                   animationDelay: `${i * 100}ms`,
-                }}
+                } as React.CSSProperties}
               >
                 {/* Tooltip */}
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white dark:text-gray-900 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap shadow-xl">
@@ -105,11 +105,13 @@ export function RetentionInsightCard({ className }: { className?: string }) {
           <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <div
               className="h-full bg-white rounded-full transition-all duration-1000"
-              style={{ width: '97%' }}
+              style={{ width: 'var(--retention-w, 97%)' } as React.CSSProperties}
               role="progressbar"
-              aria-valuenow={97}
-              aria-valuemin={0}
-              aria-valuemax={100}
+              {...({
+                'aria-valuenow': 97,
+                'aria-valuemin': 0,
+                'aria-valuemax': 100
+              })}
               aria-label="Progresso da meta de retenção"
             />
           </div>

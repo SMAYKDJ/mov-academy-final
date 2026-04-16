@@ -10,8 +10,10 @@ import { WeeklyChart, RetentionInsightCard } from "@/components/dashboard/charts
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { StatsBar } from "@/components/dashboard/stats-bar";
 import { ChurnCard, ChurnChart, ChurnTrend, AtRiskStudentsTable, ChurnInsights } from "@/components/dashboard/churn";
-import { stats, mockStudents, weeklyChartData, recentActivity } from "@/utils/mock-data";
-import { churnSummary } from "@/utils/churn-mock-data";
+import { stats, weeklyChartData, recentActivity } from "@/utils/mock-data";
+import { generateRealChurnSummary } from "@/utils/churn-engine";
+import { alunosData } from "@/utils/alunos-data";
+import { useLocalStorage } from "@/utils/persistence";
 import { Calendar as CalendarIcon, Plus, ArrowUpRight, Brain, ShieldAlert } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
@@ -29,6 +31,12 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   const [showChurnModule, setShowChurnModule] = useState(true);
   const { showToast } = useToast();
+
+  // Real Data Persistence
+  const [alunos] = useLocalStorage('moviment-alunos', alunosData);
+  
+  // Real-time Churn Prediction from local data
+  const churnSummary = generateRealChurnSummary(alunos);
 
   useEffect(() => setMounted(true), []);
 
@@ -68,7 +76,10 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500">
+              <button 
+                onClick={() => showToast('Seletor de período aberto', 'info', 'Filtro de Calendário')}
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500"
+              >
                 <CalendarIcon className="w-4 h-4" />
                 Últimos 30 dias
               </button>
@@ -153,7 +164,17 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column — Table (spans 2 columns) */}
             <div className="lg:col-span-2 space-y-8">
-              <DataTable data={mockStudents} />
+              <DataTable 
+                data={alunos.map(a => ({
+                  id: String(a.id),
+                  name: a.nome,
+                  email: a.email,
+                  status: a.status === 'em_dia' ? 'active' : a.status === 'pendente' ? 'at_risk' : 'inactive',
+                  plan: a.plano,
+                  score: Math.round(generateRealChurnSummary(alunos).predictions.find(p => p.studentName === a.nome)?.probability || a.risco || 0),
+                  lastVisit: a.ultimoPagamento
+                }))} 
+              />
             </div>
 
             {/* Right Column — Charts & Activity */}
@@ -171,10 +192,16 @@ export default function DashboardPage() {
                 © 2025 Moviment Academy — Projeto Acadêmico | Faculdade Estácio
               </p>
               <div className="flex items-center gap-4">
-                <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <button 
+                  onClick={() => showToast('Documentação técnica disponível no GitHub', 'info')}
+                  className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
                   Documentação
                 </button>
-                <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <button 
+                  onClick={() => showToast('Canal de suporte aberto: suporte@moviment.com', 'info')}
+                  className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
                   Suporte
                 </button>
                 <span className="text-[10px] px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-full font-bold">

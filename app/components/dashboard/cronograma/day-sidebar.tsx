@@ -85,7 +85,11 @@ export function DaySidebar({ date, events, onEventClick, onCheckIn }: DaySidebar
                   >
                     <CheckCircle className="w-3 h-3" /> Check-in
                   </button>
-                  <button className="px-3 py-1.5 border border-gray-200 dark:border-[#2d3348] text-gray-400 rounded-lg text-[10px] font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                  <button 
+                    title="Remover evento"
+                    aria-label="Remover evento da agenda rápida"
+                    className="px-3 py-1.5 border border-gray-200 dark:border-[#2d3348] text-gray-400 rounded-lg text-[10px] font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-all font-bold"
+                  >
                     <XCircle className="w-3 h-3" />
                   </button>
                 </div>

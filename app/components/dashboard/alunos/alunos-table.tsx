@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Eye, Pencil, Trash2, ChevronUp, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { Eye, Pencil, Trash2, ChevronUp, ChevronDown, MoreHorizontal, MessageCircle } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { StatusBadge, PlanBadge, RiskIndicator } from './status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import type { Aluno } from '@/types/aluno';
+import { openWhatsApp } from '@/utils/whatsapp-helper';
 
 type SortField = 'nome' | 'plano' | 'status' | 'risco' | 'ultimoPagamento';
 type SortDir = 'asc' | 'desc' | null;
@@ -165,7 +166,6 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
                 key={aluno.id}
                 className="hover:bg-gray-50/50 dark:hover:bg-[#1a1d27]/30 transition-colors cursor-pointer group"
                 onClick={() => onView(aluno)}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && onView(aluno)}
                 aria-label={`Ver detalhes de ${aluno.nome}`}
@@ -211,6 +211,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
                   <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => onView(aluno)}
+                      title="Ver detalhes"
                       className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                       aria-label={`Ver ${aluno.nome}`}
                     >
@@ -218,6 +219,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
                     </button>
                     <button
                       onClick={() => onEdit(aluno)}
+                      title="Editar aluno"
                       className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                       aria-label={`Editar ${aluno.nome}`}
                     >
@@ -229,6 +231,14 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
                       aria-label={`Excluir ${aluno.nome}`}
                     >
                       <Trash2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => openWhatsApp(aluno.telefone)}
+                      title="Enviar WhatsApp"
+                      className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/10 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                      aria-label={`WhatsApp ${aluno.nome}`}
+                    >
+                      <MessageCircle className="w-4 h-4" />
                     </button>
                   </div>
                 </td>
@@ -263,6 +273,14 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
                 </div>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{aluno.email}</p>
               </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); openWhatsApp(aluno.telefone); }}
+                className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400"
+                aria-label={`WhatsApp ${aluno.nome}`}
+              >
+                <MessageCircle className="w-5 h-5 fill-current opacity-20" />
+                <MessageCircle className="w-5 h-5 absolute inset-2.5" />
+              </button>
             </div>
             <div className="flex items-center justify-between pl-14">
               <PlanBadge plan={aluno.plano} />

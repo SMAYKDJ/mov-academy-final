@@ -229,6 +229,7 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
               <select
                 value={form.plano}
                 onChange={(e) => updateField('plano', e.target.value)}
+                title="Selecionar plano do aluno"
                 className="w-full appearance-none px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500 cursor-pointer"
               >
                 {planOptions.map(p => <option key={p} value={p}>{p}</option>)}
@@ -239,6 +240,7 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
               <select
                 value={form.status}
                 onChange={(e) => updateField('status', e.target.value)}
+                title="Selecionar status do aluno"
                 className="w-full appearance-none px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500 cursor-pointer"
               >
                 {statusOptions.map(s => <option key={s} value={s}>{statusLabels[s]}</option>)}
@@ -282,6 +284,7 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
             <select
               value={form.objetivo}
               onChange={(e) => updateField('objetivo', e.target.value)}
+              title="Selecionar objetivo do aluno"
               className="w-full appearance-none px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500 cursor-pointer"
             >
               <option value="">Selecionar...</option>

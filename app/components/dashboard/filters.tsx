@@ -20,7 +20,10 @@ export function DashboardFilters() {
   const hasActiveFilters = statusFilter !== 'Todos' || planFilter !== 'Todos';
 
   return (
-    <div className="space-y-3 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
+    <div 
+      className="space-y-3 animate-slide-up" 
+      style={{ '--delay': '200ms', animationFillMode: 'backwards', animationDelay: 'var(--delay)' } as React.CSSProperties}
+    >
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white dark:bg-[#0f1117] border border-gray-100 dark:border-[#1e2235] p-2.5 rounded-2xl shadow-sm">
         {/* Search */}
         <div className="relative flex-1 group">
@@ -41,6 +44,7 @@ export function DashboardFilters() {
           {/* Status dropdown */}
           <div className="relative group/dropdown">
             <button
+              title="Filtrar por status"
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap",
                 statusFilter !== 'Todos'
@@ -53,7 +57,11 @@ export function DashboardFilters() {
               Status: {statusFilter}
               <ChevronDown className="w-3 h-3" />
             </button>
-            <div className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1a1d27] border border-gray-100 dark:border-[#1e2235] rounded-xl shadow-xl py-1 min-w-[140px] hidden group-hover/dropdown:block z-20">
+            <div 
+              role="listbox"
+              title="Opções de Status"
+              className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1a1d27] border border-gray-100 dark:border-[#1e2235] rounded-xl shadow-xl py-1 min-w-[140px] hidden group-hover/dropdown:block z-20"
+            >
               {statusOptions.map((opt) => (
                 <button
                   key={opt}
@@ -65,7 +73,7 @@ export function DashboardFilters() {
                       : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                   )}
                   role="option"
-                  aria-selected={statusFilter === opt}
+                  {...(statusFilter === opt ? { 'aria-selected': 'true' } : { 'aria-selected': 'false' })}
                 >
                   {opt}
                 </button>
@@ -76,6 +84,7 @@ export function DashboardFilters() {
           {/* Plan dropdown */}
           <div className="relative group/dropdown">
             <button
+              title="Filtrar por plano"
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap",
                 planFilter !== 'Todos'
@@ -88,7 +97,11 @@ export function DashboardFilters() {
               Plano: {planFilter}
               <ChevronDown className="w-3 h-3" />
             </button>
-            <div className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1a1d27] border border-gray-100 dark:border-[#1e2235] rounded-xl shadow-xl py-1 min-w-[140px] hidden group-hover/dropdown:block z-20">
+            <div 
+              role="listbox"
+              title="Opções de Plano"
+              className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1a1d27] border border-gray-100 dark:border-[#1e2235] rounded-xl shadow-xl py-1 min-w-[140px] hidden group-hover/dropdown:block z-20"
+            >
               {planOptions.map((opt) => (
                 <button
                   key={opt}
@@ -100,7 +113,7 @@ export function DashboardFilters() {
                       : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                   )}
                   role="option"
-                  aria-selected={planFilter === opt}
+                  {...(planFilter === opt ? { 'aria-selected': 'true' } : { 'aria-selected': 'false' })}
                 >
                   {opt}
                 </button>

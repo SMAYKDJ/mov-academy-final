@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Eye, ChevronUp, ChevronDown, ArrowUpRight, ArrowDownRight, RotateCcw } from 'lucide-react';
+import { Eye, ChevronUp, ChevronDown, ArrowUpRight, ArrowDownRight, RotateCcw, MessageCircle } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { EmptyState } from '@/components/ui/empty-state';
 import type { Transaction, TransactionStatus, PaymentMethod } from '@/types/financeiro';
+import { openWhatsApp } from '@/utils/whatsapp-helper';
+import { alunosData } from '@/utils/alunos-data';
 
 type SortField = 'descricao' | 'valor' | 'data' | 'status' | 'metodo';
 type SortDir = 'asc' | 'desc' | null;
@@ -12,6 +14,8 @@ type SortDir = 'asc' | 'desc' | null;
 interface FinanceiroTableProps {
   data: Transaction[];
   onView: (txn: Transaction) => void;
+  onEdit: (txn: Transaction) => void;
+  onDelete: (txn: Transaction) => void;
 }
 
 const statusConfig: Record<TransactionStatus, { label: string; dot: string; bg: string; text: string }> = {
@@ -29,7 +33,7 @@ const metodoLabels: Record<PaymentMethod, string> = {
   debito: 'Débito',
 };
 
-export function FinanceiroTable({ data, onView }: FinanceiroTableProps) {
+export function FinanceiroTable({ data, onView, onEdit, onDelete }: FinanceiroTableProps) {
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
@@ -133,7 +137,6 @@ export function FinanceiroTable({ data, onView }: FinanceiroTableProps) {
                   key={txn.id}
                   className="hover:bg-gray-50/50 dark:hover:bg-[#1a1d27]/30 transition-colors cursor-pointer group"
                   onClick={() => onView(txn)}
-                  role="button"
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && onView(txn)}
                 >
@@ -194,14 +197,44 @@ export function FinanceiroTable({ data, onView }: FinanceiroTableProps) {
 
                   {/* Ação */}
                   <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex justify-end items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => onView(txn)}
                         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                        aria-label={`Ver detalhes: ${txn.descricao}`}
+                        title="Ver Detalhes"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
+                      
+                      <button
+                        onClick={() => onEdit(txn)}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                        title="Editar"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                      </button>
+
+                      <button
+                        onClick={() => onDelete(txn)}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                        title="Excluir"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+
+                      {txn.alunoId && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const student = alunosData.find(s => s.id === txn.alunoId);
+                            if (student) openWhatsApp(student.telefone);
+                          }}
+                          className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/10 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                          title="WhatsApp do aluno"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

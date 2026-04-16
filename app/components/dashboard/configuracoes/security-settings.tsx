@@ -32,7 +32,12 @@ export function SecuritySettings() {
             <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Nova Senha</label>
             <input type={showPw ? 'text' : 'password'} placeholder="••••••••"
               className="w-full px-3 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all pr-10" />
-            <button onClick={() => setShowPw(!showPw)} className="absolute right-3 top-[34px] text-gray-400 hover:text-gray-600">
+            <button 
+              onClick={() => setShowPw(!showPw)} 
+              title={showPw ? "Ocultar senha" : "Ver senha"}
+              aria-label={showPw ? "Ocultar senha" : "Ver senha"}
+              className="absolute right-3 top-[34px] text-gray-400 hover:text-gray-600"
+            >
               {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
@@ -59,7 +64,10 @@ export function SecuritySettings() {
               <p className="text-[10px] text-gray-400">Adicione uma camada extra de segurança</p>
             </div>
           </div>
-          <button onClick={() => { setTwoFA(!twoFA); showToast(twoFA ? '2FA desativado' : '2FA ativado com sucesso!', twoFA ? 'info' : 'success', 'Segurança'); }}
+          <button 
+            onClick={() => { setTwoFA(!twoFA); showToast(twoFA ? '2FA desativado' : '2FA ativado com sucesso!', twoFA ? 'info' : 'success', 'Segurança'); }}
+            title={twoFA ? "Desativar 2FA" : "Ativar 2FA"}
+            aria-label={twoFA ? "Desativar 2FA" : "Ativar 2FA"}
             className={`relative w-12 h-6 rounded-full transition-all ${twoFA ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}>
             <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${twoFA ? 'translate-x-6' : 'translate-x-0.5'}`} />
           </button>

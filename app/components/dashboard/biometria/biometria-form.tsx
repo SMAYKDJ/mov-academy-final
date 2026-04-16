@@ -43,7 +43,12 @@ export function BiometriaForm({ open, onClose }: BiometriaFormProps) {
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Nova Avaliação</h2>
             <p className="text-xs text-gray-400 mt-0.5">Registre os dados biométricos do aluno</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400">
+          <button 
+            onClick={onClose} 
+            title="Fechar"
+            aria-label="Fechar formulário de avaliação"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>

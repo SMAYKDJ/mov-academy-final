@@ -3,11 +3,12 @@
 import React, { useEffect, useRef } from 'react';
 import {
   X, Phone, Mail, MapPin, Calendar, CreditCard, Target,
-  TrendingUp, Activity, ShieldAlert, Edit3, UserX
+  TrendingUp, Activity, ShieldAlert, Edit3, UserX, MessageCircle
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { StatusBadge, PlanBadge, RiskIndicator } from './status-badge';
 import type { Aluno } from '@/types/aluno';
+import { openWhatsApp, generateWAMessage } from '@/utils/whatsapp-helper';
 
 interface AlunoDrawerProps {
   aluno: Aluno | null;
@@ -199,6 +200,32 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit }: AlunoDrawerProps) 
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* WhatsApp Actions */}
+          <div className="pt-2">
+            <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
+              Comunicação WhatsApp
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => openWhatsApp(aluno.telefone)}
+                className="flex items-center justify-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/20 transition-all border border-emerald-100 dark:border-emerald-800"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Conversar
+              </button>
+              <button
+                onClick={() => {
+                  const msg = generateWAMessage('boas_vindas', aluno.nome);
+                  openWhatsApp(aluno.telefone, msg);
+                }}
+                className="flex items-center justify-center gap-2 p-3 bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400 rounded-xl text-xs font-bold hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-all border border-primary-100 dark:border-primary-800"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Boas-vindas
+              </button>
             </div>
           </div>
         </div>

@@ -138,13 +138,23 @@ export default function CronogramaPage() {
           {/* Calendar Controls */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <button onClick={prevMonth} className="p-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all">
+              <button 
+                onClick={prevMonth} 
+                title="Mês anterior"
+                aria-label="Ir para o mês anterior"
+                className="p-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all"
+              >
                 <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </button>
               <h2 className="text-lg font-bold text-gray-900 dark:text-white min-w-[180px] text-center">
                 {MONTHS[month]} {year}
               </h2>
-              <button onClick={nextMonth} className="p-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all">
+              <button 
+                onClick={nextMonth} 
+                title="Próximo mês"
+                aria-label="Ir para o próximo mês"
+                className="p-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all"
+              >
                 <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </button>
               <button onClick={goToday} className="px-3 py-1.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all">

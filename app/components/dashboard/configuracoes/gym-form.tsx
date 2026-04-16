@@ -25,7 +25,11 @@ export function GymForm({ settings }: GymFormProps) {
           <div className="w-20 h-20 bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl flex items-center justify-center shadow-lg">
             <Building2 className="w-8 h-8 text-white" />
           </div>
-          <button className="absolute -bottom-1 -right-1 w-7 h-7 bg-white dark:bg-[#1a1d27] rounded-full border-2 border-gray-200 dark:border-[#2d3348] flex items-center justify-center text-gray-400 hover:text-primary-600 transition-colors shadow-sm">
+          <button 
+            title="Alterar logo da academia"
+            aria-label="Upload de novo logo"
+            className="absolute -bottom-1 -right-1 w-7 h-7 bg-white dark:bg-[#1a1d27] rounded-full border-2 border-gray-200 dark:border-[#2d3348] flex items-center justify-center text-gray-400 hover:text-primary-600 transition-colors shadow-sm"
+          >
             <Camera className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -46,9 +50,16 @@ export function GymForm({ settings }: GymFormProps) {
           ['horarioFechamento', 'Horário de Fechamento', form.horarioFechamento],
         ] as [keyof GymSettings, string, string][]).map(([key, label, val]) => (
           <div key={key} className={key === 'endereco' ? 'sm:col-span-2' : ''}>
-            <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">{label}</label>
-            <input type={key.includes('horario') ? 'time' : 'text'} value={val} onChange={e => set(key, e.target.value)}
-              className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+            <label htmlFor={`gym-${key}`} className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">{label}</label>
+            <input 
+              id={`gym-${key}`}
+              type={key.includes('horario') ? 'time' : 'text'} 
+              value={val} 
+              onChange={e => set(key, e.target.value)}
+              placeholder={label}
+              title={label}
+              className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+            />
           </div>
         ))}
       </div>

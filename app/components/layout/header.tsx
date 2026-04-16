@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, Menu, Sparkles, CreditCard, UserPlus, AlertTriangle, CalendarDays } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { useToast } from '@/components/ui/toast';
 
 /**
  * Top header bar with search, notifications, and user profile.
@@ -45,6 +46,7 @@ const notifColorMap = {
 export function Header({ onMenuClick }: HeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifications);
+  const { showToast } = useToast();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const unreadCount = notifications.filter(n => !n.lida).length;
@@ -119,6 +121,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         <div className="flex items-center gap-1.5 md:gap-2">
           {/* AI Insight button */}
           <button
+            onClick={() => showToast('Analisando padrões de treino e churn...', 'info', 'IA Insights')}
             className="hidden sm:flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary-500 to-indigo-600 text-white rounded-xl text-xs font-bold hover:shadow-lg hover:shadow-primary-200 dark:hover:shadow-none transition-all"
             aria-label="Insights da inteligência artificial"
           >
@@ -134,7 +137,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               onClick={() => setNotifOpen(!notifOpen)}
               className="relative p-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
               aria-label={`Notificações — ${unreadCount} novas`}
-              aria-expanded={notifOpen}
+              {...(notifOpen ? { 'aria-expanded': 'true' } : { 'aria-expanded': 'false' })}
             >
               <Bell className="w-[18px] h-[18px]" />
               {unreadCount > 0 && (
@@ -210,6 +213,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
           {/* User avatar */}
           <button
+            onClick={() => showToast('Configurações de perfil abertas', 'info', 'Perfil')}
             className="flex items-center gap-3 pl-2 pr-1 py-1 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
             aria-label="Perfil do usuário"
           >

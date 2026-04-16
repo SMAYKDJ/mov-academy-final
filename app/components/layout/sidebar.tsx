@@ -163,19 +163,26 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         {!isCollapsed && (
           <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
             <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-primary-200 dark:shadow-none">
-              AM
+              PA
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">Admin</p>
-              <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Gestor</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">Professor Andre</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Diretor Técnico</p>
             </div>
           </div>
         )}
 
-        <button className={cn(
-          "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-danger-600 dark:hover:text-red-400 transition-all group",
-          isCollapsed && "md:justify-center"
-        )}>
+        <button 
+          onClick={() => {
+            if (confirm('Deseja realmente sair do sistema?')) {
+              window.location.href = '/';
+            }
+          }}
+          className={cn(
+            "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-danger-600 dark:hover:text-red-400 transition-all group",
+            isCollapsed && "md:justify-center"
+          )}
+        >
           <LogOut className="w-5 h-5" />
           <span className={cn(
             "text-sm font-medium",

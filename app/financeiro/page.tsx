@@ -12,6 +12,9 @@ import { TransactionDrawer } from '@/components/dashboard/financeiro/transaction
 import { transacoesData, monthlyRevenueData } from '@/utils/financeiro-data';
 import { useToast } from '@/components/ui/toast';
 import { Plus, Download, FileText } from 'lucide-react';
+import { useLocalStorage, exportToCSV } from '@/utils/persistence';
+import { TransactionForm } from '@/components/dashboard/financeiro/transaction-form';
+import { notifyManager } from '@/utils/whatsapp-helper';
 import type { Transaction, FinanceiroFilterState } from '@/types/financeiro';
 
 /**
@@ -22,8 +25,8 @@ export default function FinanceiroPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { showToast } = useToast();
 
-  // Data
-  const [transacoes] = useState<Transaction[]>(transacoesData);
+  // Data with persistence
+  const [transacoes, setTransacoes, isLoaded] = useLocalStorage<Transaction[]>('moviment-financeiro', transacoesData);
 
   // Filters
   const [filters, setFilters] = useState<FinanceiroFilterState>({
@@ -35,8 +38,9 @@ export default function FinanceiroPage() {
   });
 
   // UI
-  const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingTxn, setEditingTxn] = useState<Transaction | null>(null);
 
   // Debounced search
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -86,6 +90,36 @@ export default function FinanceiroPage() {
     setDrawerOpen(true);
   }, []);
 
+  const handleEdit = useCallback((txn: Transaction) => {
+    setEditingTxn(txn);
+    setFormOpen(true);
+  }, []);
+
+  const handleDelete = useCallback((txn: Transaction) => {
+    if (confirm(`Deseja excluir a transação "${txn.descricao}"?`)) {
+      setTransacoes(prev => prev.filter(t => t.id !== txn.id));
+      showToast('Transação excluída com sucesso', 'success', 'Financeiro');
+    }
+  }, [setTransacoes, showToast]);
+
+  const handleSave = useCallback((data: any) => {
+    if (editingTxn) {
+      setTransacoes(prev => prev.map(t => t.id === editingTxn.id ? { ...t, ...data } : t));
+      showToast('Transação atualizada com sucesso', 'success');
+    } else {
+      setTransacoes(prev => [data, ...prev]);
+      
+      // Zero Simulation: Real Notification
+      if (data.tipo === 'receita' && data.status === 'pago') {
+        notifyManager(data.alunoNome || 'Cliente Avulso', data.valor);
+      }
+      
+      showToast('Nova transação registrada', 'success');
+    }
+    setFormOpen(false);
+    setEditingTxn(null);
+  }, [editingTxn, setTransacoes, showToast]);
+
   const handleExport = () => {
     showToast('Relatório financeiro exportado com sucesso', 'success', 'Exportação');
   };
@@ -121,13 +155,16 @@ export default function FinanceiroPage() {
                 Relatório DRE
               </button>
               <button
-                onClick={handleExport}
+                onClick={() => exportToCSV(transacoes, 'financeiro-moviment-academy')}
                 className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Exportar
               </button>
-              <button className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+              <button 
+                onClick={() => setFormOpen(true)}
+                className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              >
                 <Plus className="w-4 h-4" />
                 Nova Transação
               </button>
@@ -158,6 +195,8 @@ export default function FinanceiroPage() {
           <FinanceiroTable
             data={filtered}
             onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         </main>
       </div>
@@ -167,6 +206,14 @@ export default function FinanceiroPage() {
         transaction={selectedTxn}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+      />
+
+      {/* Transaction Form */}
+      <TransactionForm 
+        open={formOpen}
+        transaction={editingTxn}
+        onClose={() => { setFormOpen(false); setEditingTxn(null); }}
+        onSave={handleSave}
       />
     </div>
   );

@@ -23,7 +23,11 @@ export function PreferencesSettings() {
         <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Tema</h3>
         <div className="grid grid-cols-3 gap-3">
           {(['light', 'dark', 'system'] as const).map(t => (
-            <button key={t} onClick={() => { setTheme(t); showToast(`Tema alterado para ${t === 'light' ? 'Claro' : t === 'dark' ? 'Escuro' : 'Sistema'}`, 'info', 'Tema'); }}
+              <button 
+              key={t} 
+              onClick={() => { setTheme(t); showToast(`Tema alterado para ${t === 'light' ? 'Claro' : t === 'dark' ? 'Escuro' : 'Sistema'}`, 'info', 'Tema'); }}
+              title={`Mudar para tema ${t === 'light' ? 'claro' : t === 'dark' ? 'escuro' : 'do sistema'}`}
+              aria-label={`Mudar para tema ${t === 'light' ? 'claro' : t === 'dark' ? 'escuro' : 'do sistema'}`}
               className={cn(
                 "p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2",
                 theme === t ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10" : "border-gray-200 dark:border-[#2d3348] hover:border-gray-300"
@@ -49,8 +53,12 @@ export function PreferencesSettings() {
               <p className="text-[10px] text-gray-400">Receber alertas do sistema</p>
             </div>
           </div>
-          <button onClick={() => { setNotifications(!notifications); showToast(notifications ? 'Notificações desativadas' : 'Notificações ativadas', 'info', 'Notificações'); }}
-            className={cn("relative w-12 h-6 rounded-full transition-all", notifications ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-600")}>
+          <button 
+            onClick={() => { setNotifications(!notifications); showToast(notifications ? 'Notificações desativadas' : 'Notificações ativadas', 'info', 'Notificações'); }}
+            title={notifications ? "Desativar notificações" : "Ativar notificações"}
+            aria-label={notifications ? "Desativar notificações" : "Ativar notificações"}
+            className={cn("relative w-12 h-6 rounded-full transition-all", notifications ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-600")}
+          >
             <div className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", notifications ? "translate-x-6" : "translate-x-0.5")} />
           </button>
         </div>
@@ -59,7 +67,11 @@ export function PreferencesSettings() {
       {/* Language */}
       <div className="bg-gray-50 dark:bg-[#1a1d27] rounded-2xl p-5">
         <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Idioma</h3>
-        <select className="w-full sm:w-auto px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none">
+        <select 
+          title="Selecionar idioma"
+          aria-label="Idioma do sistema"
+          className="w-full sm:w-auto px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+        >
           <option value="pt-BR">🇧🇷 Português (Brasil)</option>
           <option value="en">🇺🇸 English</option>
           <option value="es">🇪🇸 Español</option>

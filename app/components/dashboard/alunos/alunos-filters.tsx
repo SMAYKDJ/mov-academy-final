@@ -71,6 +71,7 @@ export function AlunosFilters({ filters, onChange, resultCount }: AlunosFiltersP
           <select
             value={filters.status}
             onChange={(e) => updateFilter('status', e.target.value)}
+            title="Filtrar por status"
             className="w-full appearance-none px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer pr-8"
             aria-label="Filtrar por status"
           >
@@ -92,6 +93,7 @@ export function AlunosFilters({ filters, onChange, resultCount }: AlunosFiltersP
           <select
             value={filters.plano}
             onChange={(e) => updateFilter('plano', e.target.value)}
+            title="Filtrar por plano"
             className="w-full appearance-none px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer pr-8"
             aria-label="Filtrar por plano"
           >
@@ -117,7 +119,7 @@ export function AlunosFilters({ filters, onChange, resultCount }: AlunosFiltersP
               ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 border-primary-200 dark:border-primary-800"
               : "bg-gray-50 dark:bg-[#1a1d27] text-gray-600 dark:text-gray-400 border-gray-200 dark:border-[#2d3348] hover:bg-gray-100 dark:hover:bg-[#242838]"
           )}
-          aria-expanded={showAdvanced}
+          {...(showAdvanced ? { 'aria-expanded': 'true' } : { 'aria-expanded': 'false' })}
         >
           <SlidersHorizontal className="w-4 h-4" />
           Avançado

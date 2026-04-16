@@ -63,7 +63,14 @@ export function EventDrawer({ event, open, onClose, mode }: EventDrawerProps) {
                 </div>
                 <h2 className="text-lg font-bold">{mode === 'create' ? 'Novo Evento' : form.titulo}</h2>
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-colors"><X className="w-5 h-5" /></button>
+              <button 
+                onClick={onClose} 
+                title="Fechar"
+                aria-label="Fechar detalhes do evento"
+                className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -72,43 +79,87 @@ export function EventDrawer({ event, open, onClose, mode }: EventDrawerProps) {
         <div className="flex-1 overflow-y-auto p-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="sm:col-span-2">
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Título</label>
-              <input type="text" value={form.titulo} onChange={e => setForm(p => ({...p, titulo: e.target.value}))} placeholder="Ex: Treino A — João"
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+              <label htmlFor="event-title" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Título</label>
+              <input 
+                id="event-title"
+                type="text" 
+                value={form.titulo} 
+                onChange={e => setForm(p => ({...p, titulo: e.target.value}))} 
+                placeholder="Ex: Treino A — João"
+                title="Título do evento"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+              />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Tipo</label>
-              <select value={form.tipo} onChange={e => setForm(p => ({...p, tipo: e.target.value as EventType}))}
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all">
+              <label htmlFor="event-type" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Tipo</label>
+              <select 
+                id="event-type"
+                value={form.tipo} 
+                onChange={e => setForm(p => ({...p, tipo: e.target.value as EventType}))}
+                title="Selecionar tipo de evento"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all"
+              >
                 <option value="treino">🏋️ Treino</option>
                 <option value="aula">🧘 Aula</option>
                 <option value="avaliacao">📋 Avaliação</option>
               </select>
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Aluno / Turma</label>
-              <input type="text" value={form.alunoNome} onChange={e => setForm(p => ({...p, alunoNome: e.target.value}))} placeholder="Nome do aluno ou turma"
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+              <label htmlFor="event-student" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Aluno / Turma</label>
+              <input 
+                id="event-student"
+                type="text" 
+                value={form.alunoNome} 
+                onChange={e => setForm(p => ({...p, alunoNome: e.target.value}))} 
+                placeholder="Nome do aluno ou turma"
+                title="Nome do aluno ou turma"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+              />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Instrutor</label>
-              <input type="text" value={form.instrutorNome} onChange={e => setForm(p => ({...p, instrutorNome: e.target.value}))} placeholder="Nome do instrutor"
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+              <label htmlFor="event-instructor" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Instrutor</label>
+              <input 
+                id="event-instructor"
+                type="text" 
+                value={form.instrutorNome} 
+                onChange={e => setForm(p => ({...p, instrutorNome: e.target.value}))} 
+                placeholder="Nome do instrutor"
+                title="Nome do instrutor"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+              />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Data</label>
-              <input type="date" value={form.data} onChange={e => setForm(p => ({...p, data: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+              <label htmlFor="event-date" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Data</label>
+              <input 
+                id="event-date"
+                type="date" 
+                value={form.data} 
+                onChange={e => setForm(p => ({...p, data: e.target.value}))}
+                title="Data do evento"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+              />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Início</label>
-              <input type="time" value={form.horaInicio} onChange={e => setForm(p => ({...p, horaInicio: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+              <label htmlFor="event-start" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Início</label>
+              <input 
+                id="event-start"
+                type="time" 
+                value={form.horaInicio} 
+                onChange={e => setForm(p => ({...p, horaInicio: e.target.value}))}
+                title="Hora de início"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+              />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Fim</label>
-              <input type="time" value={form.horaFim} onChange={e => setForm(p => ({...p, horaFim: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" />
+              <label htmlFor="event-end" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Fim</label>
+              <input 
+                id="event-end"
+                type="time" 
+                value={form.horaFim} 
+                onChange={e => setForm(p => ({...p, horaFim: e.target.value}))}
+                title="Hora de término"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+              />
             </div>
             <div className="sm:col-span-2">
               <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Observações</label>

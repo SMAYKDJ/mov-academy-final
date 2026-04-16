@@ -105,11 +105,13 @@ export function RiskIndicator({ risk, compact }: RiskIndicatorProps) {
       <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
         <div
           className={cn("h-full rounded-full transition-all duration-700", color)}
-          style={{ width: `${risk}%` }}
+          style={{ width: `var(--risk-width, ${risk}%)` } as React.CSSProperties}
           role="progressbar"
-          aria-valuenow={risk}
-          aria-valuemin={0}
-          aria-valuemax={100}
+          {...({
+            'aria-valuenow': risk,
+            'aria-valuemin': 0,
+            'aria-valuemax': 100
+          })}
           aria-label={`Risco de churn: ${risk}%`}
         />
       </div>
