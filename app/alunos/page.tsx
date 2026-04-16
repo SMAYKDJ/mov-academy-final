@@ -23,7 +23,7 @@ export default function AlunosPage() {
   const { showToast } = useToast();
 
   // Data state with persistence
-  const [alunos, setAlunos, isLoaded] = useLocalStorage<Aluno[]>('moviment-alunos', alunosData);
+  const [alunos, setAlunos, isLoaded] = useLocalStorage<Aluno[]>('moviment-alunos', alunosData, 'alunos');
 
   // Filter state
   const [filters, setFilters] = useState<AlunosFilterState>({

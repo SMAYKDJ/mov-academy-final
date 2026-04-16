@@ -26,7 +26,7 @@ export default function FinanceiroPage() {
   const { showToast } = useToast();
 
   // Data with persistence
-  const [transacoes, setTransacoes, isLoaded] = useLocalStorage<Transaction[]>('moviment-financeiro', transacoesData);
+  const [transacoes, setTransacoes, isLoaded] = useLocalStorage<Transaction[]>('moviment-financeiro', transacoesData, 'transacoes');
 
   // Filters
   const [filters, setFilters] = useState<FinanceiroFilterState>({
