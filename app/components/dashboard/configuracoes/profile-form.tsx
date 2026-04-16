@@ -14,8 +14,26 @@ const roleLabelMap = { admin: 'Administrador', instrutor: 'Instrutor', recepcao:
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const { showToast } = useToast();
-  const [form, setForm] = useState({ nome: profile.nome || '', email: profile.email || '' });
+  const [form, setForm] = useState({ 
+    nome: profile.nome || '', 
+    email: profile.email || '',
+    telefone: (profile as any).telefone || '',
+    role: profile.role || 'professor',
+    avatar_url: profile.avatar_url || ''
+  });
   const [loading, setLoading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(prev => ({ ...prev, avatar_url: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = async () => {
     setLoading(true);
@@ -27,13 +45,24 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         updates.push(supabase.auth.updateUser({ email: form.email }));
       }
       
-      if (form.nome !== profile.nome) {
-        updates.push(supabase.auth.updateUser({ data: { nome: form.nome } }));
-        updates.push(supabase.from('profiles').update({ nome: form.nome }).eq('id', profile.id));
+      if (form.nome !== profile.nome || form.role !== profile.role || form.avatar_url !== profile.avatar_url) {
+        updates.push(supabase.auth.updateUser({ 
+          data: { nome: form.nome, role: form.role, avatar_url: form.avatar_url } 
+        }));
+        updates.push(supabase.from('profiles').update({ 
+          nome: form.nome, 
+          role: form.role,
+          avatar_url: form.avatar_url 
+        }).eq('id', profile.id));
       }
 
       await Promise.all(updates);
       
+      // Update local profile ref to avoid false "success" without reload
+      profile.nome = form.nome;
+      profile.role = form.role;
+      profile.avatar_url = form.avatar_url;
+
       if (form.email !== profile.email) {
         showToast('Confirme a alteração no seu novo e-mail.', 'warning', 'Verificação Enviada');
       } else {
@@ -56,15 +85,32 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       {/* Avatar */}
       <div className="flex items-center gap-6">
         <div className="relative group">
-          <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg">
-            {form.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
-          </div>
+          {form.avatar_url ? (
+            <img 
+              src={form.avatar_url} 
+              alt="Avatar" 
+              className="w-20 h-20 rounded-2xl object-cover shadow-lg border-2 border-primary-500/20"
+            />
+          ) : (
+            <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg">
+              {form.nome ? form.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'US'}
+            </div>
+          )}
+          <input 
+            type="file" 
+            accept="image/*" 
+            className="hidden" 
+            ref={fileInputRef} 
+            onChange={handleImageUpload}
+          />
           <button 
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
             title="Alterar foto de perfil"
             aria-label="Upload de nova foto de perfil"
-            className="absolute -bottom-1 -right-1 w-7 h-7 bg-white dark:bg-[#1a1d27] rounded-full border-2 border-gray-200 dark:border-[#2d3348] flex items-center justify-center text-gray-400 hover:text-primary-600 transition-colors shadow-sm"
+            className="absolute -bottom-2 -right-2 w-8 h-8 bg-white dark:bg-[#1a1d27] rounded-full border-2 border-gray-200 dark:border-[#2d3348] flex items-center justify-center text-gray-400 hover:text-primary-600 transition-colors shadow-lg cursor-pointer"
           >
-            <Camera className="w-3.5 h-3.5" />
+            <Camera className="w-4 h-4" />
           </button>
         </div>
         <div>
@@ -112,15 +158,16 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         </div>
         <div>
           <label htmlFor="profile-role" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Cargo / Vínculo</label>
-          <input 
+          <select 
             id="profile-role"
-            type="text" 
-            value={roleLabelMap[profile.role as keyof typeof roleLabelMap] || profile.role} 
-            readOnly
-            title="Seu cargo no sistema"
-            placeholder="Cargo"
-            className="w-full px-3 py-2.5 bg-gray-100 dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed" 
-          />
+            value={form.role} 
+            onChange={e => setForm(p => ({ ...p, role: e.target.value as any }))}
+            className="w-full pl-3 pr-8 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer" 
+          >
+            <option value="admin">Administrador (Total)</option>
+            <option value="recepcao">Recepção / Atendimento</option>
+            <option value="professor">Instrutor / Professor</option>
+          </select>
         </div>
       </div>
 

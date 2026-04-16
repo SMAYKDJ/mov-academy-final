@@ -174,9 +174,17 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         {/* Mini user card */}
         {!isCollapsed && user && (
           <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-primary-200 dark:shadow-none">
-              {user.nome.substring(0, 2).toUpperCase()}
-            </div>
+            {user.avatar_url ? (
+              <img 
+                src={user.avatar_url} 
+                alt="Avatar" 
+                className="w-9 h-9 rounded-xl object-cover shadow-lg shadow-primary-200 dark:shadow-none"
+              />
+            ) : (
+              <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-primary-200 dark:shadow-none">
+                {user.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{user.nome}</p>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">{user.role}</p>
