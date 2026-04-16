@@ -16,6 +16,7 @@ import { alunosData } from "@/utils/alunos-data";
 import { useLocalStorage } from "@/utils/persistence";
 import { Calendar as CalendarIcon, Plus, ArrowUpRight, Brain, ShieldAlert } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
+import { useAuth } from "@/hooks/use-auth";
 
 /**
  * Main Dashboard Page.
@@ -31,6 +32,7 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   const [showChurnModule, setShowChurnModule] = useState(true);
   const { showToast } = useToast();
+  const { user } = useAuth();
 
   // Real Data Persistence
   const [alunos] = useLocalStorage('moviment-alunos', alunosData);
@@ -68,7 +70,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mb-1">Bem-vindo de volta,</p>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Professor Andre 👋
+                {user?.nome ? user.nome.split(' ')[0] : 'Gestor'} 👋
               </h1>
               <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
                 Aqui está o resumo da sua academia hoje{formattedDate ? ' — ' : ''}

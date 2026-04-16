@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { useAuth } from '@/hooks/use-auth';
 
 /**
  * Navigation menu items.
@@ -43,6 +44,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const pathname = usePathname();
+  const { user, signOut } = useAuth();
 
   // Close mobile sidebar on desktop resize
   useEffect(() => {
@@ -105,7 +107,17 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
 
       {/* Navigation Links */}
       <nav className="flex-1 px-3 mt-4 space-y-1 overflow-y-auto" aria-label="Navegação do dashboard">
-        {menuItems.map((item) => {
+        {menuItems.filter(item => {
+          if (!user) return false;
+          if (user.role === 'admin') return true;
+          if (user.role === 'recepcao') {
+            return ['Dashboard', 'Alunos', 'Financeiro', 'Biometria', 'Configurações'].includes(item.label);
+          }
+          if (user.role === 'professor') {
+            return ['Dashboard', 'Alunos', 'Cronograma', 'Treinos'].includes(item.label);
+          }
+          return false;
+        }).map((item) => {
           const isActive = item.href === '/'
             ? pathname === '/'
             : pathname.startsWith(item.href);
@@ -160,22 +172,23 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
       {/* User Profile & Logout */}
       <div className="p-3 border-t border-gray-100 dark:border-[#1e2235] space-y-1">
         {/* Mini user card */}
-        {!isCollapsed && (
+        {!isCollapsed && user && (
           <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
             <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-primary-200 dark:shadow-none">
-              PA
+              {user.nome.substring(0, 2).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">Professor Andre</p>
-              <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Diretor Técnico</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{user.nome}</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">{user.role}</p>
             </div>
           </div>
         )}
 
         <button 
-          onClick={() => {
+          onClick={async () => {
             if (confirm('Deseja realmente sair do sistema?')) {
-              window.location.href = '/';
+              await signOut();
+              window.location.href = '/login';
             }
           }}
           className={cn(
