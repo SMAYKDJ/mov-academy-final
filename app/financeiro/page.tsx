@@ -41,6 +41,7 @@ export default function FinanceiroPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [editingTxn, setEditingTxn] = useState<Transaction | null>(null);
+  const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
 
   // Debounced search
   const [debouncedSearch, setDebouncedSearch] = useState('');

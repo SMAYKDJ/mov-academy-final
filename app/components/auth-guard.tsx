@@ -2,27 +2,36 @@
 
 import { useAuth } from '@/hooks/use-auth';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
+
+// Public routes that don't require authentication
+const PUBLIC_ROUTES = ['/login', '/cadastro'];
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const redirected = useRef(false);
 
-  // Rotas públicas que não exigem login
-  const publicRoutes = ['/login', '/cadastro'];
+  const isPublic = PUBLIC_ROUTES.includes(pathname);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user && !publicRoutes.includes(pathname)) {
-        router.push('/login');
-      } else if (user && publicRoutes.includes(pathname)) {
-        router.push('/');
-      }
-    }
-  }, [user, loading, pathname, router]);
+    if (loading) return; // Wait until auth state is resolved
+    if (redirected.current) return;
 
+    if (!user && !isPublic) {
+      redirected.current = true;
+      router.replace('/login');
+    } else if (user && isPublic) {
+      redirected.current = true;
+      router.replace('/');
+    } else {
+      redirected.current = false; // Reset so future navigation works
+    }
+  }, [user, loading, isPublic, router]);
+
+  // Always show loading while auth state is resolving
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] dark:bg-[#080a0f] flex items-center justify-center">
@@ -34,9 +43,21 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Se não estiver autenticado e não for rota pública, previne renderizar o conteúdo da página antes do redirecionamento
-  if (!user && !publicRoutes.includes(pathname)) {
-    return null;
+  // IMPORTANT: Always render children for public routes so /login page is never 404
+  if (isPublic) {
+    return <>{children}</>;
+  }
+
+  // For protected routes: block rendering if no user (redirect is happening)
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#080a0f] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
+          <p className="text-sm font-medium text-gray-500">Redirecionando...</p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;

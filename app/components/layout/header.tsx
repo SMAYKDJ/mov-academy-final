@@ -1,15 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Bell, Menu, Sparkles, CreditCard, UserPlus, AlertTriangle, CalendarDays } from 'lucide-react';
+import { Search, Bell, Menu, Sparkles, CreditCard, UserPlus, AlertTriangle, CalendarDays, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useToast } from '@/components/ui/toast';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-/**
- * Top header bar with search, notifications, and user profile.
- * Stays fixed at the top and adjusts width based on sidebar state.
- */
 interface HeaderProps {
   onMenuClick?: () => void;
 }
@@ -43,15 +42,42 @@ const notifColorMap = {
   aula: 'text-violet-500 bg-violet-50 dark:bg-violet-900/20',
 };
 
+const roleLabel: Record<string, string> = {
+  admin: 'Administrador',
+  recepcao: 'Recepção',
+  professor: 'Professor',
+};
+
 export function Header({ onMenuClick }: HeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifications);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
   const { showToast } = useToast();
+  const { user } = useAuth();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const unreadCount = notifications.filter(n => !n.lida).length;
 
-  // Close dropdown on click outside
+  // ⌘K shortcut to focus search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+      if (e.key === 'Escape' && searchFocused) {
+        setSearchQuery('');
+        searchRef.current?.blur();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [searchFocused]);
+
+  // Close notification dropdown on click outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -62,13 +88,20 @@ export function Header({ onMenuClick }: HeaderProps) {
     return () => document.removeEventListener('mousedown', handler);
   }, [notifOpen]);
 
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, lida: true })));
+  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, lida: true })));
+  const markRead = (id: string) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, lida: true } : n));
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/alunos?search=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchQuery('');
   };
 
-  const markRead = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, lida: true } : n));
-  };
+  // User display info
+  const displayName = user?.nome || 'Usuário';
+  const displayRole = roleLabel[user?.role || ''] || user?.role || 'Gestor';
+  const initials = displayName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <header
@@ -80,7 +113,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       role="banner"
     >
       <div className="h-full px-4 md:px-8 flex items-center justify-between gap-4">
-        {/* Left: Mobile menu + Title */}
+        {/* Left: Mobile menu + dynamic page title */}
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuClick}
@@ -95,26 +128,41 @@ export function Header({ onMenuClick }: HeaderProps) {
           </div>
         </div>
 
-        {/* Center: Search bar */}
+        {/* Center: Functional search bar */}
         <div className="flex-1 max-w-md mx-2 md:mx-6">
-          <div className="relative group">
+          <form onSubmit={handleSearch} className="relative group">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 group-focus-within:text-primary-500 transition-colors" />
             <input
+              ref={searchRef}
               type="search"
               id="header-search"
-              placeholder="Buscar alunos, relatórios..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              placeholder="Buscar alunos, relatórios... (⌘K)"
               className={cn(
-                "w-full pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none transition-all duration-200",
+                "w-full pl-10 pr-10 py-2.5 rounded-xl text-sm outline-none transition-all duration-200",
                 "bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235]",
                 "text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500",
                 "focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30 focus:border-primary-400 dark:focus:border-primary-600 focus:bg-white dark:focus:bg-[#0f1117]"
               )}
               aria-label="Campo de busca global"
             />
-            <kbd className="hidden lg:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-gray-400 bg-gray-100 dark:bg-gray-800 dark:text-gray-500 border border-gray-200 dark:border-gray-700 rounded">
-              ⌘K
-            </kbd>
-          </div>
+            {searchQuery ? (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            ) : (
+              <kbd className="hidden lg:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-gray-400 bg-gray-100 dark:bg-gray-800 dark:text-gray-500 border border-gray-200 dark:border-gray-700 rounded">
+                ⌘K
+              </kbd>
+            )}
+          </form>
         </div>
 
         {/* Right: Actions */}
@@ -137,7 +185,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               onClick={() => setNotifOpen(!notifOpen)}
               className="relative p-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
               aria-label={`Notificações — ${unreadCount} novas`}
-              {...(notifOpen ? { 'aria-expanded': 'true' } : { 'aria-expanded': 'false' })}
+              aria-expanded={notifOpen}
             >
               <Bell className="w-[18px] h-[18px]" />
               {unreadCount > 0 && (
@@ -198,11 +246,15 @@ export function Header({ onMenuClick }: HeaderProps) {
                   })}
                 </div>
 
-                {/* Dropdown Footer */}
+                {/* Dropdown Footer — now navigates */}
                 <div className="px-4 py-2.5 border-t border-gray-100 dark:border-[#1e2235] text-center">
-                  <button className="text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:underline">
-                    Ver todas as notificações
-                  </button>
+                  <Link
+                    href="/relatorios"
+                    onClick={() => setNotifOpen(false)}
+                    className="text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:underline"
+                  >
+                    Ver histórico de atividades →
+                  </Link>
                 </div>
               </div>
             )}
@@ -211,23 +263,28 @@ export function Header({ onMenuClick }: HeaderProps) {
           {/* Divider */}
           <div className="h-8 w-px bg-gray-100 dark:bg-[#1e2235] mx-1 hidden sm:block" aria-hidden="true" />
 
-          {/* User avatar */}
-          <button
-            onClick={() => showToast('Configurações de perfil abertas', 'info', 'Perfil')}
+          {/* User avatar — clickable, goes to /configuracoes */}
+          <Link
+            href="/configuracoes"
             className="flex items-center gap-3 pl-2 pr-1 py-1 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
-            aria-label="Perfil do usuário"
+            aria-label="Ir para configurações de perfil"
           >
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">Admin</p>
-              <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Gestor</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">{displayName.split(' ')[0]}</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">{displayRole}</p>
             </div>
-            <div className="w-9 h-9 bg-gradient-to-tr from-primary-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-200 dark:shadow-none ring-2 ring-white dark:ring-[#0f1117]">
-              <span className="text-white font-bold text-xs">AM</span>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-primary-200 dark:shadow-none ring-2 ring-white dark:ring-[#0f1117] overflow-hidden">
+              {user?.avatar_url ? (
+                <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-tr from-primary-500 to-indigo-600 flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">{initials}</span>
+                </div>
+              )}
             </div>
-          </button>
+          </Link>
         </div>
       </div>
     </header>
   );
 }
-
