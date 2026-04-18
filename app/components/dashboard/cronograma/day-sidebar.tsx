@@ -53,11 +53,11 @@ export function DaySidebar({ date, events, onEventClick, onCheckIn }: DaySidebar
           const typeCfg = eventTypeConfig[ev.tipo];
           const statusCfg = eventStatusConfig[ev.status];
           return (
-            <button
+            <div
               key={ev.id}
               onClick={() => onEventClick(ev)}
               className={cn(
-                "w-full p-3.5 rounded-xl border text-left transition-all hover:shadow-md group",
+                "w-full p-3.5 rounded-xl border text-left transition-all hover:shadow-md group cursor-pointer",
                 typeCfg.border, typeCfg.bg
               )}
             >
@@ -94,7 +94,7 @@ export function DaySidebar({ date, events, onEventClick, onCheckIn }: DaySidebar
                   </button>
                 </div>
               )}
-            </button>
+            </div>
           );
         })}
       </div>

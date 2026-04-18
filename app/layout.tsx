@@ -21,6 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://academiamoviment.vercel.app"),
   title: "Moviment Academy | Dashboard Inteligente",
   description: "Sistema de gestão e inteligência para academias modernas — controle de alunos, financeiro, treinos e métricas em tempo real.",
   manifest: "/manifest.json",
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
     title: "Moviment Academy | Dashboard Inteligente",
     description: "Sistema de gestão inteligente para academias modernas.",
     type: "website",
+    url: "https://academiamoviment.vercel.app",
   },
 };
 

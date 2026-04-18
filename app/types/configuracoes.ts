@@ -2,7 +2,7 @@
  * Types for the Configurações (Settings) module.
  */
 
-export type UserRole = 'admin' | 'instrutor' | 'recepcao';
+export type UserRole = 'admin' | 'ceo' | 'professor' | 'recepcao' | 'aluno';
 
 export interface SystemUser {
   id: string;

@@ -10,7 +10,12 @@ interface ProfileFormProps {
   profile: UserProfile;
 }
 
-const roleLabelMap = { admin: 'Administrador', instrutor: 'Instrutor', recepcao: 'Recepção' };
+const roleLabelMap = { 
+  admin: 'Administrador', 
+  professor: 'Professor / Treinador', 
+  recepcao: 'Recepção', 
+  aluno: 'Aluno' 
+};
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const { showToast } = useToast();
@@ -18,7 +23,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     nome: profile.nome || '', 
     email: profile.email || '',
     telefone: (profile as any).telefone || '',
-    role: profile.role || 'professor',
+    role: profile.role || 'aluno',
     avatar_url: profile.avatar_url || ''
   });
   const [loading, setLoading] = useState(false);
@@ -161,13 +166,16 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           <select 
             id="profile-role"
             value={form.role} 
-            onChange={e => setForm(p => ({ ...p, role: e.target.value as any }))}
-            className="w-full pl-3 pr-8 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer" 
+            disabled
+            title="O cargo só pode ser alterado por um administrador"
+            className="w-full pl-3 pr-8 py-2.5 bg-gray-100 dark:bg-[#151821] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-400 cursor-not-allowed appearance-none" 
           >
-            <option value="admin">Administrador (Total)</option>
-            <option value="recepcao">Recepção / Atendimento</option>
-            <option value="professor">Instrutor / Professor</option>
+            <option value="admin">Administrador</option>
+            <option value="recepcao">Recepção</option>
+            <option value="professor">Professor / Treinador</option>
+            <option value="aluno">Aluno / Cliente</option>
           </select>
+          <p className="text-[9px] text-gray-400 mt-1.5 italic">* Caso precise alterar seu cargo, contate o administrador.</p>
         </div>
       </div>
 

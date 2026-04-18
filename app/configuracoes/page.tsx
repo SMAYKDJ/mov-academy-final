@@ -50,71 +50,87 @@ export default function ConfiguracoesPage() {
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto">
-          {/* Page Header */}
-          <div className="mb-8 animate-fade-in">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-md">
-                Sistema
-              </span>
+          {!user ? (
+            <div className="flex items-center justify-center h-[50vh]">
+              <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-              Configurações
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-              Gerencie seu perfil, academia, segurança e integrações
-            </p>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Settings Internal Sidebar */}
-            <div className="lg:w-64 shrink-0">
-              {/* Mobile: horizontal scroll tabs */}
-              <div className="flex lg:hidden gap-2 overflow-x-auto pb-2 scroll-hide">
-                {tabs.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all",
-                      activeTab === tab.id
-                        ? "bg-primary-600 text-white shadow-lg shadow-primary-200 dark:shadow-none"
-                        : "bg-white dark:bg-[#0f1117] text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-[#1e2235]"
-                    )}
-                  >
-                    <tab.icon className="w-4 h-4" />
-                    {tab.label}
-                  </button>
-                ))}
+          ) : (user.role !== 'admin' && user.role !== 'ceo') ? (
+            <div className="flex items-center justify-center h-[50vh]">
+              <div className="text-center bg-white dark:bg-[#0f1117] p-8 rounded-3xl border border-red-100 dark:border-red-900/30 shadow-lg">
+                <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Acesso Restrito</h2>
+                <p className="text-gray-500 text-sm mt-2">Apenas Administradores e CEOs têm acesso a esta página.</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Page Header */}
+              <div className="mb-8 animate-fade-in">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-md">
+                    Sistema
+                  </span>
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  Configurações
+                </h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                  Gerencie seu perfil, academia, segurança e integrações
+                </p>
               </div>
 
-              {/* Desktop: vertical sidebar */}
-              <nav className="hidden lg:block bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-2 space-y-1 sticky top-24">
-                {tabs.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all",
-                      activeTab === tab.id
-                        ? "bg-primary-50 dark:bg-primary-900/10 text-primary-700 dark:text-primary-400"
-                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1a1d27]"
-                    )}
-                  >
-                    <tab.icon className={cn("w-4 h-4 shrink-0", activeTab === tab.id && "text-primary-600 dark:text-primary-400")} />
-                    <div>
-                      <p className="text-sm font-semibold">{tab.label}</p>
-                      <p className="text-[10px] text-gray-400 leading-tight">{tab.description}</p>
-                    </div>
-                  </button>
-                ))}
-              </nav>
-            </div>
+              <div className="flex flex-col lg:flex-row gap-6">
+                {/* Settings Internal Sidebar */}
+                <div className="lg:w-64 shrink-0">
+                  {/* Mobile: horizontal scroll tabs */}
+                  <div className="flex lg:hidden gap-2 overflow-x-auto pb-2 scroll-hide">
+                    {tabs.map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={cn(
+                          "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all",
+                          activeTab === tab.id
+                            ? "bg-primary-600 text-white shadow-lg shadow-primary-200 dark:shadow-none"
+                            : "bg-white dark:bg-[#0f1117] text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-[#1e2235]"
+                        )}
+                      >
+                        <tab.icon className="w-4 h-4" />
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
 
-            {/* Content Area */}
-            <div className="flex-1 min-w-0 bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6 md:p-8 animate-fade-in">
-              {renderContent()}
-            </div>
-          </div>
+                  {/* Desktop: vertical sidebar */}
+                  <nav className="hidden lg:block bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-2 space-y-1 sticky top-24">
+                    {tabs.map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all",
+                          activeTab === tab.id
+                            ? "bg-primary-50 dark:bg-primary-900/10 text-primary-700 dark:text-primary-400"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1a1d27]"
+                        )}
+                      >
+                        <tab.icon className={cn("w-4 h-4 shrink-0", activeTab === tab.id && "text-primary-600 dark:text-primary-400")} />
+                        <div>
+                          <p className="text-sm font-semibold">{tab.label}</p>
+                          <p className="text-[10px] text-gray-400 leading-tight">{tab.description}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </nav>
+                </div>
+
+                {/* Content Area */}
+                <div className="flex-1 min-w-0 bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6 md:p-8 animate-fade-in">
+                  {renderContent()}
+                </div>
+              </div>
+            </>
+          )}
         </main>
       </div>
     </div>

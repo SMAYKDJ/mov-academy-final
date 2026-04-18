@@ -19,9 +19,9 @@ export const gymSettingsData: GymSettings = {
 
 export const systemUsersData: SystemUser[] = [
   { id: 'u1', nome: 'Admin Master', email: 'admin@movimentacademy.com', role: 'admin', ativo: true, ultimoAcesso: '13/04/2026 21:30' },
-  { id: 'u2', nome: 'Carlos Instrutor', email: 'carlos@movimentacademy.com', role: 'instrutor', ativo: true, ultimoAcesso: '13/04/2026 18:45' },
+  { id: 'u2', nome: 'Carlos Professor', email: 'carlos@movimentacademy.com', role: 'professor', ativo: true, ultimoAcesso: '13/04/2026 18:45' },
   { id: 'u3', nome: 'Maria Recepção', email: 'maria@movimentacademy.com', role: 'recepcao', ativo: true, ultimoAcesso: '13/04/2026 20:10' },
-  { id: 'u4', nome: 'João Personal', email: 'joao@movimentacademy.com', role: 'instrutor', ativo: true, ultimoAcesso: '12/04/2026 14:22' },
+  { id: 'u4', nome: 'João Professor', email: 'joao@movimentacademy.com', role: 'professor', ativo: true, ultimoAcesso: '12/04/2026 14:22' },
   { id: 'u5', nome: 'Ana Suporte', email: 'ana@movimentacademy.com', role: 'recepcao', ativo: false, ultimoAcesso: '05/04/2026 09:00' },
 ];
 

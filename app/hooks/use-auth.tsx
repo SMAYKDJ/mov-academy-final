@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             id: session.user.id,
             email: session.user.email!,
             nome: session.user.user_metadata.nome || 'Usuário',
-            role: (session.user.user_metadata.role as UserRole) || 'professor'
+            role: (session.user.user_metadata.role as UserRole) || 'aluno'
           });
         }
       }

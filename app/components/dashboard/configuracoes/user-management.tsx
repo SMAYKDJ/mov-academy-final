@@ -10,22 +10,27 @@ interface UserManagementProps { users: SystemUser[]; }
 
 const roleConfig: Record<UserRole, { label: string; color: string; bg: string }> = {
   admin: { label: 'Admin', color: 'text-primary-600 dark:text-primary-400', bg: 'bg-primary-50 dark:bg-primary-900/20' },
-  instrutor: { label: 'Instrutor', color: 'text-emerald-600 dark:text-green-400', bg: 'bg-emerald-50 dark:bg-green-900/20' },
+  ceo: { label: 'CEO', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+  professor: { label: 'Professor / Treinador', color: 'text-emerald-600 dark:text-green-400', bg: 'bg-emerald-50 dark:bg-green-900/20' },
   recepcao: { label: 'Recepção', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+  aluno: { label: 'Aluno', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
 };
 
 export function UserManagement({ users: initialUsers }: UserManagementProps) {
   const { showToast } = useToast();
   const [users, setUsers] = useState(initialUsers);
   const [showForm, setShowForm] = useState(false);
-  const [newUser, setNewUser] = useState({ nome: '', email: '', role: 'instrutor' as UserRole });
+  const [newUser, setNewUser] = useState({ nome: '', email: '', role: 'professor' as UserRole });
 
   const addUser = () => {
-    if (!newUser.nome || !newUser.email) return;
-    setUsers(prev => [...prev, { ...newUser, id: `u${Date.now()}`, ativo: true, ultimoAcesso: 'Agora' }]);
-    setNewUser({ nome: '', email: '', role: 'instrutor' });
+    if (!newUser.nome || !newUser.email) {
+      showToast('Por favor, preencha nome e e-mail.', 'warning');
+      return;
+    }
+    setUsers(prev => [...prev, { ...newUser, id: `u${Date.now()}`, ativo: true, ultimoAcesso: 'Novo' }]);
+    setNewUser({ nome: '', email: '', role: 'professor' });
     setShowForm(false);
-    showToast(`Usuário "${newUser.nome}" criado com sucesso!`, 'success', 'Criado');
+    showToast(`Usuário "${newUser.nome}" criado com sucesso!`, 'success', 'Novo Profissional');
   };
 
   const toggleUser = (id: string) => {
@@ -61,9 +66,10 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
                 onChange={e => setNewUser(p => ({ ...p, role: e.target.value as UserRole }))}
                 className="px-3 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none text-gray-900 dark:text-white"
               >
-              <option value="instrutor">Instrutor</option>
+              <option value="professor">Professor / Treinador</option>
               <option value="recepcao">Recepção</option>
-              <option value="admin">Admin</option>
+              <option value="admin">Administrador</option>
+              <option value="ceo">CEO</option>
             </select>
           </div>
           <div className="flex gap-2">

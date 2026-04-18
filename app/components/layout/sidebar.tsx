@@ -109,9 +109,9 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
       <nav className="flex-1 px-3 mt-4 space-y-1 overflow-y-auto" aria-label="Navegação do dashboard">
         {menuItems.filter(item => {
           if (!user) return false;
-          if (user.role === 'admin') return true;
+          if (user.role === 'admin' || user.role === 'ceo') return true;
           if (user.role === 'recepcao') {
-            return ['Dashboard', 'Alunos', 'Financeiro', 'Biometria', 'Configurações'].includes(item.label);
+            return ['Dashboard', 'Alunos', 'Financeiro', 'Biometria'].includes(item.label);
           }
           if (user.role === 'professor') {
             return ['Dashboard', 'Alunos', 'Cronograma', 'Treinos'].includes(item.label);

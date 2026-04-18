@@ -55,7 +55,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
     nome TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    role TEXT DEFAULT 'professor', -- 'admin', 'recepcao', 'professor'
+    telefone TEXT,
+    role TEXT DEFAULT 'professor', -- 'admin', 'recepcao', 'professor', 'instrutor'
     avatar_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
 );
@@ -64,13 +65,20 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Perfis visiveis para todos autenticados" ON public.profiles FOR SELECT USING (auth.role() = 'authenticated');
 CREATE POLICY "Proprio usuario pode editar perfil" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
 
--- Trigger para criar perfil automaticamente no SignUp (Opcional, mas util)
+-- Trigger para criar perfil automaticamente no SignUp
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, nome, email, role)
-  VALUES (new.id, new.raw_user_meta_data->>'nome', new.email, COALESCE(new.raw_user_meta_data->>'role', 'professor'));
+  INSERT INTO public.profiles (id, nome, email, role, telefone)
+  VALUES (
+    new.id, 
+    new.raw_user_meta_data->>'nome', 
+    new.email, 
+    COALESCE(new.raw_user_meta_data->>'role', 'professor'),
+    new.raw_user_meta_data->>'telefone'
+  );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

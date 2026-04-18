@@ -1,0 +1,40 @@
+
+import { createClient } from '@supabase/supabase-js';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
+async function check() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Env vars not loaded!');
+    return;
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+  console.log('Checking database connection...');
+  
+  const email = 'smaykd@gmail.com';
+  const { data: profile, error } = await supabase
+       .from('profiles')
+       .select('*')
+       .eq('email', email)
+       .maybeSingle();
+
+  if (error) {
+    console.error('Database Error:', error.message);
+    return;
+  }
+
+  if (profile) {
+    console.log('USER ALREADY EXISTS:', JSON.stringify(profile, null, 2));
+  } else {
+    console.log('USER NOT FOUND. You can register now.');
+  }
+}
+
+check();
