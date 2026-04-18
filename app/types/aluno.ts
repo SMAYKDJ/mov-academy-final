@@ -44,6 +44,7 @@ export interface AlunoFormData {
   dataNascimento: string;
   endereco: string;
   objetivo: string;
+  senha?: string;
 }
 
 export interface AlunosFilterState {
