@@ -187,7 +187,6 @@ export function Header({ onMenuClick }: HeaderProps) {
               onClick={() => setNotifOpen(!notifOpen)}
               className="relative p-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
               aria-label={`Notificações — ${unreadCount} novas`}
-              aria-expanded={notifOpen ? "true" : "false"}
             >
               <Bell className="w-[18px] h-[18px]" />
               {unreadCount > 0 && (
