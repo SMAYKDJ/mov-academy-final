@@ -30,16 +30,16 @@ export default function LoginPage() {
 
         // Buscar e-mail na tabela profiles usando o telefone
         // Note: Em produção real isso poderia expor e-mails, mas como ele digitará a senha na sequência, a API do Supabase protegerá o acesso de qualquer forma.
-        const { data: profileData, error: profileError } = await supabase
+        const { data: profilesData, error: profileError } = await supabase
           .from('profiles')
           .select('email')
           .like('telefone', `%${phoneDigits}%`)
-          .maybeSingle();
+          .limit(1);
 
-        if (profileError || !profileData?.email) {
+        if (profileError || !profilesData || profilesData.length === 0) {
           throw new Error('Nenhuma conta encontrada com este número de telefone.');
         }
-        finalEmail = profileData.email;
+        finalEmail = profilesData[0].email;
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
