@@ -104,6 +104,8 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           <input 
             type="file" 
             accept="image/*" 
+            title="Escolher foto de perfil"
+            aria-label="Selecionar imagem do dispositivo"
             className="hidden" 
             ref={fileInputRef} 
             onChange={handleImageUpload}

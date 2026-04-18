@@ -165,7 +165,7 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">{isEditing ? 'Editar Aluno' : 'Novo Aluno'}</h2>
             <p className="text-xs text-gray-400 mt-0.5">{isEditing ? `Editando ${aluno?.nome}` : 'Preencha os dados do novo aluno'}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} aria-label="Fechar janela" title="Fechar" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"><X className="w-5 h-5" /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
@@ -209,13 +209,13 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Plano</label>
-              <select value={form.plano} onChange={(e) => updateField('plano', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm">
+              <select value={form.plano} aria-label="Plano do Aluno" title="Plano" onChange={(e) => updateField('plano', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm">
                 {planOptions.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Status</label>
-              <select value={form.status} onChange={(e) => updateField('status', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm">
+              <select value={form.status} aria-label="Status do Aluno" title="Status" onChange={(e) => updateField('status', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm">
                 {statusOptions.map(s => <option key={s} value={s}>{statusLabels[s]}</option>)}
               </select>
             </div>

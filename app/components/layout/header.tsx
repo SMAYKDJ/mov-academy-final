@@ -153,6 +153,8 @@ export function Header({ onMenuClick }: HeaderProps) {
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
+                aria-label="Limpar campo de busca"
+                title="Limpar busca"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 <X className="w-4 h-4" />
@@ -185,7 +187,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               onClick={() => setNotifOpen(!notifOpen)}
               className="relative p-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
               aria-label={`Notificações — ${unreadCount} novas`}
-              aria-expanded={notifOpen}
+              aria-expanded={notifOpen ? "true" : "false"}
             >
               <Bell className="w-[18px] h-[18px]" />
               {unreadCount > 0 && (
