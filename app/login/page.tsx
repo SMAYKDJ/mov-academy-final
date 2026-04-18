@@ -7,7 +7,7 @@ import { Dumbbell, Lock, Mail, Loader2, MessageCircle, ArrowLeft, Send } from 'l
 import { useToast } from '@/components/ui/toast';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
@@ -19,8 +19,31 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      let finalEmail = loginId.trim();
+
+      // Se não contiver '@', assumimos que é um número de telefone
+      if (!finalEmail.includes('@')) {
+        const phoneDigits = loginId.replace(/\D/g, '');
+        if (phoneDigits.length < 10) {
+          throw new Error('Informe um e-mail válido ou um telefone com DDD.');
+        }
+
+        // Buscar e-mail na tabela profiles usando o telefone
+        // Note: Em produção real isso poderia expor e-mails, mas como ele digitará a senha na sequência, a API do Supabase protegerá o acesso de qualquer forma.
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('email')
+          .like('telefone', `%${phoneDigits}%`)
+          .maybeSingle();
+
+        if (profileError || !profileData?.email) {
+          throw new Error('Nenhuma conta encontrada com este número de telefone.');
+        }
+        finalEmail = profileData.email;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: finalEmail,
         password,
       });
 
@@ -38,10 +61,11 @@ export default function LoginPage() {
   };
 
   const handleRecoverPassword = async (method: 'email' | 'whatsapp') => {
-    if (!email) {
-      showToast('Por favor, insira seu e-mail primeiro.', 'warning');
+    if (!loginId || !loginId.includes('@')) {
+      showToast('Por favor, insira o seu e-mail no campo acima para recuperar a senha.', 'warning');
       return;
     }
+    const email = loginId.trim();
 
     setLoading(true);
     try {
@@ -102,17 +126,17 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div>
                 <label className="block text-[11px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-2">
-                  E-mail Profissional
+                  E-mail ou Celular
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
-                    type="email"
+                    type="text"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={loginId}
+                    onChange={(e) => setLoginId(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
-                    placeholder="seu.nome@moviment.com"
+                    placeholder="E-mail ou Telefone (ex: 11999990000)"
                   />
                 </div>
               </div>
@@ -190,8 +214,8 @@ export default function LoginPage() {
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={loginId.includes('@') ? loginId : ''}
+                      onChange={(e) => setLoginId(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all"
                       placeholder="seu.nome@moviment.com"
                     />

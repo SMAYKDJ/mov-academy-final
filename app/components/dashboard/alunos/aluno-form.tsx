@@ -42,6 +42,7 @@ const emptyForm: AlunoFormData = {
   dataNascimento: '',
   endereco: '',
   objetivo: '',
+  senha: '',
 };
 
 export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
@@ -64,6 +65,7 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
         dataNascimento: aluno.dataNascimento,
         endereco: aluno.endereco,
         objetivo: aluno.objetivo,
+        senha: '',
       });
     } else if (open) {
       setForm(emptyForm);
@@ -115,6 +117,34 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
           setSaving(false);
           return;
         }
+
+        // Criar usuário no Auth (bypass sem deslogar o admin através do persistSession: false)
+        const customAuth = supabase; // Usamos a instância importada
+        // A melhor forma de criar sem afetar sessão no browser sem backend é criar um cliente fake
+        const isolatedSupabase = (await import('@supabase/supabase-js')).createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+          { auth: { autoRefreshToken: false, persistSession: false } }
+        );
+
+        if (form.senha && form.senha.length >= 6) {
+          const { error: authError } = await isolatedSupabase.auth.signUp({
+            email: form.email,
+            password: form.senha,
+            options: {
+              data: {
+                nome: form.nome,
+                telefone: form.telefone,
+                role: 'aluno'
+              }
+            }
+          });
+          if (authError) {
+             setErrors(prev => ({ ...prev, email: 'Erro ao criar conta de acesso: ' + authError.message }));
+             setSaving(false);
+             return;
+          }
+        }
       }
       onSave(form);
     } catch (e) {
@@ -159,11 +189,21 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
             </div>
           </div>
 
-          <div>
-            <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Email *</label>
-            <input type="email" value={form.email} onChange={(e) => updateField('email', e.target.value)}
-              className={cn("w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none", errors.email ? "border-danger-500" : "border-gray-200 dark:border-[#2d3348]")} />
-            {errors.email && <p className="mt-1 text-xs text-danger-600">{errors.email}</p>}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Email *</label>
+              <input type="email" value={form.email} onChange={(e) => updateField('email', e.target.value)}
+                className={cn("w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none", errors.email ? "border-danger-500" : "border-gray-200 dark:border-[#2d3348]")} />
+              {errors.email && <p className="mt-1 text-xs text-danger-600">{errors.email}</p>}
+            </div>
+            
+            {!isEditing && (
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Senha de Acesso (Login)</label>
+                <input type="text" value={form.senha || ''} onChange={(e) => updateField('senha', e.target.value)}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Min. 6 caracteres" />
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
