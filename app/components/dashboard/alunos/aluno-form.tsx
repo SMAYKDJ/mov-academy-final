@@ -170,8 +170,8 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
           <div>
-            <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Nome completo *</label>
-            <input ref={firstInputRef} type="text" value={form.nome} onChange={(e) => updateField('nome', e.target.value)}
+            <label htmlFor="aluno-nome" className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Nome completo *</label>
+            <input id="aluno-nome" ref={firstInputRef} type="text" value={form.nome} onChange={(e) => updateField('nome', e.target.value)}
               title="Nome completo" aria-label="Nome completo do aluno" placeholder="Ex: João da Silva"
               className={cn("w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none transition-all", errors.nome ? "border-danger-500" : "border-gray-200 dark:border-[#2d3348]")} />
             {errors.nome && <p className="mt-1 text-xs text-danger-600">{errors.nome}</p>}
@@ -192,8 +192,8 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Email *</label>
-              <input type="email" value={form.email} onChange={(e) => updateField('email', e.target.value)}
+              <label htmlFor="aluno-email" className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Email *</label>
+              <input id="aluno-email" type="email" value={form.email} onChange={(e) => updateField('email', e.target.value)}
                 title="E-mail de Cadastro" aria-label="E-mail principal" placeholder="joao@exemplo.com"
                 className={cn("w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none", errors.email ? "border-danger-500" : "border-gray-200 dark:border-[#2d3348]")} />
               {errors.email && <p className="mt-1 text-xs text-danger-600">{errors.email}</p>}
