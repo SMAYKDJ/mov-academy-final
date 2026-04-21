@@ -45,8 +45,10 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
       formData.append('files', files[i]);
     }
 
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+
     try {
-      const response = await fetch('http://localhost:8000/upload/report', {
+      const response = await fetch(`${backendUrl}/upload/report`, {
         method: 'POST',
         body: formData,
       });
