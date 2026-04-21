@@ -10,6 +10,7 @@ import { WeeklyChart, RetentionInsightCard } from "@/components/dashboard/charts
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { StatsBar } from "@/components/dashboard/stats-bar";
 import { ChurnCard, ChurnChart, ChurnTrend, AtRiskStudentsTable, ChurnInsights } from "@/components/dashboard/churn";
+import { ReportUpload } from "@/components/dashboard/report-upload";
 import { stats, weeklyChartData, recentActivity } from "@/utils/mock-data";
 import { generateRealChurnSummary } from "@/utils/churn-engine";
 import { alunosData } from "@/utils/alunos-data";
@@ -36,7 +37,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   // Real Data Persistence
-  const [alunos] = useLocalStorage('moviment-alunos', alunosData);
+  const [alunos, setAlunos] = useLocalStorage('moviment-alunos', alunosData, 'alunos');
   
   // Real-time Churn Prediction from local data
   const churnSummary = generateRealChurnSummary(alunos);
@@ -184,6 +185,7 @@ export default function DashboardPage() {
 
             {/* Right Column — Charts & Activity */}
             <div className="space-y-6">
+              <ReportUpload onUploadSuccess={() => window.location.reload()} />
               <WeeklyChart data={weeklyChartData} />
               <RetentionInsightCard />
               <ActivityFeed activities={recentActivity} />

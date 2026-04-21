@@ -88,7 +88,7 @@ export default function RelatoriosPage() {
                 <h3 className="text-lg font-bold">Insights da IA — Estratégia de Retenção</h3>
               </div>
               <p className="text-primary-100 text-sm max-w-2xl leading-relaxed">
-                Detectamos uma queda de 4% na frequência de alunos do plano "Trimestral" nas segundas-feiras. 
+                Detectamos uma queda de 4% na frequência de alunos do plano &quot;Trimestral&quot; nas segundas-feiras. 
                 Recomendamos uma campanha de reengajamento via WhatsApp para 42 alunos identificados com alto risco de churn.
               </p>
               <button 

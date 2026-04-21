@@ -1,0 +1,770 @@
+id,name,status,weekly_frequency,days_since_last_visit,overdue_payments,overdue_days,enrollment_months,age,plan,start_date,target
+602,Jailson Santos Alves,ativo,0.0,30,0,0,1,30,Mensal,,0
+4,Brendo Barroso Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+6,Mônica do Socorro Nunes Santos,ativo,0.0,30,1,272,1,30,Mensal,,1
+7,Marcos Kauê Santos de Carvalho,active,0.0,30,0,0,1,30,Plano mensal,08/04/2026,0
+9,Bruno William Favacho Pinheiro,ativo,0.0,30,1,269,1,30,Mensal,,1
+11,Alice dos Santos Trindade da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+12,Savio de Jesus Gama Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+13,Pâmela Daniela Lameira Castro,ativo,0.0,30,0,0,1,30,Mensal,,0
+15,Gustavo da Silva Nascimento,ativo,0.0,30,0,0,1,30,Mensal,,0
+16,Felipe Cauân Pontes da Silva,active,0.0,30,1,15,2,30,Plano mensal,04/02/2026,1
+17,Amanda Raires Freitas da Silva,active,2.52,1,0,0,13,30,Plano Especial 23H As 01H,11/03/2025,0
+18,Tassio Brandao Teixeira,ativo,0.0,30,0,0,1,30,Mensal,,0
+19,Kauân Kedson de Moura dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+20,Rian Izael Lima de Lins,ativo,0.0,30,0,0,1,30,Mensal,,0
+22,Rafaela Ribeiro Soares,ativo,0.0,30,0,0,1,30,Mensal,,0
+23,Joao Vitor do Nascimento Bastos,ativo,0.0,30,1,288,1,30,Mensal,,1
+24,Thais Danielle da Silva,active,1.17,15,0,0,1,30,Plano mensal,02/03/2026,0
+25,Nailson da Silva Rodrigues,ativo,0.0,30,1,284,1,30,Mensal,,1
+26,Ediglebison de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+27,Thamires Sousa Soares da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+28,Danielly dos Santos Rodrigues Barbosa,ativo,0.0,30,0,0,1,30,Mensal,,0
+29,Esthefane da Silva B. Guilherme,ativo,0.0,30,0,0,1,30,Mensal,,0
+32,Jagno de Araujo Souza,active,1.96,5,0,0,12,30,Plano Especial 11H As 15H,25/04/2025,0
+33,Maria da Conceição Silva,ativo,0.0,30,1,280,1,30,Mensal,,1
+34,Karina Rocha da Rocha,ativo,0.0,30,0,0,1,30,Mensal,,0
+36,José Alan Lopes da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+37,Iasmara Farias,ativo,0.0,30,1,270,1,30,Mensal,,1
+38,Silmara Farias,ativo,0.0,30,1,270,1,30,Mensal,,1
+40,Lucas Souza Rodrigues,active,1.83,7,0,0,13,30,Plano mensal,14/03/2025,0
+41,Artur Chagas da Silva,active,1.4,12,0,0,13,30,Plano mensal,14/03/2025,0
+42,Ivone Monteiro dos Santos,active,1.35,13,0,0,12,30,Plano mensal,23/04/2025,0
+43,Caroline Galvão,ativo,0.0,30,1,288,1,30,Mensal,,1
+44,Davi Galvão,ativo,0.0,30,1,261,1,30,Mensal,,1
+45,Nathalia Oliveira da Silva,ativo,0.0,30,1,285,1,30,Mensal,,1
+46,Stefane Lorrane Oliveira Saraiva,ativo,0.0,30,0,0,1,30,Mensal,,0
+47,Eligson Lima Garcia,ativo,0.0,30,1,279,1,30,Mensal,,1
+48,Edinei Sodré Marques,active,0.0,30,0,0,1,30,Plano mensal,07/04/2026,0
+49,Cássia Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+50,Polyana Samara Alves da Rocha,ativo,0.0,30,1,281,1,30,Mensal,,1
+51,Enzo Vinicius,ativo,0.0,30,1,281,1,30,Mensal,,1
+53,Valdinei Leitao da Silva,active,2.04,4,0,0,13,30,Plano Familia 3,20/03/2025,0
+54,Naiara Maria,ativo,0.0,30,0,0,1,30,Mensal,,0
+55,Pâmela Samille Favacho Monteiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+57,Bruna Caroline da Silva Oliveira,ativo,0.0,30,1,280,1,30,Mensal,,1
+58,João Victor Soares Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+59,Francilene de Lima Santos,active,0.0,30,0,0,5,30,Plano mensal,26/10/2025,0
+60,Rosielen Antonia Leite Ferreira,active,1.94,5,0,0,13,30,Plano Familia 3,14/03/2025,0
+61,Carla Maia Farias,ativo,0.0,30,0,0,1,30,Mensal,,0
+62,Darlinda Maria Almeida de Almeida,ativo,0.0,30,0,0,1,30,Mensal,,0
+63,Stefany Maiza Souza,active,2.58,1,1,8,13,30,Plano Especial 11H As 15H,11/03/2025,0
+65,Maria da Conceição Silva Nascimento,ativo,0.0,30,1,280,1,30,Mensal,,1
+66,Juselli Barbosa da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+67,Julia Vitoria Barbosa,ativo,0.0,30,0,0,1,30,Mensal,,0
+71,Paulo Cauã,ativo,0.0,30,1,290,1,30,Mensal,,1
+72,Miuky Vieira Cabral,active,1.87,6,0,0,11,30,Plano mensal,28/04/2025,0
+73,Rianny Eloá Cablral das Neves,active,2.38,1,0,0,11,30,Plano mensal,28/04/2025,0
+74,Edivana Souza de Souza,active,1.4,12,0,0,14,30,Plano mensal,19/02/2025,0
+75,Maria Eloisa Melo Galvao,ativo,0.0,30,1,265,1,30,Mensal,,1
+76,Nonata da Silva Marques,ativo,0.0,30,1,265,1,30,Mensal,,1
+77,Rosilene de Lima Lins,ativo,0.0,30,0,0,1,30,Mensal,,0
+78,Felipe Soares dos Santos,ativo,0.0,30,1,266,1,30,Mensal,,1
+79,Wellida Rodrigues Coelho,ativo,0.0,30,1,288,1,30,Mensal,,1
+80,Antonio Cleyton Graça de Alencar,ativo,0.0,30,0,0,1,30,Mensal,,0
+81,Elivana Karoline de Araújo Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+82,Adriana Oliveira Souza Siqueira,ativo,0.0,30,0,0,1,30,Mensal,,0
+84,Erick Bezerra,ativo,0.0,30,0,0,1,30,Mensal,,0
+86,Hirlanderson de Oliveira Botelho,ativo,0.0,30,0,0,1,30,Mensal,,0
+88,Alessandra de Lima Moreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+90,Maila dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+91,Rosilaura Alves dos Santos,active,0.0,30,1,12,4,30,Plano mensal,09/12/2025,1
+92,Paulo Roberto Gomes Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+93,Luiz Galvão de Oliveira,ativo,0.0,30,1,272,1,30,Mensal,,1
+94,Joilza Oliveira dos Santos,active,0.0,30,0,0,1,30,Plano mensal,09/03/2026,0
+95,João Vitor Vieira Oliveira,ativo,0.0,30,1,286,1,30,Mensal,,1
+96,Rosa Célia Vieira Oliveira,ativo,0.0,30,1,286,1,30,Mensal,,1
+98,Marciane Nascimento da Silva,active,1.79,7,0,0,11,30,Plano mensal,30/04/2025,0
+100,Marcelly da Silva Souza,active,2.29,1,0,0,11,30,Plano Especial 11H As 15H,30/04/2025,0
+104,Jessica Brenda Terra dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+105,Higor Ryan Sena Ferreira,ativo,0.0,30,1,288,1,30,Mensal,,1
+106,Alicia Ketellen Moura Vieira,ativo,0.0,30,0,0,1,30,Mensal,,0
+107,Edineuda Laurentino de Lima,ativo,0.0,30,1,265,1,30,Mensal,,1
+108,Marcos Antônio de Lima Lima,ativo,0.0,30,1,265,1,30,Mensal,,1
+109,Luiz Carlos Sarmento Pimentel,ativo,0.0,30,1,285,1,30,Mensal,,1
+110,Natalia dos Santos Barros,ativo,0.0,30,0,0,1,30,Mensal,,0
+112,Eliane Ferreira Soares,ativo,0.06,30,0,0,1,30,Mensal,,0
+113,Maycon Breno da Silva Pinheiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+115,Antonia Crisiana Silva Carrero,ativo,0.0,30,0,0,1,30,Mensal,,0
+116,Laila Karine,ativo,0.0,30,0,0,1,30,Mensal,,0
+117,Romeu Texeira,ativo,0.0,30,0,0,1,30,Mensal,,0
+118,Maria Clara Galvão Miranda,ativo,0.0,30,1,267,1,30,Mensal,,1
+119,Roseane Mescouto,ativo,0.0,30,0,0,1,30,Mensal,,0
+121,Andreína Amanda Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+122,Rosineia Mescouto,ativo,0.0,30,0,0,1,30,Mensal,,0
+123,Max Jean,ativo,0.0,30,1,261,1,30,Mensal,,1
+124,Jadson dos Santos Tavares,ativo,0.0,30,1,288,1,30,Mensal,,1
+125,Amanda Sabrina,ativo,0.0,30,1,270,1,30,Mensal,,1
+126,Otavio Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+127,Djomar Costa Borges,ativo,0.0,30,1,281,1,30,Mensal,,1
+128,Priscila da Silva e Silva,active,0.0,30,0,0,8,30,Plano Anual,05/08/2025,0
+129,Elke de Barros Silva,ativo,0.0,30,1,285,1,30,Mensal,,1
+130,Ana Leticia Tavares Alves,ativo,0.0,30,1,283,1,30,Mensal,,1
+131,Cledson Santos Ferreira,active,0.0,30,0,0,13,30,Plano Familia 3,14/03/2025,0
+132,Ana Regina Uchôa,ativo,0.0,30,1,75,1,30,Mensal,,1
+133,Mari Sousa,ativo,0.0,30,1,147,1,30,Mensal,,1
+134,Nara Vilela,active,1.44,12,1,15,11,30,Plano mensal,28/04/2025,0
+135,Giovana Miranda,ativo,0.0,30,1,267,1,30,Mensal,,1
+136,Paulo Mateus Menezes Monteiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+138,Jessica Brenda,ativo,0.0,30,0,0,1,30,Mensal,,0
+139,Ronaldo Adriano Santana,ativo,0.0,30,1,289,1,30,Mensal,,1
+140,Renata Campos Souza,ativo,0.0,30,1,278,1,30,Mensal,,1
+141,Stefano Neutral,ativo,0.0,30,0,0,1,30,Mensal,,0
+142,Maria de Fatima do Vale Souza,ativo,0.0,30,1,261,1,30,Mensal,,1
+143,Maristela Moreira Zeferino,ativo,0.0,30,0,0,1,30,Mensal,,0
+144,Marcella Cristina Ever de Almeida,active,0.0,30,0,0,3,30,Plano mensal,07/01/2026,0
+145,Iara da Silva,ativo,0.0,30,1,267,1,30,Mensal,,1
+146,Geyson Shuzo de Almeida,ativo,0.0,30,1,281,1,30,Mensal,,1
+147,Ismael Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+148,Izabelly Louranny,active,1.29,14,1,14,5,30,Plano mensal,07/11/2025,0
+149,Édila Falcunier Ever de Almeida,active,1.33,13,0,0,11,30,Plano Familia 4,05/05/2025,0
+151,Maria Vitória de Sousa Pinto,ativo,0.0,30,1,290,1,30,Mensal,,1
+153,Debora Nayara,ativo,0.0,30,0,0,1,30,Mensal,,0
+154,Devyson Nascimento,ativo,0.0,30,1,284,1,30,Mensal,,1
+155,Rodrigo Silva Aguiar,active,1.21,15,1,28,13,30,Plano mensal,27/03/2025,0
+156,Michelle Sodré,ativo,0.0,30,0,0,1,30,Mensal,,0
+157,Tony Araújo,ativo,0.0,30,0,0,1,30,Mensal,,0
+158,Erica da Silva Lima,ativo,0.0,30,1,285,1,30,Mensal,,1
+159,Bruno de Souza Barbosa,active,0.0,30,1,40,5,30,Plano mensal,14/11/2025,1
+160,Jose Carlos Monteiro de Amorim,ativo,0.0,30,0,0,1,30,Mensal,,0
+161,Josenilda Dantas de Amorim,ativo,0.0,30,0,0,1,30,Mensal,,0
+165,Lorena do Socorro,ativo,0.0,30,0,0,1,30,Mensal,,0
+166,Eduardo Gusmão,ativo,0.0,30,1,289,1,30,Mensal,,1
+168,Jonas Santos Macedo,ativo,0.0,30,0,0,1,30,Mensal,,0
+169,Genilza Nazaré Carvalho de Oliveira,ativo,0.0,30,0,0,1,30,Mensal,,0
+170,Maria José de Jesus da Silva Freitas,ativo,0.0,30,0,0,1,30,Mensal,,0
+171,Jhon Everton de Lima Pereira,ativo,0.0,30,1,289,1,30,Mensal,,1
+172,Isabela Iris da Rocha Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+173,Claiton Eliomar Malcher da Trindade,ativo,0.0,30,1,281,1,30,Mensal,,1
+176,Andréia do Socorro,active,1.62,9,0,0,11,30,Plano mensal,07/05/2025,0
+177,Nayla Camille,ativo,0.0,30,1,288,1,30,Mensal,,1
+178,Thayna de Lima Fernandes,ativo,0.0,30,1,265,1,30,Mensal,,1
+179,Silvane Silva de Araujo,ativo,1.15,15,0,0,1,30,Mensal,,0
+180,Frederico Ferreira Zeferino,ativo,0.0,30,0,0,1,30,Mensal,,0
+181,Patricia Lorena Ferreira da Paixão,ativo,0.0,30,1,287,1,30,Mensal,,1
+182,Fernanda Kelly Oliveira da Silva Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+183,Jhonata Negrão,ativo,0.0,30,1,287,1,30,Mensal,,1
+184,Kevin Wendel,ativo,0.0,30,1,256,1,30,Mensal,,1
+186,Gustavo Gonçalves,ativo,0.0,30,1,287,1,30,Mensal,,1
+187,Joab Souza Monteiro,ativo,0.0,30,1,286,1,30,Mensal,,1
+188,Ediane Luz da Costa,ativo,0.0,30,1,286,1,30,Mensal,,1
+193,Rosiane Cabral,ativo,0.0,30,0,0,1,30,Mensal,,0
+194,Dirce Lea,ativo,0.0,30,1,286,1,30,Mensal,,1
+195,Waleria Teixeira de Oliveira,ativo,0.0,30,1,280,1,30,Mensal,,1
+196,Danylo Braga,ativo,0.0,30,1,286,1,30,Mensal,,1
+197,Sophia Freitas Cabral,ativo,0.0,30,0,0,1,30,Mensal,,0
+198,Waldenora de Souza,active,1.37,13,0,0,4,30,Plano mensal,04/12/2025,0
+199,Dominique Silva de Alencar,ativo,0.0,30,0,0,1,30,Mensal,,0
+200,Henry Luan Silva de Alencar,ativo,0.0,30,0,0,1,30,Mensal,,0
+202,Vinicius das Merces,ativo,0.0,30,1,283,1,30,Mensal,,1
+203,Gleciane de Oliveira Nascimento,ativo,0.0,30,1,283,1,30,Mensal,,1
+207,Paula Cristina,ativo,0.0,30,0,0,1,30,Mensal,,0
+208,Kethele da Silva Chagas,active,1.58,10,1,40,11,30,Plano mensal,12/05/2025,0
+211,Luana Freire,ativo,0.0,30,0,0,1,30,Mensal,,0
+212,Jhullya Cristinny,ativo,0.0,30,0,0,1,30,Mensal,,0
+215,Carlos Daniel Almeida Nascimento,ativo,0.0,30,1,280,1,30,Mensal,,1
+216,Caroline Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+217,Joiscileia Soarez de Amorim Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+218,Deivid da Silva Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+219,Arilene Pinheiro Cruz,ativo,0.0,30,1,286,1,30,Mensal,,1
+220,Maria Leticia Monteiro de Souza,ativo,0.0,30,1,282,1,30,Mensal,,1
+221,Luis Henrique da Cruz Neves,ativo,0.0,30,0,0,1,30,Mensal,,0
+223,Carlos Alberto de Abreu Junior,ativo,0.0,30,0,0,1,30,Mensal,,0
+229,Gustavo Modesto Rocha Gomes,ativo,0.0,30,0,0,1,30,Mensal,,0
+230,Cynd Kamilly Modesto Gonçaves,ativo,0.0,30,0,0,1,30,Mensal,,0
+232,Dalia Cristina,active,0.0,30,0,0,1,30,Plano mensal,23/02/2026,0
+234,Jiorrani Castro,ativo,0.0,30,0,0,1,30,Mensal,,0
+235,Matheus Cardoso,ativo,0.0,30,0,0,1,30,Mensal,,0
+236,Ana Paula Pirez Santana,ativo,0.0,30,1,285,1,30,Mensal,,1
+240,Willian de Mendonça,ativo,0.0,30,1,280,1,30,Mensal,,1
+243,Maria Luciana Oliveira,ativo,0.0,30,1,279,1,30,Mensal,,1
+244,Diemerson Santos,active,1.31,13,1,5,11,30,Plano mensal,16/05/2025,0
+246,Ana Paula Barbosa da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+254,Lucas da Silva Costa,active,2.27,1,0,0,11,30,Plano Familia 4,20/05/2025,0
+255,Kauã Petrides,ativo,0.0,30,1,275,1,30,Mensal,,1
+256,Rafaela Alves Veras,ativo,0.0,30,0,0,1,30,Mensal,,0
+257,Francisco da Rocha Sales,ativo,0.0,30,1,275,1,30,Mensal,,1
+258,Gustavo Eike,ativo,0.0,30,1,275,1,30,Mensal,,1
+259,Eduardo Gabriel Caladrini Quintal,ativo,0.0,30,0,0,1,30,Mensal,,0
+262,Taciane de Freitas Frota,ativo,0.0,30,1,275,1,30,Mensal,,1
+263,Ednilson de Jesus França Aciolli,ativo,0.0,30,1,275,1,30,Mensal,,1
+265,Elizete Pereira da Silva,ativo,0.0,30,1,274,1,30,Mensal,,1
+266,Alessandro Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+269,Luysa Nayara,ativo,0.0,30,0,0,1,30,Mensal,,0
+271,Andreia Natalina Costa Amaral,active,1.67,9,0,0,11,30,Plano mensal,23/05/2025,0
+272,Clebiane Silva de Lima,active,1.23,14,0,0,11,30,Plano mensal,26/05/2025,0
+273,Alexandre Fabio,ativo,0.0,30,1,275,1,30,Mensal,,1
+277,Lindomar Soares Ferro,ativo,0.0,30,1,268,1,30,Mensal,,1
+279,Maria de Jesus Alcobassa Ferro,ativo,0.0,30,1,268,1,30,Mensal,,1
+280,Thamires Maria,ativo,0.0,30,0,0,1,30,Mensal,,0
+281,Ernandes Nascimento,active,1.71,8,0,0,10,30,Plano mensal,27/05/2025,0
+282,Francisca Silva Ribeiro,ativo,0.0,30,1,267,1,30,Mensal,,1
+283,Jhon Leikson Oliveira de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+284,Joselia Ferreira da Costa,ativo,0.0,30,1,267,1,30,Mensal,,1
+285,Fernanda Carneiro Nascimento,ativo,0.0,30,0,0,1,30,Mensal,,0
+286,Thiago Renan,ativo,0.0,30,0,0,1,30,Mensal,,0
+287,Jadson João,ativo,0.0,30,0,0,1,30,Mensal,,0
+288,Carlos Clebson de Lima Silva,ativo,0.0,30,1,262,1,30,Mensal,,1
+289,Ermando Waltercller Trindade da Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+290,Willian Leandro Freitas Barata,ativo,0.0,30,1,266,1,30,Mensal,,1
+291,Luane Santos,ativo,0.0,30,1,267,1,30,Mensal,,1
+292,Rejane Aparecida Xavier,ativo,0.0,30,1,266,1,30,Mensal,,1
+293,Adriana Cristina,active,2.08,3,0,0,10,30,Plano mensal,29/05/2025,0
+294,Phietra Yasmin,active,1.58,10,0,0,10,30,Plano mensal,29/05/2025,0
+295,Pollyana Adria,ativo,0.0,30,0,0,1,30,Mensal,,0
+296,Gabriel Cristo de Sousa Albuquerque,ativo,0.0,30,1,265,1,30,Mensal,,1
+297,Adrielly Eloisa Favcho Farreira,ativo,0.0,30,1,265,1,30,Mensal,,1
+298,Jose Ronaldo Clementino de Araujo,ativo,0.0,30,1,265,1,30,Mensal,,1
+299,Bianca Santos Soeiro,active,0.0,30,0,0,10,30,Plano Especial 11H As 15H,30/05/2025,0
+300,Izabel Cristina da Silva Barbosa,ativo,0.0,30,0,0,1,30,Mensal,,0
+301,Deo Clecio,ativo,0.0,30,1,262,1,30,Mensal,,1
+302,Carlos Rodrigues,ativo,0.0,30,1,262,1,30,Mensal,,1
+303,Benedita Alves,ativo,0.0,30,0,0,1,30,Mensal,,0
+304,Jullyanne Texeira,ativo,0.0,30,1,39,1,30,Mensal,,1
+305,Catheryne Vitória,ativo,0.0,30,0,0,1,30,Mensal,,0
+307,Rakell Ferreira de Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+308,Dione da Conceiçao Pereira,ativo,0.0,30,1,262,1,30,Mensal,,1
+309,Cassio Luiz Fernandes,ativo,0.0,30,1,262,1,30,Mensal,,1
+310,Ana Paula Pereira,active,1.54,10,1,19,10,30,Plano mensal,02/06/2025,0
+311,Gustavo Pereira,active,0.0,30,1,19,10,30,Plano mensal,02/06/2025,1
+312,Julia Chaves,ativo,0.0,30,1,262,1,30,Mensal,,1
+313,Denzel Yoshio Cardoso Kodani,ativo,0.0,30,0,0,1,30,Mensal,,0
+314,José Eduardo,ativo,0.0,30,1,262,1,30,Mensal,,1
+315,Pedro Enrique da Costa,ativo,0.0,30,1,262,1,30,Mensal,,1
+316,Daiane Pereira do Carmo,ativo,0.0,30,1,261,1,30,Mensal,,1
+317,Soraiah da Costa Junior,active,2.44,1,0,0,10,30,Plano mensal,03/06/2025,0
+318,Rafael Passinho Moura,ativo,0.0,30,1,261,1,30,Mensal,,1
+319,Aysla Bastos,ativo,0.0,30,1,261,1,30,Mensal,,1
+320,Luiz Eduardo Lima de Souza,active,2.54,1,0,0,10,30,Plano mensal,03/06/2025,0
+321,Antonio Valdinei dos Santos Moura,active,1.6,10,0,0,10,30,Plano mensal,03/06/2025,0
+322,Gione da Conceiçao Souza,ativo,0.0,30,1,262,1,30,Mensal,,1
+323,Cassio Luiz,ativo,0.0,30,1,262,1,30,Mensal,,1
+324,Danilo Araujo,ativo,0.0,30,1,262,1,30,Mensal,,1
+325,Marta Damasceno,active,0.0,30,1,19,1,30,Plano mensal,02/03/2026,1
+326,Thalia Miranda,ativo,0.0,30,0,0,1,30,Mensal,,0
+327,Maria Antonia da Silva Farias,active,0.0,30,0,0,1,30,Plano mensal,04/04/2026,0
+328,Marilene de Araujo Oliveira,active,0.0,30,1,19,2,30,Plano mensal,02/02/2026,1
+329,Matheus Henrique de Oliveira dos Santos,ativo,0.0,30,1,290,1,30,Mensal,,1
+330,Melissa Graziela,ativo,0.0,30,0,0,1,30,Mensal,,0
+331,Ryan Murilo,ativo,0.0,30,0,0,1,30,Mensal,,0
+332,Vinicius Ever da Silva,active,0.0,30,1,43,6,30,Plano mensal,13/10/2025,1
+333,Marineia do Nascimento Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+334,Jaciara cunha Rocha,ativo,0.0,30,0,0,1,30,Mensal,,0
+339,Voney Pinheiro Ribeiro,active,1.1,16,0,0,10,30,Plano Especial 11H As 15H,09/06/2025,0
+342,Amanda Sofia Cardoso,ativo,0.0,30,0,0,1,30,Mensal,,0
+343,Silmara Reis,active,1.17,15,0,0,10,30,Plano mensal,09/06/2025,0
+344,Karla Karina,ativo,0.0,30,0,0,1,30,Mensal,,0
+345,Luana Trindade,ativo,0.0,30,0,0,1,30,Mensal,,0
+346,Flaviane Rêgo,ativo,0.0,30,0,0,1,30,Mensal,,0
+347,Elane de Araujo,ativo,0.0,30,0,0,1,30,Mensal,,0
+348,José Alípio,ativo,0.0,30,0,0,1,30,Mensal,,0
+349,Nayara Medeiros,active,0.0,30,0,0,1,30,Plano mensal,06/04/2026,0
+350,Natan Costa de Sousa,active,1.48,11,1,4,10,30,Plano mensal,10/06/2025,0
+352,Francisca Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+353,Wendel Pantoja Monteiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+354,Tatiane de Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+355,Ana Beatriz de Sousa Medeiros,active,0.0,30,1,4,10,30,Plano mensal,10/06/2025,1
+358,Francisco Xavier Coque Neto,active,0.0,30,0,0,1,30,Plano mensal,15/04/2026,0
+359,Celina Maria,ativo,0.0,30,0,0,1,30,Mensal,,0
+361,Tarcisio Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+362,Carlos Andre da Silva Lima,active,1.25,14,0,0,4,30,Plano mensal,25/11/2025,0
+363,Diana de Jesus Lima Sales,active,0.0,30,1,39,3,30,Plano mensal,13/01/2026,1
+364,Deiveson Gustavo Santos Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+365,Idenice Nara Blanco de Oliveira,ativo,0.0,30,0,0,1,30,Mensal,,0
+366,Claudete Nascimento Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+367,Gabrielli Kaawani de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+368,Romulo Elias de Macedo,ativo,0.0,30,1,289,1,30,Mensal,,1
+369,Maria Gabriela Barata dos Reis,active,1.46,11,0,0,10,30,Plano Especial 11H As 15H,16/06/2025,0
+370,Daniel Damasceno,ativo,0.0,30,0,0,1,30,Mensal,,0
+374,Juliane Cristina,ativo,0.0,30,0,0,1,30,Mensal,,0
+375,Antonio Silvan,ativo,0.0,30,0,0,1,30,Mensal,,0
+377,Rafael Ribeiro Cunha,ativo,0.0,30,0,0,1,30,Mensal,,0
+378,Fabiana Serra Silva,ativo,0.0,30,1,277,1,30,Mensal,,1
+379,Ana Caroline,ativo,0.0,30,0,0,1,30,Mensal,,0
+380,Suelem Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+381,Karina Fernandes,ativo,0.0,30,0,0,1,30,Mensal,,0
+382,Andre Oliveira,ativo,0.0,30,0,0,1,30,Mensal,,0
+383,Paula Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+384,Yasmin Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+385,Liliane Souza Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+386,Antonio Jorge Sousa,ativo,1.31,13,0,0,1,30,Mensal,,0
+390,Joao Batista Elias Macedo,ativo,0.0,30,0,0,1,30,Mensal,,0
+391,Socorro Elinete Cardoso Macedo,ativo,0.0,30,0,0,1,30,Mensal,,0
+393,Iraide Sousa Magalhaes,active,1.21,15,0,0,10,30,Plano mensal,23/06/2025,0
+395,Jullyane Siqueira,ativo,0.0,30,0,0,1,30,Mensal,,0
+396,Paulo Ramon,ativo,0.0,30,0,0,1,30,Mensal,,0
+398,Erick Matheus,ativo,0.0,30,0,0,1,30,Mensal,,0
+399,Thiago Monteiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+402,Diogo Nogueira da Codta,ativo,0.0,30,0,0,1,30,Mensal,,0
+403,Maria Elisabeth da Silva Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+404,Wellington Monteiro Bahia,ativo,0.0,30,0,0,1,30,Mensal,,0
+405,Carlos Gabriel Monteiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+406,Janiele Monteiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+407,Shislene Ferreira Barbosa,ativo,0.0,30,0,0,1,30,Mensal,,0
+408,Lusiangela Ferreira Barbosa,ativo,0.0,30,0,0,1,30,Mensal,,0
+409,Wilderson Araujo de Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+410,Moises Correia da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+411,Hélia Marcia Ramos Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+412,Jhon Weverton da Silva,ativo,1.15,15,0,0,1,30,Mensal,,0
+413,Pamela Brenda,ativo,0.0,30,0,0,1,30,Mensal,,0
+414,Paulo da Silva e Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+416,Andrews Carlos,ativo,0.0,30,0,0,1,30,Mensal,,0
+417,Edinai Pessoa,ativo,0.0,30,0,0,1,30,Mensal,,0
+418,Izabela Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+419,Elivanete Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+420,Paulo Reinaldo,ativo,0.0,30,0,0,1,30,Mensal,,0
+421,Eunice Nunes,ativo,0.0,30,0,0,1,30,Mensal,,0
+422,Iago Gabriel,ativo,0.0,30,0,0,1,30,Mensal,,0
+423,Igor Jose da Rosa Melo,ativo,0.0,30,0,0,1,30,Mensal,,0
+424,Gabriel Rodrigues Pessoa,ativo,0.0,30,0,0,1,30,Mensal,,0
+425,Milena Silva Matos,ativo,0.0,30,0,0,1,30,Mensal,,0
+426,Antonia Cristina Ferreira Almeida,active,1.23,14,0,0,9,30,Plano Especial 11H As 15H,02/07/2025,0
+427,Valber Sampaio,ativo,0.0,30,0,0,1,30,Mensal,,0
+428,Camile Cristine Alves Dantas,ativo,0.0,30,0,0,1,30,Mensal,,0
+429,Patricia Alves,ativo,0.0,30,0,0,1,30,Mensal,,0
+430,Jamile Alves Dantas,ativo,0.0,30,0,0,1,30,Mensal,,0
+431,Luciana Pinho,ativo,0.0,30,0,0,1,30,Mensal,,0
+432,Leiliane Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+433,Sidneia Brasil Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+434,Maria Ivanilda Moreira,active,1.62,9,0,0,9,30,Plano Especial 11H As 15H,03/07/2025,0
+435,Samuel Pereira da Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+436,Gabriel da Silva Pereira Cunha,ativo,0.0,30,0,0,1,30,Mensal,,0
+437,Betania Soares Pereira,ativo,0.0,30,0,0,1,30,Mensal,,0
+438,Luis Fernando Brasil,ativo,0.0,30,0,0,1,30,Mensal,,0
+439,Arlene Lorenhe Pedro Lima,ativo,1.73,8,0,0,1,30,Mensal,,0
+440,Everton Souza dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+441,Gleydson Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+443,Janaina da Silva Lima,ativo,2.1,3,0,0,1,30,Mensal,,0
+445,Adriele de Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+446,Lucas Galvão Duarte,ativo,0.0,30,0,0,1,30,Mensal,,0
+447,Juliana Ferreira dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+448,Aline Vitoria da Silva Soares,ativo,0.0,30,0,0,1,30,Mensal,,0
+449,Seany Farias,ativo,0.0,30,0,0,1,30,Mensal,,0
+451,Alailson Costa Rodrigues,active,2.25,1,0,0,9,30,Plano mensal,09/07/2025,0
+452,Gicelia dos Santos Galvao,ativo,0.0,30,0,0,1,30,Mensal,,0
+453,Maria Luciene Alves Nascimento,active,1.42,12,0,0,8,30,Plano Anual,12/08/2025,0
+454,Luiz Guilherme Cavalcante Garcia,ativo,0.0,30,0,0,1,30,Mensal,,0
+455,Carla Pereira Americo de Arauj0,active,2.1,3,0,0,9,30,Plano Familia 4,14/07/2025,0
+456,Eduardo do Nascimento,ativo,0.0,30,0,0,1,30,Mensal,,0
+457,Estefani da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+458,João Antonio,ativo,0.0,30,0,0,1,30,Mensal,,0
+459,Elielton Maia,ativo,0.0,30,0,0,1,30,Mensal,,0
+461,Hellen Patricia da Costa Barros,ativo,0.0,30,0,0,1,30,Mensal,,0
+462,Antonio Marcio Azevedo Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+463,Antonio Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+465,Benicia de Souza Texeira,active,0.0,30,0,0,9,30,Plano Anual,17/07/2025,0
+466,Andreia da Conceiçao,active,0.0,30,1,27,1,30,Plano mensal,25/02/2026,1
+468,Aurelio Valentin,ativo,0.0,30,0,0,1,30,Mensal,,0
+469,Valdeir Alexandre,ativo,0.0,30,0,0,1,30,Mensal,,0
+470,Herica Luana Castro Pinto,ativo,1.98,5,0,0,1,30,Mensal,,0
+471,Jenifer Elijoenne Lima da Silva,ativo,2.17,2,0,0,1,30,Mensal,,0
+472,Raimundo Oliveira Raposo Neto,ativo,0.0,30,0,0,1,30,Mensal,,0
+474,Alessandra Cardoso dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+475,Adriana Costa Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+477,Luana Emmily Araujo Saraiva,active,0.0,30,0,0,9,30,Plano Anual,22/07/2025,0
+478,Nicole Monteiro Dias,ativo,0.0,30,0,0,1,30,Mensal,,0
+479,Beatriz Borges de Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+480,Eleni Moreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+481,Antonio Marcos,ativo,0.0,30,0,0,1,30,Mensal,,0
+483,Bianca Carlos,ativo,0.0,30,0,0,1,30,Mensal,,0
+484,Cristhofer da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+485,Emanuela Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+487,Lucas Azevedo,ativo,0.0,30,0,0,1,30,Mensal,,0
+488,Adriana Cardoso,active,0.0,30,1,34,2,30,Plano mensal,18/02/2026,1
+489,Jonhson Neves,ativo,0.0,30,0,0,1,30,Mensal,,0
+490,Talles Vidal,ativo,0.0,30,0,0,1,30,Mensal,,0
+491,Alexandra Vidal,ativo,0.0,30,0,0,1,30,Mensal,,0
+492,Renata Monteiro da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+493,Tiago Jorge,active,0.0,30,1,39,2,30,Plano mensal,13/02/2026,1
+494,Vanessa Silva Chaves,active,0.0,30,1,42,2,30,Plano mensal,10/02/2026,1
+498,Jefferson Melo,active,0.0,30,0,0,10,30,Plano Anual,23/06/2025,0
+499,Nilda da Silva,ativo,1.08,16,0,0,1,30,Mensal,,0
+500,Nicole da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+501,Jaicilene Oliveira,ativo,1.35,13,1,6,1,30,Mensal,,0
+502,Dany Freitas,ativo,0.0,30,0,0,1,30,Mensal,,0
+503,Andressa Silva Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+504,Deyse Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+506,Elias Vitor de Lima Barata,ativo,1.54,10,0,0,1,30,Mensal,,0
+507,Lucas Melo,ativo,0.0,30,0,0,1,30,Mensal,,0
+508,Maiara Baia,ativo,0.0,30,0,0,1,30,Mensal,,0
+509,Raimunda de Jesus,ativo,0.0,30,0,0,1,30,Mensal,,0
+512,Raiane do Rozario,ativo,0.0,30,0,0,1,30,Mensal,,0
+513,Nazare Barros,ativo,0.0,30,0,0,1,30,Mensal,,0
+514,Marcelo Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+515,Lene Siqueira,active,0.0,30,0,0,1,30,Plano mensal,06/04/2026,0
+516,Ana Paula Brasil Matos,active,1.42,12,1,8,8,30,Plano mensal,06/08/2025,0
+517,Leonardo da Silva,ativo,1.31,13,0,0,1,30,Mensal,,0
+518,Andre Vitor,ativo,0.0,30,0,0,1,30,Mensal,,0
+519,Ana Maria Silveira de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+520,Waldelice Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+521,Lucivania da Silva Melo,ativo,0.0,30,0,0,1,30,Mensal,,0
+522,Priscila Santos Pinheiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+523,Helerson de Cristo Haje,ativo,0.0,30,0,0,1,30,Mensal,,0
+524,Vanessa dos Santos Pinheiro,ativo,0.0,30,0,0,1,30,Mensal,,0
+525,Rubnilson Borges da Costa Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+526,Tainara Augusta,ativo,0.0,30,0,0,1,30,Mensal,,0
+527,Elaine Pantoja Santos,ativo,0.0,30,1,41,1,30,Mensal,,1
+528,Irlane Araujo,ativo,0.0,30,0,0,1,30,Mensal,,0
+529,Rafael Amaral,ativo,0.0,30,0,0,1,30,Mensal,,0
+530,Gilmara da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+531,Ronaldo Queiroz Pereira Filho,ativo,0.0,30,0,0,1,30,Mensal,,0
+532,Daniela Vieira,ativo,1.37,13,0,0,1,30,Mensal,,0
+533,Thiago Mateni,ativo,0.0,30,0,0,1,30,Mensal,,0
+537,Sandra Helena da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+539,Sthefany Yasmin Silva de Paiva,ativo,0.0,30,0,0,1,30,Mensal,,0
+540,Waldirene do Nascimento Amorim,ativo,0.0,30,0,0,1,30,Mensal,,0
+542,Sabryna Kaori dos Santos Kandachi,ativo,0.0,30,0,0,1,30,Mensal,,0
+543,Janayna de Nazaré Filomenno da Silva,ativo,1.15,15,1,8,1,30,Mensal,,0
+546,Evellen Kayllane Araujo Marques,ativo,1.67,9,0,0,1,30,Mensal,,0
+547,Leandro da Silva Freitas,ativo,1.4,12,1,7,1,30,Mensal,,0
+549,Adriana da Silva Siqueira,ativo,0.0,30,0,0,1,30,Mensal,,0
+551,Naza Lima,ativo,1.56,10,1,5,1,30,Mensal,,0
+553,Wanessa Monteiro Dias dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+554,Clebson Gomes dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+555,Izaqueu Araujo,ativo,2.54,1,0,0,1,30,Mensal,,0
+556,Daniel da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+557,Mateus Leal,ativo,0.0,30,0,0,1,30,Mensal,,0
+562,Leila Andrade,ativo,0.0,30,0,0,1,30,Mensal,,0
+563,Fernanda da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+564,Andrea Marcia Marinho de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+565,Deiwid Augusto,ativo,0.0,30,0,0,1,30,Mensal,,0
+566,Wyllen Saraiva,ativo,0.0,30,0,0,1,30,Mensal,,0
+567,Carlos Borges,ativo,1.4,12,0,0,1,30,Mensal,,0
+568,Mary Suely,ativo,1.85,6,0,0,1,30,Mensal,,0
+570,Aldirene da Silva Costa,active,0.0,30,0,0,1,30,Plano mensal,14/04/2026,0
+572,Adrielle da Silva Amaral,ativo,0.0,30,0,0,1,30,Mensal,,0
+573,Anderson Saymon,ativo,0.0,30,0,0,1,30,Mensal,,0
+574,Daniel Chagas,ativo,0.0,30,0,0,1,30,Mensal,,0
+575,Jefferson Jhuan Ima de Oliveira,ativo,1.94,5,0,0,1,30,Mensal,,0
+576,Estefane Jamile Lima de Oliveira,ativo,1.69,8,0,0,1,30,Mensal,,0
+577,Kelly Valles,ativo,0.0,30,0,0,1,30,Mensal,,0
+579,Helder Josue Gomes de Oliveira,ativo,2.04,4,0,0,1,30,Mensal,,0
+580,Erica de Cássia Lima Saraiva,ativo,0.0,30,0,0,1,30,Mensal,,0
+581,Marcos Antonio Bizera,ativo,0.0,30,1,89,1,30,Mensal,,1
+582,Giovanna Alves,ativo,0.0,30,0,0,1,30,Mensal,,0
+583,Ivanilson Garcia,active,0.0,30,0,0,1,30,Plano mensal,06/04/2026,0
+584,Aldair Pereira Lopes,ativo,0.0,30,1,29,1,30,Mensal,,1
+585,Antonia Nicoly,ativo,1.1,16,1,29,1,30,Mensal,,0
+586,William Campos da Silva,active,0.0,30,0,0,1,30,Plano mensal,06/04/2026,0
+587,Marilia Vitoria dos Santos Lisboa,ativo,0.0,30,0,0,1,30,Mensal,,0
+588,Isabela Maria Bazilio Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+589,Flavio Souza dos Reis,ativo,0.0,30,0,0,1,30,Mensal,,0
+590,Maycon Wesley de Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+591,Carlos Andrey Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+592,Pablo Ruan de Araujo,ativo,0.0,30,0,0,1,30,Mensal,,0
+593,Maria Jose Baia,ativo,0.0,30,0,0,1,30,Mensal,,0
+594,Taisse Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+595,Alessandra Victoria,ativo,1.58,10,0,0,1,30,Mensal,,0
+596,Jacely Maciel,ativo,2.44,1,0,0,1,30,Mensal,,0
+597,Danielly Paiva dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+598,Danielle Sodre Barbosa,ativo,1.42,12,0,0,1,30,Mensal,,0
+599,Karla Marrieth,ativo,0.0,30,0,0,1,30,Mensal,,0
+600,Paula Trindade,ativo,0.0,30,0,0,1,30,Mensal,,0
+601,Bruna Lima,active,0.0,30,1,15,3,30,Plano Universitário,05/01/2026,1
+615,Luciana Lopes,ativo,0.0,30,0,0,1,30,Mensal,,0
+630,Marcio José Gama de Oliveira,ativo,0.0,30,0,0,1,30,Mensal,,0
+635,Raul de Araujo Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+636,Marilene Alves de Araújo,ativo,0.0,30,0,0,1,30,Mensal,,0
+637,Luciana Barros da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+639,Regiane Ferreira de Olivera,ativo,1.15,15,0,0,1,30,Mensal,,0
+640,Joice Cristina Lameira da Conceição,ativo,1.15,15,0,0,1,30,Mensal,,0
+642,Daniel Jesus,ativo,0.0,30,0,0,1,30,Mensal,,0
+643,Sabrina Cibele,ativo,0.0,30,0,0,1,30,Mensal,,0
+644,Andresa dos Santos Palheta,ativo,0.0,30,1,89,1,30,Mensal,,1
+645,Milena dos Santos Miranda,ativo,1.42,12,0,0,1,30,Mensal,,0
+647,Felipe Jadjiski,ativo,0.0,30,0,0,1,30,Mensal,,0
+648,Alef Oliveira,ativo,0.0,30,0,0,1,30,Mensal,,0
+649,Layla Vanessa,ativo,0.0,30,0,0,1,30,Mensal,,0
+651,Poliana Mateus,ativo,0.0,30,0,0,1,30,Mensal,,0
+652,Joel Lima Travassos,active,1.08,16,1,37,2,30,Plano Familia 3,09/02/2026,0
+653,Rosenira do Rosario Barros,active,0.0,30,1,43,2,30,Plano Familia 3,09/02/2026,1
+654,Rebeca vitoria matos de moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+655,Robnilson Rocha da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+656,Neliane Barros do Nascimento,ativo,0.0,30,0,0,1,30,Mensal,,0
+660,Maria Thamires Conceição,ativo,0.0,30,0,0,1,30,Mensal,,0
+661,Naiane do Socorro Fabio Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+662,Felipe Nascimento,ativo,0.0,30,0,0,1,30,Mensal,,0
+663,Juan Carlos Artigas,ativo,0.0,30,0,0,1,30,Mensal,,0
+665,Evilem Vitoria Reis de Oliveira,active,0.0,30,1,36,2,30,Plano mensal,16/02/2026,1
+667,Joice Vitoria,ativo,0.0,30,0,0,1,30,Mensal,,0
+668,Jessica Cruz,ativo,0.0,30,0,0,1,30,Mensal,,0
+669,Sandra Edilena,ativo,0.0,30,0,0,1,30,Mensal,,0
+670,Celia Gomes,ativo,0.0,30,0,0,1,30,Mensal,,0
+673,Michelle Americo,ativo,0.0,30,0,0,1,30,Mensal,,0
+674,Sarah Gabriely Americo,ativo,0.0,30,0,0,1,30,Mensal,,0
+677,Sandra Maria Amaral de Almeida,ativo,0.0,30,0,0,1,30,Mensal,,0
+678,Rafael do Socorro Almeida de Araujo,ativo,0.0,30,0,0,1,30,Mensal,,0
+679,Rosilene do Socorro Piedade Abreu,ativo,0.0,30,0,0,1,30,Mensal,,0
+680,JISELY SERRÃO,ativo,0.0,30,0,0,1,30,Mensal,,0
+681,Eriana Freire,active,1.92,5,0,0,6,30,Plano Familia 3,29/09/2025,0
+682,Luciana Maia,active,2.04,4,0,0,6,30,Plano mensal,29/09/2025,0
+683,Danilo Arthur de Souza Lins,active,2.31,1,0,0,6,30,Plano mensal,29/09/2025,0
+684,Natalia do Socorro da Silva Paiva,ativo,0.0,30,0,0,1,30,Mensal,,0
+685,Vilma Lucia Pina de Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+687,Ana Carolina Ferreira Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+688,Maria Eliete Silva Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+690,Maria Lucivalda de Oliveira Santos,active,0.0,30,0,0,6,30,Plano mensal,03/10/2025,0
+691,Maria Jose Nunes das Neves,active,1.12,16,0,0,6,30,Plano mensal,03/10/2025,0
+692,Osias da Silva Galvão,active,0.0,30,0,0,6,30,Plano mensal,03/10/2025,0
+693,Miriam Lima De Sá,active,2.37,1,0,0,6,30,Plano Universitário,06/10/2025,0
+694,Leidiane Pontes Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+695,Beatriz da Silva Santana,active,1.46,11,0,0,6,30,Plano mensal,07/10/2025,0
+696,Ana Paula Ferreira de Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+697,Adriana Saturnino,ativo,0.0,30,0,0,1,30,Mensal,,0
+699,Ciane Ferreira,active,1.79,7,0,0,6,30,Plano mensal,09/10/2025,0
+700,Maria José de Souza Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+701,Elida Camila,ativo,0.0,30,0,0,1,30,Mensal,,0
+702,Jessica Cristina,ativo,0.0,30,0,0,1,30,Mensal,,0
+703,Mateus Araujo Viana,ativo,0.0,30,0,0,1,30,Mensal,,0
+704,Maria Nataline,active,1.4,12,1,7,6,30,Plano mensal,14/10/2025,0
+706,Elizangela da Silva Farias,ativo,0.0,30,0,0,1,30,Mensal,,0
+708,Isabela da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+709,Celso da Silva Freitas,ativo,0.0,30,0,0,1,30,Mensal,,0
+714,Joana Beatriz Araujo de Jesus,ativo,0.0,30,0,0,1,30,Mensal,,0
+716,Lorrana Clicia,active,0.0,30,0,0,1,30,Plano Universitário,21/03/2026,0
+717,Felipe Ruan da Silva Salomão,ativo,0.0,30,0,0,1,30,Mensal,,0
+718,Sergio Vinicius Rodrigues de Araujo,ativo,0.0,30,1,152,1,30,Mensal,,1
+719,Neldson Andrey,active,1.15,15,0,0,6,30,Plano Especial 23H As 01H,20/10/2025,0
+720,Juliane Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+721,Kauê Eduardo,ativo,0.0,30,0,0,1,30,Mensal,,0
+722,Oliver Juan Nunes Moraes,active,1.12,16,0,0,6,30,Plano Universitário,22/10/2025,0
+723,Denilson da Conceição,ativo,0.0,30,0,0,1,30,Mensal,,0
+727,Manuely Karliane Silva Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+728,Reinaldo das Neves Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+730,Samara Brito da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+731,Wagner Paixão Aviz da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+733,Laurizete Pereira Rodrigues,active,1.42,12,0,0,5,30,Plano mensal,29/10/2025,0
+734,Samir Nascimento,ativo,0.0,30,0,0,1,30,Mensal,,0
+735,Brenda Karina Alcantara Damasceno,ativo,0.0,30,0,0,1,30,Mensal,,0
+736,Karine Santos Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+737,Lorrana Chayane Lobato Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+738,Roberta Socorro Moraes de Brito,ativo,0.0,30,0,0,1,30,Mensal,,0
+739,Gleidson Monteiro Moraes,ativo,1.12,16,0,0,1,30,Mensal,,0
+740,Maria Clara da Silva Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+741,Marcio Lucas Silva de Oliveira,ativo,1.19,15,0,0,1,30,Mensal,,0
+742,Sara Helen Carvalho Matos,ativo,0.0,30,0,0,1,30,Mensal,,0
+743,Graciene da Costa Vieira,active,1.37,13,0,0,5,30,Plano mensal,03/11/2025,0
+744,Samuel Efraim,ativo,0.0,30,0,0,1,30,Mensal,,0
+745,Ruan Oliveira Santana,ativo,0.0,30,1,77,1,30,Mensal,,1
+746,Allan Cleuton da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+747,Israel Cleuton da Silva e Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+748,Victor Lucas Nascimento Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+749,Valdecy Costa de Almeida,ativo,0.0,30,0,0,1,30,Mensal,,0
+750,Alefe Cleves de Lima Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+751,Lelia Cordovio Andrade,active,0.0,30,0,0,5,30,Plano mensal,05/11/2025,0
+752,Anderson Ricardo Pinto Costa,active,0.0,30,0,0,5,30,Plano mensal,05/11/2025,0
+753,Maria Marcilene de Lima Moraes,ativo,1.23,14,0,0,1,30,Mensal,,0
+755,John Williame Modesto Saldanha,ativo,0.0,30,0,0,1,30,Mensal,,0
+756,William da Silva Vasconcelos,active,0.0,30,0,0,5,30,Plano mensal,07/11/2025,0
+757,Cristiane Raires,ativo,0.0,30,0,0,1,30,Mensal,,0
+758,Clara Nicoli dos Santos Assunção,ativo,0.0,30,0,0,1,30,Mensal,,0
+759,Cleverton Santos Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+760,João Paulo Barroso Pinto,ativo,0.0,30,0,0,1,30,Mensal,,0
+761,Christiano Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+762,Rayane Piedade Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+763,Yasmin Souza de Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+764,Rebeca Kauany Ramos Oliveira,active,1.25,14,0,0,5,30,Plano Anual,12/11/2025,0
+765,Samya Regina Barbosa,active,0.0,30,1,40,5,30,Plano Universitário,14/11/2025,1
+766,Maiara Pereira de Araujo,ativo,0.0,30,0,0,1,30,Mensal,,0
+767,Rodrigo Anderson Oliveira de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+768,Manoela Tainá da Silva Teixeira,ativo,0.0,30,0,0,1,30,Mensal,,0
+769,Luis Paulo do Nascimento Cardoso,ativo,0.0,30,0,0,1,30,Mensal,,0
+770,Gisele Silva,active,1.6,10,0,0,5,30,Plano mensal,18/11/2025,0
+771,Antonia Abigail Farias Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+772,Gabriel da Conceição Gomes,ativo,0.0,30,0,0,1,30,Mensal,,0
+773,Eufrásia Alves Soares,ativo,0.0,30,0,0,1,30,Mensal,,0
+776,Dicla da Mota Cardoso da Cruz,active,1.63,9,0,0,4,30,Plano mensal,24/11/2025,0
+777,Joel da Mota Cardoso da Cruz,active,1.73,8,0,0,4,30,Plano mensal,24/11/2025,0
+780,João Batista do Nascimento Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+781,Lizomar de Jesus,ativo,0.0,30,0,0,1,30,Mensal,,0
+784,Helida Ribeiro,active,0.0,30,0,0,1,30,Plano mensal,12/04/2026,0
+786,Tatiana Lobo,active,0.0,30,1,43,4,30,Plano mensal,01/12/2025,1
+788,Cecilia Favacho,ativo,0.0,30,0,0,1,30,Mensal,,0
+789,Aline de Fatima da Silva Queiroz,ativo,0.0,30,0,0,1,30,Mensal,,0
+790,Antonio Felipe,active,0.0,30,1,8,1,30,Plano mensal,13/03/2026,1
+791,Thamyla Natiely da Cruz Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+792,Elivanda Silva da Mota,active,0.0,30,0,0,4,30,Plano mensal,03/12/2025,0
+793,Lucia Emanuelly Braga Pereira,active,0.0,30,1,19,2,30,Plano mensal,02/02/2026,1
+794,Ana Beatriz Soares Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+795,Lazaro Roberto,ativo,0.0,30,0,0,1,30,Mensal,,0
+797,Karina Souza Alves,ativo,0.0,30,0,0,1,30,Mensal,,0
+798,Maria Edileusa da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+799,Jose de Ribamar Soeiro Filho,active,1.17,15,0,0,4,30,Plano mensal,09/12/2025,0
+800,Dariane Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+801,Jairo Leal,ativo,0.0,30,0,0,1,30,Mensal,,0
+802,Vanda Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+803,Jacó Dias,ativo,0.0,30,0,0,1,30,Mensal,,0
+804,Danilo Palheta,active,1.52,11,0,0,4,30,Plano mensal,10/12/2025,0
+805,Rubens Amorim,active,1.46,11,0,0,4,30,Plano mensal,10/12/2025,0
+806,Odair Marchado,ativo,0.0,30,0,0,1,30,Mensal,,0
+809,Vera Lucia Santos Ferreira,active,0.0,30,0,0,4,30,Plano mensal,15/12/2025,0
+810,Elisangela Silva da Mota,active,0.0,30,1,5,4,30,Plano mensal,16/12/2025,1
+811,Junior Boiadeiro,ativo,0.0,30,1,33,1,30,Mensal,,1
+812,Thais Amorim,ativo,0.0,30,0,0,1,30,Mensal,,0
+813,Marcia Cristina Ever de Almeida,ativo,0.0,30,0,0,1,30,Mensal,,0
+814,Inaê Rosa,ativo,0.0,30,0,0,1,30,Mensal,,0
+815,Vinicius Bastos,ativo,0.0,30,0,0,1,30,Mensal,,0
+816,Ana Lucia,ativo,0.0,30,0,0,1,30,Mensal,,0
+817,Edriane Silva de Carvalho,active,0.0,30,0,0,3,30,Plano mensal,05/01/2026,0
+818,Bruno Mamede,ativo,0.0,30,0,0,1,30,Mensal,,0
+819,Natacha Cunha dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+821,Ingla Cleiciane da Silva Furtado,ativo,0.0,30,0,0,1,30,Mensal,,0
+822,Taise da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+823,Ytallo Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+824,Celiane Pereira Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+825,Antonio Elielton,ativo,0.0,30,0,0,1,30,Mensal,,0
+826,Arlete do Socorro,active,0.0,30,1,15,3,30,Plano mensal,06/01/2026,1
+827,Janiele Menezes,active,0.0,30,0,0,3,30,Plano mensal,06/01/2026,0
+828,Julia Menezes,active,0.0,30,0,0,3,30,Plano mensal,06/01/2026,0
+829,Marcia Lima,active,0.0,30,1,15,3,30,Plano mensal,06/01/2026,1
+830,Andreina de Cassia da Silva Melo,ativo,0.0,30,0,0,1,30,Mensal,,0
+831,Bruna Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+832,Elizete Paes,ativo,0.0,30,0,0,1,30,Mensal,,0
+833,Ana Alice Costa de Sousa,active,0.0,30,0,0,1,30,Plano mensal,15/04/2026,0
+834,Jose Matheus Ribeiro Silva,active,0.0,30,0,0,3,30,Plano mensal,06/01/2026,0
+835,Warley de Almeida Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+836,Lara Cristina,ativo,0.0,30,0,0,1,30,Mensal,,0
+837,Mayra Lorrane Lima da Silva,active,0.0,30,0,0,3,30,Plano mensal,07/01/2026,0
+838,Kamilly Vitoria,active,0.0,30,1,14,3,30,Plano mensal,07/01/2026,1
+839,João Ricardo,active,0.0,30,0,0,3,30,Plano mensal,07/01/2026,0
+840,Erinelma Barroso,active,1.12,16,1,11,3,30,Plano mensal,08/01/2026,0
+841,Solange Cezar de Moraes,ativo,0.0,30,0,0,1,30,Mensal,,0
+842,Dilce Baldez,ativo,0.0,30,0,0,1,30,Mensal,,0
+843,Rafaelly Assunção,active,0.0,30,0,0,3,30,Plano mensal,09/01/2026,0
+844,Edivane Fernandes Alves,active,0.0,30,1,40,3,30,Plano mensal,12/01/2026,1
+845,Alex Reis Silva,active,0.0,30,1,8,3,30,Plano mensal,12/01/2026,1
+846,Celio Guimaraes da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+848,Ana belle Freire,active,0.0,30,1,40,3,30,Plano mensal,12/01/2026,1
+849,Nayele Sousa,ativo,0.0,30,0,0,1,30,Mensal,,0
+850,Adriane Garcia,ativo,0.0,30,0,0,1,30,Mensal,,0
+851,Lucas Rodrigues Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+852,Edineia Lopes Gomes dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+853,Lucinely Costa,active,0.0,30,0,0,3,30,Plano mensal,13/01/2026,0
+854,Luiz Dario,active,0.0,30,0,0,3,30,Plano mensal,13/01/2026,0
+855,Tatiana de Paula S. P. Reis,active,0.0,30,1,7,3,30,Plano mensal,14/01/2026,1
+856,Cibely Lorrana Santana,ativo,0.0,30,0,0,1,30,Mensal,,0
+857,Ronaldo dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+858,Ana Claudia de Moraes Miranda,ativo,0.0,30,0,0,1,30,Mensal,,0
+859,Karleny Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+860,Paula Eduarda,ativo,0.0,30,0,0,1,30,Mensal,,0
+861,Savio Felipe Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+862,Vitor Lopes,ativo,0.0,30,0,0,1,30,Mensal,,0
+863,Eliza Leal Coelho,ativo,0.0,30,0,0,1,30,Mensal,,0
+864,Julia Bandeira Caldas,active,0.0,30,1,33,3,30,Plano mensal,19/01/2026,1
+865,Denilson Ferreira,ativo,0.0,30,0,0,1,30,Mensal,,0
+866,Silvia Leticia Rocha Favacho,active,0.0,30,1,33,3,30,Plano mensal,19/01/2026,1
+867,Saula Araujo da Silva,active,0.0,30,1,33,3,30,Plano mensal,19/01/2026,1
+868,Lizandra Angélica,active,0.0,30,0,0,3,30,Plano mensal,19/01/2026,0
+869,Luana Karoline da Silva Andrade,active,0.0,30,0,0,3,30,Plano mensal,19/01/2026,0
+870,Fernanda Ferreira da Silva,ativo,0.0,30,0,0,1,30,Mensal,,0
+871,Jorge Emanuel,ativo,0.0,30,0,0,1,30,Mensal,,0
+873,Herica Monteiro de Moura,active,0.0,30,0,0,3,30,Plano mensal,20/01/2026,0
+874,Orivaldo Oliveira,active,0.0,30,1,27,3,30,Plano mensal,20/01/2026,1
+875,Orivaldo Phylipy,active,0.0,30,1,32,3,30,Plano mensal,20/01/2026,1
+876,Gabriely Eduarda,active,0.0,30,0,0,3,30,Plano mensal,20/01/2026,0
+877,Francisco Henrique Ferreira Azevedo,ativo,0.0,30,0,0,1,30,Mensal,,0
+878,Simara da Conceição,active,0.0,30,0,0,3,30,Plano mensal,21/01/2026,0
+879,Keyvison Jose,active,0.0,30,0,0,2,30,Plano mensal,22/01/2026,0
+880,Gilmar de Araujo Coelho,ativo,0.0,30,0,0,1,30,Mensal,,0
+881,Daniela do Rozario Pingo,ativo,0.0,30,0,0,1,30,Mensal,,0
+882,Maria Eduarda Lima,active,0.0,30,0,0,2,30,Plano mensal,26/01/2026,0
+883,Melyssa dos Santos Furtado,active,0.0,30,0,0,2,30,Plano mensal,26/01/2026,0
+884,Isadora Rodrigues,ativo,0.0,30,0,0,1,30,Mensal,,0
+885,Ivan Modesto,active,0.0,30,1,15,2,30,Plano mensal,29/01/2026,1
+886,Leandro Carvalho,ativo,0.0,30,0,0,1,30,Mensal,,0
+887,Isaias Assunção,ativo,0.0,30,0,0,1,30,Mensal,,0
+888,Jean Carlos de Freitas Lima,ativo,0.0,30,0,0,1,30,Mensal,,0
+890,Marcos Gabriel,ativo,0.0,30,0,0,1,30,Mensal,,0
+891,Ricardo Miler,ativo,0.0,30,0,0,1,30,Mensal,,0
+892,Gleyvesson Leandro Chaves Osorio,active,0.0,30,0,0,2,30,Plano mensal,04/02/2026,0
+893,Aderson Maia,active,0.0,30,1,15,2,30,Plano mensal,04/02/2026,1
+894,Fabiana Martins Lopes,ativo,0.0,30,0,0,1,30,Mensal,,0
+895,Sara Fernanda Martins Lopes,ativo,0.0,30,0,0,1,30,Mensal,,0
+896,Aldo Jefferson da Silva Mergulhão,ativo,0.0,30,0,0,1,30,Mensal,,0
+897,Gleice Maria da Silva Mergulhao,ativo,0.0,30,0,0,1,30,Mensal,,0
+898,David Klaus da Silva Mergulhao,ativo,0.0,30,0,0,1,30,Mensal,,0
+899,Amanda Maryan da Silva Mergulhao,ativo,0.0,30,0,0,1,30,Mensal,,0
+900,Marinez Soares,ativo,0.0,30,0,0,1,30,Mensal,,0
+901,Arivalte Costa,ativo,0.0,30,0,0,1,30,Mensal,,0
+902,Kayna dos Santos,ativo,0.0,30,0,0,1,30,Mensal,,0
+903,Alexandre Oliveira,active,0.0,30,1,15,2,30,Plano mensal,06/02/2026,1
+904,Kenrrick Santos de Souza,ativo,0.0,30,0,0,1,30,Mensal,,0
+905,Luana Cardoso Silva,active,0.0,30,1,5,2,30,Plano Universitário,07/02/2026,1
+906,Diele Pantoja da Silva,active,0.0,30,1,12,2,30,Plano mensal,09/02/2026,1
+907,Amintas dos Santos Modesto,active,0.0,30,1,12,2,30,Plano mensal,09/02/2026,1
+908,Hemily Vitoria,active,0.0,30,0,0,2,30,Plano mensal,09/02/2026,0
+909,Paulo Henrique dos Santos Barbosa,active,0.0,30,1,43,2,30,Plano mensal,09/02/2026,1
+910,Joelson Favacho Pinto,active,0.0,30,1,43,2,30,Plano mensal,09/02/2026,1
+911,Andrey Raquelme,ativo,0.0,30,1,40,1,30,Mensal,,1
+914,Bruno Vinicius Medeiros de Moraes,active,0.0,30,1,42,2,30,Plano mensal,10/02/2026,1
+915,Eduardo da Silva Oliveira,active,0.0,30,0,0,2,30,Plano mensal,10/02/2026,0
+916,Cintia Vanessa,active,0.0,30,0,0,2,30,Plano mensal,11/02/2026,0
+917,Cleverton Frank,active,0.0,30,0,0,2,30,Plano mensal,11/02/2026,0
+918,João Vitor Bastos dos santos,active,0.0,30,0,0,2,30,Plano mensal,12/02/2026,0
+920,Maria Antonia da Silva,active,0.0,30,0,0,2,30,Plano mensal,16/02/2026,0
+921,Tereza Michele Pereira Rodrigues,active,0.0,30,0,0,2,30,Plano Universitário,16/02/2026,0
+922,Valéria Galvão,active,0.0,30,1,35,2,30,Plano Universitário,17/02/2026,1
+923,Valquiria Oliveira Teixeira,active,0.0,30,1,33,2,30,Plano mensal,19/02/2026,1
+924,Gabrielle Santos Nascimento,active,0.0,30,1,33,2,30,Plano Universitário,19/02/2026,1
+926,Artur Lopes,active,0.0,30,1,29,1,30,Plano mensal,23/02/2026,1
+928,Andreza Ferreira dos Santos,active,0.0,30,0,0,1,30,Plano mensal,23/02/2026,0
+929,Elton Cunha,active,0.0,30,0,0,1,30,Plano mensal,23/02/2026,0
+930,Ednalva Nascimento Cardoso,active,0.0,30,0,0,1,30,Plano mensal,23/02/2026,0
+931,Luciene da Silva de Oliveira,active,0.0,30,1,28,1,30,Plano mensal,24/02/2026,1
+932,Kleber Christian Moraes,active,0.0,30,0,0,1,30,Plano mensal,02/03/2026,0
+933,Maria Elisangela da Silva,active,0.0,30,0,0,1,30,Plano mensal,02/03/2026,0
+935,Karita Matos,active,0.0,30,0,0,1,30,Plano mensal,02/03/2026,0
+936,Luan Henrique Lameira Matos,active,0.0,30,0,0,1,30,Plano mensal,02/03/2026,0
+937,Emilly Gabriele,active,0.0,30,0,0,1,30,Plano mensal,03/03/2026,0
+938,Tayse Alves da Costa,active,0.0,30,1,18,1,30,Plano mensal,03/03/2026,1
+940,Bruna Carla de Almeida,active,0.0,30,0,0,1,30,Plano mensal,04/03/2026,0
+941,Gustavo da Silva Moura,active,0.0,30,0,0,1,30,Plano Universitário,04/03/2026,0
+942,Debora Porcem,active,0.0,30,1,15,1,30,Plano mensal,06/03/2026,1
+943,Izis Porcem,active,0.0,30,1,15,1,30,Plano mensal,06/03/2026,1
+944,Eliade Araujo da Silva,active,0.0,30,1,12,1,30,Plano Universitário,09/03/2026,1
+945,Cristiane Oliveira,active,0.0,30,0,0,1,30,Plano mensal,09/03/2026,0
+946,Hugo Oliveira,active,0.0,30,0,0,1,30,Plano mensal,09/03/2026,0
+947,Hyderllan Cassio Ferreirade Oliveira,active,0.0,30,1,12,1,30,Plano mensal,09/03/2026,1
+948,Bill Araújo,active,0.0,30,1,11,1,30,Plano mensal,10/03/2026,1
+949,Diego Ribeiro,active,0.0,30,1,11,1,30,Plano mensal,10/03/2026,1
+950,Thiago Maia,active,0.0,30,1,11,1,30,Plano mensal,10/03/2026,1
+951,Eliene dos Santos,active,0.0,30,1,8,1,30,Plano mensal,11/03/2026,1
+952,Ellino Jose Venancio Monteiro,active,0.0,30,1,8,1,30,Plano mensal,12/03/2026,1
+953,Alana Beatriz Santana Miranda,active,0.0,30,0,0,1,30,Plano mensal,16/03/2026,0
+954,Jennifer Favacho,active,0.0,30,0,0,1,30,Plano mensal,16/03/2026,0
+955,Vitoria Silva,active,0.0,30,1,5,1,30,Plano mensal,16/03/2026,1
+956,Davi William,active,0.0,30,1,4,1,30,Plano mensal,17/03/2026,1
+957,Alessandra do Nascimento Leoncio,ativo,0.0,30,0,0,1,30,Mensal,,0
+958,Anielle Gabriela da Rocha Alves,active,0.0,30,0,0,1,30,Plano mensal,20/03/2026,0
+959,Marcos Guerrer,active,0.0,30,0,0,1,30,Plano mensal,23/03/2026,0
+961,Antonia Lucileide,active,0.0,30,0,0,1,30,Plano mensal,23/03/2026,0
+962,Evellyn Vitoria,active,0.0,30,0,0,1,30,Plano mensal,23/03/2026,0
+963,Maria Angela Travassos,active,0.0,30,0,0,1,30,Plano mensal,24/03/2026,0
+964,Gilmar Oliveira,active,0.0,30,0,0,1,30,Plano mensal,24/03/2026,0
+965,Thiago Ytalo da Silva Costa,active,0.0,30,0,0,1,30,Plano mensal,24/03/2026,0
+966,Lailson Rodrigues,active,0.0,30,0,0,1,30,Plano mensal,25/03/2026,0
+967,Rosiane da Silva Negrão,active,0.0,30,0,0,1,30,Plano mensal,30/03/2026,0
+968,Marco Antonio Palheta,active,0.0,30,0,0,1,30,Plano mensal,30/03/2026,0
+969,Marco Antonio Palheta Filho,active,0.0,30,0,0,1,30,Plano mensal,30/03/2026,0
+970,Murilo Luan Souza da Silva,active,0.0,30,0,0,1,30,Plano mensal,31/03/2026,0
+971,Marlon Eduardo Mesquita da Silva,active,0.0,30,0,0,1,30,Plano mensal,31/03/2026,0
+972,Fabiele Cristina,active,0.0,30,0,0,1,30,Plano mensal,31/03/2026,0
+973,Ana Catarina Araujo Lima,active,0.0,30,0,0,1,30,Plano mensal,31/03/2026,0
+975,Jhenyfer Lorrana Ferreira Freitas,active,0.0,30,0,0,1,30,Plano Universitário,06/04/2026,0
+976,Jackcione Lopes da Silva,active,0.0,30,0,0,1,30,Plano mensal,06/04/2026,0
+977,Alisson Pereira de Jesus,active,0.0,30,0,0,1,30,Plano mensal,06/04/2026,0
+978,Antonio Riverino de Oliveira,active,0.0,30,0,0,1,30,Plano mensal,07/04/2026,0
+979,Josiane Siva e Silva,active,0.0,30,0,0,1,30,Plano mensal,07/04/2026,0
+980,Alcileia do Vale,active,0.0,30,0,0,1,30,Plano mensal,08/04/2026,0
+981,Maria Madalena do Carmo Bastos,active,0.0,30,0,0,1,30,Plano mensal,08/04/2026,0
+982,Rosimary Pereira Oliveira,active,0.0,30,0,0,1,30,Plano mensal,08/04/2026,0
+984,Marlly Dizeu,active,0.0,30,0,0,1,30,Plano Familia 3,09/04/2026,0
+985,Maileer Johaifa,active,0.0,30,0,0,1,30,Plano Familia 3,09/04/2026,0
+986,Marvin Javier,active,0.0,30,0,0,1,30,Plano Familia 3,09/04/2026,0
+987,Tenilson de Jesus da Silva,active,0.0,30,0,0,1,30,Plano mensal,09/04/2026,0
+988,Katia cilene Ferreira pinto,active,0.0,30,0,0,1,30,Plano mensal,13/04/2026,0
+990,Johan Mauricio,active,0.0,30,0,0,1,30,Plano Familia 3,14/04/2026,0
+991,Ketlem Yasmin Reis Santos,active,0.0,30,0,0,1,30,Plano mensal,15/04/2026,0
+992,Ana Roberta,active,0.0,30,0,0,1,30,Plano mensal,16/04/2026,0
+993,Lucas da Silva Vieira,active,0.0,30,0,0,1,30,Plano mensal,17/04/2026,0
+994,Paloma Vitoria Feitosa Campos,active,0.0,30,0,0,1,30,Plano mensal,17/04/2026,0

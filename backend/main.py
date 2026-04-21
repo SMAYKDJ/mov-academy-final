@@ -19,7 +19,13 @@ from typing import Optional
 import joblib
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+import shap
+import pdfplumber
+import io
+import re
+import re
+from supabase import create_client, Client
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -28,6 +34,18 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'models', 'churn_model.joblib')
 ENCODER_PATH = os.path.join(BASE_DIR, 'models', 'label_encoder.joblib')
 METRICS_PATH = os.path.join(BASE_DIR, 'models', 'metrics.json')
+
+# --- Supabase Integration ---
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fbbcnazqmkgdrxbdeysr.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "") # Should be Service Role Key for delete operations
+
+supabase_client: Optional[Client] = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("  ✅ Supabase client initialized")
+    except Exception as e:
+        print(f"  ❌ Error initializing Supabase client: {e}")
 
 # --- App Initialization ---
 app = FastAPI(
@@ -50,12 +68,13 @@ app.add_middleware(
 model = None
 label_encoder = None
 metrics = None
+explainer = None
 
 
 @app.on_event("startup")
 async def load_model():
     """Load the trained model and encoder into memory."""
-    global model, label_encoder, metrics
+    global model, label_encoder, metrics, explainer
 
     if os.path.exists(MODEL_PATH):
         model = joblib.load(MODEL_PATH)
@@ -71,6 +90,10 @@ async def load_model():
         with open(METRICS_PATH) as f:
             metrics = json.load(f)
         print(f"  ✅ Metrics loaded: Accuracy={metrics.get('accuracy', 'N/A')}")
+
+    if model:
+        explainer = shap.TreeExplainer(model)
+        print("  ✅ SHAP Explainer initialized (TreeExplainer)")
 
 
 # --- Pydantic Models ---
@@ -94,6 +117,18 @@ class PredictionResult(BaseModel):
     probability: float = Field(..., description="Churn probability (0.0 to 1.0)")
     probability_percent: float = Field(..., description="Churn probability (0 to 100%)")
     risk_level: str = Field(..., description="alto / medio / baixo")
+    impacts: Optional[dict] = None
+    predicted_at: str
+
+
+class ExplanationResult(BaseModel):
+    """Output schema for SHAP explanation."""
+    student_id: str
+    name: str
+    risk_level: str
+    probability: float
+    impacts: dict = Field(..., description="Feature names and their SHAP values")
+    summary: str = Field(..., description="Human-readable summary of the main churn factors")
     predicted_at: str
 
 
@@ -244,3 +279,176 @@ async def get_model_info():
         last_trained=datetime.now().strftime("%Y-%m-%d"),
         status="active" if model is not None else "not_loaded",
     )
+
+
+@app.post("/predict/explain", response_model=ExplanationResult)
+async def explain_churn(student: StudentInput):
+    """
+    Predict churn AND provide a SHAP explanation for WHY.
+    Returns feature impacts and a text summary.
+    """
+    if model is None or explainer is None:
+        raise HTTPException(status_code=503, detail="Model or Explainer not loaded.")
+
+    # Prepare features (same as predict_student)
+    try:
+        plan_encoded = label_encoder.transform([student.plan])[0]
+    except ValueError:
+        plan_encoded = 1
+
+    feature_names = [
+        'weekly_frequency', 'days_since_last_visit', 'overdue_payments',
+        'overdue_days', 'enrollment_months', 'age', 'plan_encoded'
+    ]
+    
+    features_val = [
+        student.weekly_frequency,
+        student.days_since_last_visit,
+        student.overdue_payments,
+        student.overdue_days,
+        student.enrollment_months,
+        student.age,
+        plan_encoded,
+    ]
+    
+    features_df = pd.DataFrame([features_val], columns=feature_names)
+
+    # Calculate SHAP values
+    shap_values = explainer.shap_values(features_df)
+    
+    # Handle different SHAP output formats (TreeExplainer vs KernelExplainer, old vs new versions)
+    # Goal: Get the impact for class 1 (churn)
+    if isinstance(shap_values, list):
+        # Format: [impacts_class0, impacts_class1]
+        sv = shap_values[1][0] if len(shap_values) > 1 else shap_values[0][0]
+    elif len(shap_values.shape) == 3:
+        # Format: (samples, features, classes) -> (0, :, 1)
+        sv = shap_values[0, :, 1]
+    elif len(shap_values.shape) == 2:
+        # Format: (samples, features)
+        sv = shap_values[0]
+    else:
+        sv = shap_values
+
+    impacts = {name: round(float(sv[i]), 4) for i, name in enumerate(feature_names)}
+    
+    # Sort impacts by absolute value to find main drivers
+    sorted_impacts = sorted(impacts.items(), key=lambda x: abs(x[1]), reverse=True)
+    top_factor, top_val = sorted_impacts[0]
+    
+    # Create a simple summary
+    direction = "aumentando" if top_val > 0 else "diminuindo"
+    summary = f"O fator principal é '{top_factor}', que está {direction} o risco de churn."
+
+    # Get probability for the result
+    proba = model.predict_proba(features_df)[0][1]
+
+    return ExplanationResult(
+        student_id=student.student_id,
+        name=student.name,
+        risk_level=classify_risk(proba),
+        probability=round(float(proba), 4),
+        impacts=impacts,
+        summary=summary,
+        predicted_at=datetime.now().isoformat()
+    )
+
+
+@app.post("/upload/report")
+async def upload_report(files: list[UploadFile] = File(...)):
+    """
+    Upload multiple PDF reports, extract student data from all, and run batch predictions.
+    """
+    all_pdf_data = []
+    processed_files = []
+
+    for file in files:
+        if not file.filename.endswith('.pdf'):
+            continue
+            
+        try:
+            contents = await file.read()
+            file_data_count = 0
+            
+            with pdfplumber.open(io.BytesIO(contents)) as pdf:
+                for page in pdf.pages:
+                    table = page.extract_table()
+                    if table:
+                        for row in table[1:]:
+                            if len(row) >= 8:
+                                try:
+                                    student = StudentInput(
+                                        student_id=str(row[0]),
+                                        name=str(row[1]),
+                                        weekly_frequency=int(re.sub(r'\D', '', str(row[2])) or 0),
+                                        days_since_last_visit=int(re.sub(r'\D', '', str(row[3])) or 0),
+                                        overdue_payments=1 if 'sim' in str(row[4]).lower() or '1' in str(row[4]) else 0,
+                                        overdue_days=int(re.sub(r'\D', '', str(row[4])) if 'sim' not in str(row[4]).lower() else 10),
+                                        enrollment_months=int(re.sub(r'\D', '', str(row[5])) or 1),
+                                        age=int(re.sub(r'\D', '', str(row[6])) or 20),
+                                        plan=str(row[7])
+                                    )
+                                    all_pdf_data.append(student)
+                                    file_data_count += 1
+                                except (ValueError, IndexError):
+                                    continue
+            
+            processed_files.append({"filename": file.filename, "students_found": file_data_count})
+        except Exception as e:
+            print(f"Error processing {file.filename}: {e}")
+
+    if not all_pdf_data:
+        raise HTTPException(status_code=422, detail="Não foi possível encontrar dados de alunos em nenhum dos PDFs enviados.")
+
+    # Run predictions with SHAP explanations
+    predictions = []
+    for s in all_pdf_data:
+        # We can reuse the logic from explain_churn or refactor it
+        # For efficiency, let's call a helper
+        res = await explain_churn(s)
+        predictions.append(res)
+        
+        summary = {
+            "total": len(predictions),
+            "alto": sum(1 for p in predictions if p.risk_level == 'alto'),
+            "medio": sum(1 for p in predictions if p.risk_level == 'medio'),
+            "baixo": sum(1 for p in predictions if p.risk_level == 'baixo'),
+            "avg_probability": round(sum(p.probability for p in predictions) / len(predictions), 4) if predictions else 0,
+        }
+
+        # --- DATA REPLACEMENT LOGIC ---
+        if supabase_client:
+            try:
+                # 1. Delete all existing records (Note: requires appropriate RLS or Service Role Key)
+                # Using a filter that matches everything to bypass some restrictions if possible
+                supabase_client.table("alunos").delete().neq("id", -1).execute()
+                
+                # 2. Insert new records
+                insert_data = []
+                for s in all_pdf_data:
+                    insert_data.append({
+                        "nome": s.name,
+                        "email": s.email,
+                        "plano": s.plan,
+                        "status": "ativo" if s.weekly_frequency > 0 else "inativo",
+                        "risco": int(predict_student(s).probability * 100),
+                        "frequencia": s.weekly_frequency
+                    })
+                
+                if insert_data:
+                    supabase_client.table("alunos").insert(insert_data).execute()
+                    print(f"  ✅ Replaced Supabase data with {len(insert_data)} students from {len(processed_files)} PDFs.")
+            except Exception as se:
+                print(f"  ⚠️ Error syncing with Supabase: {se}")
+        
+        return {
+            "processed_files": processed_files,
+            "students_found": len(all_pdf_data),
+            "predictions": predictions,
+            "summary": summary,
+            "processed_at": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao processar PDF: {str(e)}")
+

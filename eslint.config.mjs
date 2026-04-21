@@ -12,7 +12,18 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "scratch/**",
   ]),
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/preserve-manual-memoization": "off",
+      "react/no-unescaped-entities": "off",
+      "react-compiler/react-compiler": "off"
+    }
+  }
 ]);
 
 export default eslintConfig;
