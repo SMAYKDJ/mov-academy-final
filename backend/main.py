@@ -354,10 +354,19 @@ async def explain_churn(student: StudentInput):
     )
 
 
+def find_column_index(headers: list, keywords: list) -> int:
+    """Finds the index of a column that matches any of the given keywords."""
+    for i, h in enumerate(headers):
+        h_lower = str(h).lower()
+        if any(k.lower() in h_lower for k in keywords):
+            return i
+    return -1
+
 @app.post("/upload/report")
 async def upload_report(files: list[UploadFile] = File(...)):
     """
     Upload multiple PDF reports, extract student data from all, and run batch predictions.
+    Uses smart column mapping to handle variations in PDF headers.
     """
     all_pdf_data = []
     processed_files = []
@@ -373,25 +382,44 @@ async def upload_report(files: list[UploadFile] = File(...)):
             with pdfplumber.open(io.BytesIO(contents)) as pdf:
                 for page in pdf.pages:
                     table = page.extract_table()
-                    if table:
-                        for row in table[1:]:
-                            if len(row) >= 8:
-                                try:
-                                    student = StudentInput(
-                                        student_id=str(row[0]),
-                                        name=str(row[1]),
-                                        weekly_frequency=int(re.sub(r'\D', '', str(row[2])) or 0),
-                                        days_since_last_visit=int(re.sub(r'\D', '', str(row[3])) or 0),
-                                        overdue_payments=1 if 'sim' in str(row[4]).lower() or '1' in str(row[4]) else 0,
-                                        overdue_days=int(re.sub(r'\D', '', str(row[4])) if 'sim' not in str(row[4]).lower() else 10),
-                                        enrollment_months=int(re.sub(r'\D', '', str(row[5])) or 1),
-                                        age=int(re.sub(r'\D', '', str(row[6])) or 20),
-                                        plan=str(row[7])
-                                    )
-                                    all_pdf_data.append(student)
-                                    file_data_count += 1
-                                except (ValueError, IndexError):
-                                    continue
+                    if not table or len(table) < 2:
+                        continue
+                        
+                    headers = table[0]
+                    # Smart mapping
+                    idx_id = find_column_index(headers, ['código', 'id', 'matrícula'])
+                    idx_name = find_column_index(headers, ['nome', 'aluno', 'estudante'])
+                    idx_freq = find_column_index(headers, ['freq', 'presença', 'visitas'])
+                    idx_inativo = find_column_index(headers, ['inativo', 'última', 'visita', 'dias'])
+                    idx_debitos = find_column_index(headers, ['débitos', 'pendência', 'financeiro', 'devedor', 'total'])
+                    idx_months = find_column_index(headers, ['meses', 'tempo', 'matrícula', 'início'])
+                    idx_age = find_column_index(headers, ['idade', 'nascimento'])
+                    idx_plan = find_column_index(headers, ['plano', 'modalidade', 'pacote'])
+
+                    for row in table[1:]:
+                        try:
+                            # Basic cleaning and defaults
+                            sid = str(row[idx_id]) if idx_id != -1 else "N/A"
+                            name = str(row[idx_name]) if idx_name != -1 else "Aluno"
+                            freq = int(re.sub(r'\D', '', str(row[idx_freq])) or 0) if idx_freq != -1 else 0
+                            inativo = int(re.sub(r'\D', '', str(row[idx_inativo])) or 0) if idx_inativo != -1 else 0
+                            # ... and so on
+                            
+                            student = StudentInput(
+                                student_id=sid,
+                                name=name,
+                                weekly_frequency=freq if freq < 10 else round(freq/52, 2), # Handle yearly presences
+                                days_since_last_visit=inativo,
+                                overdue_payments=1 if idx_debitos != -1 and any(x in str(row[idx_debitos]).lower() for x in ['sim', 'vencido', 'pendente']) else 0,
+                                overdue_days=inativo if idx_debitos != -1 and 'vencido' in str(row[idx_debitos]).lower() else 0,
+                                enrollment_months=int(re.sub(r'\D', '', str(row[idx_months])) or 1) if idx_months != -1 else 1,
+                                age=int(re.sub(r'\D', '', str(row[idx_age])) or 30) if idx_age != -1 else 30,
+                                plan=str(row[idx_plan]) if idx_plan != -1 else "Mensal"
+                            )
+                            all_pdf_data.append(student)
+                            file_data_count += 1
+                        except (ValueError, IndexError, Exception):
+                            continue
             
             processed_files.append({"filename": file.filename, "students_found": file_data_count})
         except Exception as e:
@@ -430,9 +458,12 @@ async def upload_report(files: list[UploadFile] = File(...)):
                         "nome": s.name,
                         "email": s.email,
                         "plano": s.plan,
-                        "status": "ativo" if s.weekly_frequency > 0 else "inativo",
+                        "status": "active" if s.weekly_frequency > 0 else "inactive",
                         "risco": int(predict_student(s).probability * 100),
-                        "frequencia": s.weekly_frequency
+                        "frequencia": s.weekly_frequency,
+                        "meses_matricula": s.enrollment_months,
+                        "idade": s.age,
+                        "dias_atraso": s.overdue_days
                     })
                 
                 if insert_data:

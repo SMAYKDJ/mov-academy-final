@@ -13,6 +13,10 @@ export interface Student {
   lastVisit: string;
   payments: 'up_to_date' | 'overdue';
   joinDate: string;
+  frequency?: number;
+  enrollment_months?: number;
+  age?: number;
+  overdue_days?: number;
   avatar?: string;
 }
 

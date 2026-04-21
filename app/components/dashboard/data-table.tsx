@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { MoreHorizontal, Filter, Download, Search, ChevronUp, ChevronDown, ChevronsUpDown, Eye } from 'lucide-react';
+import { MoreHorizontal, Filter, Download, Search, ChevronUp, ChevronDown, ChevronsUpDown, Eye, Brain } from 'lucide-react';
+import { ExplanationModal } from './explanation-modal';
 import { cn } from '@/utils/cn';
 import type { Student, SortDirection, SortField } from '@/types';
 import { Badge } from '@/components/ui/badge';
@@ -104,7 +105,14 @@ export function DataTable({ data }: { data: Student[] }) {
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { showToast } = useToast();
+
+  const handleOpenAnalysis = (student: Student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
 
   /**
    * Handle column sort toggle (null → asc → desc → null).
@@ -316,7 +324,14 @@ export function DataTable({ data }: { data: Student[] }) {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          className="p-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
+                          onClick={() => handleOpenAnalysis(student)}
+                          className="p-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors text-primary-600 dark:text-primary-400"
+                          title="Análise Inteligente IA"
+                        >
+                          <Brain className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                           aria-label={`Ver perfil de ${student.name}`}
                         >
                           <Eye className="w-4 h-4" />
@@ -391,6 +406,11 @@ export function DataTable({ data }: { data: Student[] }) {
           </div>
         </div>
       )}
+      <ExplanationModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        student={selectedStudent}
+      />
     </div>
   );
 }
