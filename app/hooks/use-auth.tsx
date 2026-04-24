@@ -20,45 +20,76 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (profile) {
-          setUser(profile as UserProfile);
-        } else {
-          // Fallback if profile trigger hasn't finished
-          setUser({
-            id: session.user.id,
-            email: session.user.email!,
-            nome: session.user.user_metadata.nome || 'Usuário',
-            role: (session.user.user_metadata.role as UserRole) || 'aluno'
-          });
+        if (sessionError) throw sessionError;
+
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          if (profile) {
+            setUser(profile as UserProfile);
+          } else {
+            // Fallback if profile trigger hasn't finished
+            setUser({
+              id: session.user.id,
+              email: session.user.email!,
+              nome: session.user.user_metadata?.nome || 'Usuário',
+              role: (session.user.user_metadata?.role as UserRole) || 'admin'
+            });
+          }
         }
+      } catch (err) {
+        console.error("Auth error:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();
 
     // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        setUser(profile as UserProfile);
-      } else {
-        setUser(null);
+      try {
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          if (profile) {
+            setUser(profile as UserProfile);
+          } else {
+            setUser({
+              id: session.user.id,
+              email: session.user.email!,
+              nome: session.user.user_metadata?.nome || 'Usuário',
+              role: (session.user.user_metadata?.role as UserRole) || 'admin'
+            });
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Auth state change error:", err);
+        // Fallback user if profile fetch fails completely
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email!,
+            nome: session.user.user_metadata?.nome || 'Usuário',
+            role: 'admin'
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();

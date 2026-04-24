@@ -15,10 +15,33 @@ import { cn } from '@/utils/cn';
 import { currentWorkout, studentStats } from '@/utils/treino-data';
 import Link from 'next/link';
 
+import { supabase } from '@/lib/supabase';
+
 export default function StudentDashboardPage() {
+  const [userName, setUserName] = React.useState('Aluno');
   const workout = currentWorkout;
   const stats = studentStats;
   const progress = (workout.exercicios.filter(e => e.concluido).length / workout.exercicios.length) * 100;
+
+  React.useEffect(() => {
+    async function fetchUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .maybeSingle();
+        
+        if (profile?.full_name) {
+          setUserName(profile.full_name.split(' ')[0]);
+        } else if (user.email) {
+          setUserName(user.email.split('@')[0]);
+        }
+      }
+    }
+    fetchUser();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -26,7 +49,7 @@ export default function StudentDashboardPage() {
       <section className="animate-fade-in">
         <h2 className="text-sm font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-1">Área do Aluno</h2>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
-          Olá, João <span className="inline-block animate-float">👋</span>
+          Olá, {userName} <span className="inline-block animate-float">👋</span>
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Você já treinou <span className="font-bold text-gray-900 dark:text-white">{stats.treinosNoMes} vezes</span> este mês. Foco total!

@@ -11,7 +11,8 @@ import { ExpenseBreakdown } from '@/components/dashboard/financeiro/expense-brea
 import { TransactionDrawer } from '@/components/dashboard/financeiro/transaction-drawer';
 import { transacoesData, monthlyRevenueData } from '@/utils/financeiro-data';
 import { useToast } from '@/components/ui/toast';
-import { Plus, Download, FileText } from 'lucide-react';
+import { Plus, Download, FileText, CreditCard } from 'lucide-react';
+import Link from 'next/link';
 import { useLocalStorage, exportToCSV } from '@/utils/persistence';
 import { TransactionForm } from '@/components/dashboard/financeiro/transaction-form';
 import { notifyManager } from '@/utils/whatsapp-helper';
@@ -169,6 +170,13 @@ export default function FinanceiroPage() {
                 <Plus className="w-4 h-4" />
                 Nova Transação
               </button>
+              <Link 
+                href="/financeiro/pagamento"
+                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-orange-200 dark:hover:shadow-none transition-all flex items-center gap-2"
+              >
+                <CreditCard className="w-4 h-4" />
+                Pagar Assinatura
+              </Link>
             </div>
           </div>
 

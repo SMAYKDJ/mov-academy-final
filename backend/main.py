@@ -28,6 +28,12 @@ from supabase import create_client, Client
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+import stripe
+from dotenv import load_dotenv
+
+# Load env vars
+load_dotenv()
+
 
 # --- Configuration ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -38,6 +44,15 @@ METRICS_PATH = os.path.join(BASE_DIR, 'models', 'metrics.json')
 # --- Supabase Integration ---
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fbbcnazqmkgdrxbdeysr.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "") # Should be Service Role Key for delete operations
+
+# --- Stripe Configuration ---
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+if STRIPE_SECRET_KEY:
+    stripe.api_key = STRIPE_SECRET_KEY
+    print("  ✅ Stripe initialized")
+else:
+    print("  ⚠️ STRIPE_SECRET_KEY not found in environment")
+
 
 supabase_client: Optional[Client] = None
 if SUPABASE_URL and SUPABASE_KEY:
@@ -155,6 +170,15 @@ class ModelInfo(BaseModel):
     risk_thresholds: dict
     last_trained: str
     status: str
+
+
+class PaymentIntentInput(BaseModel):
+    """Input for creating a Stripe Payment Intent."""
+    amount: int = Field(..., gt=0, description="Amount in cents (e.g. 1000 for $10.00)")
+    currency: str = Field("brl", description="Currency code (e.g. brl, usd)")
+    description: Optional[str] = Field(None, description="Description of the purchase")
+    metadata: Optional[dict] = Field(None, description="Additional metadata")
+
 
 
 # --- Helper Functions ---
@@ -403,7 +427,6 @@ async def upload_report(files: list[UploadFile] = File(...)):
                             name = str(row[idx_name]) if idx_name != -1 else "Aluno"
                             freq = int(re.sub(r'\D', '', str(row[idx_freq])) or 0) if idx_freq != -1 else 0
                             inativo = int(re.sub(r'\D', '', str(row[idx_inativo])) or 0) if idx_inativo != -1 else 0
-                            # ... and so on
                             
                             student = StudentInput(
                                 student_id=sid,
@@ -428,14 +451,13 @@ async def upload_report(files: list[UploadFile] = File(...)):
     if not all_pdf_data:
         raise HTTPException(status_code=422, detail="Não foi possível encontrar dados de alunos em nenhum dos PDFs enviados.")
 
-    # Run predictions with SHAP explanations
-    predictions = []
-    for s in all_pdf_data:
-        # We can reuse the logic from explain_churn or refactor it
-        # For efficiency, let's call a helper
-        res = await explain_churn(s)
-        predictions.append(res)
-        
+    try:
+        # Run predictions with SHAP explanations
+        predictions = []
+        for s in all_pdf_data:
+            res = await explain_churn(s)
+            predictions.append(res)
+            
         summary = {
             "total": len(predictions),
             "alto": sum(1 for p in predictions if p.risk_level == 'alto'),
@@ -447,16 +469,11 @@ async def upload_report(files: list[UploadFile] = File(...)):
         # --- DATA REPLACEMENT LOGIC ---
         if supabase_client:
             try:
-                # 1. Delete all existing records (Note: requires appropriate RLS or Service Role Key)
-                # Using a filter that matches everything to bypass some restrictions if possible
                 supabase_client.table("alunos").delete().neq("id", -1).execute()
-                
-                # 2. Insert new records
                 insert_data = []
                 for s in all_pdf_data:
                     insert_data.append({
                         "nome": s.name,
-                        "email": s.email,
                         "plano": s.plan,
                         "status": "active" if s.weekly_frequency > 0 else "inactive",
                         "risco": int(predict_student(s).probability * 100),
@@ -468,7 +485,7 @@ async def upload_report(files: list[UploadFile] = File(...)):
                 
                 if insert_data:
                     supabase_client.table("alunos").insert(insert_data).execute()
-                    print(f"  ✅ Replaced Supabase data with {len(insert_data)} students from {len(processed_files)} PDFs.")
+                    print(f"  ✅ Replaced Supabase data with {len(insert_data)} students.")
             except Exception as se:
                 print(f"  ⚠️ Error syncing with Supabase: {se}")
         
@@ -479,7 +496,36 @@ async def upload_report(files: list[UploadFile] = File(...)):
             "summary": summary,
             "processed_at": datetime.now().isoformat()
         }
-
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao processar PDF: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao processar predições: {str(e)}")
+
+
+@app.post("/payments/create-intent")
+async def create_payment_intent(payment_data: PaymentIntentInput):
+    """
+    Creates a Stripe Payment Intent for a transaction.
+    Returns the client_secret needed by the frontend.
+    """
+    if not stripe.api_key:
+        raise HTTPException(status_code=503, detail="Stripe service not configured.")
+
+    try:
+        # Create a PaymentIntent with the specified amount and currency
+        intent = stripe.PaymentIntent.create(
+            amount=payment_data.amount,
+            currency=payment_data.currency,
+            description=payment_data.description,
+            metadata=payment_data.metadata or {},
+            automatic_payment_methods={"enabled": True},
+        )
+        
+        return {
+            "clientSecret": intent.client_secret,
+            "id": intent.id,
+            "amount": intent.amount,
+            "currency": intent.currency
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
