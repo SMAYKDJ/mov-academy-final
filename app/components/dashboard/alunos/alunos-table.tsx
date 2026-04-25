@@ -46,7 +46,10 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
           break;
         case 'ultimoPagamento': {
           const parseDate = (d: string) => {
-            const [day, month, year] = d.split('/').map(Number);
+            if (!d || typeof d !== 'string' || !d.includes('/')) return 0;
+            const parts = d.split('/');
+            if (parts.length < 3) return 0;
+            const [day, month, year] = parts.map(Number);
             return new Date(year, month - 1, day).getTime();
           };
           comparison = parseDate(a.ultimoPagamento) - parseDate(b.ultimoPagamento);

@@ -46,9 +46,22 @@ def seed_database():
                     if match:
                         sid = match.group(1)
                         name = match.group(2).strip()
-                        plan = match.group(3).strip()
+                        # Normalize Plan
+                        raw_plan = match.group(3).strip()
+                        plan = 'Mensal'
+                        if 'Anual' in raw_plan: plan = 'Anual'
+                        elif 'Semestral' in raw_plan: plan = 'Semestral'
+                        elif 'Trimestral' in raw_plan: plan = 'Trimestral'
+                        elif 'Black' in raw_plan or 'VIP' in raw_plan: plan = 'Black VIP'
+                        
                         start_date = match.group(4)
-                        status = 'inativo' if any(x in line for x in ['Inativa', 'Vencida', 'Cancelada', 'Pendente']) else 'em_dia'
+                        
+                        # Normalize Status
+                        status = 'ativo'
+                        if any(x in line for x in ['Inativa', 'Vencida', 'Cancelada']):
+                            status = 'inativo'
+                        elif 'Pendente' in line:
+                            status = 'pendente'
                         
                         # Fix email logic: use names to make dummy emails
                         email_base = re.sub(r'[^a-zA-Z0-9]', '', name.split()[0].lower())
@@ -57,9 +70,14 @@ def seed_database():
                         students[sid] = {
                             "nome": name,
                             "email": email,
+                            "telefone": "(11) 99999-9999",
                             "plano": plan,
-                            "data_matricula": start_date,
                             "status": status,
+                            "data_matricula": start_date,
+                            "ultimo_pagamento": start_date,
+                            "data_nascimento": "01/01/1990",
+                            "endereco": "Rua Exemplo, 123",
+                            "objetivo": "Condicionamento Físico",
                             "frequencia": 0,
                             "risco": 0,
                             "_original_id": sid # to link transactions

@@ -18,6 +18,7 @@ export function AlunosKPI({ alunos, loading }: AlunosKPIProps) {
   const pendentes = alunos.filter(a => a.status === 'pendente').length;
   // "novos no mês" — simulated: students enrolled in last 30 days (matching '2026')
   const novos = alunos.filter(a => {
+    if (!a.dataMatricula || typeof a.dataMatricula !== 'string') return false;
     const parts = a.dataMatricula.split('/');
     if (parts.length !== 3) return false;
     const year = parseInt(parts[2]);

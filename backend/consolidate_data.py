@@ -39,7 +39,14 @@ def consolidate():
                 match = re.search(r'^(\d+)\s+(.*?)\s+(Plano\s+\w+.*?)\s+(\d{2}/\d{2}/\d{4})', line)
                 if match:
                     sid = match.group(1)
-                    plan = match.group(3).strip()
+                    # Normalize Plan
+                    raw_plan = match.group(3).strip()
+                    plan = 'Mensal'
+                    if 'Anual' in raw_plan: plan = 'Anual'
+                    elif 'Semestral' in raw_plan: plan = 'Semestral'
+                    elif 'Trimestral' in raw_plan: plan = 'Trimestral'
+                    elif 'Black' in raw_plan or 'VIP' in raw_plan: plan = 'Black VIP'
+                    
                     start_date_str = match.group(4)
                     
                     # Detect status (Inativa/Vencida/Cancelada means Churn)

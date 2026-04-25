@@ -33,7 +33,12 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || {
+    label: status,
+    dot: 'bg-gray-400',
+    bg: 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800',
+    text: 'text-gray-600 dark:text-gray-400',
+  };
   return (
     <span className={cn(
       "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
@@ -49,7 +54,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
 
 /* ── Plan Badge ──────────────────────────────────── */
 
-const planConfig: Record<AlunoPlan, { bg: string; text: string }> = {
+const planConfig: Record<string, { bg: string; text: string }> = {
   'Mensal':     { bg: 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700', text: 'text-gray-700 dark:text-gray-300' },
   'Trimestral': { bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800', text: 'text-blue-700 dark:text-blue-400' },
   'Semestral':  { bg: 'bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800', text: 'text-violet-700 dark:text-violet-400' },
@@ -58,12 +63,15 @@ const planConfig: Record<AlunoPlan, { bg: string; text: string }> = {
 };
 
 interface PlanBadgeProps {
-  plan: AlunoPlan;
+  plan: string;
   className?: string;
 }
 
 export function PlanBadge({ plan, className }: PlanBadgeProps) {
-  const config = planConfig[plan];
+  const config = planConfig[plan] || { 
+    bg: 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800', 
+    text: 'text-gray-600 dark:text-gray-400' 
+  };
   return (
     <span className={cn(
       "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border",

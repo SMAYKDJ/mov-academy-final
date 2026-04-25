@@ -15,7 +15,20 @@ export function useLocalStorage<T>(key: string, initialValue: T, tableName?: str
         if (tableName && process.env.NEXT_PUBLIC_SUPABASE_URL) {
           const { data, error } = await supabase.from(tableName).select('*');
           if (!error && data && data.length > 0) {
-            setStoredValue(data as any);
+            // Map snake_case from DB to camelCase for Frontend
+            const mappedData = data.map((item: any) => {
+              if (tableName === 'alunos') {
+                return {
+                  ...item,
+                  ultimoPagamento: item.ultimo_pagamento,
+                  dataMatricula: item.data_matricula,
+                  dataNascimento: item.data_nascimento,
+                  // Keep snake_case keys as well to avoid breaking any other logic
+                };
+              }
+              return item;
+            });
+            setStoredValue(mappedData as any);
             setIsLoaded(true);
             return;
           }
