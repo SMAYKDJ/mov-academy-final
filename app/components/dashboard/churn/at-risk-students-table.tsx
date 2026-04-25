@@ -323,6 +323,40 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
                             <p className="text-sm font-bold text-gray-900 dark:text-white">{prediction.updatedAt}</p>
                           </div>
                         </div>
+
+                        {/* IA Risk Factors (SHAP) */}
+                        {prediction.impacts && (
+                          <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700/50">
+                            <div className="flex items-center gap-2 mb-3">
+                              <AlertTriangle className="w-4 h-4 text-amber-500" />
+                              <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Fatores de Risco (IA - SHAP)</p>
+                            </div>
+                            <div className="flex flex-wrap gap-4">
+                              {Object.entries(prediction.impacts).sort(([, a], [, b]) => b - a).map(([feature, impact]) => (
+                                <div key={feature} className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#1a1d27] rounded-lg border border-gray-100 dark:border-gray-700">
+                                  <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400">{feature.replace('_', ' ')}:</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-12 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                      <div 
+                                        className={cn(
+                                          "h-full rounded-full",
+                                          impact > 0 ? "bg-red-500" : "bg-emerald-500"
+                                        )}
+                                        style={{ width: `${Math.min(Math.abs(impact) * 100, 100)}%` }}
+                                      />
+                                    </div>
+                                    <span className={cn(
+                                      "text-[10px] font-bold tabular-nums",
+                                      impact > 0 ? "text-red-500" : "text-emerald-500"
+                                    )}>
+                                      {impact > 0 ? '+' : ''}{(impact * 100).toFixed(1)}%
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   )}

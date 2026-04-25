@@ -18,6 +18,7 @@ export interface ChurnPrediction {
   paymentStatus: 'up_to_date' | 'overdue';
   enrollmentMonths: number;
   updatedAt: string;
+  impacts?: Record<string, number>;
 }
 
 export interface ChurnDistribution {

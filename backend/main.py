@@ -282,12 +282,30 @@ async def predict_churn_risk(data: ChurnInput):
         risk = "medio"
     else:
         risk = "baixo"
+    # Calculate SHAP impacts
+    impacts = {}
+    if explainer is not None:
+        try:
+            shap_values = explainer.shap_values(features)
+            # For Binary Classification in TreeExplainer, shap_values is a list of [neg, pos] or just pos array
+            # We want class 1 (churn)
+            if isinstance(shap_values, list):
+                sv = shap_values[1][0]
+            else:
+                sv = shap_values[0] # Some versions return (N, M)
+            
+            feature_names = ["freq_mensal", "dias_atraso", "valor_mensal", "inadimplente"]
+            impacts = {name: round(float(val), 4) for name, val in zip(feature_names, sv)}
+        except Exception as e:
+            print(f"  ⚠️ SHAP calculation error: {e}")
+
     return PredictionResult(
         student_id="N/A",
         name=data.nome,
         probability=round(float(proba), 4),
         probability_percent=round(float(proba) * 100, 1),
         risk_level=risk,
+        impacts=impacts,
         predicted_at=datetime.now().isoformat(),
     )
 
