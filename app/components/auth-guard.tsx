@@ -31,7 +31,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, isPublic, router]);
 
-  // Always show loading while auth state is resolving
+  // IMPORTANT: Always render children for public routes so /login page is never blocked by loading state
+  if (isPublic) {
+    return <>{children}</>;
+  }
+
+  // Show loading while auth state is resolving for PROTECTED routes
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] dark:bg-[#080a0f] flex items-center justify-center">
@@ -41,11 +46,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     );
-  }
-
-  // IMPORTANT: Always render children for public routes so /login page is never 404
-  if (isPublic) {
-    return <>{children}</>;
   }
 
   // For protected routes: block rendering if no user (redirect is happening)

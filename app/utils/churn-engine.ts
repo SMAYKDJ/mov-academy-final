@@ -27,13 +27,17 @@ function calculateProbability(aluno: Aluno): number {
   if (aluno.status === 'pendente') prob += 15;
 
   // Tenure Benefit (Loyalty)
-  // Extract months from dataMatricula (DD/MM/YYYY)
-  const parts = aluno.dataMatricula.split('/');
-  const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-  const months = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
-  
-  if (months > 12) prob -= 10;
-  if (months > 24) prob -= 10;
+  if (aluno.dataMatricula) {
+    const parts = aluno.dataMatricula.split('/');
+    if (parts.length === 3) {
+      const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      if (!isNaN(date.getTime())) {
+        const months = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+        if (months > 12) prob -= 10;
+        if (months > 24) prob -= 10;
+      }
+    }
+  }
 
   // Risk Benefit
   prob -= (100 - (aluno.risco || 0)) / 10;
@@ -94,10 +98,11 @@ export function generateRealChurnSummary(alunos: Aluno[]): ChurnSummary {
   ];
 
   return {
-    currentRate: Number(((alto / predictions.length) * 10).toFixed(1)),
+    currentRate: predictions.length > 0 ? Number(((alto / predictions.length) * 10).toFixed(1)) : 0,
     trend: 'down',
     change: '-0.3%',
     atRiskCount: alto,
+
     distribution,
     trendData,
     predictions: predictions.sort((a, b) => b.probability - a.probability),

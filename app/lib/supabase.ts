@@ -4,10 +4,22 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials missing. Data will be simulated or fail.');
+  if (typeof window !== 'undefined') {
+    console.warn('Supabase environment variables are missing. Check your .env file.');
+  }
 }
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder_key'
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storageKey: 'moviment-academy-auth',
+    lock: async (_name, _acquireTimeout, fn) => {
+      return fn();
+    },
+
+  }
+});
+
+

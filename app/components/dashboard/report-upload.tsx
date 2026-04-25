@@ -1,8 +1,7 @@
-'use client';
-
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { FileUp, FileText, Loader2, CheckCircle2, AlertCircle, X } from 'lucide-react';
-import { useToast } from "@/components/ui/toast";
+import { useToast } from '@/components/ui/toast';
+import { ImportReportsModal } from '@/components/dashboard/import-reports-modal';
 
 interface Prediction {
   student_id: string;
@@ -29,42 +28,35 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
   const [isUploading, setIsUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showModal, setShowModal] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { showToast } = useToast();
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-
     setIsUploading(true);
     setError(null);
     setResult(null);
-
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i]);
     }
-
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-
     try {
       const response = await fetch(`${backendUrl}/upload/report`, {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Erro ao processar o PDF');
       }
-
       const data = await response.json();
       setResult(data);
       showToast(`Relatório processado: ${data.students_found} alunos encontrados.`, 'success');
-      
-      // Trigger refresh
       if (onUploadSuccess) {
-        setTimeout(() => onUploadSuccess(), 2000); // Wait 2s so user can see the success state
+        setTimeout(() => onUploadSuccess(), 2000);
       }
     } catch (err: any) {
       setError(err.message);
@@ -88,26 +80,35 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
               <p className="text-xs text-gray-500 dark:text-gray-400">Analise múltiplos alunos de uma vez</p>
             </div>
           </div>
-          <button
-            disabled={isUploading}
-            onClick={() => fileInputRef.current?.click()}
-            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2"
-          >
-            {isUploading ? (
-              <Loader2 className="w-3 h-3 animate-spin" />
-            ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl flex items-center gap-2"
+            >
               <FileText className="w-3 h-3" />
-            )}
-            Selecionar PDF
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept=".pdf"
-            multiple
-            className="hidden"
-          />
+              Importar Relatórios
+            </button>
+            <button
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center gap-2"
+            >
+              {isUploading ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                <FileText className="w-3 h-3" />
+              )}
+              Selecionar PDF
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".pdf"
+              multiple
+              className="hidden"
+            />
+          </div>
         </div>
 
         {isUploading && (
@@ -150,13 +151,10 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
                 </div>
               </div>
             </div>
-
             <div className="max-h-60 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
               {result.predictions.map((pred, i) => (
                 <div key={i} className="group">
-                  <div 
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#1a1c26] rounded-t-xl border border-transparent group-hover:border-gray-200 dark:group-hover:border-[#2e334d] transition-all"
-                  >
+                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#1a1c26] rounded-t-xl border border-transparent group-hover:border-gray-200 dark:group-hover:border-[#2e334d] transition-all">
                     <div>
                       <p className="text-xs font-bold text-gray-900 dark:text-white">{pred.name}</p>
                       <p className="text-[10px] text-gray-500">{pred.student_id}</p>
@@ -169,8 +167,6 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
                       {pred.risk_level} • {(pred.probability * 100).toFixed(0)}%
                     </div>
                   </div>
-                  
-                  {/* SHAP Bar Chart */}
                   {pred.impacts && (
                     <div className="px-3 pb-3 pt-1 space-y-1 bg-gray-50/50 dark:bg-[#1a1c26]/50 rounded-b-xl border-x border-b border-transparent group-hover:border-gray-200 dark:group-hover:border-[#2e334d] transition-all">
                       <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-1">Motivos (SHAP):</p>
@@ -181,14 +177,9 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
                           <div key={idx} className="flex items-center gap-2">
                             <span className="text-[8px] text-gray-500 w-24 truncate">{feature}</span>
                             <div className="flex-1 h-1 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden flex">
-                              <div 
-                                className={`h-full ${impact > 0 ? 'bg-red-500' : 'bg-emerald-500'}`}
-                                style={{ width: `${Math.min(Math.abs(impact) * 200, 100)}%` }}
-                              />
+                              <div className={`h-full ${impact > 0 ? 'bg-red-500' : 'bg-emerald-500'}`} style={{ width: `${Math.min(Math.abs(impact) * 200, 100)}%` }} />
                             </div>
-                            <span className={`text-[8px] font-mono ${impact > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-                              {impact > 0 ? '+' : ''}{impact.toFixed(3)}
-                            </span>
+                            <span className={`text-[8px] font-mono ${impact > 0 ? 'text-red-500' : 'text-emerald-500'}`}>{impact > 0 ? '+' : ''}{impact.toFixed(3)}</span>
                           </div>
                         ))}
                     </div>
@@ -196,16 +187,13 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
                 </div>
               ))}
             </div>
-            
-            <button 
-              onClick={() => setResult(null)}
-              className="w-full py-2 text-[10px] font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors uppercase tracking-widest"
-            >
+            <button onClick={() => setResult(null)} className="w-full py-2 text-[10px] font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors uppercase tracking-widest">
               Limpar Resultados
             </button>
           </div>
         )}
       </div>
+      {showModal && <ImportReportsModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }

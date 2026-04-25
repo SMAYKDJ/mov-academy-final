@@ -15,7 +15,7 @@ import { stats, weeklyChartData, recentActivity } from "@/utils/mock-data";
 import { generateRealChurnSummary } from "@/utils/churn-engine";
 import { alunosData } from "@/utils/alunos-data";
 import { useLocalStorage } from "@/utils/persistence";
-import { Calendar as CalendarIcon, Plus, ArrowUpRight, Brain, ShieldAlert } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, ArrowUpRight, Zap, AlertTriangle } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
 import type { Student } from "@/types";
@@ -115,7 +115,7 @@ export default function DashboardPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 animate-fade-in">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-gradient-to-br from-red-500/10 to-orange-500/10 dark:from-red-900/30 dark:to-orange-900/30 rounded-xl">
-                  <ShieldAlert className="w-6 h-6 text-red-600 dark:text-red-400" />
+                  <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -123,7 +123,7 @@ export default function DashboardPage() {
                       Análise de Churn
                     </h2>
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
-                      <Brain className="w-3 h-3" />
+                      <Zap className="w-3 h-3" />
                       Machine Learning
                     </span>
                   </div>

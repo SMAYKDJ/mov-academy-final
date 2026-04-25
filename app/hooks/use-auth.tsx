@@ -18,43 +18,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    const initAuth = async () => {
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) throw sessionError;
+    let mounted = true;
 
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          
-          if (profile) {
-            setUser(profile as UserProfile);
-          } else {
-            // Fallback if profile trigger hasn't finished
-            setUser({
-              id: session.user.id,
-              email: session.user.email!,
-              nome: session.user.user_metadata?.nome || 'Usuário',
-              role: (session.user.user_metadata?.role as UserRole) || 'admin'
-            });
-          }
-        }
-      } catch (err) {
-        console.error("Auth error:", err);
-      } finally {
+    // Safety timeout to prevent permanent loading state
+    const timeoutId = setTimeout(() => {
+      if (mounted) {
+        console.warn("Auth initialization timed out. Proceeding...");
         setLoading(false);
       }
-    };
+    }, 3000);
 
-    initAuth();
-
-    // Listen for changes
+    // Listen for changes and initial session
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
       try {
         if (session?.user) {
           const { data: profile } = await supabase
@@ -63,9 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .eq('id', session.user.id)
             .single();
           
-          if (profile) {
+          if (profile && mounted) {
             setUser(profile as UserProfile);
-          } else {
+          } else if (mounted) {
             setUser({
               id: session.user.id,
               email: session.user.email!,
@@ -73,26 +50,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               role: (session.user.user_metadata?.role as UserRole) || 'admin'
             });
           }
-        } else {
+        } else if (mounted) {
           setUser(null);
         }
       } catch (err) {
         console.error("Auth state change error:", err);
-        // Fallback user if profile fetch fails completely
-        if (session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email!,
-            nome: session.user.user_metadata?.nome || 'Usuário',
-            role: 'admin'
-          });
-        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          clearTimeout(timeoutId);
+        }
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
