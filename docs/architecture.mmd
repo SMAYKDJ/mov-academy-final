@@ -1,0 +1,45 @@
+graph TD
+    subgraph "Data Sources (CSV)"
+        R[recebimentos.csv]
+        D[devedores.csv]
+        F[frequencia_treino.csv]
+    end
+
+    subgraph "Data Pipeline (Python)"
+        Ingest[ingest_churn.py]
+        Engine[Feature Engineering]
+        DF[df_churn.csv]
+        Train[train_churn_model.py]
+        Model[churn_model.joblib]
+    end
+
+    subgraph "Backend API (FastAPI)"
+        API[main.py]
+        Predict[/predict/churn]
+    end
+
+    subgraph "Frontend (Next.js)"
+        Dash[Dashboard Page]
+        UI[Churn Analytics Module]
+        Cards[KPI Cards / Charts]
+    end
+
+    %% Data Flow
+    R --> Ingest
+    D --> Ingest
+    F --> Ingest
+    Ingest --> Engine
+    Engine --> DF
+    DF --> Train
+    Train --> Model
+    Model --> API
+    API --> Predict
+    Predict <--> UI
+    UI --> Cards
+    Dash --> UI
+
+    style Ingest fill:#f9f,stroke:#333,stroke-width:2px
+    style Train fill:#bbf,stroke:#333,stroke-width:2px
+    style Model fill:#dfd,stroke:#333,stroke-width:2px
+    style Predict fill:#ffd,stroke:#333,stroke-width:2px
+    style UI fill:#dff,stroke:#333,stroke-width:2px

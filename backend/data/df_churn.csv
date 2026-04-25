@@ -1,0 +1,11 @@
+nome,freq_mensal,dias_atraso,valor_mensal,inadimplente,churn,churn_flag,engajamento
+Aluno A,0.4166666666666667,2,100,1,1,1,baixo
+Aluno B,0.25,0,150,1,1,1,baixo
+Aluno C,0.5833333333333334,0,200,1,1,1,baixo
+Aluno D,4.0,0,120,0,0,0,baixo
+Aluno E,5.0,0,180,0,0,0,baixo
+Aluno F,4.333333333333333,0,130,0,0,0,baixo
+Aluno G,0.8333333333333334,0,140,1,1,1,baixo
+Aluno H,1.0,0,160,1,1,1,baixo
+Aluno I,4.583333333333333,0,170,0,0,0,baixo
+Aluno J,4.833333333333333,0,190,0,0,0,baixo

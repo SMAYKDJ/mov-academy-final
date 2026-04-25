@@ -1,0 +1,45 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Churn Analytics Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    // Navigate to the main dashboard page
+    await page.goto('/');
+  });
+
+  test('should render the Churn Analytics section', async ({ page }) => {
+    const churnSection = page.locator('#churn-analytics');
+    await expect(churnSection).toBeVisible();
+    
+    const header = churnSection.locator('h2', { hasText: 'Análise de Churn' });
+    await expect(header).toBeVisible();
+  });
+
+  test('should display Churn KPI card and charts', async ({ page }) => {
+    // The Churn Analytics section is expanded by default in the code state
+    const churnSection = page.locator('#churn-analytics');
+    
+    // Check for Churn Card
+    const churnCard = churnSection.locator('text=Taxa de Churn');
+    await expect(churnCard).toBeVisible();
+
+    // Check for At-Risk Students Table
+    const atRiskTable = churnSection.locator('text=Alunos em Risco');
+    await expect(atRiskTable).toBeVisible();
+  });
+
+  test('should toggle the Churn module visibility', async ({ page }) => {
+    const churnSection = page.locator('#churn-analytics');
+    const toggleButton = churnSection.locator('button', { hasText: /Recolher|Expandir/ });
+    
+    // Initial state is expanded (button says "Recolher")
+    await expect(toggleButton).toHaveText('Recolher');
+    
+    // Click to collapse
+    await toggleButton.click();
+    await expect(toggleButton).toHaveText('Expandir');
+    
+    // Content should be hidden (using text check as a proxy for the conditional render)
+    const churnCard = churnSection.locator('text=Taxa de Churn');
+    await expect(churnCard).not.toBeVisible();
+  });
+});

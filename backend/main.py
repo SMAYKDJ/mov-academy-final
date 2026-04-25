@@ -26,6 +26,7 @@ import re
 import re
 from supabase import create_client, Client
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from .data.utils import classificar_engajamento, calcular_risco
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import stripe
@@ -123,6 +124,14 @@ class StudentInput(BaseModel):
     enrollment_months: int = Field(..., ge=1, description="Months since enrollment")
     age: int = Field(..., ge=16, le=100, description="Student age")
     plan: str = Field(..., description="Subscription plan", examples=["Platinum"])
+
+class ChurnInput(BaseModel):
+    """Input schema for churn risk prediction (feature based)."""
+    nome: str = Field(..., description="Student name")
+    freq_mensal: float = Field(..., ge=0, le=12, description="Monthly training frequency")
+    dias_atraso: int = Field(..., ge=0, description="Days of payment delay")
+    valor_mensal: float = Field(..., gt=0, description="Monthly payment value")
+    inadimplente: int = Field(..., ge=0, le=1, description="Inadimplente flag (0/1)")
 
 
 class PredictionResult(BaseModel):
@@ -241,11 +250,47 @@ async def health_check():
 async def predict_churn(student: StudentInput):
     """
     Predict churn probability for a single student.
-    
     Returns the probability (0-100%), risk level (alto/medio/baixo),
     and prediction timestamp.
     """
     return predict_student(student)
+
+@app.post("/predict/churn", response_model=PredictionResult)
+async def predict_churn_risk(data: ChurnInput):
+    """Predict churn risk using the feature‑based model."""
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model not loaded. Run train_model.py first.")
+    # Build feature vector
+    features = np.array([[
+        data.freq_mensal,
+        data.dias_atraso,
+        data.valor_mensal,
+        data.inadimplente,
+    ]])
+    proba = model.predict_proba(features)[0][1]
+    # Calculate custom score
+    score = calcular_risco({
+        "freq_mensal": data.freq_mensal,
+        "dias_atraso": data.dias_atraso,
+        "valor_mensal": data.valor_mensal,
+        "inadimplente": data.inadimplente,
+    })
+    # Determine risk level based on score thresholds
+    if score > 30:
+        risk = "alto"
+    elif score > 15:
+        risk = "medio"
+    else:
+        risk = "baixo"
+    return PredictionResult(
+        student_id="N/A",
+        name=data.nome,
+        probability=round(float(proba), 4),
+        probability_percent=round(float(proba) * 100, 1),
+        risk_level=risk,
+        predicted_at=datetime.now().isoformat(),
+    )
+
 
 
 @app.post("/predict/batch", response_model=BatchResult)
