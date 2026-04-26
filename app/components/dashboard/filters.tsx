@@ -9,13 +9,22 @@ import { cn } from '@/utils/cn';
  * Uses pill-style chips that feel tactile and toggleable.
  */
 
+import { useDebounce } from '@/hooks/use-debounce';
+
 const statusOptions = ['Todos', 'Ativo', 'Em Risco', 'Inativo'];
 const planOptions = ['Todos', 'Black VIP', 'Platinum', 'Basic Fit'];
 
-export function DashboardFilters() {
+export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => void }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearch = useDebounce(searchTerm, 300);
   const [statusFilter, setStatusFilter] = useState('Todos');
   const [planFilter, setPlanFilter] = useState('Todos');
   const [showAdvanced, setShowAdvanced] = useState(false);
+
+  React.useEffect(() => {
+    onSearch?.(debouncedSearch);
+  }, [debouncedSearch, onSearch]);
+
 
   const hasActiveFilters = statusFilter !== 'Todos' || planFilter !== 'Todos';
 
@@ -32,6 +41,8 @@ export function DashboardFilters() {
             type="text"
             id="filter-search"
             placeholder="Filtrar por nome ou código..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-transparent text-sm outline-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             aria-label="Filtrar alunos"
           />

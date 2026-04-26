@@ -38,23 +38,25 @@ export function RetentionChart({ data }: RetentionChartProps) {
 
           return (
             <div key={item.mes} className="flex-1 flex flex-col items-center group relative">
-              {/* Retention bar */}
-              <div 
-                className={cn(
-                  "w-full rounded-t-lg transition-all duration-500 relative",
-                  isPositive 
-                    ? "bg-gradient-to-t from-emerald-500 to-emerald-400" 
-                    : "bg-gradient-to-t from-amber-500 to-amber-400"
-                )}
-                style={{ height: `${height}%`, minHeight: '10%' }}
-              >
-                {/* Tooltip */}
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                  Ret: {item.taxaRetencao}%
-                  <br />
-                  Churn: {item.churn}%
+                {/* Retention bar */}
+                <div 
+                  className={cn(
+                    "w-full rounded-t-lg transition-all duration-500 relative",
+                    isPositive 
+                      ? "bg-gradient-to-t from-emerald-500 to-emerald-400" 
+                      : "bg-gradient-to-t from-amber-500 to-amber-400"
+                  )}
+                  style={{ height: `${item.taxaRetencao}%`, minHeight: '5%' }}
+                >
+                  {/* Tooltip */}
+                  <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold px-2 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-xl">
+                    Retenção: {item.taxaRetencao}%
+                    <br />
+                    Engajamento: {item.engajamento}%
+                    <br />
+                    Churn: {item.churn}%
+                  </div>
                 </div>
-              </div>
               
               <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-3 uppercase tracking-wider">
                 {item.mes}

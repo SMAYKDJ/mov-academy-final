@@ -101,6 +101,50 @@ export default function AlunosPage() {
     setFormOpen(true);
   };
 
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const rows = text.split('\n').filter(row => row.trim() !== '');
+      if (rows.length < 2) throw new Error('Arquivo vazio ou inválido');
+
+      const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
+      const newAlunos: Aluno[] = rows.slice(1).map((row, index) => {
+        const values = row.split(',').map(v => v.trim());
+        const data: any = {};
+        headers.forEach((h, i) => {
+          data[h] = values[i];
+        });
+
+        return {
+          id: Math.max(...alunos.map(a => a.id), 0) + index + 1,
+          nome: data.nome || 'Novo Aluno',
+          email: data.email || '',
+          cpf: data.cpf || '',
+          telefone: data.telefone || '',
+          plano: data.plano || 'Mensal',
+          status: data.status || 'ativo',
+          dataMatricula: data.datamatricula || new Date().toLocaleDateString('pt-BR'),
+          ultimoPagamento: data.ultimopagamento || new Date().toLocaleDateString('pt-BR'),
+          frequencia: Number(data.frequencia) || 0,
+          risco: Number(data.risco) || 0,
+          historicoPagamentos: [],
+        };
+      });
+
+      setAlunos(prev => [...newAlunos, ...prev]);
+      showToast(`${newAlunos.length} alunos importados com sucesso`, 'success', 'Importação Concluída');
+    } catch (err) {
+      showToast('Erro ao processar o arquivo CSV. Verifique o formato.', 'error', 'Erro na Importação');
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const handleSave = useCallback((data: AlunoFormData) => {
     if (editingAluno) {
       // Update
@@ -155,12 +199,19 @@ export default function AlunosPage() {
                 Exportar
               </button>
               <button 
-                onClick={() => showToast('Selecione um arquivo CSV/XLS para importar', 'info', 'Importar Alunos')}
+                onClick={() => fileInputRef.current?.click()}
                 className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
               >
                 <Upload className="w-4 h-4" />
                 Importar
               </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImport} 
+                accept=".csv" 
+                className="hidden" 
+              />
               <button
                 onClick={handleNewAluno}
                 className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"

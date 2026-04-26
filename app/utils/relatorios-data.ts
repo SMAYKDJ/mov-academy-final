@@ -13,12 +13,12 @@ export const biStatsData: BIStats = {
 };
 
 export const retentionHistoryData: RetentionData[] = [
-  { mes: 'Nov', taxaRetencao: 96.5, churn: 3.5 },
-  { mes: 'Dez', taxaRetencao: 97.2, churn: 2.8 },
-  { mes: 'Jan', taxaRetencao: 95.8, churn: 4.2 },
-  { mes: 'Fev', taxaRetencao: 97.5, churn: 2.5 },
-  { mes: 'Mar', taxaRetencao: 98.1, churn: 1.9 },
-  { mes: 'Abr', taxaRetencao: 97.6, churn: 2.4 },
+  { mes: 'Nov', taxaRetencao: 96.5, churn: 3.5, engajamento: 72 },
+  { mes: 'Dez', taxaRetencao: 97.2, churn: 2.8, engajamento: 68 },
+  { mes: 'Jan', taxaRetencao: 95.8, churn: 4.2, engajamento: 75 },
+  { mes: 'Fev', taxaRetencao: 97.5, churn: 2.5, engajamento: 82 },
+  { mes: 'Mar', taxaRetencao: 98.1, churn: 1.9, engajamento: 88 },
+  { mes: 'Abr', taxaRetencao: 97.6, churn: 2.4, engajamento: 85 },
 ];
 
 export const frequencyHeatmapData: FrequenciaHoraria[] = [

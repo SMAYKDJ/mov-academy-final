@@ -6,6 +6,7 @@ export interface RetentionData {
   mes: string;
   taxaRetencao: number; // Percentage
   churn: number; // Percentage
+  engajamento: number; // Percentage
 }
 
 export interface FrequenciaHoraria {

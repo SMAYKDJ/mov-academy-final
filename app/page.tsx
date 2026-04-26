@@ -38,9 +38,15 @@ export default function DashboardPage() {
 
   // Real Data Persistence
   const [alunos, setAlunos] = useLocalStorage('moviment-alunos', alunosData, 'alunos');
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Real-time Churn Prediction from local data
   const churnSummary = generateRealChurnSummary(alunos);
+
+  const filteredAlunos = alunos.filter(aluno => 
+    aluno.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(aluno.id).includes(searchTerm)
+  );
 
   useEffect(() => setMounted(true), []);
 
@@ -98,7 +104,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Filters */}
-          <DashboardFilters />
+          <DashboardFilters onSearch={setSearchTerm} />
 
           {/* KPI Cards */}
           <KPICards stats={stats} />
@@ -169,7 +175,7 @@ export default function DashboardPage() {
             {/* Left Column — Table (spans 2 columns) */}
             <div className="lg:col-span-2 space-y-8">
               <DataTable 
-                data={alunos.map(a => ({
+                data={filteredAlunos.map(a => ({
                   id: String(a.id),
                   name: a.nome,
                   email: a.email,

@@ -1,0 +1,23 @@
+SyntaxError: /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/tests/ui/button-audit.spec.ts: Identifier 'themeToggle' has already been declared. (30:10)
+
+  28 |
+  29 |     // 4. Test Theme Toggle (now in dashboard header)
+> 30 |     const themeToggle = page.locator('button[aria-label*="modo"], button[aria-label*="tema"]');
+     |           ^
+  31 |     if (await themeToggle.count() > 0) {
+  32 |       console.log('Testing Theme Toggle...');
+  33 |       const initialTheme = await page.evaluate(() => document.documentElement.className);
+
+   at tests/ui/button-audit.spec.ts:30
+
+  28 |
+  29 |     // 4. Test Theme Toggle (now in dashboard header)
+> 30 |     const themeToggle = page.locator('button[aria-label*="modo"], button[aria-label*="tema"]');
+     |          ^
+  31 |     if (await themeToggle.count() > 0) {
+  32 |       console.log('Testing Theme Toggle...');
+  33 |       const initialTheme = await page.evaluate(() => document.documentElement.className);
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+

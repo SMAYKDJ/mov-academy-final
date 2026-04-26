@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ActivityHistory } from '@/components/dashboard/activity-history';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -50,6 +51,7 @@ const roleLabel: Record<string, string> = {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -249,13 +251,15 @@ export function Header({ onMenuClick }: HeaderProps) {
 
                 {/* Dropdown Footer — now navigates */}
                 <div className="px-4 py-2.5 border-t border-gray-100 dark:border-[#1e2235] text-center">
-                  <Link
-                    href="/relatorios"
-                    onClick={() => setNotifOpen(false)}
+                  <button
+                    onClick={() => {
+                      setNotifOpen(false);
+                      setShowHistory(true);
+                    }}
                     className="text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:underline"
                   >
                     Ver histórico de atividades →
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
@@ -286,6 +290,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           </Link>
         </div>
       </div>
+      {showHistory && <ActivityHistory onClose={() => setShowHistory(false)} />}
     </header>
   );
 }

@@ -1,0 +1,145 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Library/Developer/CommandLineTools/usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre
+plugins: anyio-4.12.1, asyncio-1.2.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 3 items
+
+tests/api/test_churn_endpoint.py::test_predict_churn_success FAILED      [ 33%]
+tests/api/test_churn_endpoint.py::test_predict_churn_missing_field PASSED [ 66%]
+tests/api/test_churn_endpoint.py::test_predict_churn_model_not_loaded FAILED [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_predict_churn_success __________________________
+
+    def test_predict_churn_success():
+        with TestClient(app) as client:
+            payload = {
+                "nome": "Aluno Test",
+                "freq_mensal": 5.0,
+                "dias_atraso": 2,
+                "valor_mensal": 150.0,
+                "inadimplente": 0,
+            }
+            response = client.post("/predict/churn", json=payload)
+>           assert response.status_code == 200
+E           assert 422 == 200
+E            +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests/api/test_churn_endpoint.py:24: AssertionError
+----------------------------- Captured stdout call -----------------------------
+  ✅ Model loaded from /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/backend/models/churn_model.joblib
+  ✅ Label encoder loaded from /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/backend/models/label_encoder.joblib
+  ✅ Metrics loaded: Accuracy=1.0
+  ✅ SHAP Explainer initialized (TreeExplainer)
+_____________________ test_predict_churn_model_not_loaded ______________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1223133d0>
+
+    def test_predict_churn_model_not_loaded(monkeypatch):
+        # Simulate model not loaded
+        monkeypatch.setattr('backend.main.model', None)
+        with TestClient(app) as client:
+            payload = {
+                "nome": "Aluno Test",
+                "freq_mensal": 5.0,
+                "dias_atraso": 2,
+                "valor_mensal": 150.0,
+                "inadimplente": 0,
+            }
+            response = client.post("/predict/churn", json=payload)
+>           assert response.status_code == 503
+E           assert 422 == 503
+E            +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests/api/test_churn_endpoint.py:54: AssertionError
+----------------------------- Captured stdout call -----------------------------
+  ✅ Model loaded from /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/backend/models/churn_model.joblib
+  ✅ Label encoder loaded from /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/backend/models/label_encoder.joblib
+  ✅ Metrics loaded: Accuracy=1.0
+  ✅ SHAP Explainer initialized (TreeExplainer)
+=============================== warnings summary ===============================
+../../Library/Python/3.9/lib/python/site-packages/starlette/formparsers.py:12
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/starlette/formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/expressions/parser.py:72
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/expressions/parser.py:72: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/expressions/parser.py:85
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/expressions/parser.py:85: PyparsingDeprecationWarning: 'escChar' argument is deprecated, use 'esc_char'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/expressions/parser.py:85
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/expressions/parser.py:85: PyparsingDeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:366
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:366: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, data: TableMetadataV1) -> TableMetadataV1:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:495
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:495: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:499
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:499: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:503
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:503: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:507
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:507: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:539
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:539: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:543
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:543: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:547
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:547: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:551
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:551: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../../Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+../../Library/Python/3.9/lib/python/site-packages/supabase/_sync/auth_client.py:46
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/supabase/_sync/auth_client.py:46: DeprecationWarning: Python versions below 3.10 are deprecated and will not be supported in future versions. Please upgrade to Python 3.10 or newer.
+    super().__init__(
+
+backend/main.py:90
+  /Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/backend/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+../../Library/Python/3.9/lib/python/site-packages/fastapi/applications.py:4495
+  /Users/smaykdornellesuchoacavalcante/Library/Python/3.9/lib/python/site-packages/fastapi/applications.py:4495: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/api/test_churn_endpoint.py::test_predict_churn_success - assert ...
+FAILED tests/api/test_churn_endpoint.py::test_predict_churn_model_not_loaded
+=================== 2 failed, 1 passed, 17 warnings in 2.51s ===================
