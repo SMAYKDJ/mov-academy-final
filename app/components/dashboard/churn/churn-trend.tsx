@@ -36,6 +36,7 @@ export function ChurnTrend({ data, className }: ChurnTrendProps) {
   const xStep = plotW / (data.length - 1);
 
   const toY = (val: number) => {
+    if (maxVal === minVal) return padding.top + plotH; // Fallback to bottom if all values are 0 or equal
     const ratio = (val - minVal) / (maxVal - minVal);
     return padding.top + plotH - ratio * plotH;
   };

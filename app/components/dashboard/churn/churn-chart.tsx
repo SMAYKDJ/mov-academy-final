@@ -40,12 +40,12 @@ export function ChurnChart({ distribution, className }: ChurnChartProps) {
   let cumulativePercent = 0;
   const gradientStops = segments.map((seg) => {
     const start = cumulativePercent;
-    const percent = (seg.count / total) * 100;
+    const percent = total > 0 ? (seg.count / total) * 100 : 0;
     cumulativePercent += percent;
     return `${seg.color} ${start}% ${cumulativePercent}%`;
   });
 
-  const conicGradient = `conic-gradient(${gradientStops.join(', ')})`;
+  const conicGradient = total > 0 ? `conic-gradient(${gradientStops.join(', ')})` : 'none';
 
   return (
     <div
@@ -147,7 +147,7 @@ export function ChurnChart({ distribution, className }: ChurnChartProps) {
                     {seg.count}
                   </span>
                   <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded-md">
-                    {((seg.count / total) * 100).toFixed(0)}%
+                    {total > 0 ? ((seg.count / total) * 100).toFixed(0) : 0}%
                   </span>
                 </div>
               </div>
@@ -160,7 +160,7 @@ export function ChurnChart({ distribution, className }: ChurnChartProps) {
       {viewMode === 'bar' && (
         <div className="space-y-4">
           {segments.map((seg) => {
-            const percent = (seg.count / total) * 100;
+            const percent = total > 0 ? (seg.count / total) * 100 : 0;
             return (
               <div key={seg.key} className="space-y-1.5">
                 <div className="flex justify-between items-center">
