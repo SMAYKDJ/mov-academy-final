@@ -12,6 +12,7 @@ import { alunosData } from '@/utils/alunos-data';
 import { useToast } from '@/components/ui/toast';
 import { Plus, Download, Upload } from 'lucide-react';
 import { useLocalStorage, exportToCSV } from '@/utils/persistence';
+import { useSearchParams } from 'next/navigation';
 import type { Aluno, AlunosFilterState, AlunoFormData } from '@/types/aluno';
 
 /**
@@ -21,6 +22,7 @@ export default function AlunosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading] = useState(false);
   const { showToast } = useToast();
+  const searchParams = useSearchParams();
 
   // Data state with persistence
   const [alunos, setAlunos, isLoaded] = useLocalStorage<Aluno[]>('moviment-alunos', alunosData, 'alunos');
@@ -38,6 +40,26 @@ export default function AlunosPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [editingAluno, setEditingAluno] = useState<Aluno | null>(null);
+
+  // Deep linking for notifications
+  useEffect(() => {
+    if (!isLoaded) return;
+    
+    const q = searchParams.get('search');
+    const id = searchParams.get('id');
+    
+    if (q) {
+      setFilters(prev => ({ ...prev, search: q }));
+    }
+
+    if (id) {
+      const aluno = alunos.find(a => String(a.id) === id);
+      if (aluno) {
+        setSelectedAluno(aluno);
+        setDrawerOpen(true);
+      }
+    }
+  }, [searchParams, isLoaded, alunos]);
 
   // Debounced search filter
   const [debouncedSearch, setDebouncedSearch] = useState('');

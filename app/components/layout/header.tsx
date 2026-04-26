@@ -21,12 +21,13 @@ interface Notification {
   tempo: string;
   lida: boolean;
   tipo: 'pagamento' | 'aluno' | 'alerta' | 'aula';
+  actionUrl?: string;
 }
 
 const initialNotifications: Notification[] = [
-  { id: 'n1', titulo: 'Pagamento recebido', descricao: 'João Silva — Plano Mensal (R$ 129,90)', tempo: '5 min atrás', lida: false, tipo: 'pagamento' },
-  { id: 'n2', titulo: 'Novo aluno cadastrado', descricao: 'Maria Oliveira completou o cadastro', tempo: '23 min atrás', lida: false, tipo: 'aluno' },
-  { id: 'n3', titulo: 'Mensalidade vencida', descricao: 'Pedro Lima — vencida há 3 dias', tempo: '1h atrás', lida: false, tipo: 'alerta' },
+  { id: 'n1', titulo: 'Pagamento recebido', descricao: 'João Silva — Plano Mensal (R$ 129,90)', tempo: '5 min atrás', lida: false, tipo: 'pagamento', actionUrl: '/financeiro?id=txn_1' },
+  { id: 'n2', titulo: 'Novo aluno cadastrado', descricao: 'Maria Oliveira completou o cadastro', tempo: '23 min atrás', lida: false, tipo: 'aluno', actionUrl: '/alunos?search=Maria' },
+  { id: 'n3', titulo: 'Mensalidade vencida', descricao: 'Pedro Lima — vencida há 3 dias', tempo: '1h atrás', lida: false, tipo: 'alerta', actionUrl: '/financeiro?search=Pedro' },
   { id: 'n4', titulo: 'Aula de Spinning às 18h', descricao: '12 alunos confirmados — Turma 1', tempo: '2h atrás', lida: true, tipo: 'aula' },
 ];
 
@@ -91,7 +92,14 @@ export function Header({ onMenuClick }: HeaderProps) {
   }, [notifOpen]);
 
   const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, lida: true })));
-  const markRead = (id: string) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, lida: true } : n));
+  const markRead = (id: string) => {
+    const notif = notifications.find(n => n.id === id);
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, lida: true } : n));
+    setNotifOpen(false);
+    if (notif?.actionUrl) {
+      router.push(notif.actionUrl);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

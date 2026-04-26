@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { FinanceiroKPI } from '@/components/dashboard/financeiro/financeiro-kpi';
@@ -43,6 +44,27 @@ export default function FinanceiroPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingTxn, setEditingTxn] = useState<Transaction | null>(null);
   const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
+  const searchParams = useSearchParams();
+
+  // Deep linking for notifications
+  useEffect(() => {
+    if (!isLoaded) return;
+    
+    const txnId = searchParams.get('id');
+    const q = searchParams.get('search');
+    
+    if (txnId) {
+      const txn = transacoes.find(t => t.id === txnId);
+      if (txn) {
+        setSelectedTxn(txn);
+        setDrawerOpen(true);
+      }
+    }
+    
+    if (q) {
+      setFilters(prev => ({ ...prev, search: q }));
+    }
+  }, [searchParams, isLoaded, transacoes]);
 
   // Debounced search
   const [debouncedSearch, setDebouncedSearch] = useState('');
