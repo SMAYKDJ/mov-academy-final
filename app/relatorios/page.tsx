@@ -16,9 +16,23 @@ import {
 import { FileDown, Calendar, Filter, Sparkles } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 
+import { exportToCSV } from '@/utils/persistence';
+
 export default function RelatoriosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('Abril, 2026');
   const { showToast } = useToast();
+
+  const handleExportBI = () => {
+    const exportData = retentionHistoryData.map(d => ({
+      Mês: d.mes,
+      'Taxa Retenção (%)': d.taxaRetencao,
+      'Churn (%)': d.churn,
+      'Engajamento (%)': d.engajamento
+    }));
+    exportToCSV(exportData, 'relatorio-bi-moviment');
+    showToast('Relatório de Business Intelligence exportado', 'success', 'Exportar BI');
+  };
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
@@ -45,14 +59,14 @@ export default function RelatoriosPage() {
             </div>
             <div className="flex items-center gap-3">
               <button 
-                onClick={() => showToast('Seletor de meses aberto', 'info', 'Filtro Temporal')}
+                onClick={() => showToast('Funcionalidade de filtro por mês em desenvolvimento', 'info', 'Filtro Temporal')}
                 className="px-4 py-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
               >
                 <Calendar className="w-4 h-4" />
-                Abril, 2026
+                {selectedMonth}
               </button>
               <button 
-                onClick={() => showToast('Gerando relatório consolidado de BI...', 'success', 'Exportar BI')}
+                onClick={handleExportBI}
                 className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg flex items-center gap-2"
               >
                 <FileDown className="w-4 h-4" />
