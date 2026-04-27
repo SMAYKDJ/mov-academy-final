@@ -4,11 +4,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { UserProfile, UserRole } from '@/types/auth';
 
-interface AuthContextType {
   user: UserProfile | null;
   loading: boolean;
   signOut: () => Promise<void>;
   hasRole: (roles: UserRole[]) => boolean;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -79,8 +79,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return user ? roles.includes(user.role) : false;
   };
 
+  const refreshProfile = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      
+      if (profile) {
+        setUser(profile as UserProfile);
+      } else {
+        setUser({
+          id: session.user.id,
+          email: session.user.email!,
+          nome: session.user.user_metadata?.nome || 'Usuário',
+          role: (session.user.user_metadata?.role as UserRole) || 'admin',
+          avatar_url: session.user.user_metadata?.avatar_url
+        });
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signOut, hasRole }}>
+    <AuthContext.Provider value={{ user, loading, signOut, hasRole, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,13 +9,14 @@ import { BodyComposition } from '@/components/dashboard/biometria/body-compositi
 import { BiometriaHistory } from '@/components/dashboard/biometria/biometria-history';
 import { BiometriaForm } from '@/components/dashboard/biometria/biometria-form';
 import { biometriaKPIData, evaluationHistory, evolutionData } from '@/utils/biometria-data';
-import { StudentSelector } from '@/components/dashboard/student-selector';
+import { StudentSelector, mockStudents } from '@/components/dashboard/student-selector';
 import { Plus, FileDown, Sparkles, AlertTriangle, TrendingDown, UserCircle2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 
 export default function BiometriaPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
   const { showToast } = useToast();
 
   return (
@@ -32,7 +33,13 @@ export default function BiometriaPage() {
               <UserCircle2 className="w-4 h-4 text-gray-400" />
               <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Modo Individual</span>
             </div>
-            <StudentSelector />
+            <StudentSelector 
+              selectedId={selectedStudentId}
+              onSelect={(s) => {
+                setSelectedStudentId(s.id);
+                showToast(`Carregando histórico biométrico de ${s.name}...`, 'info');
+              }}
+            />
           </div>
           <div className="hidden sm:block text-right">
             <p className="text-[10px] text-gray-400 uppercase font-black italic tracking-tighter">Sincronizado com o Banco Central</p>

@@ -20,10 +20,12 @@ export function useLocalStorage<T>(key: string, initialValue: T, tableName?: str
               if (tableName === 'alunos') {
                 return {
                   ...item,
-                  ultimoPagamento: item.ultimo_pagamento,
-                  dataMatricula: item.data_matricula,
-                  dataNascimento: item.data_nascimento,
-                  // Keep snake_case keys as well to avoid breaking any other logic
+                  ultimoPagamento: item.ultimo_pagamento || item.ultimoPagamento,
+                  dataMatricula: item.data_matricula || item.dataMatricula,
+                  dataNascimento: item.data_nascimento || item.dataNascimento,
+                  historicoPagamentos: item.historico_pagamentos || item.historicoPagamentos || [],
+                  endereco: item.endereco || 'Não informado',
+                  objetivo: item.objetivo || 'Treino geral',
                 };
               }
               return item;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { BIOverviewKPI } from '@/components/dashboard/relatorios/bi-overview-kpi';
@@ -11,27 +11,80 @@ import {
   biStatsData, 
   retentionHistoryData, 
   frequencyHeatmapData, 
-  dailyCheckinsData 
+  dailyCheckinsData,
+  planDistributionData
 } from '@/utils/relatorios-data';
-import { FileDown, Calendar, Filter, Sparkles } from 'lucide-react';
+import { 
+  FileDown, 
+  Calendar, 
+  Filter, 
+  Sparkles, 
+  X, 
+  CheckCircle2, 
+  MessageSquare, 
+  ArrowRight,
+  TrendingUp,
+  Users2,
+  CalendarClock
+} from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
-
-import { exportToCSV } from '@/utils/persistence';
 
 export default function RelatoriosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState('Abril, 2026');
+  const [selectedMonth, setSelectedMonth] = useState('Abril');
+  const [showMonthSelector, setShowMonthSelector] = useState(false);
+  const [showActionPlan, setShowActionPlan] = useState(false);
   const { showToast } = useToast();
 
-  const handleExportBI = () => {
-    const exportData = retentionHistoryData.map(d => ({
-      Mês: d.mes,
-      'Taxa Retenção (%)': d.taxaRetencao,
-      'Churn (%)': d.churn,
-      'Engajamento (%)': d.engajamento
+  const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
+
+  // Dynamic Data Simulator based on selected month
+  const dynamicData = useMemo(() => {
+    const monthIndex = months.indexOf(selectedMonth);
+    const seed = monthIndex + 1;
+    
+    // Simulate checkins (with weekend drops)
+    const checkins = Array.from({ length: 7 }, (_, i) => {
+      const day = i + 7;
+      const isWeekend = i === 4 || i === 5; // Fri/Sat/Sun logic
+      const base = 250 + (seed * 10);
+      const val = isWeekend ? base * 0.4 : base + (Math.sin(seed + i) * 30);
+      return { 
+        data: `${day < 10 ? '0' + day : day}/0${monthIndex + 1}`, 
+        quantidade: Math.floor(val) 
+      };
+    });
+
+    // Simulate heatmap (picos às 06h e 18h)
+    const heatmap = frequencyHeatmapData.map(h => ({
+      ...h,
+      seg: Math.floor(h.seg * (0.9 + seed * 0.02)),
+      qua: Math.floor(h.qua * (0.8 + seed * 0.03)),
+      sex: Math.floor(h.sex * (0.7 + seed * 0.05)),
     }));
-    exportToCSV(exportData, 'relatorio-bi-moviment');
-    showToast('Relatório de Business Intelligence exportado', 'success', 'Exportar BI');
+
+    return { checkins, heatmap };
+  }, [selectedMonth]);
+
+  const handleExportBI = () => {
+    showToast(`Preparando dados de ${selectedMonth}...`, 'info', 'Exportar BI');
+    
+    setTimeout(() => {
+      const headers = ['Data', 'Check-ins'];
+      const csvRows = dynamicData.checkins.map(d => `${d.data},${d.quantidade}`);
+      
+      const csvContent = [headers.join(','), ...csvRows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `bi_moviment_${selectedMonth.toLowerCase()}_2026.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showToast(`Relatório de ${selectedMonth} exportado!`, 'success', 'Download Concluído');
+    }, 1200);
   };
 
   return (
@@ -57,14 +110,39 @@ export default function RelatoriosPage() {
                 Métricas de retenção, churn e inteligência de crescimento
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => showToast('Funcionalidade de filtro por mês em desenvolvimento', 'info', 'Filtro Temporal')}
-                className="px-4 py-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
-              >
-                <Calendar className="w-4 h-4" />
-                {selectedMonth}
-              </button>
+            <div className="flex items-center gap-3 relative">
+              <div className="relative">
+                <button 
+                  onClick={() => setShowMonthSelector(!showMonthSelector)}
+                  className="px-4 py-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
+                >
+                  <Calendar className="w-4 h-4" />
+                  {selectedMonth}, 2026
+                </button>
+
+                {showMonthSelector && (
+                  <div className="absolute top-full mt-2 right-0 w-48 bg-white dark:bg-[#0f1117] border border-gray-100 dark:border-[#1e2235] rounded-xl shadow-2xl z-50 overflow-hidden animate-scale-in">
+                    {months.map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => {
+                          setSelectedMonth(m);
+                          setShowMonthSelector(false);
+                          showToast(`Período alterado para ${m}, 2026`, 'info', 'Filtro Atualizado');
+                        }}
+                        className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
+                          selectedMonth === m 
+                            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 font-bold' 
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        {m}, 2026
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <button 
                 onClick={handleExportBI}
                 className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg flex items-center gap-2"
@@ -76,43 +154,125 @@ export default function RelatoriosPage() {
           </div>
 
           {/* Core Stats */}
-          <BIOverviewKPI stats={biStatsData} />
+          <section className="animate-fade-in">
+            <BIOverviewKPI stats={biStatsData} />
+          </section>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
              {/* Weekly Frequency */}
-             <FrequencyHeatmap data={frequencyHeatmapData} />
+             <div className="h-full">
+               <FrequencyHeatmap data={dynamicData.heatmap} />
+             </div>
              
              <div className="space-y-6">
                 {/* Retention History */}
                 <RetentionChart data={retentionHistoryData} />
                 
                 {/* Daily Checkins */}
-                <CheckinsChart data={dailyCheckinsData} />
+                <CheckinsChart data={dynamicData.checkins} />
              </div>
           </div>
 
           {/* AI Strategy Advice Placeholder */}
-          <div className="bg-gradient-to-r from-primary-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+          <div className="bg-gradient-to-r from-primary-600 to-indigo-700 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden group mt-4">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform pointer-events-none">
                <Sparkles className="w-32 h-32" />
             </div>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5" />
-                <h3 className="text-lg font-bold">Insights da IA — Estratégia de Retenção</h3>
+                <Sparkles className="w-5 h-5 text-primary-200" />
+                <h3 className="text-xl font-bold">Insights da IA — Estratégia de Retenção</h3>
               </div>
-              <p className="text-primary-100 text-sm max-w-2xl leading-relaxed">
+              <p className="text-primary-100 text-base max-w-2xl leading-relaxed">
                 Detectamos uma queda de 4% na frequência de alunos do plano &quot;Trimestral&quot; nas segundas-feiras. 
                 Recomendamos uma campanha de reengajamento via WhatsApp para 42 alunos identificados com alto risco de churn.
               </p>
               <button 
-                onClick={() => showToast('Plano de ação exportado para o WhatsApp do time comercial', 'success', 'IA Strategy')}
-                className="mt-6 px-6 py-2.5 bg-white text-primary-700 rounded-xl text-sm font-bold hover:bg-primary-50 transition-all"
+                onClick={() => setShowActionPlan(true)}
+                className="mt-8 px-8 py-3 bg-white text-primary-700 rounded-xl text-sm font-bold hover:bg-primary-50 transition-all shadow-lg hover:shadow-primary-500/20 active:scale-95"
               >
                 Ver Plano de Ação
               </button>
             </div>
           </div>
+
+          {/* Action Plan Modal */}
+          {showActionPlan && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+              <div className="bg-white dark:bg-[#0f1117] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
+                <div className="p-6 border-b border-gray-100 dark:border-[#1e2235] flex items-center justify-between bg-primary-600 text-white">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-6 h-6" />
+                    <div>
+                      <h2 className="text-lg font-bold">Plano de Ação Estratégico</h2>
+                      <p className="text-primary-100 text-xs">Gerado pela IA Moviment em {selectedMonth}, 2026</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setShowActionPlan(false)}
+                    className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                      Próximos Passos Recomendados
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        { title: 'Reengajamento WhatsApp', desc: 'Enviar mensagens para os 42 alunos com risco alto.', icon: MessageSquare },
+                        { title: 'Oferta de Upgrade', desc: 'Converter alunos Mensais para o Trimestral com 15% OFF.', icon: TrendingUp },
+                        { title: 'Evento de Integração', desc: 'Realizar aulão aos sábados para aumentar retenção.', icon: Users2 },
+                        { title: 'Auditoria de Treinos', desc: 'Verificar alunos sem troca de treino há > 45 dias.', icon: CalendarClock },
+                      ].map((step, i) => (
+                        <div key={i} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-[#1e2235] flex gap-3">
+                          <div className="p-2 bg-white dark:bg-[#1a1d27] rounded-lg h-fit shadow-sm">
+                            <step.icon className="w-4 h-4 text-primary-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">{step.title}</p>
+                            <p className="text-xs text-gray-500 mt-1">{step.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-primary-50 dark:bg-primary-900/10 p-4 rounded-xl border border-primary-100 dark:border-primary-900/30">
+                    <h4 className="text-xs font-bold text-primary-700 dark:text-primary-400 uppercase tracking-widest mb-2">Meta de Crescimento</h4>
+                    <div className="flex items-end gap-2">
+                      <span className="text-3xl font-black text-primary-600 tracking-tighter">+12%</span>
+                      <span className="text-xs text-primary-600/70 mb-1.5 font-medium">previsão para Junho</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 bg-gray-50 dark:bg-[#151821] border-t border-gray-100 dark:border-[#1e2235] flex flex-col sm:flex-row gap-3">
+                  <button 
+                    onClick={() => {
+                      showToast('Plano enviado para o time comercial via WhatsApp', 'success');
+                      setShowActionPlan(false);
+                    }}
+                    className="flex-1 px-6 py-3 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Enviar para Equipe
+                  </button>
+                  <button 
+                    onClick={() => setShowActionPlan(false)}
+                    className="px-6 py-3 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] text-gray-600 dark:text-gray-400 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
         </main>
       </div>

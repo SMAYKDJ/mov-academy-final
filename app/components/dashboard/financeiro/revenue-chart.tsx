@@ -47,48 +47,57 @@ export function RevenueChart({ data }: RevenueChartProps) {
       </div>
 
       {/* Chart */}
-      <div className="flex items-end gap-3 h-48 md:h-56" role="img" aria-label="Gráfico de receita e despesas">
+      <div className="flex items-end gap-3 h-48 md:h-56 mt-4" role="img" aria-label="Gráfico de receita e despesas">
         {data.map((month, idx) => {
           const receitaHeight = (month.receita / maxValue) * 100;
           const despesaHeight = (month.despesa / maxValue) * 100;
           const isLast = idx === data.length - 1;
 
           return (
-            <div key={month.mes} className="flex-1 flex flex-col items-center gap-1 group">
-              {/* Bars */}
-              <div className="w-full flex items-end justify-center gap-1 h-full">
+            <div key={month.mes} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+              {/* Bars Container */}
+              <div className="w-full flex items-end justify-center gap-1.5 h-full px-1">
+                
                 {/* Revenue bar */}
-                <div className="relative flex-1 max-w-8">
+                <div className="relative flex-1 max-w-[40px] h-full flex flex-col justify-end">
                   <div
                     className={cn(
-                      "w-full rounded-t-md bg-gradient-to-t from-emerald-500 to-emerald-400 transition-all duration-700 ease-out group-hover:from-emerald-600 group-hover:to-emerald-500",
-                      isLast && "ring-2 ring-emerald-200 dark:ring-emerald-800 ring-offset-1 ring-offset-white dark:ring-offset-[#0f1117]"
+                      "w-full rounded-t-lg bg-gradient-to-t from-emerald-600 to-emerald-400 transition-all duration-700 ease-out group-hover:shadow-lg group-hover:-translate-y-1 relative",
+                      isLast && "ring-2 ring-emerald-400 dark:ring-emerald-500 ring-offset-2 ring-offset-white dark:ring-offset-[#0f1117]"
                     )}
                     style={{ height: `${receitaHeight}%`, minHeight: '4px' }}
-                    title={`Receita ${month.mes}: ${formatCurrency(month.receita)}`}
-                  />
-                  {/* Tooltip */}
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[10px] font-bold rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                    {formatCurrency(month.receita)}
+                  >
+                    <div className="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-lg" />
+                    
+                    {/* Tooltip Revenue */}
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black rounded-lg opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none z-20 shadow-xl whitespace-nowrap">
+                      +{formatCurrency(month.receita)}
+                    </div>
                   </div>
                 </div>
 
                 {/* Expense bar */}
-                <div className="relative flex-1 max-w-8">
+                <div className="relative flex-1 max-w-[40px] h-full flex flex-col justify-end">
                   <div
                     className={cn(
-                      "w-full rounded-t-md bg-gradient-to-t from-red-500 to-rose-400 transition-all duration-700 ease-out group-hover:from-red-600 group-hover:to-rose-500",
-                      isLast && "ring-2 ring-red-200 dark:ring-red-800 ring-offset-1 ring-offset-white dark:ring-offset-[#0f1117]"
+                      "w-full rounded-t-lg bg-gradient-to-t from-red-600 to-rose-400 transition-all duration-700 ease-out group-hover:shadow-lg group-hover:-translate-y-1 relative",
+                      isLast && "ring-2 ring-red-400 dark:ring-red-500 ring-offset-2 ring-offset-white dark:ring-offset-[#0f1117]"
                     )}
                     style={{ height: `${despesaHeight}%`, minHeight: '4px' }}
-                    title={`Despesas ${month.mes}: ${formatCurrency(month.despesa)}`}
-                  />
+                  >
+                    <div className="absolute inset-x-0 top-0 h-1/2 bg-white/10 rounded-t-lg" />
+                    
+                    {/* Tooltip Expense */}
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-red-600 text-white text-[10px] font-black rounded-lg opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none z-20 shadow-xl whitespace-nowrap">
+                      -{formatCurrency(month.despesa)}
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Month label */}
               <span className={cn(
-                "text-[10px] font-bold uppercase tracking-wider mt-1",
+                "text-[10px] font-black uppercase tracking-tighter mt-2",
                 isLast ? "text-primary-600 dark:text-primary-400" : "text-gray-400 dark:text-gray-500"
               )}>
                 {month.mes}

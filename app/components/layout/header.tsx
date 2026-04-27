@@ -59,8 +59,21 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { showToast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const getPageTitle = () => {
+    if (pathname.startsWith('/alunos')) return { title: 'Gestão de Alunos', desc: 'Controle de cadastros e planos' };
+    if (pathname.startsWith('/treinos')) return { title: 'Central de Treinos', desc: 'Prescrição e acompanhamento' };
+    if (pathname.startsWith('/financeiro')) return { title: 'Gestão Financeira', desc: 'Fluxo de caixa e mensalidades' };
+    if (pathname.startsWith('/biometria')) return { title: 'Biometria & Evolução', desc: 'Avaliações e composição corporal' };
+    if (pathname.startsWith('/relatorios')) return { title: 'Business Intelligence', desc: 'Análise estratégica de dados' };
+    if (pathname.startsWith('/configuracoes')) return { title: 'Configurações', desc: 'Ajustes do sistema e perfil' };
+    return { title: 'Dashboard', desc: 'Visão geral da academia' };
+  };
+
+  const { title, desc } = getPageTitle();
 
   const unreadCount = notifications.filter(n => !n.lida).length;
 
@@ -133,8 +146,8 @@ export function Header({ onMenuClick }: HeaderProps) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="hidden md:block">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Dashboard</h2>
-            <p className="text-xs text-gray-400 dark:text-gray-500 -mt-0.5">Visão geral da academia</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight">{title}</h2>
+            <p className="text-xs text-gray-400 dark:text-gray-500 -mt-0.5">{desc}</p>
           </div>
         </div>
 

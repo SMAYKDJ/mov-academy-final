@@ -9,6 +9,7 @@ interface TreinoDrawerProps {
   plano: WorkoutPlan | null;
   open: boolean;
   onClose: () => void;
+  onEdit?: () => void;
 }
 
 const objectiveLabel: Record<WorkoutObjective, string> = {
@@ -33,7 +34,7 @@ const muscleLabels: Record<string, string> = {
   antebraco: 'Antebraço', trapezio: 'Trapézio',
 };
 
-export function TreinoDrawer({ plano, open, onClose }: TreinoDrawerProps) {
+export function TreinoDrawer({ plano, open, onClose, onEdit }: TreinoDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -174,7 +175,10 @@ export function TreinoDrawer({ plano, open, onClose }: TreinoDrawerProps) {
             <Dumbbell className="w-4 h-4" />
             Iniciar Treino
           </button>
-          <button className="px-4 py-3 border border-gray-200 dark:border-[#2d3348] text-gray-600 dark:text-gray-400 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all">
+          <button 
+            onClick={onEdit}
+            className="px-4 py-3 border border-gray-200 dark:border-[#2d3348] text-gray-600 dark:text-gray-400 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all"
+          >
             Editar
           </button>
         </div>

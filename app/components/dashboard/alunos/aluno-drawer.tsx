@@ -166,11 +166,12 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit }: AlunoDrawerProps) 
               Histórico de Pagamentos
             </h3>
             <div className="space-y-2">
-              {aluno.historicoPagamentos.map(pag => (
-                <div
-                  key={pag.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#1a1d27] rounded-xl"
-                >
+              {(aluno.historicoPagamentos || []).length > 0 ? (
+                aluno.historicoPagamentos.map(pag => (
+                  <div
+                    key={pag.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#1a1d27] rounded-xl"
+                  >
                   <div className="flex items-center gap-3">
                     <div className={cn(
                       "w-8 h-8 rounded-lg flex items-center justify-center",
@@ -199,7 +200,12 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit }: AlunoDrawerProps) 
                     {pag.status}
                   </span>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className="text-center py-6 text-xs text-gray-400 italic bg-gray-50 dark:bg-[#1a1d27] rounded-xl border border-dashed border-gray-200 dark:border-[#2d3348]">
+                Nenhum histórico disponível
+              </p>
+            )}
             </div>
           </div>
 

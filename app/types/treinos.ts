@@ -42,6 +42,7 @@ export interface ExerciseDetail {
 
 export interface WorkoutPlan {
   id: string;
+  alunoId: string;
   nome: string;
   tipo: 'A' | 'B' | 'C' | 'D';
   objetivo: WorkoutObjective;

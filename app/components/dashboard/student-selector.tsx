@@ -11,7 +11,7 @@ interface Student {
   avatar?: string;
 }
 
-const mockStudents: Student[] = [
+export const mockStudents: Student[] = [
   { id: 'MOV-0001', name: 'Ana Silva', plan: 'Platinum VIP' },
   { id: 'MOV-0002', name: 'Bruno Costa', plan: 'Basic Fit' },
   { id: 'MOV-0003', name: 'Carla Souza', plan: 'Black Edition' },
@@ -19,15 +19,27 @@ const mockStudents: Student[] = [
   { id: 'MOV-0005', name: 'Elena Mendes', plan: 'Basic Fit' },
 ];
 
-export function StudentSelector() {
+interface StudentSelectorProps {
+  onSelect?: (student: Student) => void;
+  selectedId?: string;
+}
+
+export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(mockStudents[0]);
   const [search, setSearch] = useState('');
+
+  const selected = mockStudents.find(s => s.id === selectedId) || mockStudents[0];
 
   const filtered = mockStudents.filter(s => 
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.id.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleSelect = (student: Student) => {
+    if (onSelect) onSelect(student);
+    setIsOpen(false);
+    setSearch('');
+  };
 
   return (
     <div className="relative z-[50]">
@@ -74,11 +86,7 @@ export function StudentSelector() {
                 filtered.map(student => (
                   <button
                     key={student.id}
-                    onClick={() => {
-                      setSelected(student);
-                      setIsOpen(false);
-                      setSearch('');
-                    }}
+                    onClick={() => handleSelect(student)}
                     className={cn(
                       "w-full flex items-center gap-3 p-2 rounded-xl transition-all group",
                       selected.id === student.id 

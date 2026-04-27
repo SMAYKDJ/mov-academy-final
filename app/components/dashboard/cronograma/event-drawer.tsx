@@ -11,6 +11,7 @@ interface EventDrawerProps {
   event: CalendarEvent | null;
   open: boolean;
   onClose: () => void;
+  onSave: (data: any) => void;
   mode: 'view' | 'create';
 }
 
@@ -43,6 +44,18 @@ export function EventDrawer({ event, open, onClose, mode }: EventDrawerProps) {
   const statusCfg = event ? eventStatusConfig[event.status] : null;
 
   const handleSave = () => {
+    if (!form.titulo || !form.alunoNome || !form.data) {
+      showToast('Por favor, preencha os campos obrigatórios.', 'warning');
+      return;
+    }
+
+    const eventData = {
+      ...form,
+      id: event?.id || `ev-${Date.now()}`,
+      status: event?.status || 'pendente' as EventStatus,
+    };
+
+    onSave(eventData);
     showToast(mode === 'create' ? 'Evento criado com sucesso!' : 'Evento atualizado!', 'success', 'Agenda');
     onClose();
   };

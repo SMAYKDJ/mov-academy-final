@@ -31,67 +31,47 @@ export function RetentionChart({ data }: RetentionChartProps) {
         </div>
       </div>
 
-      <div className="relative h-64 mb-4 mt-4">
-        {/* SVG for Engagement Line (Dashed) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" preserveAspectRatio="none">
-          <path
-            d={data.map((item, idx) => {
-              const x = (idx * (100 / (data.length - 1))) + '%';
-              // Scale engagement (0-100) to height (0-100)
-              const y = (100 - (item.engajamento || 50)) + '%';
-              return `${idx === 0 ? 'M' : 'L'} ${x} ${y}`;
-            }).join(' ')}
-            fill="none"
-            stroke="#6366f1"
-            strokeWidth="3"
-            strokeDasharray="6 4"
-            className="opacity-40"
-          />
-        </svg>
+      <div className="flex items-end justify-between gap-3 h-48 mb-6 mt-4 px-2">
+        {data.map((item, idx) => {
+          // Dynamic scale: 80% is the baseline (0 height), 100% is full height.
+          // This makes small variations (95% vs 98%) much more visible.
+          const displayHeight = Math.max(5, (item.taxaRetencao - 80) * 5); 
+          const isPositive = idx === 0 || item.taxaRetencao >= data[idx - 1].taxaRetencao;
 
-        {/* Bars Container */}
-        <div className="flex items-end justify-between gap-3 h-full relative z-0">
-          {data.map((item, idx) => {
-            // Scale: 80% -> 0% height, 100% -> 100% height
-            const barHeight = Math.max(10, (item.taxaRetencao - 70) * 3.33); 
-            const isPositive = idx === 0 || item.taxaRetencao >= data[idx - 1].taxaRetencao;
-
-            return (
-              <div key={item.mes} className="flex-1 flex flex-col items-center group relative h-full justify-end">
-                {/* Value Label */}
-                <span className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold text-gray-900 dark:text-white bg-white dark:bg-gray-800 px-1.5 py-0.5 rounded shadow-sm border border-gray-100 dark:border-gray-700">
+          return (
+            <div key={item.mes} className="flex-1 flex flex-col items-center group relative h-full justify-end">
+                {/* Data Value Label */}
+                <span className="absolute -top-6 text-[10px] font-black text-gray-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity">
                   {item.taxaRetencao}%
                 </span>
 
                 {/* Retention bar */}
                 <div 
                   className={cn(
-                    "w-full rounded-t-xl transition-all duration-700 relative shadow-sm group-hover:shadow-lg",
+                    "w-full rounded-t-xl transition-all duration-700 relative shadow-sm group-hover:shadow-md group-hover:-translate-y-1",
                     isPositive 
-                      ? "bg-gradient-to-t from-emerald-500 to-emerald-400" 
-                      : "bg-gradient-to-t from-amber-500 to-amber-400"
+                      ? "bg-gradient-to-t from-primary-600 to-primary-400" 
+                      : "bg-gradient-to-t from-primary-500 to-primary-300 opacity-80"
                   )}
-                  style={{ height: `${barHeight}%` }}
+                  style={{ height: `${displayHeight}%` }}
                 >
-                  {/* Internal Glow */}
-                  <div className="absolute inset-0 bg-white/20 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {/* Glass highlight */}
+                  <div className="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-xl" />
                   
                   {/* Tooltip */}
-                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold px-3 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30 shadow-2xl pointer-events-none border border-gray-100 dark:border-none">
-                    <p className="flex justify-between gap-4"><span>Retenção:</span> <span className="text-emerald-400 dark:text-emerald-600">{item.taxaRetencao}%</span></p>
-                    <p className="flex justify-between gap-4"><span>Engajamento:</span> <span className="text-indigo-400 dark:text-indigo-600">{item.engajamento}%</span></p>
-                    <p className="flex justify-between gap-4"><span>Churn:</span> <span className="text-red-400 dark:text-red-600">{item.churn}%</span></p>
+                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold px-3 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none z-20 shadow-2xl whitespace-nowrap">
+                    <p className="flex justify-between gap-4"><span>Retenção:</span> <span>{item.taxaRetencao}%</span></p>
+                    <p className="flex justify-between gap-4"><span>Engajamento:</span> <span>{item.engajamento}%</span></p>
+                    <p className="flex justify-between gap-4 text-primary-400 dark:text-primary-600"><span>Churn:</span> <span>{item.churn}%</span></p>
                   </div>
                 </div>
-                
-                {/* Month Label */}
-                <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-4 uppercase tracking-widest">
-                  {item.mes}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+              
+              <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-3 uppercase tracking-tighter">
+                {item.mes}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50 dark:border-[#1e2235]">

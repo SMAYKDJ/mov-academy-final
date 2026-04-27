@@ -73,6 +73,31 @@ export default function FinanceiroPage() {
     return () => clearTimeout(timer);
   }, [filters.search]);
 
+  // Calculate dynamic chart data from transactions
+  const dynamicMonthlyData = useMemo(() => {
+    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const currentYear = new Date().getFullYear();
+    
+    const dataMap = months.map(m => ({ mes: m, receita: 0, despesa: 0 }));
+
+    transacoes.forEach(t => {
+      const parts = t.data.split('/');
+      const monthIdx = parseInt(parts[1]) - 1;
+      const year = parseInt(parts[2]);
+
+      if (year === currentYear && monthIdx >= 0 && monthIdx < 12) {
+        if (t.tipo === 'receita' && t.status === 'pago') {
+          dataMap[monthIdx].receita += t.valor;
+        } else if (t.tipo === 'despesa' && t.status === 'pago') {
+          dataMap[monthIdx].despesa += t.valor;
+        }
+      }
+    });
+
+    // Return only months with data or the first 6 months for display
+    return dataMap.slice(0, new Date().getMonth() + 1);
+  }, [transacoes]);
+
   // Filter logic
   const filtered = useMemo(() => {
     return transacoes.filter(t => {
@@ -208,7 +233,7 @@ export default function FinanceiroPage() {
           {/* Charts Section */}
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
             <div className="xl:col-span-3">
-              <RevenueChart data={monthlyRevenueData} />
+              <RevenueChart data={dynamicMonthlyData} />
             </div>
             <div className="xl:col-span-2">
               <ExpenseBreakdown transacoes={transacoes} />

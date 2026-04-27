@@ -19,6 +19,7 @@ const roleLabelMap = {
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const { showToast } = useToast();
+  const { refreshProfile } = useAuth();
   const [form, setForm] = useState({ 
     nome: profile.nome || '', 
     email: profile.email || '',
@@ -43,37 +44,38 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   const handleSave = async () => {
     setLoading(true);
     try {
-      // 1. O e-mail fica no auth e o nome na tabela profiles + auth metadata
+      const isSupabaseConnected = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
       const updates = [];
       
-      if (form.email !== profile.email) {
-        updates.push(supabase.auth.updateUser({ email: form.email }));
+      if (isSupabaseConnected) {
+        if (form.email !== profile.email) {
+          updates.push(supabase.auth.updateUser({ email: form.email }));
+        }
+        
+        if (form.nome !== profile.nome || form.role !== profile.role || form.avatar_url !== profile.avatar_url) {
+          updates.push(supabase.auth.updateUser({ 
+            data: { nome: form.nome, role: form.role, avatar_url: form.avatar_url } 
+          }));
+          updates.push(supabase.from('profiles').update({ 
+            nome: form.nome, 
+            role: form.role,
+            avatar_url: form.avatar_url 
+          }).eq('id', profile.id));
+        }
+
+        await Promise.all(updates);
       }
       
-      if (form.nome !== profile.nome || form.role !== profile.role || form.avatar_url !== profile.avatar_url) {
-        updates.push(supabase.auth.updateUser({ 
-          data: { nome: form.nome, role: form.role, avatar_url: form.avatar_url } 
-        }));
-        updates.push(supabase.from('profiles').update({ 
-          nome: form.nome, 
-          role: form.role,
-          avatar_url: form.avatar_url 
-        }).eq('id', profile.id));
-      }
+      // Update local profile and sync with global context
+      await refreshProfile();
 
-      await Promise.all(updates);
-      
-      // Update local profile ref to avoid false "success" without reload
-      profile.nome = form.nome;
-      profile.role = form.role;
-      profile.avatar_url = form.avatar_url;
-
-      if (form.email !== profile.email) {
+      if (form.email !== profile.email && isSupabaseConnected) {
         showToast('Confirme a alteração no seu novo e-mail.', 'warning', 'Verificação Enviada');
       } else {
         showToast('Perfil atualizado com sucesso!', 'success', 'Salvo');
       }
     } catch (error) {
+      console.error(error);
       showToast('Erro ao atualizar perfil.', 'error');
     } finally {
       setLoading(false);

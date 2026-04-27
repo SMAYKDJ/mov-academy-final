@@ -12,6 +12,7 @@ import { cn } from '@/utils/cn';
 import { useToast } from '@/components/ui/toast';
 import { eventTypeConfig } from '@/types/cronograma';
 import type { CalendarEvent, EventType } from '@/types/cronograma';
+import { useLocalStorage } from '@/utils/persistence';
 
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
@@ -35,7 +36,7 @@ export default function CronogramaPage() {
   const [drawerMode, setDrawerMode] = useState<'view' | 'create'>('view');
 
   // Events with local state for check-in
-  const [events, setEvents] = useState(calendarEventsData);
+  const [events, setEvents] = useLocalStorage<CalendarEvent[]>('moviment-cronograma', calendarEventsData, 'cronograma');
 
   const filteredEvents = useMemo(() => {
     if (typeFilter === 'todos') return events;
@@ -92,6 +93,14 @@ export default function CronogramaPage() {
     setSelectedEvent(null);
     setDrawerMode('create');
     setDrawerOpen(true);
+  };
+
+  const handleSaveEvent = (data: CalendarEvent) => {
+    if (drawerMode === 'create') {
+      setEvents(prev => [...prev, data]);
+    } else {
+      setEvents(prev => prev.map(e => e.id === data.id ? data : e));
+    }
   };
 
   return (
@@ -209,7 +218,13 @@ export default function CronogramaPage() {
       </div>
 
       {/* Event Drawer */}
-      <EventDrawer event={selectedEvent} open={drawerOpen} onClose={() => setDrawerOpen(false)} mode={drawerMode} />
+      <EventDrawer 
+        event={selectedEvent} 
+        open={drawerOpen} 
+        onClose={() => setDrawerOpen(false)} 
+        onSave={handleSaveEvent}
+        mode={drawerMode} 
+      />
     </div>
   );
 }

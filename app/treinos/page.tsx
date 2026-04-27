@@ -8,13 +8,13 @@ import { BodyProgress } from '@/components/dashboard/treinos/body-progress';
 import { TreinoCard } from '@/components/dashboard/treinos/treino-card';
 import { TreinoDrawer } from '@/components/dashboard/treinos/treino-drawer';
 import { MuscleDetailDrawer } from '@/components/dashboard/treinos/muscle-detail-drawer';
+import { TreinoForm } from '@/components/dashboard/treinos/treino-form';
 import { treinosKPIData, muscleMapData, workoutPlansData } from '@/utils/treinos-data';
-import { Plus, Sparkles } from 'lucide-react';
+import { Plus, Sparkles, UserCircle2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
-import { StudentSelector } from '@/components/dashboard/student-selector';
+import { StudentSelector, mockStudents } from '@/components/dashboard/student-selector';
 import { useLocalStorage } from '@/utils/persistence';
 import type { WorkoutPlan, MuscleData } from '@/types/treinos';
-import { UserCircle2 } from 'lucide-react';
 
 export default function TreinosPage() {
   const { showToast } = useToast();
@@ -22,10 +22,17 @@ export default function TreinosPage() {
 
   // Data Persistence
   const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', workoutPlansData);
+  const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
+
+  // Memoized filtered plans
+  const filteredPlans = useMemo(() => {
+    return plans.filter(p => p.alunoId === selectedStudentId);
+  }, [plans, selectedStudentId]);
 
   // Drawer states
   const [selectedPlan, setSelectedPlan] = useState<WorkoutPlan | null>(null);
   const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [selectedMuscle, setSelectedMuscle] = useState<MuscleData | null>(null);
   const [muscleDrawerOpen, setMuscleDrawerOpen] = useState(false);
 
@@ -38,6 +45,44 @@ export default function TreinosPage() {
     setSelectedMuscle(muscle);
     setMuscleDrawerOpen(true);
   }, []);
+
+  const handleSavePlan = (plano: WorkoutPlan) => {
+    const planWithStudent = { ...plano, alunoId: selectedStudentId };
+    if (selectedPlan) {
+      setPlans(prev => prev.map(p => p.id === plano.id ? planWithStudent : p));
+      showToast('Treino atualizado com sucesso!', 'success');
+    } else {
+      setPlans(prev => [planWithStudent, ...prev]);
+      showToast('Novo treino cadastrado para o aluno!', 'success');
+    }
+    setFormOpen(false);
+    setSelectedPlan(null);
+  };
+
+  const handleGenerateAI = () => {
+    const student = mockStudents.find(s => s.id === selectedStudentId);
+    showToast(`Analisando perfil de ${student?.name} e histórico... 🤖`, 'info', 'IA Moviment');
+    setTimeout(() => {
+      const aiPlan: WorkoutPlan = {
+        id: Math.random().toString(36).substr(2, 9),
+        alunoId: selectedStudentId,
+        nome: 'Sugestão IA: Foco em ' + (selectedStudentId === 'MOV-0001' ? 'Hipertrofia' : 'Definição'),
+        tipo: 'A',
+        objetivo: 'hipertrofia',
+        nivel: 'Intermediário',
+        tempoEstimado: '55 min',
+        diasSemana: ['Segunda', 'Quarta', 'Sexta'],
+        ativo: true,
+        exercicios: [
+          { id: 'ex-ai-1', nome: 'Supino Inclinado com Halteres', grupoMuscular: 'peito', series: 4, repeticoes: '10-12', carga: '24kg', descanso: '60s' },
+          { id: 'ex-ai-2', nome: 'Remada Curvada', grupoMuscular: 'costas', series: 4, repeticoes: '8-10', carga: '30kg', descanso: '90s' },
+        ]
+      };
+      setSelectedPlan(aiPlan);
+      setFormOpen(true);
+      showToast('Treino estratégico gerado com sucesso!', 'success', 'IA Moviment');
+    }, 1500);
+  };
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
@@ -53,7 +98,13 @@ export default function TreinosPage() {
               <UserCircle2 className="w-4 h-4 text-gray-400" />
               <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Modo Individual</span>
             </div>
-            <StudentSelector />
+            <StudentSelector 
+              selectedId={selectedStudentId} 
+              onSelect={(s) => {
+                setSelectedStudentId(s.id);
+                showToast(`Carregando contexto de treinos para ${s.name}...`, 'info');
+              }} 
+            />
           </div>
         </div>
 
@@ -70,14 +121,14 @@ export default function TreinosPage() {
             </div>
             <div className="flex items-center gap-3">
               <button 
-                onClick={() => showToast('Iniciando geração de treino personalizado com IA... 🤖', 'info', 'Inteligência Artificial')}
+                onClick={handleGenerateAI}
                 className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 Gerar com IA
               </button>
               <button 
-                onClick={() => setPlanDrawerOpen(true)}
+                onClick={() => { setSelectedPlan(null); setFormOpen(true); }}
                 className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
@@ -103,11 +154,11 @@ export default function TreinosPage() {
                 <p className="text-xs text-gray-400 mt-0.5">Clique para ver exercícios detalhados</p>
               </div>
               <p className="text-xs text-gray-400">
-                <span className="font-bold text-gray-600 dark:text-gray-300">{workoutPlansData.length}</span> planos
+                <span className="font-bold text-gray-600 dark:text-gray-300">{filteredPlans.length}</span> planos
               </p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {workoutPlansData.map(plano => (
+              {filteredPlans.map(plano => (
                 <TreinoCard key={plano.id} plano={plano} onClick={handlePlanClick} />
               ))}
             </div>
@@ -120,11 +171,18 @@ export default function TreinosPage() {
         plano={selectedPlan}
         open={planDrawerOpen}
         onClose={() => setPlanDrawerOpen(false)}
+        onEdit={() => { setPlanDrawerOpen(false); setFormOpen(true); }}
       />
       <MuscleDetailDrawer
         muscle={selectedMuscle}
         open={muscleDrawerOpen}
         onClose={() => setMuscleDrawerOpen(false)}
+      />
+      <TreinoForm 
+        open={formOpen}
+        initialData={selectedPlan}
+        onClose={() => { setFormOpen(false); setSelectedPlan(null); }}
+        onSave={handleSavePlan}
       />
     </div>
   );

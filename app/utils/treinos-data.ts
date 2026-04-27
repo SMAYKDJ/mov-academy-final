@@ -104,6 +104,7 @@ export const muscleMapData: MuscleData[] = [
 export const workoutPlansData: WorkoutPlan[] = [
   {
     id: 'plan-A',
+    alunoId: 'MOV-0001',
     nome: 'Treino A — Peito e Tríceps',
     tipo: 'A',
     objetivo: 'hipertrofia',
@@ -122,6 +123,7 @@ export const workoutPlansData: WorkoutPlan[] = [
   },
   {
     id: 'plan-B',
+    alunoId: 'MOV-0001',
     nome: 'Treino B — Costas e Bíceps',
     tipo: 'B',
     objetivo: 'hipertrofia',
@@ -140,6 +142,7 @@ export const workoutPlansData: WorkoutPlan[] = [
   },
   {
     id: 'plan-C',
+    alunoId: 'MOV-0002',
     nome: 'Treino C — Pernas Completo',
     tipo: 'C',
     objetivo: 'hipertrofia',
@@ -158,6 +161,7 @@ export const workoutPlansData: WorkoutPlan[] = [
   },
   {
     id: 'plan-D',
+    alunoId: 'MOV-0002',
     nome: 'Treino D — Ombros e Abdômen',
     tipo: 'D',
     objetivo: 'hipertrofia',

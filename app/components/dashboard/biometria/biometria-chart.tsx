@@ -118,7 +118,7 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
 
                 {/* Bar */}
                 <div className="w-full relative" style={{ height: '200px' }}>
-                  <div className="absolute bottom-0 w-full flex flex-col items-center">
+                  <div className="absolute bottom-0 w-full h-full flex flex-col items-center justify-end">
                     {/* Dot */}
                     <div
                       className={cn(
