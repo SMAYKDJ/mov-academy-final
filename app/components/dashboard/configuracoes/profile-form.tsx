@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { User, Camera, Save, Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/components/ui/toast';
 import { supabase } from '@/lib/supabase';
 import type { UserProfile } from '@/types/auth';
