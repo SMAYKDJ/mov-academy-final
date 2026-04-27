@@ -15,7 +15,7 @@ interface EventDrawerProps {
   mode: 'view' | 'create';
 }
 
-export function EventDrawer({ event, open, onClose, mode }: EventDrawerProps) {
+export function EventDrawer({ event, open, onClose, onSave, mode }: EventDrawerProps) {
   const { showToast } = useToast();
   const drawerRef = useRef<HTMLDivElement>(null);
 

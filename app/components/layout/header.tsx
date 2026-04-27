@@ -6,7 +6,7 @@ import { cn } from '@/utils/cn';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { ActivityHistory } from '@/components/dashboard/activity-history';
 

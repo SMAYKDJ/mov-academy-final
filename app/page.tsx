@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { KPICards } from "@/components/dashboard/kpi-cards";
@@ -37,7 +37,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   // Real Data Persistence
-  const [alunos] = useLocalStorage<Student[]>('moviment-alunos', alunosData, 'alunos');
+  const [alunos] = useLocalStorage<any[]>('moviment-alunos', alunosData, 'alunos');
   const [transacoes] = useLocalStorage<any[]>('moviment-financeiro', [], 'transacoes');
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -94,7 +94,7 @@ export default function DashboardPage() {
 
   // Generate Dynamic Activity Feed
   const dynamicActivity = useMemo(() => {
-    const activities = [];
+    const activities: ActivityItem[] = [];
     
     // Recent students
     alunos.slice(0, 3).forEach(a => {
