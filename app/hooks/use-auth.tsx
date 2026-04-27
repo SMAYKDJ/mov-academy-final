@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { UserProfile, UserRole } from '@/types/auth';
 
+interface AuthContextType {
   user: UserProfile | null;
   loading: boolean;
   signOut: () => Promise<void>;
