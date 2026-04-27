@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { BiometriaKPI } from '@/components/dashboard/biometria/biometria-kpi';
@@ -18,6 +18,22 @@ export default function BiometriaPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
   const { showToast } = useToast();
+
+  // Real Data Integration (filtering mock data for now based on selected student)
+  const currentHistory = useMemo(() => {
+    return evaluationHistory.filter(h => h.alunoId === selectedStudentId);
+  }, [selectedStudentId]);
+
+  const currentStats = useMemo(() => {
+    const seed = parseInt(selectedStudentId.replace(/\D/g, '')) || 0;
+    return {
+      ...biometriaKPIData,
+      pesoAtual: biometriaKPIData.pesoAtual + (seed % 5),
+      gorduraAtual: parseFloat((18.5 + (seed % 10)).toFixed(1)),
+      imcAtual: parseFloat((22.3 + (seed % 5)).toFixed(1)),
+      massaMuscularAtual: parseFloat((35.0 + (seed % 8)).toFixed(1))
+    };
+  }, [selectedStudentId]);
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
@@ -81,12 +97,12 @@ export default function BiometriaPage() {
           </div>
 
           {/* KPIs + Health Score */}
-          <BiometriaKPI stats={biometriaKPIData} />
+          <BiometriaKPI stats={currentStats} />
 
           {/* Charts Row */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <BiometriaChart data={evolutionData} />
-            <BodyComposition stats={biometriaKPIData} />
+            <BodyComposition stats={currentStats} />
           </div>
 
           {/* AI Insights Banner */}
@@ -119,7 +135,7 @@ export default function BiometriaPage() {
           </div>
 
           {/* Evaluation History */}
-          <BiometriaHistory evaluations={evaluationHistory} />
+          <BiometriaHistory evaluations={currentHistory} />
         </main>
       </div>
 

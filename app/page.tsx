@@ -18,7 +18,7 @@ import { useLocalStorage } from "@/utils/persistence";
 import { Calendar as CalendarIcon, Plus, ArrowUpRight, Zap, AlertTriangle } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
-import type { Student } from "@/types";
+import type { Student, ActivityItem } from "@/types";
 
 /**
  * Main Dashboard Page.
@@ -58,7 +58,7 @@ export default function DashboardPage() {
         label: 'Total Alunos',
         value: totalAlunos.toString(),
         change: '+12%',
-        trend: 'up',
+        trend: 'up' as 'up' | 'down',
         icon: 'Users' as const,
         description: 'Alunos registrados no sistema'
       },
@@ -67,7 +67,7 @@ export default function DashboardPage() {
         label: 'Receita Mensal',
         value: `R$ ${faturamento.toLocaleString('pt-BR')}`,
         change: '+8%',
-        trend: 'up',
+        trend: 'up' as 'up' | 'down',
         icon: 'DollarSign' as const,
         description: 'Faturamento bruto confirmado'
       },
@@ -76,7 +76,7 @@ export default function DashboardPage() {
         label: 'Taxa de Churn',
         value: `${churnSummary.currentRate}%`,
         change: churnSummary.change,
-        trend: churnSummary.trend,
+        trend: churnSummary.trend as 'up' | 'down',
         icon: 'TrendingDown' as const,
         description: 'Probabilidade média de evasão'
       },
@@ -85,7 +85,7 @@ export default function DashboardPage() {
         label: 'Novas Matrículas',
         value: (alunos.filter(a => (a as any).dataMatricula?.includes('/04/')).length || 12).toString(),
         change: '+5%',
-        trend: 'up',
+        trend: 'up' as 'up' | 'down',
         icon: 'UserPlus' as const,
         description: 'Matrículas realizadas este mês'
       }
@@ -101,10 +101,9 @@ export default function DashboardPage() {
       activities.push({
         id: `a-${a.id}`,
         user: a.nome,
-        action: 'realizou a matrícula',
-        target: a.plano,
+        action: `realizou a matrícula no plano ${a.plano}`,
         time: 'Recente',
-        type: 'subscription' as const
+        type: 'signup' as const
       });
     });
 
@@ -113,8 +112,7 @@ export default function DashboardPage() {
       activities.push({
         id: `t-${t.id}`,
         user: t.alunoNome || 'Sistema',
-        action: 'confirmou pagamento',
-        target: t.descricao,
+        action: `confirmou pagamento de ${t.descricao}`,
         time: 'Hoje',
         type: 'payment' as const
       });

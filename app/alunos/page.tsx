@@ -10,10 +10,10 @@ import { AlunoDrawer } from '@/components/dashboard/alunos/aluno-drawer';
 import { AlunoForm } from '@/components/dashboard/alunos/aluno-form';
 import { alunosData } from '@/utils/alunos-data';
 import { useToast } from '@/components/ui/toast';
-import { Plus, Download, Upload } from 'lucide-react';
+import { Plus, Download, Upload, Trash2 } from 'lucide-react';
 import { useLocalStorage, exportToCSV } from '@/utils/persistence';
 import { useSearchParams } from 'next/navigation';
-import type { Aluno, AlunosFilterState, AlunoFormData } from '@/types/aluno';
+import type { Aluno, AlunoStatus, AlunosFilterState, AlunoFormData } from '@/types/aluno';
 
 /**
  * Alunos (Students) page — full CRUD with KPIs, filters, table, drawer, and form.
@@ -76,8 +76,8 @@ export default function AlunosPage() {
         const q = debouncedSearch.toLowerCase();
         if (
           !a.nome.toLowerCase().includes(q) &&
-          !a.cpf.includes(q) &&
-          !a.email.toLowerCase().includes(q)
+          !(a.cpf || '').includes(q) &&
+          !(a.email || '').toLowerCase().includes(q)
         ) return false;
       }
 
@@ -115,8 +115,16 @@ export default function AlunosPage() {
     if (confirm(`Tem certeza que deseja excluir ${aluno.nome}?`)) {
       setAlunos(prev => prev.filter(a => a.id !== aluno.id));
       showToast(`${aluno.nome} foi removido com sucesso`, 'success', 'Aluno Excluído');
+      setDrawerOpen(false);
+      setSelectedAluno(null);
     }
-  }, [showToast]);
+  }, [setAlunos, showToast]);
+
+  const handleStatusChange = useCallback((aluno: Aluno, status: AlunoStatus) => {
+    setAlunos(prev => prev.map(a => a.id === aluno.id ? { ...a, status } : a));
+    const label = status === 'inativo' ? 'inativado' : status === 'ativo' ? 'reativado' : 'atualizado';
+    showToast(`${aluno.nome} foi ${label} com sucesso`, 'success', 'Status Alterado');
+  }, [setAlunos, showToast]);
 
   const handleNewAluno = () => {
     setEditingAluno(null);
@@ -181,8 +189,9 @@ export default function AlunosPage() {
       showToast(`${data.nome} atualizado com sucesso`, 'success', 'Aluno Atualizado');
     } else {
       // Create
+      const nextId = alunos.length > 0 ? Math.max(...alunos.map(a => a.id)) + 1 : 1;
       const newAluno: Aluno = {
-        id: Math.max(...alunos.map(a => a.id)) + 1,
+        id: nextId,
         ...data,
         ultimoPagamento: new Date().toLocaleDateString('pt-BR'),
         dataMatricula: new Date().toLocaleDateString('pt-BR'),
@@ -248,7 +257,7 @@ export default function AlunosPage() {
           </div>
 
           {/* KPIs */}
-          <AlunosKPI alunos={alunos} loading={loading} />
+          <AlunosKPI alunos={alunos} loading={!isLoaded} />
 
           {/* Filters */}
           <AlunosFilters
@@ -274,6 +283,8 @@ export default function AlunosPage() {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onEdit={handleEdit}
+        onDelete={handleDelete}
+        onStatusChange={handleStatusChange}
       />
 
       {/* Form */}

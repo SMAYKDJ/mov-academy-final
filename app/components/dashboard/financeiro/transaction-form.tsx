@@ -71,7 +71,9 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
       
       <div className="relative w-full max-w-md bg-white dark:bg-[#0f1117] rounded-2xl shadow-2xl border border-gray-100 dark:border-[#1e2235] overflow-hidden animate-scale-in">
         <div className="p-6 border-b border-gray-100 dark:border-[#1e2235] flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Nova Transação</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+            {transaction ? 'Editar Transação' : 'Nova Transação'}
+          </h2>
           <button onClick={onClose} aria-label="Fechar formulário" title="Fechar" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"><X className="w-5 h-5" /></button>
         </div>
 

@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 export async function GET() {
-  const reportsDir = path.resolve(process.cwd(), 'backend', 'reports');
+  const reportsDir = path.resolve(process.cwd(), 'RELATORIOS');
   try {
     const files = await fs.readdir(reportsDir);
     const pdfFiles = files.filter((f) => f.toLowerCase().endsWith('.pdf'));

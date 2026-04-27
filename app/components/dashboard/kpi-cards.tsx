@@ -81,7 +81,7 @@ function KPICard({ label, value, change, trend, icon, description }: KPIStat) {
               ? "bg-success-50 dark:bg-green-900/20 text-success-700 dark:text-green-400"
               : "bg-danger-50 dark:bg-red-900/20 text-danger-700 dark:text-red-400"
           )}>
-            {isPositive
+            {trend === 'up'
               ? <ArrowUpRight className="w-3 h-3" />
               : <ArrowDownRight className="w-3 h-3" />
             }

@@ -14,8 +14,12 @@ import {
 import { cn } from '@/utils/cn';
 import { currentWorkout } from '@/utils/treino-data';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/toast';
 
 export default function StudentWorkoutPage() {
+  const router = useRouter();
+  const { showToast } = useToast();
   const [workout, setWorkout] = useState(currentWorkout);
 
   const toggleExercise = (id: string) => {
@@ -25,6 +29,11 @@ export default function StudentWorkoutPage() {
         ex.id === id ? { ...ex, concluido: !ex.concluido } : ex
       )
     }));
+  };
+
+  const handleFinishWorkout = () => {
+    showToast('Treino finalizado com sucesso! Bom descanso. 💪', 'success', 'Parabéns!');
+    setTimeout(() => router.push('/app-aluno'), 2000);
   };
 
   return (
@@ -71,6 +80,7 @@ export default function StudentWorkoutPage() {
                 </div>
                 {ex.videoUrl && (
                   <button 
+                    onClick={() => showToast('Vídeo demonstrativo em breve!', 'info')}
                     title="Ver vídeo demonstrativo"
                     aria-label={`Ver vídeo de ${ex.nome}`}
                     className="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-xl text-primary-600"
@@ -122,7 +132,10 @@ export default function StudentWorkoutPage() {
 
       {/* Footer Summary */}
       <div className="fixed bottom-24 left-6 right-6 md:max-w-[384px] md:mx-auto">
-        <button className="w-full py-4 bg-primary-600 text-white rounded-2xl font-bold shadow-xl shadow-primary-200 dark:shadow-none flex items-center justify-center gap-2">
+        <button 
+          onClick={handleFinishWorkout}
+          className="w-full py-4 bg-primary-600 text-white rounded-2xl font-bold shadow-xl shadow-primary-200 dark:shadow-none flex items-center justify-center gap-2 active:scale-95 transition-transform"
+        >
           Finalizar Treino
         </button>
       </div>

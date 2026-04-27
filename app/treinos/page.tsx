@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { TreinosKPI } from '@/components/dashboard/treinos/treinos-kpi';
@@ -21,7 +21,7 @@ export default function TreinosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Data Persistence
-  const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', workoutPlansData);
+  const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', workoutPlansData, 'treinos');
   const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
 
   // Memoized filtered plans

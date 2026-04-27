@@ -3,11 +3,11 @@
 import React, { useEffect, useRef } from 'react';
 import {
   X, Phone, Mail, MapPin, Calendar, CreditCard, Target,
-  TrendingUp, Activity, ShieldAlert, Edit3, UserX, MessageCircle
+  TrendingUp, Activity, ShieldAlert, Edit3, UserX, MessageCircle, Trash2
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { StatusBadge, PlanBadge, RiskIndicator } from './status-badge';
-import type { Aluno } from '@/types/aluno';
+import type { Aluno, AlunoStatus } from '@/types/aluno';
 import { openWhatsApp, generateWAMessage } from '@/utils/whatsapp-helper';
 
 interface AlunoDrawerProps {
@@ -15,9 +15,11 @@ interface AlunoDrawerProps {
   open: boolean;
   onClose: () => void;
   onEdit: (aluno: Aluno) => void;
+  onDelete: (aluno: Aluno) => void;
+  onStatusChange?: (aluno: Aluno, status: AlunoStatus) => void;
 }
 
-export function AlunoDrawer({ aluno, open, onClose, onEdit }: AlunoDrawerProps) {
+export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusChange }: AlunoDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape key
@@ -237,19 +239,37 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit }: AlunoDrawerProps) 
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex gap-3">
+        <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex flex-col gap-3">
+          <div className="flex gap-3">
+            <button
+              onClick={() => { onEdit(aluno); onClose(); }}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+            >
+              <Edit3 className="w-4 h-4" />
+              Editar Aluno
+            </button>
+            <button
+              onClick={() => {
+                if (confirm(`Deseja cancelar o plano de ${aluno.nome}? O status será alterado para Inativo.`)) {
+                  if (onStatusChange) {
+                    onStatusChange(aluno, 'inativo');
+                  }
+                  onClose();
+                }
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-[#2d3348] text-gray-600 dark:text-gray-400 rounded-xl text-sm font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+            >
+              <UserX className="w-4 h-4" />
+              Cancelar Plano
+            </button>
+          </div>
+          
           <button
-            onClick={() => { onEdit(aluno); onClose(); }}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+            onClick={() => onDelete(aluno)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-xl text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-all"
           >
-            <Edit3 className="w-4 h-4" />
-            Editar Aluno
-          </button>
-          <button
-            className="flex items-center justify-center gap-2 px-4 py-3 border border-danger-500 text-danger-600 dark:text-red-400 rounded-xl text-sm font-bold hover:bg-danger-50 dark:hover:bg-red-900/10 transition-all focus-visible:ring-2 focus-visible:ring-danger-500 focus-visible:ring-offset-2"
-          >
-            <UserX className="w-4 h-4" />
-            Cancelar Plano
+            <Trash2 className="w-4 h-4" />
+            Excluir Registro Permanente
           </button>
         </div>
       </div>
