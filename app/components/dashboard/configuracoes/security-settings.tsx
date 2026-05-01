@@ -47,9 +47,9 @@ export function SecuritySettings({ userEmail }: SecuritySettingsProps) {
   const handleSignOutAll = async () => {
     try {
       await supabase.auth.signOut();
-      router.push('/login');
+      window.location.href = '/login';
     } catch (error) {
-      showToast('Erro ao encerrar sessões.', 'error');
+      window.location.href = '/login';
     }
   };
 

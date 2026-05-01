@@ -43,26 +43,6 @@ export default function AlunosPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingAluno, setEditingAluno] = useState<Aluno | null>(null);
 
-  // Deep linking para notificações
-  useEffect(() => {
-    if (!isLoaded) return;
-    
-    const q = searchParams.get('search');
-    const id = searchParams.get('id');
-    
-    if (q) {
-      setFilters(prev => ({ ...prev, search: q }));
-    }
-
-    if (id) {
-      const aluno = alunos.find(a => String(a.id) === id);
-      if (aluno) {
-        setSelectedAluno(aluno);
-        setDrawerOpen(true);
-      }
-    }
-  }, [searchParams, isLoaded, alunos]);
-
   // Filtro de busca com debounce
   const [debouncedSearch, setDebouncedSearch] = useState('');
   useEffect(() => {
@@ -89,13 +69,21 @@ export default function AlunosPage() {
       // Plano
       if (filters.plano !== 'todos' && a.plano !== filters.plano) return false;
 
-      // Período (filtro de mês em dataMatricula)
+      // Período (filtros pré-definidos)
       if (filters.periodo) {
-        const [filterYear, filterMonth] = filters.periodo.split('-').map(Number);
         const parts = a.dataMatricula.split('/');
-        const month = parseInt(parts[1]);
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
         const year = parseInt(parts[2]);
-        if (year !== filterYear || month !== filterMonth) return false;
+        const matriculaDate = new Date(year, month, day);
+        const today = new Date();
+        const diffTime = Math.abs(today.getTime() - matriculaDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (filters.periodo === '7d' && diffDays > 7) return false;
+        if (filters.periodo === '30d' && diffDays > 30) return false;
+        if (filters.periodo === '90d' && diffDays > 90) return false;
+        if (filters.periodo === '365d' && diffDays > 365) return false;
       }
 
       return true;
@@ -128,10 +116,37 @@ export default function AlunosPage() {
     showToast(`${aluno.nome} foi ${label} com sucesso`, 'success', 'Status Alterado');
   }, [setAlunos, showToast]);
 
-  const handleNewAluno = () => {
+  const handleNewAluno = useCallback(() => {
     setEditingAluno(null);
     setFormOpen(true);
-  };
+  }, []);
+
+  // Deep linking para notificações e novos alunos
+  useEffect(() => {
+    if (!isLoaded) return;
+    
+    const q = searchParams.get('search');
+    const id = searchParams.get('id');
+    const isNew = searchParams.get('new') === 'true';
+    
+    if (q) {
+      setFilters(prev => ({ ...prev, search: q }));
+    }
+
+    if (id) {
+      const aluno = alunos.find(a => String(a.id) === id);
+      if (aluno) {
+        setSelectedAluno(aluno);
+        setDrawerOpen(true);
+      }
+    }
+
+    if (isNew) {
+      handleNewAluno();
+      // Limpar a URL sem recarregar a página (opcional, mas bom para UX)
+      window.history.replaceState({}, '', '/alunos');
+    }
+  }, [searchParams, isLoaded, alunos, handleNewAluno]);
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -303,6 +318,7 @@ export default function AlunosPage() {
         open={formOpen}
         onClose={() => { setFormOpen(false); setEditingAluno(null); }}
         onSave={handleSave}
+        nextId={alunos.length > 0 ? Math.max(...alunos.map(a => a.id)) + 1 : 1}
       />
     </div>
   );

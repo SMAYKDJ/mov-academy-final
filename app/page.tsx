@@ -8,6 +8,7 @@ import { DataTable } from "@/components/dashboard/data-table";
 import { DashboardFilters } from "@/components/dashboard/filters";
 import { WeeklyChart, RetentionInsightCard } from "@/components/dashboard/charts";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
+import { ActivityHistory } from "@/components/dashboard/activity-history";
 import { StatsBar } from "@/components/dashboard/stats-bar";
 import { ChurnCard, ChurnChart, ChurnTrend, AtRiskStudentsTable, ChurnInsights } from "@/components/dashboard/churn";
 import { ReportUpload } from "@/components/dashboard/report-upload";
@@ -19,6 +20,7 @@ import { Calendar as CalendarIcon, Plus, ArrowUpRight, Zap, AlertTriangle } from
 import { cn } from "@/utils/cn";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
 import type { Student, ActivityItem } from "@/types";
 
 /**
@@ -37,6 +39,8 @@ export default function DashboardPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { showToast } = useToast();
   const { user } = useAuth();
+  const router = useRouter();
+  const [showActivityHistory, setShowActivityHistory] = useState(false);
 
   // Persistência de Dados Reais
   const [alunos] = useLocalStorage<any[]>('moviment-alunos', alunosData, 'alunos');
@@ -143,7 +147,7 @@ export default function DashboardPage() {
   useEffect(() => setMounted(true), []);
 
   const handleNewStudent = () => {
-    showToast('Formulário de matrícula aberto', 'info', 'Nova Matrícula');
+    router.push('/alunos?new=true');
   };
 
   const formattedDate = mounted
@@ -294,9 +298,17 @@ export default function DashboardPage() {
               <ReportUpload onUploadSuccess={() => window.location.reload()} />
               <WeeklyChart data={weeklyChartData} />
               <RetentionInsightCard />
-              <ActivityFeed activities={dynamicActivity} />
+              <ActivityFeed 
+                activities={dynamicActivity} 
+                onShowAll={() => setShowActivityHistory(true)}
+              />
             </div>
           </div>
+
+          {/* Modal de Histórico de Atividades */}
+          {showActivityHistory && (
+            <ActivityHistory onClose={() => setShowActivityHistory(false)} />
+          )}
 
           {/* Rodapé */}
           <footer className="pt-8 pb-4 border-t border-gray-100 dark:border-[#1e2235]">

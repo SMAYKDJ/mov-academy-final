@@ -199,8 +199,10 @@ export function Sidebar({ mobileOpen, onMobileClose, onCollapse }: SidebarProps)
 
         <button 
           onClick={async () => {
-            if (confirm('Deseja realmente sair do sistema?')) {
+            try {
               await signOut();
+              window.location.href = '/login';
+            } catch (err) {
               window.location.href = '/login';
             }
           }}

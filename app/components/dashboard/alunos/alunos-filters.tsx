@@ -130,18 +130,29 @@ export function AlunosFilters({ filters, onChange, resultCount }: AlunosFiltersP
       {showAdvanced && (
         <div className="pt-4 border-t border-gray-100 dark:border-[#1e2235] flex flex-col sm:flex-row gap-3 items-stretch sm:items-end animate-fade-in">
           <div className="flex-1">
-            <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">
+            <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-2.5">
               Período de matrícula
             </label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="month"
-                value={filters.periodo}
-                onChange={(e) => updateFilter('periodo', e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                aria-label="Filtrar por período"
-              />
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: '7d', label: 'Semana' },
+                { id: '30d', label: 'Últimos 30 dias' },
+                { id: '90d', label: 'Trimestral' },
+                { id: '365d', label: 'Anual' },
+              ].map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => updateFilter('periodo', p.id)}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-xs font-bold transition-all border",
+                    filters.periodo === p.id
+                      ? "bg-primary-600 text-white border-primary-600 shadow-lg shadow-primary-200 dark:shadow-none"
+                      : "bg-white dark:bg-[#1a1d27] text-gray-600 dark:text-gray-400 border-gray-200 dark:border-[#2d3348] hover:border-primary-300"
+                  )}
+                >
+                  {p.label}
+                </button>
+              ))}
             </div>
           </div>
 

@@ -38,13 +38,16 @@ const activityConfig: Record<ActivityItem['type'], {
 interface ActivityFeedProps {
   activities: ActivityItem[];
   className?: string;
+  onShowAll?: () => void;
 }
 
 /**
  * Feed de atividades em tempo real mostrando eventos recentes.
  * Exibe check-ins, pagamentos, cadastros e alertas.
  */
-export function ActivityFeed({ activities, className }: ActivityFeedProps) {
+export function ActivityFeed({ activities, className, onShowAll }: ActivityFeedProps) {
+  const [showAll, setShowAll] = React.useState(false);
+  const displayedActivities = showAll ? activities : activities.slice(0, 6);
   return (
     <div className={cn(
       "bg-white dark:bg-[#0f1117] p-6 rounded-2xl border border-gray-100 dark:border-[#1e2235] shadow-sm hover:shadow-md transition-all duration-300",
@@ -64,7 +67,7 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
 
       {/* Lista de Atividades */}
       <div className="space-y-4">
-        {activities.slice(0, 6).map((activity, index) => {
+        {displayedActivities.map((activity, index) => {
           const config = activityConfig[activity.type];
           const Icon = config.icon;
 
@@ -100,8 +103,11 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
       </div>
 
       {/* Ver Tudo */}
-      <button className="w-full mt-6 py-2.5 text-xs font-bold text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10 rounded-xl transition-all">
-        Ver todas as atividades →
+      <button 
+        onClick={onShowAll || (() => setShowAll(!showAll))}
+        className="w-full mt-6 py-2.5 text-xs font-bold text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10 rounded-xl transition-all"
+      >
+        {onShowAll ? 'Ver todas as atividades →' : (showAll ? '↑ Recolher atividades' : 'Ver todas as atividades →')}
       </button>
     </div>
   );

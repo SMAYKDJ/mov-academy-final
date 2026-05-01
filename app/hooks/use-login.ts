@@ -36,14 +36,26 @@ export const useLogin = () => {
       if (error) throw error;
       if (data?.user) {
         showToast('Login realizado com sucesso!', 'success');
-        router.push('/');
+        
+        // Garantir que a sessão seja persistida antes de redirecionar
+        setTimeout(() => {
+          router.push('/');
+        }, 100);
       }
     } catch (err: any) {
+      console.error("Erro de Login:", err);
       const msg = err?.message ?? 'Falha ao realizar login.';
-      showToast(msg, 'error');
+      
+      // Tratamento especial para erro comum de rede ou sessão bloqueada
+      if (msg.includes('fetch') || msg.includes('Network')) {
+        showToast('Erro de conexão. Verifique sua internet.', 'error');
+      } else {
+        showToast(msg, 'error');
+      }
+      
       if (msg.toLowerCase().includes('email')) setFieldError({ email: msg });
-      if (msg.toLowerCase().includes('senha') || msg.toLowerCase().includes('password'))
-        setFieldError({ password: msg });
+      if (msg.toLowerCase().includes('senha') || msg.toLowerCase().includes('password') || msg.toLowerCase().includes('credentials'))
+        setFieldError({ password: 'E-mail ou senha incorretos.' });
     } finally {
       setLoading(false);
     }

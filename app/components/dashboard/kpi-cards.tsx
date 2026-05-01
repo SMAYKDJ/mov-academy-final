@@ -4,6 +4,7 @@ import { Users, DollarSign, TrendingDown, UserPlus, ArrowUpRight, ArrowDownRight
 import { cn } from '@/utils/cn';
 import type { KPIStat } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
 
 /**
  * Mapeamento de ícones para os cartões de KPI.
@@ -53,15 +54,27 @@ function KPICard({ label, value, change, trend, icon, description }: KPIStat) {
   // Para o churn, cair é bom. Para tudo o mais, subir é bom.
   const isPositive = isChurn ? trend === 'down' : trend === 'up';
   const colors = colorConfig[label] || colorConfig['Total Alunos'];
+  const router = useRouter();
+
+  const handleDetails = () => {
+    if (label === 'Total Alunos') router.push('/alunos');
+    if (label === 'Receita Mensal') router.push('/financeiro');
+    if (label === 'Taxa de Churn') {
+      const el = document.getElementById('churn-analytics');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (label === 'Novas Matrículas') router.push('/alunos');
+  };
 
   return (
     <div
       className={cn(
         "relative overflow-hidden bg-white dark:bg-[#0f1117] p-6 rounded-2xl border border-gray-100 dark:border-[#1e2235]",
         "shadow-sm hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-primary-500/5",
-        "transition-all duration-300 group cursor-default"
+        "transition-all duration-300 group cursor-pointer"
       )}
-      role="region"
+      onClick={handleDetails}
+      role="button"
       aria-label={`${label}: ${value}`}
     >
       {/* Decoração de gradiente de fundo */}
@@ -91,7 +104,12 @@ function KPICard({ label, value, change, trend, icon, description }: KPIStat) {
         <div>
           <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">{label}</p>
           <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none tracking-tight">{value}</h3>
-          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-2">{description}</p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-[11px] text-gray-400 dark:text-gray-500">{description}</p>
+            <span className="text-[10px] font-bold text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              VER MAIS →
+            </span>
+          </div>
         </div>
       </div>
     </div>

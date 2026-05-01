@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { MoreHorizontal, Filter, Download, Search, ChevronUp, ChevronDown, ChevronsUpDown, Eye, Brain } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { ExplanationModal } from './explanation-modal';
 import { cn } from '@/utils/cn';
 import type { Student, SortDirection, SortField } from '@/types';
@@ -108,10 +109,19 @@ export function DataTable({ data, expandedLayout }: { data: Student[], expandedL
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showToast } = useToast();
+  const router = useRouter();
 
   const handleOpenAnalysis = (student: Student) => {
     setSelectedStudent(student);
     setIsModalOpen(true);
+  };
+
+  const handleViewProfile = (student: Student) => {
+    router.push(`/alunos?id=${student.id}`);
+  };
+
+  const handleQuickAction = (student: Student, action: string) => {
+    showToast(`${action} para ${student.name} em desenvolvimento`, 'info');
   };
 
   /**
@@ -344,7 +354,7 @@ export function DataTable({ data, expandedLayout }: { data: Student[], expandedL
 
                     {/* Ações */}
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-1 transition-opacity">
                         <button
                           onClick={() => handleOpenAnalysis(student)}
                           className="p-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors text-primary-600 dark:text-primary-400"
@@ -353,17 +363,23 @@ export function DataTable({ data, expandedLayout }: { data: Student[], expandedL
                           <Brain className="w-4 h-4" />
                         </button>
                         <button
+                          onClick={() => handleViewProfile(student)}
                           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                           aria-label={`Ver perfil de ${student.name}`}
+                          title="Ver Detalhes"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button
-                          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-                          aria-label={`Mais ações para ${student.name}`}
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
+                        <div className="relative">
+                          <button
+                            onClick={() => handleQuickAction(student, 'Menu de ações')}
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                            aria-label={`Mais ações para ${student.name}`}
+                            title="Mais Ações"
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </td>
                   </tr>

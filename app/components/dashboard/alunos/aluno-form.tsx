@@ -11,6 +11,7 @@ interface AlunoFormProps {
   open: boolean;
   onClose: () => void;
   onSave: (data: AlunoFormData) => void;
+  nextId?: number;
 }
 
 const planOptions: AlunoPlan[] = ['Mensal', 'Trimestral', 'Semestral', 'Anual', 'Black VIP'];
@@ -45,7 +46,7 @@ const emptyForm: AlunoFormData = {
   senha: '',
 };
 
-export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
+export function AlunoForm({ aluno, open, onClose, onSave, nextId }: AlunoFormProps) {
   const [form, setForm] = useState<AlunoFormData>(emptyForm);
   const [errors, setErrors] = useState<Partial<Record<keyof AlunoFormData, string>>>({});
   const [saving, setSaving] = useState(false);
@@ -169,12 +170,19 @@ export function AlunoForm({ aluno, open, onClose, onSave }: AlunoFormProps) {
         </div>
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
-          <div>
-            <label htmlFor="aluno-nome" className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Nome completo *</label>
-            <input id="aluno-nome" ref={firstInputRef} type="text" value={form.nome} onChange={(e) => updateField('nome', e.target.value)}
-              title="Nome completo" aria-label="Nome completo do aluno" placeholder="Ex: João da Silva"
-              className={cn("w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none transition-all", errors.nome ? "border-danger-500" : "border-gray-200 dark:border-[#2d3348]")} />
-            {errors.nome && <p className="mt-1 text-xs text-danger-600">{errors.nome}</p>}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="aluno-id" className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Código (ID)</label>
+              <input id="aluno-id" type="text" value={isEditing ? (aluno?.id || '') : (nextId || '')} disabled
+                className="w-full px-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-500 cursor-not-allowed outline-none" />
+            </div>
+            <div>
+              <label htmlFor="aluno-nome" className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Nome completo *</label>
+              <input id="aluno-nome" ref={firstInputRef} type="text" value={form.nome} onChange={(e) => updateField('nome', e.target.value)}
+                title="Nome completo" aria-label="Nome completo do aluno" placeholder="Ex: João da Silva"
+                className={cn("w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none transition-all", errors.nome ? "border-danger-500" : "border-gray-200 dark:border-[#2d3348]")} />
+              {errors.nome && <p className="mt-1 text-xs text-danger-600">{errors.nome}</p>}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
