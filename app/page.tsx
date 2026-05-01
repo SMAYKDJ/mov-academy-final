@@ -137,6 +137,35 @@ export default function DashboardPage() {
     ];
   }, [alunos, churnSummary]);
 
+  // Gráfico Semanal Dinâmico
+  const dynamicWeeklyChart = useMemo(() => {
+    const days = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
+    const counts = [0, 0, 0, 0, 0, 0, 0];
+    
+    alunos.forEach(a => {
+      if (a.dataMatricula) {
+        const [d, m, y] = a.dataMatricula.split('/').map(Number);
+        const date = new Date(y, m - 1, d);
+        if (!isNaN(date.getTime())) {
+          counts[date.getDay()]++;
+        }
+      }
+    });
+
+    // Reorganizar para começar em SEG e terminar em DOM
+    const labels = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
+    const values = [counts[1], counts[2], counts[3], counts[4], counts[5], counts[6], counts[0]];
+
+    return labels.map((label, i) => ({ label, value: values[i] || 1 })); // Fallback 1 para visibilidade
+  }, [alunos]);
+
+  useEffect(() => {
+    console.group('📊 Auditoria do Dashboard');
+    console.log('Alunos Totais:', alunos.length);
+    console.table(dynamicWeeklyChart);
+    console.groupEnd();
+  }, [dynamicWeeklyChart, alunos]);
+
   const filteredAlunos = useMemo(() => {
     return alunos.filter(aluno => 
       aluno.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -296,7 +325,7 @@ export default function DashboardPage() {
             {/* Coluna Direita — Gráficos e Atividades */}
             <div className="space-y-6">
               <ReportUpload onUploadSuccess={() => window.location.reload()} />
-              <WeeklyChart data={weeklyChartData} />
+              <WeeklyChart data={dynamicWeeklyChart} />
               <RetentionInsightCard />
               <ActivityFeed 
                 activities={dynamicActivity} 

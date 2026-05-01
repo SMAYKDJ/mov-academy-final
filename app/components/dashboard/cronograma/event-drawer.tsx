@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Clock, User, Dumbbell, Calendar, MessageSquare, CheckCircle, Save } from 'lucide-react';
+import { X, Clock, User, Dumbbell, Calendar, MessageSquare, CheckCircle, Save, Plus } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { eventTypeConfig, eventStatusConfig } from '@/types/cronograma';
 import { useToast } from '@/components/ui/toast';
@@ -124,22 +124,57 @@ export function EventDrawer({ event, open, onClose, onSave, mode }: EventDrawerP
                 type="text" 
                 value={form.alunoNome} 
                 onChange={e => setForm(p => ({...p, alunoNome: e.target.value}))} 
-                placeholder="Nome do aluno ou turma"
-                title="Nome do aluno ou turma"
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
-              />
+              <div className="relative">
+                <input
+                  id="event-student"
+                  type="text"
+                  list="students-list"
+                  value={form.alunoNome}
+                  onChange={e => setForm(p => ({ ...p, alunoNome: e.target.value }))}
+                  placeholder="Nome do aluno ou código"
+                  title="Nome do aluno ou código"
+                  className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all"
+                />
+                <datalist id="students-list">
+                  <option value="João Victor Silva" />
+                  <option value="Maria Clara Oliveira" />
+                  <option value="Pedro Lima" />
+                  <option value="ALUNO001" />
+                  <option value="ALUNO002" />
+                </datalist>
+              </div>
             </div>
             <div>
               <label htmlFor="event-instructor" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Instrutor</label>
-              <input 
-                id="event-instructor"
-                type="text" 
-                value={form.instrutorNome} 
-                onChange={e => setForm(p => ({...p, instrutorNome: e.target.value}))} 
-                placeholder="Nome do instrutor"
-                title="Nome do instrutor"
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
-              />
+              <div className="flex items-center space-x-2">
+                <select
+                  id="event-instructor"
+                  value={form.instrutorNome}
+                  onChange={e => setForm(p => ({ ...p, instrutorNome: e.target.value }))}
+                  className="flex-1 px-3 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition-all"
+                  title="Selecione o instrutor"
+                >
+                  <option value="">Selecione...</option>
+                  {['Ana Silva', 'Carlos Souza', 'Mariana Lima'].map(name => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newInstr = window.prompt('Nome do novo instrutor:');
+                    if (newInstr) {
+                      setForm(p => ({ ...p, instrutorNome: newInstr }));
+                      showToast(`Instrutor "${newInstr}" adicionado.`, 'success');
+                    }
+                  }}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors"
+                  aria-label="Adicionar novo instrutor"
+                  title="Adicionar novo instrutor"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             <div>
               <label htmlFor="event-date" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Data</label>

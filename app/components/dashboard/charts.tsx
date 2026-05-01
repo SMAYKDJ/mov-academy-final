@@ -4,6 +4,7 @@ import React from 'react';
 import { BarChart, TrendingUp } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { ChartData } from '@/types';
+import { useRouter } from 'next/navigation';
 
 /**
  * Visualização de gráfico semanal usando barras em CSS puro.
@@ -15,7 +16,7 @@ interface WeeklyChartProps {
 }
 
 export function WeeklyChart({ data, className }: WeeklyChartProps) {
-  const maxValue = Math.max(...data.map((d) => d.value));
+  const maxValue = Math.max(...data.map((d) => d.value), 1);
 
   return (
     <div className={cn(
@@ -41,13 +42,13 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
             <div key={i} className="flex-1 space-y-2 group cursor-pointer">
               <div
                 className={cn(
-                  "w-full rounded-t-lg transition-all duration-500 relative",
-                  "bg-primary-100 dark:bg-primary-900/30 group-hover:bg-primary-500 dark:group-hover:bg-primary-400",
-                  "group-hover:shadow-lg group-hover:shadow-primary-200 dark:group-hover:shadow-none"
+                  "w-full rounded-t-xl transition-all duration-500 relative",
+                  "bg-gradient-to-t from-primary-600 to-primary-400 dark:from-primary-700 dark:to-primary-500",
+                  "group-hover:from-primary-500 group-hover:to-primary-300",
+                  "shadow-[0_-4px_16px_-4px_rgba(99,102,241,0.3)] group-hover:shadow-primary-400/40"
                 )}
                 style={{
-                  height: `var(--bar-height, ${height}%)`,
-                  animationDelay: `${i * 100}ms`,
+                  height: `${Math.max(height, 8)}%`,
                 } as React.CSSProperties}
               >
                 {/* Tooltip */}
@@ -78,12 +79,13 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
  * Atua como um CTA para a funcionalidade de campanha de retenção.
  */
 export function RetentionInsightCard({ className }: { className?: string }) {
+  const router = useRouter();
   return (
     <div className={cn(
       "relative bg-gradient-to-br from-primary-600 via-indigo-600 to-purple-700 p-6 rounded-2xl shadow-xl shadow-primary-100 dark:shadow-none overflow-hidden group",
       className
     )}>
-      {/* Elementos decorativos */}
+      {/* ... elementos decorativos ... */}
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full blur-2xl" aria-hidden="true" />
 
@@ -107,11 +109,9 @@ export function RetentionInsightCard({ className }: { className?: string }) {
               className="h-full bg-white rounded-full transition-all duration-1000"
               style={{ width: 'var(--retention-w, 97%)' } as React.CSSProperties}
               role="progressbar"
-              {...({
-                'aria-valuenow': 97,
-                'aria-valuemin': 0,
-                'aria-valuemax': 100
-              })}
+              aria-valuenow={97}
+              aria-valuemin={0}
+              aria-valuemax={100}
               aria-label="Progresso da meta de retenção"
             />
           </div>
@@ -121,7 +121,10 @@ export function RetentionInsightCard({ className }: { className?: string }) {
           </div>
         </div>
 
-        <button className="w-full py-3 bg-white text-primary-700 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/90 transition-all flex items-center justify-center gap-2 shadow-lg">
+        <button 
+          onClick={() => router.push('/relatorios')}
+          className="w-full py-3 bg-white text-primary-700 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/90 transition-all flex items-center justify-center gap-2 shadow-lg"
+        >
           Ver Insights Completos
           <TrendingUp className="w-3.5 h-3.5" />
         </button>
