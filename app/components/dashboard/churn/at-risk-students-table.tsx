@@ -29,6 +29,7 @@ import type { ChurnPrediction, RiskLevel } from '@/types/churn';
 interface AtRiskStudentsTableProps {
   predictions: ChurnPrediction[];
   className?: string;
+  expandedLayout?: boolean;
 }
 
 const riskBadgeConfig: Record<RiskLevel, { label: string; bg: string; text: string; dot: string }> = {
@@ -54,11 +55,13 @@ const riskBadgeConfig: Record<RiskLevel, { label: string; bg: string; text: stri
 
 type SortDir = 'asc' | 'desc';
 
-export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTableProps) {
+export function AtRiskStudentsTable({ predictions, className, expandedLayout }: AtRiskStudentsTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [riskFilter, setRiskFilter] = useState<RiskLevel | 'all'>('all');
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const { showToast } = useToast();
 
   // Filter and sort
@@ -69,6 +72,10 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
       return matchesSearch && matchesRisk;
     })
     .sort((a, b) => sortDir === 'desc' ? b.probability - a.probability : a.probability - b.probability);
+
+  // Paginação
+  const totalPages = Math.ceil(filtered.length / perPage);
+  const paginated = filtered.slice((page - 1) * perPage, page * perPage);
 
   const handleIntervene = (name: string) => {
     showToast(`Intervenção iniciada para ${name}`, 'info', 'Intervenção');
@@ -126,7 +133,10 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
             {(['all', 'alto', 'medio', 'baixo'] as const).map((level) => (
               <button
                 key={level}
-                onClick={() => setRiskFilter(level)}
+                onClick={() => {
+                  setRiskFilter(level);
+                  setPage(1);
+                }}
                 className={cn(
                   "px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all",
                   riskFilter === level
@@ -158,10 +168,21 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
                   {sortDir === 'desc' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
                 </span>
               </th>
-              <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hidden md:table-cell">
+              {expandedLayout && (
+                <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                  Freq.
+                </th>
+              )}
+              <th className={cn(
+                "px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest",
+                expandedLayout ? "table-cell" : "hidden md:table-cell"
+              )}>
                 Última Presença
               </th>
-              <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hidden lg:table-cell">
+              <th className={cn(
+                "px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest",
+                expandedLayout ? "table-cell" : "hidden lg:table-cell"
+              )}>
                 Status
               </th>
               <th className="px-6 py-3 text-right text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
@@ -170,7 +191,7 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
             </tr>
           </thead>
           <tbody>
-            {filtered.slice(0, 10).map((prediction, index) => {
+            {paginated.map((prediction, index) => {
               const badge = riskBadgeConfig[prediction.riskLevel];
               const isExpanded = expandedId === prediction.studentId;
 
@@ -245,8 +266,19 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
                       </div>
                     </td>
 
+                    {expandedLayout && (
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                          {prediction.weeklyFrequency}x
+                        </span>
+                      </td>
+                    )}
+
                     {/* Last Visit */}
-                    <td className="px-6 py-4 hidden md:table-cell">
+                    <td className={cn(
+                      "px-6 py-4",
+                      expandedLayout ? "table-cell" : "hidden md:table-cell"
+                    )}>
                       <div>
                         <p className="text-sm text-gray-700 dark:text-gray-300">
                           {prediction.lastPresence}
@@ -258,7 +290,10 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
                     </td>
 
                     {/* Status */}
-                    <td className="px-6 py-4 hidden lg:table-cell">
+                    <td className={cn(
+                      "px-6 py-4",
+                      expandedLayout ? "table-cell" : "hidden lg:table-cell"
+                    )}>
                       <span
                         className={cn(
                           "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider",
@@ -367,14 +402,58 @@ export function AtRiskStudentsTable({ predictions, className }: AtRiskStudentsTa
         </table>
       </div>
 
-      {/* Footer */}
-      {filtered.length > 10 && (
-        <div className="px-6 py-4 border-t border-gray-100 dark:border-[#1e2235]">
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
-            Mostrando 10 de {filtered.length} alunos • Ordene ou filtre para ver mais
-          </p>
+      {/* Footer / Paginação */}
+      <div className="px-6 py-4 border-t border-gray-100 dark:border-[#1e2235] flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p className="text-xs text-gray-400 dark:text-gray-500">
+          Mostrando {paginated.length} de {filtered.length} alunos
+          {totalPages > 1 && (
+            <>
+              {' '}(Página <span className="font-bold text-gray-600 dark:text-gray-300">{page}</span> de {totalPages})
+            </>
+          )}
+        </p>
+
+        <div className="flex items-center gap-2">
+          {filtered.length > 10 && perPage !== 1000 && (
+            <button
+              onClick={() => {
+                setPerPage(1000);
+                setPage(1);
+              }}
+              className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all mr-2"
+            >
+              Ver Tudo
+            </button>
+          )}
+          {perPage === 1000 && (
+            <button
+              onClick={() => setPerPage(10) }
+              className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all mr-2"
+            >
+              Recolher
+            </button>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border border-gray-100 dark:border-[#2d3348] text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1a1d27] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border border-gray-100 dark:border-[#2d3348] text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1a1d27] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                Próxima
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

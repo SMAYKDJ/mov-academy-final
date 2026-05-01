@@ -44,4 +44,4 @@ export interface ChartData {
 }
 
 export type SortDirection = 'asc' | 'desc' | null;
-export type SortField = 'name' | 'status' | 'plan' | 'score' | 'lastVisit';
+export type SortField = 'name' | 'status' | 'plan' | 'score' | 'lastVisit' | 'joinDate' | 'age';

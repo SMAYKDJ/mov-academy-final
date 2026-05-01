@@ -100,7 +100,7 @@ export function DataTableSkeleton() {
   );
 }
 
-export function DataTable({ data }: { data: Student[] }) {
+export function DataTable({ data, expandedLayout }: { data: Student[], expandedLayout?: boolean }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -223,6 +223,16 @@ export function DataTable({ data }: { data: Student[] }) {
               <th className="px-6 py-3.5 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
                 <SortableHeader label="Risco IA" field="score" currentSort={sortField} currentDirection={sortDirection} onSort={handleSort} />
               </th>
+              {expandedLayout && (
+                <>
+                  <th className="px-6 py-3.5 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                    <SortableHeader label="Data Início" field="joinDate" currentSort={sortField} currentDirection={sortDirection} onSort={handleSort} />
+                  </th>
+                  <th className="px-6 py-3.5 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
+                    <SortableHeader label="Idade" field="age" currentSort={sortField} currentDirection={sortDirection} onSort={handleSort} />
+                  </th>
+                </>
+              )}
               <th className="px-6 py-3.5 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                 Último Acesso
               </th>
@@ -314,6 +324,18 @@ export function DataTable({ data }: { data: Student[] }) {
                         </span>
                       </div>
                     </td>
+
+                    {/* Dados Expandidos */}
+                    {expandedLayout && (
+                      <>
+                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                          {student.joinDate}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium text-center">
+                          {student.age || '--'}
+                        </td>
+                      </>
+                    )}
 
                     {/* Último Acesso */}
                     <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap">

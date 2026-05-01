@@ -16,6 +16,7 @@ import { generateRealChurnSummary } from "@/utils/churn-engine";
 import { alunosData } from "@/utils/alunos-data";
 import { useLocalStorage } from "@/utils/persistence";
 import { Calendar as CalendarIcon, Plus, ArrowUpRight, Zap, AlertTriangle } from "lucide-react";
+import { cn } from "@/utils/cn";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
 import type { Student, ActivityItem } from "@/types";
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [showChurnModule, setShowChurnModule] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { showToast } = useToast();
   const { user } = useAuth();
 
@@ -154,15 +156,19 @@ export default function DashboardPage() {
       <Sidebar
         mobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
+        onCollapse={setIsSidebarCollapsed}
       />
 
       {/* Área de Conteúdo Principal — deslocada para a direita pela largura da barra lateral no desktop */}
-      <div className="flex-1 md:ml-64 transition-all duration-300">
+      <div className={cn(
+        "flex-1 transition-all duration-300",
+        isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
+      )}>
         {/* Cabeçalho */}
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
         {/* Conteúdo da Página */}
-        <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-8">
+        <main className="px-4 md:px-8 py-8 w-full space-y-8">
           {/* Seção de Boas-vindas */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
             <div>
@@ -252,7 +258,10 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Linha 2: Tabela de Alunos em Risco (largura total) */}
-                <AtRiskStudentsTable predictions={churnSummary.predictions} />
+                <AtRiskStudentsTable 
+                  predictions={churnSummary.predictions} 
+                  expandedLayout={isSidebarCollapsed}
+                />
 
                 {/* Linha 3: Painel de Insights */}
                 <ChurnInsights insights={churnSummary.insights} />
@@ -276,6 +285,7 @@ export default function DashboardPage() {
                   payments: (a.status === 'ativo' ? 'up_to_date' : 'overdue') as Student['payments'],
                   joinDate: (a as any).dataMatricula || a.ultimoPagamento || '',
                 }))} 
+                expandedLayout={isSidebarCollapsed}
               />
             </div>
 

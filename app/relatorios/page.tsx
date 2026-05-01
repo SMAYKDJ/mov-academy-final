@@ -28,9 +28,11 @@ import {
   CalendarClock
 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
+import { cn } from '@/utils/cn';
 
 export default function RelatoriosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('Abril');
   const [showMonthSelector, setShowMonthSelector] = useState(false);
   const [showActionPlan, setShowActionPlan] = useState(false);
@@ -89,12 +91,19 @@ export default function RelatoriosPage() {
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
-      <Sidebar mobileOpen={mobileMenuOpen} onMobileClose={() => setMobileMenuOpen(false)} />
+      <Sidebar 
+        mobileOpen={mobileMenuOpen} 
+        onMobileClose={() => setMobileMenuOpen(false)} 
+        onCollapse={setIsSidebarCollapsed}
+      />
 
-      <div className="flex-1 md:ml-64 transition-all duration-300">
+      <div className={cn(
+        "flex-1 transition-all duration-300",
+        isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
+      )}>
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-6">
+        <main className="px-4 md:px-8 py-8 w-full space-y-6">
           {/* Page Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
             <div>

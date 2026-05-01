@@ -1,0 +1,41 @@
+./next-env.d.ts:5: // NOTE: This file should not be edited
+./next-env.d.ts:6: // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+./app/cronograma/page.tsx:38: // Events with local state for check-in
+./app/financeiro/pagamento/sucesso/page.tsx:14: // Fire confetti on load
+./app/components/dashboard/cronograma/calendar-grid.tsx:40: // Construir as células da grade do calendário
+./app/components/dashboard/financeiro/stripe-payment.tsx:36: // Make sure to change this to your payment completion page
+./app/components/dashboard/treinos/body-progress.tsx:62: // % coordinates relative to the full image container
+./app/components/dashboard/treinos/body-progress.tsx:181: // Convert hex to rgba for glow effects
+./app/components/dashboard/churn/churn-card.tsx:36: // For churn, "down" is positive (good)
+./app/components/dashboard/churn/churn-trend.tsx:39: if (maxVal === minVal) return padding.top + plotH; // Fallback to bottom if all values are 0 or equal
+./app/components/dashboard/churn/churn-chart.tsx:39: // Calculate conic-gradient stops for the donut
+./app/components/dashboard/configuracoes/profile-form.tsx:70: // Update local profile and sync with global context
+./app/relatorios/page.tsx:41: // Dynamic Data Simulator based on selected month
+./app/relatorios/page.tsx:46: // Simulate checkins (with weekend drops)
+./app/treinos/page.tsx:23: // Data Persistence
+./app/login/reset-password/page.tsx:18: // Check if we are actually in a reset session
+./app/login/reset-password/page.tsx:21: // Supabase sets the session automatically when clicking the link
+./tests/ui/churn-dashboard.spec.ts:5: // Navigate to the main dashboard page
+./tests/ui/churn-dashboard.spec.ts:18: // The Churn Analytics section is expanded by default in the code state
+./tests/ui/churn-dashboard.spec.ts:25: // Check for At-Risk Students Table
+./tests/ui/button_test.spec.ts:7: // Wait for main dashboard to load
+./tests/ui/button_test.spec.ts:12: // Ensure initial theme (light) - body should have light bg
+./tests/ui/button_test.spec.ts:18: // After click, dark class should be present
+./tests/ui/button_test.spec.ts:20: // Click again to revert
+./tests/ui/button_test.spec.ts:38: // Go back to dashboard for next iteration
+./tests/api/test_churn_endpoint.py:44: # Simulate model not loaded AFTER startup
+./tests/data/test_ingest.py:19: # No NaNs in critical columns
+./tests/data/test_ingest.py:23: # If overdue days > 30 or low frequency -> churn_flag should be 1
+./backend/seed_database_from_reports.py:44: # Padrão de correspondência: ID Nome do Aluno... Plano... Data
+./backend/seed_database_from_reports.py:166: # Extrair data e valor perto do final da linha
+./backend/scratch/setup_new_db.py:7: # We will try to read supabase_schema.sql and execute it using Postgres connection,
+./backend/scratch/setup_new_db.py:8: # or if we can't, we can try using the REST API but the REST API doesn't support executing arbitrary SQL.
+./backend/scratch/setup_new_db.py:9: # Actually, the python supabase client doesn't support raw SQL execution easily.
+./backend/scratch/demo_ia.py:13: # Load model and data
+./backend/data/ingest_churn.py:34: # Use provided paths or defaults from env/global
+./backend/data/ingest_churn.py:48: # Only students with balance > 0 are truly delinquent
+./backend/data/generate_synthetic.py:58: # Overdue days only for those with overdue payments
+./scratch/find_english_comments.py:6: # We only want to match these as whole words in comments
+./scratch/find_english_comments.py:15: return count > 1 # require at least 2 english words to avoid false positives
+./scratch/find_english_comments.py:33: elif ("#" in line and path.endswith(".py")):
+./scratch/find_english_comments.py:36: # ignoring multiline for simplicity unless it's on one line

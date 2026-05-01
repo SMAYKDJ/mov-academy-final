@@ -38,10 +38,15 @@ const menuItems = [
 interface SidebarProps {
   mobileOpen?: boolean;
   onMobileClose?: () => void;
+  onCollapse?: (collapsed: boolean) => void;
 }
 
-export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
+export function Sidebar({ mobileOpen, onMobileClose, onCollapse }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  useEffect(() => {
+    if (onCollapse) onCollapse(isCollapsed);
+  }, [isCollapsed, onCollapse]);
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const pathname = usePathname();
   const { user, signOut } = useAuth();

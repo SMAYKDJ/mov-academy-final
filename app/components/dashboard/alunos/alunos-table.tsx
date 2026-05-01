@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import type { Aluno } from '@/types/aluno';
 import { openWhatsApp } from '@/utils/whatsapp-helper';
 
-type SortField = 'nome' | 'plano' | 'status' | 'risco' | 'ultimoPagamento';
+type SortField = 'nome' | 'plano' | 'status' | 'risco' | 'ultimoPagamento' | 'telefone' | 'cpf';
 type SortDir = 'asc' | 'desc' | null;
 
 interface AlunosTableProps {
@@ -18,9 +18,10 @@ interface AlunosTableProps {
   onView: (aluno: Aluno) => void;
   onEdit: (aluno: Aluno) => void;
   onDelete: (aluno: Aluno) => void;
+  expandedLayout?: boolean;
 }
 
-export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosTableProps) {
+export function AlunosTable({ data, loading, onView, onEdit, onDelete, expandedLayout }: AlunosTableProps) {
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
@@ -55,6 +56,12 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
           comparison = parseDate(a.ultimoPagamento) - parseDate(b.ultimoPagamento);
           break;
         }
+        case 'telefone':
+          comparison = a.telefone.localeCompare(b.telefone);
+          break;
+        case 'cpf':
+          comparison = a.cpf.localeCompare(b.cpf);
+          break;
       }
       return sortDir === 'asc' ? comparison : -comparison;
     });
@@ -137,27 +144,36 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
         <table className="w-full text-sm" role="table">
           <thead>
             <tr className="bg-gray-50/80 dark:bg-[#1a1d27]/50 border-b border-gray-100 dark:border-[#1e2235]">
-              {(['nome', 'status', 'plano', 'risco', 'ultimoPagamento'] as SortField[]).map(field => {
-                const labels: Record<SortField, string> = {
+              {(() => {
+                const labels: Record<string, string> = {
                   nome: 'Aluno',
                   status: 'Status',
                   plano: 'Plano',
                   risco: 'Risco',
                   ultimoPagamento: 'Último Pag.',
+                  telefone: 'Telefone',
+                  cpf: 'CPF',
                 };
-                return (
+                
+                const visibleFields = ['nome', 'status', 'plano', 'risco'];
+                if (expandedLayout) {
+                  visibleFields.push('telefone', 'cpf');
+                }
+                visibleFields.push('ultimoPagamento');
+
+                return visibleFields.map(field => (
                   <th key={field} className="px-6 py-3.5 text-left">
                     <button
-                      onClick={() => handleSort(field)}
+                      onClick={() => handleSort(field as SortField)}
                       className="flex items-center text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
                       aria-label={`Ordenar por ${labels[field]}`}
                     >
                       {labels[field]}
-                      <SortIcon field={field} />
+                      <SortIcon field={field as SortField} />
                     </button>
                   </th>
-                );
-              })}
+                ));
+              })()}
               <th className="px-6 py-3.5 text-right">
                 <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Ações</span>
               </th>
@@ -203,6 +219,20 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
                 <td className="px-6 py-4 w-36">
                   <RiskIndicator risk={aluno.risco} />
                 </td>
+
+                {/* Telefone (Expandido) */}
+                {expandedLayout && (
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tabular-nums">
+                    {aluno.telefone}
+                  </td>
+                )}
+
+                {/* CPF (Expandido) */}
+                {expandedLayout && (
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tabular-nums">
+                    {aluno.cpf}
+                  </td>
+                )}
 
                 {/* Último Pagamento */}
                 <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
