@@ -6,10 +6,10 @@ import pdfplumber
 from supabase import create_client
 from dotenv import load_dotenv
 
-# Load env variables
+# Carregar variáveis de ambiente
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")  # Requires service role key to delete/insert safely
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")  # Requer a chave service_role para deletar/inserir com segurança
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("❌ Erro: SUPABASE_URL e SUPABASE_KEY não configuradas no .env")
@@ -31,7 +31,7 @@ def delete_existing_data():
         print(f"⚠️ Aviso ao tentar apagar dados. Certifique-se de que a RLS permite deleção. Erro: {e}")
 
 def seed_database():
-    students = {} # map to hold student data
+    students = {} # mapa para armazenar dados dos alunos
     transactions = []
 
     print("\n📄 Extraindo alunos de 'Listagem de Matrículas.pdf'...")
@@ -41,12 +41,12 @@ def seed_database():
                 text = page.extract_text()
                 lines = text.split('\n')
                 for line in lines:
-                    # Match pattern: ID Nome do Aluno... Plano... Data
+                    # Padrão de correspondência: ID Nome do Aluno... Plano... Data
                     match = re.search(r'^(\d+)\s+(.*?)\s+(Plano\s+\w+.*?)\s+(\d{2}/\d{2}/\d{4})', line)
                     if match:
                         sid = match.group(1)
                         name = match.group(2).strip()
-                        # Normalize Plan
+                        # Normalizar Plano
                         raw_plan = match.group(3).strip()
                         plan = 'Mensal'
                         if 'Anual' in raw_plan: plan = 'Anual'
@@ -56,14 +56,14 @@ def seed_database():
                         
                         start_date = match.group(4)
                         
-                        # Normalize Status
+                        # Normalizar Status
                         status = 'ativo'
                         if any(x in line for x in ['Inativa', 'Vencida', 'Cancelada']):
                             status = 'inativo'
                         elif 'Pendente' in line:
                             status = 'pendente'
                         
-                        # Fix email logic: use names to make dummy emails
+                        # Corrigir lógica de e-mail: usar nomes para criar e-mails fictícios
                         email_base = re.sub(r'[^a-zA-Z0-9]', '', name.split()[0].lower())
                         email = f"{email_base}_{sid}@moviment.com"
                         
@@ -80,7 +80,7 @@ def seed_database():
                             "objetivo": "Condicionamento Físico",
                             "frequencia": 0,
                             "risco": 0,
-                            "_original_id": sid # to link transactions
+                            "_original_id": sid # para vincular transações
                         }
         print(f"   Encontrados {len(students)} alunos na listagem de matrículas.")
     except Exception as e:
@@ -104,21 +104,21 @@ def seed_database():
     # Inserir Alunos para obter os IDs Reais (Serial) do Banco
     print("\n💾 Inserindo alunos no Supabase...")
     student_records = list(students.values())
-    real_student_mapping = {} # _original_id -> Supabase ID
+    real_student_mapping = {} # _original_id -> ID do Supabase
     
-    # Supabase allows inserting arrays of objects
+    # O Supabase permite a inserção de arrays de objetos
     batch_size = 50
     inserted_count = 0
     for i in range(0, len(student_records), batch_size):
         batch = student_records[i:i+batch_size]
-        # Remove the temp key before inserting
+        # Remover a chave temporária antes de inserir
         insert_batch = [{k:v for k,v in s.items() if k != '_original_id'} for s in batch]
         
         try:
             res = supabase.table('alunos').insert(insert_batch).execute()
             if res.data:
                 inserted_count += len(res.data)
-                # Map back the names/emails to get the IDs for transactions
+                # Mapear de volta os nomes/e-mails para obter os IDs para as transações
                 for s_inserted in res.data:
                     for sid, s_orig in students.items():
                         if s_orig['email'] == s_inserted['email']:
@@ -134,9 +134,9 @@ def seed_database():
             for page in pdf.pages:
                 lines = page.extract_text().split('\n')
                 for line in lines:
-                    # Expected format: ID Date Desc... Value Method
-                    # E.g.: "123 15/04/2026 Mensalidade... R$ 149,90 Cartão"
-                    # Using a very permissive regex to catch names and values
+                    # Formato esperado: ID Data Desc... Valor Método
+                    # Ex: "123 15/04/2026 Mensalidade... R$ 149,90 Cartão"
+                    # Usando um regex muito permissivo para capturar nomes e valores
                     match = re.search(r'(\d{2}/\d{2}/\d{4})\s+(.*?)R\$\s*([\d,.]+)\s+(\w+)$', line)
                     if match:
                         date_str = match.group(1)
@@ -152,7 +152,7 @@ def seed_database():
                             "data": date_str,
                             "status": "pago",
                             "metodo": method.lower(),
-                            "aluno_nome": desc_and_name[:30] # Just keep part of the string
+                            "aluno_nome": desc_and_name[:30] # Manter apenas parte da string
                         })
     except Exception as e:
         print(f"   Erro ao ler arquivo de Recebimentos: {e}")
@@ -163,7 +163,7 @@ def seed_database():
             for page in pdf.pages:
                 lines = page.extract_text().split('\n')
                 for line in lines:
-                    # Extract date and value near the end of the line
+                    # Extrair data e valor perto do final da linha
                     match = re.search(r'(\d{2}/\d{2}/\d{4})\s+([\d,.]+)\s*$', line)
                     if match:
                         date_str = match.group(1)
@@ -177,7 +177,7 @@ def seed_database():
                             "data": date_str,
                             "status": "atrasado",
                             "metodo": "pendente",
-                            "aluno_nome": "Devedor Não Identificado" # Simplify mapping for debts
+                            "aluno_nome": "Devedor Não Identificado" # Simplificar o mapeamento para dívidas
                         })
     except Exception as e:
         print(f"   Erro ao ler arquivo de Devedores: {e}")

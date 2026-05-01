@@ -3,12 +3,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================
-   DESIGN SYSTEM — Moviment Academia
-   Tailwind CSS v4 Theme Tokens
+   SISTEMA DE DESIGN — Moviment Academia
+   Tokens de Tema do Tailwind CSS v4
    ============================================ */
 
 @theme {
-  /* Primary Palette — Indigo / Blue */
+  /* Paleta Primária — Índigo / Azul */
   --color-primary-50: #eef2ff;
   --color-primary-100: #e0e7ff;
   --color-primary-200: #c7d2fe;
@@ -20,7 +20,7 @@
   --color-primary-800: #3730a3;
   --color-primary-900: #312e81;
 
-  /* Semantic Colors */
+  /* Cores Semânticas */
   --color-success-50: #ecfdf5;
   --color-success-500: #10b981;
   --color-success-600: #059669;
@@ -35,19 +35,19 @@
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
 
-  /* Surface Colors */
+  /* Cores de Superfície */
   --color-surface: #ffffff;
   --color-surface-hover: #f9fafb;
   --color-surface-elevated: #ffffff;
   --color-background: #f8fafc;
 
-  /* Dark Mode Surface */
+  /* Superfície Modo Escuro */
   --color-dark-surface: #0f1117;
   --color-dark-surface-elevated: #1a1d27;
   --color-dark-background: #080a0f;
   --color-dark-border: #1e2235;
 
-  /* Animations */
+  /* Animações */
   --animate-fade-in: fade-in 0.5s ease-out;
   --animate-slide-up: slide-up 0.5s ease-out;
   --animate-slide-in-right: slide-in-right 0.3s ease-out;
@@ -57,7 +57,7 @@
 }
 
 /* ============================================
-   KEYFRAME ANIMATIONS
+   ANIMAÇÕES DE KEYFRAMES
    ============================================ */
 
 @keyframes fade-in {
@@ -106,7 +106,7 @@
 }
 
 /* ============================================
-   BASE LAYER
+   CAMADA BASE
    ============================================ */
 
 @layer base {
@@ -121,12 +121,12 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Focus styles for accessibility */
+  /* Estilos de foco para acessibilidade */
   *:focus-visible {
     @apply outline-2 outline-offset-2 outline-primary-500;
   }
 
-  /* Reduce motion for accessibility */
+  /* Reduzir movimento para acessibilidade */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -137,7 +137,7 @@
 }
 
 /* ============================================
-   CUSTOM SCROLLBAR
+   BARRA DE ROLAGEM PERSONALIZADA
    ============================================ */
 
 ::-webkit-scrollbar {
@@ -167,11 +167,11 @@
 }
 
 /* ============================================
-   UTILITIES
+   UTILITÁRIOS
    ============================================ */
 
 @layer utilities {
-  /* Glassmorphism */
+  /* Glassmorphism (Efeito Vidro) */
   .glass {
     background: rgba(255, 255, 255, 0.7);
     -webkit-backdrop-filter: blur(16px);
@@ -182,7 +182,7 @@
     background: rgba(15, 17, 23, 0.8);
   }
 
-  /* Gradient text */
+  /* Texto com gradiente */
   .text-gradient {
     background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
     -webkit-background-clip: text;
@@ -190,7 +190,7 @@
     background-clip: text;
   }
 
-  /* Hide scrollbar */
+  /* Esconder barra de rolagem */
   .scroll-hide::-webkit-scrollbar {
     display: none;
   }
@@ -199,7 +199,7 @@
     scrollbar-width: none;
   }
 
-  /* Skeleton shimmer gradient */
+  /* Gradiente de brilho para skeleton */
   .skeleton-shimmer {
     background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
     background-size: 200% 100%;

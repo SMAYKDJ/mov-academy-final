@@ -31,7 +31,7 @@ export function BiometriaHistory({ evaluations }: BiometriaHistoryProps) {
 
           return (
             <div key={ev.id} className="border border-gray-100 dark:border-[#1e2235] rounded-xl overflow-hidden transition-all">
-              {/* Summary Row */}
+              {/* Linha de Resumo */}
               <button
                 onClick={() => setExpandedId(isExpanded ? null : ev.id)}
                 className="w-full p-4 flex items-center justify-between gap-4 hover:bg-gray-50 dark:hover:bg-[#1a1d27] transition-all text-left"
@@ -68,7 +68,7 @@ export function BiometriaHistory({ evaluations }: BiometriaHistoryProps) {
                 </div>
               </button>
 
-              {/* Expanded Details */}
+              {/* Detalhes Expandidos */}
               {isExpanded && (
                 <div className="p-4 pt-0 border-t border-gray-50 dark:border-[#1e2235] animate-fade-in">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">

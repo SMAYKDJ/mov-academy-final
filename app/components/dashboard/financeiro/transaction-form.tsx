@@ -24,7 +24,7 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
     alunoNome: '',
   });
 
-  // Load data when editing
+  // Carregar dados ao editar
   React.useEffect(() => {
     if (transaction) {
       setFormData({
@@ -38,7 +38,7 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
         alunoNome: transaction.alunoNome || '',
       });
     } else {
-      // Reset for new
+      // Resetar para novo
       setFormData({
         tipo: 'receita',
         descricao: '',

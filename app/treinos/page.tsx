@@ -20,7 +20,7 @@ export default function TreinosPage() {
   const { showToast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Data Persistence
+  // Persistência de Dados
   const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', workoutPlansData, 'treinos');
   const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
 
@@ -137,16 +137,16 @@ export default function TreinosPage() {
             </div>
           </div>
 
-          {/* KPIs + Gamification */}
+          {/* KPIs + Gamificação */}
           <TreinosKPI stats={treinosKPIData} />
 
-          {/* Body Map (THE CENTERPIECE) */}
+          {/* Mapa Corporal (PEÇA CENTRAL) */}
           <BodyProgress
             muscleData={muscleMapData}
             onMuscleClick={handleMuscleClick}
           />
 
-          {/* Workout Plans Grid */}
+          {/* Grade de Planos de Treino */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <div>

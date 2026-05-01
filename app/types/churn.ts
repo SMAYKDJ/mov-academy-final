@@ -1,8 +1,8 @@
 /**
- * Churn Prediction Module — Type Definitions.
+ * Módulo de Previsão de Churn — Definições de Tipos.
  * 
- * These types support the ML-powered churn analysis feature,
- * including prediction results, risk classification, and trend data.
+ * Esses tipos suportam o recurso de análise de churn alimentado por IA,
+ * incluindo resultados de previsão, classificação de risco e dados de tendência.
  */
 
 export type RiskLevel = 'alto' | 'medio' | 'baixo';
@@ -12,7 +12,7 @@ export interface ChurnPrediction {
   studentName: string;
   probability: number;         // 0–100 (%)
   riskLevel: RiskLevel;
-  lastPresence: string;        // ISO or formatted date
+  lastPresence: string;        // ISO ou data formatada
   daysSinceLastVisit: number;
   weeklyFrequency: number;
   paymentStatus: 'up_to_date' | 'overdue';
@@ -30,15 +30,15 @@ export interface ChurnDistribution {
 
 export interface ChurnTrendPoint {
   month: string;
-  churnRate: number;    // percentage
-  predicted: number;    // predicted rate
+  churnRate: number;    // porcentagem
+  predicted: number;    // taxa prevista
 }
 
 export interface ChurnInsight {
   id: string;
   icon: string;         // emoji
   text: string;
-  impact: string;       // e.g. "+75% risco"
+  impact: string;       // ex: "+75% risco"
   severity: RiskLevel;
 }
 

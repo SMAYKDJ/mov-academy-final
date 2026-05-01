@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
 /**
- * Enhanced hook to manage state persisted in Supabase with localStorage as fallback.
+ * Hook aprimorado para gerenciar o estado persistido no Supabase com localStorage como fallback.
  */
 export function useLocalStorage<T>(key: string, initialValue: T, tableName?: string) {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
@@ -11,11 +11,11 @@ export function useLocalStorage<T>(key: string, initialValue: T, tableName?: str
   useEffect(() => {
     async function loadData() {
       try {
-        // Try Supabase first if a table is provided
+        // Tentar o Supabase primeiro se uma tabela for fornecida
         if (tableName && process.env.NEXT_PUBLIC_SUPABASE_URL) {
           const { data, error } = await supabase.from(tableName).select('*');
           if (!error && data && data.length > 0) {
-            // Map snake_case from DB to camelCase for Frontend
+            // Mapear snake_case do Banco de Dados para camelCase para o Frontend
             const mappedData = data.map((item: any) => {
               if (tableName === 'alunos') {
                 return {
@@ -36,13 +36,13 @@ export function useLocalStorage<T>(key: string, initialValue: T, tableName?: str
           }
         }
 
-        // Fallback to localStorage
+        // Fallback para localStorage
         const item = typeof window !== 'undefined' ? window.localStorage.getItem(key) : null;
         if (item) {
           setStoredValue(JSON.parse(item));
         }
       } catch (error) {
-        console.error('Error loading data', error);
+        console.error('Erro ao carregar dados', error);
       } finally {
         setIsLoaded(true);
       }
@@ -55,19 +55,19 @@ export function useLocalStorage<T>(key: string, initialValue: T, tableName?: str
       const valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       
-      // Save locally
+      // Salvar localmente
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
 
-      // Sync with Supabase if applicable
+      // Sincronizar com o Supabase se aplicável
       if (tableName && process.env.NEXT_PUBLIC_SUPABASE_URL) {
-        // This is a naive sync (replace all or upsert individually)
-        // For a project of this scale, upserting the whole array is often okay for demo purposes
+        // Esta é uma sincronização simples (substituir tudo ou fazer upsert individualmente)
+        // Para um projeto desta escala, fazer upsert de todo o array geralmente é aceitável para demonstração
         await supabase.from(tableName).upsert(valueToStore as any);
       }
     } catch (error) {
-      console.error('Error saving data', error);
+      console.error('Erro ao salvar dados', error);
     }
   };
 
@@ -75,7 +75,7 @@ export function useLocalStorage<T>(key: string, initialValue: T, tableName?: str
 }
 
 /**
- * Utility to export data to CSV and trigger download.
+ * Utilitário para exportar dados para CSV e disparar o download.
  */
 export function exportToCSV(data: any[], filename: string) {
   if (data.length === 0) return;

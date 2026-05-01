@@ -64,7 +64,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#080a0f] flex items-center justify-center p-4 transition-all duration-500">
       <div className="w-full max-w-md sm:max-w-lg">
-        {/* Logo */}
+        {/* Logotipo */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 dark:shadow-none mb-4 transform hover:scale-105 transition-transform duration-300">
             <Dumbbell className="text-white w-8 h-8" />
@@ -77,7 +77,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Card */}
+        {/* Cartão de Login */}
         <div className="bg-white dark:bg-[#12141c] p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-[#1e2235] relative overflow-hidden">
           {!isRecovering ? (
             <form onSubmit={handleSubmit} className="space-y-6">

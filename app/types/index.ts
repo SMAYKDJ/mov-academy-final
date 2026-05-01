@@ -1,6 +1,6 @@
 /**
- * Core type definitions for the Moviment Academia Dashboard.
- * All interfaces are centralized here for maintainability.
+ * Definições de tipos principais para o Moviment Academia Dashboard.
+ * Todas as interfaces são centralizadas aqui para facilitar a manutenção.
  */
 
 export interface Student {

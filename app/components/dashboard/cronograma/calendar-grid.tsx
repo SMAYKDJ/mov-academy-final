@@ -7,7 +7,7 @@ import type { CalendarEvent } from '@/types/cronograma';
 
 interface CalendarGridProps {
   year: number;
-  month: number; // 0-indexed
+  month: number; // Base zero (0 = Janeiro)
   events: CalendarEvent[];
   selectedDate: string; // YYYY-MM-DD
   onSelectDate: (date: string) => void;
@@ -28,7 +28,7 @@ function formatDate(year: number, month: number, day: number): string {
 }
 
 /**
- * Monthly calendar grid with event dots.
+ * Grade de calendário mensal com pontos de evento.
  */
 export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }: CalendarGridProps) {
   const daysInMonth = getDaysInMonth(year, month);
@@ -37,7 +37,7 @@ export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }
   const today = new Date();
   const todayStr = formatDate(today.getFullYear(), today.getMonth(), today.getDate());
 
-  // Build calendar grid cells
+  // Construir as células da grade do calendário
   const cells: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
@@ -50,7 +50,7 @@ export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] overflow-hidden">
-      {/* Weekday Headers */}
+      {/* Cabeçalhos dos Dias da Semana */}
       <div className="grid grid-cols-7 border-b border-gray-100 dark:border-[#1e2235]">
         {WEEKDAYS.map(wd => (
           <div key={wd} className="py-3 text-center text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -59,7 +59,7 @@ export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }
         ))}
       </div>
 
-      {/* Day Cells */}
+      {/* Células de Dias */}
       <div className="grid grid-cols-7">
         {cells.map((day, idx) => {
           if (day === null) {
@@ -80,7 +80,7 @@ export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }
                 isSelected && "bg-primary-50 dark:bg-primary-900/10 ring-2 ring-inset ring-primary-500/30"
               )}
             >
-              {/* Day Number */}
+              {/* Número do Dia */}
               <div className={cn(
                 "w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold mb-1 transition-all",
                 isToday
@@ -92,7 +92,7 @@ export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }
                 {day}
               </div>
 
-              {/* Event Dots / Chips */}
+              {/* Pontos / Chips de Evento */}
               <div className="space-y-0.5">
                 {dayEvents.slice(0, 3).map(ev => {
                   const cfg = eventTypeConfig[ev.tipo];
@@ -103,7 +103,7 @@ export function CalendarGrid({ year, month, events, selectedDate, onSelectDate }
                     </div>
                   );
                 })}
-                {/* Mobile: dots only */}
+                {/* Mobile: apenas pontos */}
                 <div className="flex md:hidden gap-0.5 flex-wrap">
                   {dayEvents.slice(0, 4).map(ev => (
                     <div key={ev.id} className={cn("w-2 h-2 rounded-full", eventTypeConfig[ev.tipo].dot)} />

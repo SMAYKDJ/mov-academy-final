@@ -1,12 +1,12 @@
 /**
- * Mock Data for the Churn Prediction Module.
+ * Dados simulados para o Módulo de Previsão de Churn.
  * 
- * Generates realistic synthetic churn data following the KDD methodology:
- * - Feature Engineering: frequency, days inactive, payment status, enrollment tenure
- * - Target: churn probability (0–100%)
- * - Risk Classification: Alto (>70%), Médio (40–70%), Baixo (<40%)
+ * Gera dados sintéticos de churn realistas seguindo a metodologia KDD:
+ * - Engenharia de Características: frequência, dias inativos, status de pagamento, tempo de matrícula
+ * - Alvo: probabilidade de churn (0–100%)
+ * - Classificação de Risco: Alto (>70%), Médio (40–70%), Baixo (<40%)
  * 
- * All random values are seeded for SSR/client hydration consistency.
+ * Todos os valores aleatórios são semeados para consistência de hidratação SSR/cliente.
  */
 
 import type {
@@ -18,7 +18,7 @@ import type {
   RiskLevel,
 } from '@/types/churn';
 
-/** Deterministic pseudo-random to match the existing pattern in mock-data.ts */
+/** Pseudo-aleatório determinístico para corresponder ao padrão existente em mock-data.ts */
 function seededRandom(seed: number): number {
   const x = Math.sin(seed + 1) * 10000;
   return x - Math.floor(x);
@@ -49,12 +49,12 @@ const lastPresenceDates = [
 ];
 
 /**
- * Simulate churn probability using the KDD pipeline logic:
- *  - Baseline 30%
- *  - Inactivity > 10 days: +45%
- *  - Low frequency < 2x/week: +20%
- *  - Overdue payment: +15%
- *  - Age > 45 (simulated via enrollment > 24 months): -15%
+ * Simula a probabilidade de churn usando a lógica do pipeline KDD:
+ *  - Linha de base 30%
+ *  - Inatividade > 10 dias: +45%
+ *  - Baixa frequência < 2x/semana: +20%
+ *  - Pagamento em atraso: +15%
+ *  - Idade > 45 (simulado via matrícula > 24 meses): -15%
  */
 function simulateChurnProbability(seed: number): {
   probability: number;
@@ -79,7 +79,7 @@ function simulateChurnProbability(seed: number): {
   return { probability: prob, daysSince, weeklyFreq: weeklyFreq, paymentStatus, enrollmentMonths };
 }
 
-/** Generate all churn predictions */
+/** Gerar todas as previsões de churn */
 export const churnPredictions: ChurnPrediction[] = studentNames.map((name, i) => {
   const sim = simulateChurnProbability(i);
   return {
@@ -96,7 +96,7 @@ export const churnPredictions: ChurnPrediction[] = studentNames.map((name, i) =>
   };
 });
 
-/** Risk distribution summary */
+/** Resumo da distribuição de risco */
 export const churnDistribution: ChurnDistribution = {
   alto: churnPredictions.filter(p => p.riskLevel === 'alto').length,
   medio: churnPredictions.filter(p => p.riskLevel === 'medio').length,
@@ -104,7 +104,7 @@ export const churnDistribution: ChurnDistribution = {
   total: churnPredictions.length,
 };
 
-/** Monthly churn trend data — 6 months */
+/** Dados de tendência mensal de churn — 6 meses */
 export const churnTrendData: ChurnTrendPoint[] = [
   { month: 'Nov', churnRate: 4.2, predicted: 4.5 },
   { month: 'Dez', churnRate: 3.8, predicted: 3.9 },
@@ -114,7 +114,7 @@ export const churnTrendData: ChurnTrendPoint[] = [
   { month: 'Abr', churnRate: 2.4, predicted: 2.6 },
 ];
 
-/** AI-generated insights from the data */
+/** Insights gerados por IA a partir dos dados */
 export const churnInsights: ChurnInsight[] = [
   {
     id: 'insight-1',
@@ -153,7 +153,7 @@ export const churnInsights: ChurnInsight[] = [
   },
 ];
 
-/** Complete churn summary object */
+/** Objeto de resumo de churn completo */
 export const churnSummary: ChurnSummary = {
   currentRate: 2.4,
   trend: 'down',

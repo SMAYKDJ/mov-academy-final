@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Custom hook to detect media query matches.
- * SSR-safe: defaults to false on server.
+ * Hook personalizado para detectar correspondências de media query.
+ * Seguro para SSR: o padrão é falso no servidor.
  */
 export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);

@@ -1,6 +1,6 @@
 /**
- * Type definitions for the Financeiro (Financial) module.
- * Covers transactions, categories, KPIs, and filter states.
+ * Definições de tipos para o módulo Financeiro.
+ * Abrange transações, categorias, KPIs e estados de filtro.
  */
 
 export type TransactionType = 'receita' | 'despesa';
@@ -35,7 +35,7 @@ export interface Transaction {
   vencimento: string; // DD/MM/YYYY
   status: TransactionStatus;
   metodo: PaymentMethod;
-  alunoNome?: string; // linked student name
+  alunoNome?: string; // nome do aluno vinculado
   alunoId?: number;
   observacao?: string;
   recorrente: boolean;

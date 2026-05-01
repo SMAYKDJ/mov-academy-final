@@ -6,7 +6,7 @@ import { cn } from '@/utils/cn';
 import type { ActivityItem } from '@/types';
 
 /**
- * Icon and color configuration for each activity type.
+ * Configuração de ícone e cor para cada tipo de atividade.
  */
 const activityConfig: Record<ActivityItem['type'], {
   icon: React.ComponentType<{ className?: string }>;
@@ -41,8 +41,8 @@ interface ActivityFeedProps {
 }
 
 /**
- * Real-time activity feed showing recent events.
- * Displays check-ins, payments, sign-ups, and alerts.
+ * Feed de atividades em tempo real mostrando eventos recentes.
+ * Exibe check-ins, pagamentos, cadastros e alertas.
  */
 export function ActivityFeed({ activities, className }: ActivityFeedProps) {
   return (
@@ -50,7 +50,7 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
       "bg-white dark:bg-[#0f1117] p-6 rounded-2xl border border-gray-100 dark:border-[#1e2235] shadow-sm hover:shadow-md transition-all duration-300",
       className
     )}>
-      {/* Header */}
+      {/* Cabeçalho */}
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="font-semibold text-gray-900 dark:text-white leading-none">Atividade Recente</h3>
@@ -62,7 +62,7 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
         </div>
       </div>
 
-      {/* Activity List */}
+      {/* Lista de Atividades */}
       <div className="space-y-4">
         {activities.slice(0, 6).map((activity, index) => {
           const config = activityConfig[activity.type];
@@ -74,7 +74,7 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
               className="flex items-start gap-3 group animate-fade-in"
               style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'backwards' }}
             >
-              {/* Icon */}
+              {/* Ícone */}
               <div className={cn(
                 "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5",
                 config.iconBg
@@ -82,7 +82,7 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
                 <Icon className={cn("w-4 h-4", config.iconColor)} />
               </div>
 
-              {/* Content */}
+              {/* Conteúdo */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-gray-700 dark:text-gray-300">
                   <span className="font-semibold text-gray-900 dark:text-white">{activity.user}</span>
@@ -99,7 +99,7 @@ export function ActivityFeed({ activities, className }: ActivityFeedProps) {
         })}
       </div>
 
-      {/* View All */}
+      {/* Ver Tudo */}
       <button className="w-full mt-6 py-2.5 text-xs font-bold text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10 rounded-xl transition-all">
         Ver todas as atividades →
       </button>

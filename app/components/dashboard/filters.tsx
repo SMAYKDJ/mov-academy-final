@@ -5,8 +5,8 @@ import { Search, SlidersHorizontal, ChevronDown, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 /**
- * Dashboard filter bar with search, status filter, and plan filter.
- * Uses pill-style chips that feel tactile and toggleable.
+ * Barra de filtros do dashboard com busca, filtro de status e filtro de plano.
+ * Usa chips em estilo pill que são táteis e alternáveis.
  */
 
 import { useDebounce } from '@/hooks/use-debounce';
@@ -34,7 +34,7 @@ export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => vo
       style={{ '--delay': '200ms', animationFillMode: 'backwards', animationDelay: 'var(--delay)' } as React.CSSProperties}
     >
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white dark:bg-[#0f1117] border border-gray-100 dark:border-[#1e2235] p-2.5 rounded-2xl shadow-sm">
-        {/* Search */}
+        {/* Busca */}
         <div className="relative flex-1 group">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 group-focus-within:text-primary-500 transition-colors" />
           <input
@@ -50,9 +50,9 @@ export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => vo
 
         <div className="h-px sm:h-7 sm:w-px bg-gray-100 dark:bg-[#1e2235]" aria-hidden="true" />
 
-        {/* Filter chips */}
+        {/* Chips de filtro */}
         <div className="flex items-center gap-2 overflow-x-auto scroll-hide py-1 sm:py-0">
-          {/* Status dropdown */}
+          {/* Dropdown de status */}
           <div className="relative group/dropdown">
             <button
               title="Filtrar por status"
@@ -92,7 +92,7 @@ export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => vo
             </div>
           </div>
 
-          {/* Plan dropdown */}
+          {/* Dropdown de plano */}
           <div className="relative group/dropdown">
             <button
               title="Filtrar por plano"
@@ -132,7 +132,7 @@ export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => vo
             </div>
           </div>
 
-          {/* Advanced filter toggle */}
+          {/* Alternar filtro avançado */}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
             className={cn(
@@ -146,7 +146,7 @@ export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => vo
             Avançado
           </button>
 
-          {/* Clear filters */}
+          {/* Limpar filtros */}
           {hasActiveFilters && (
             <button
               onClick={() => {
@@ -162,7 +162,7 @@ export function DashboardFilters({ onSearch }: { onSearch?: (term: string) => vo
         </div>
       </div>
 
-      {/* Advanced filters panel */}
+      {/* Painel de filtros avançados */}
       {showAdvanced && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white dark:bg-[#0f1117] border border-gray-100 dark:border-[#1e2235] p-5 rounded-2xl shadow-sm animate-scale-in">
           <div>

@@ -36,7 +36,7 @@ export function ChurnTrend({ data, className }: ChurnTrendProps) {
   const xStep = plotW / (data.length - 1);
 
   const toY = (val: number) => {
-    if (maxVal === minVal) return padding.top + plotH; // Fallback to bottom if all values are 0 or equal
+    if (maxVal === minVal) return padding.top + plotH; // Fallback para a parte inferior se todos os valores forem 0 ou iguais
     const ratio = (val - minVal) / (maxVal - minVal);
     return padding.top + plotH - ratio * plotH;
   };
@@ -148,10 +148,10 @@ export function ChurnTrend({ data, className }: ChurnTrendProps) {
             strokeLinejoin="round"
           />
 
-          {/* Data points + Labels */}
+          {/* Pontos de dados + Rótulos */}
           {data.map((d, i) => (
             <g key={i}>
-              {/* Actual point */}
+              {/* Ponto real */}
               <circle
                 cx={toX(i)}
                 cy={toY(d.churnRate)}

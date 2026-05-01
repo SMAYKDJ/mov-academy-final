@@ -1,5 +1,5 @@
 /**
- * Types for the Configurações (Settings) module.
+ * Tipos para o módulo de Configurações.
  */
 
 export type UserRole = 'admin' | 'ceo' | 'professor' | 'recepcao' | 'aluno';

@@ -1,5 +1,5 @@
 /**
- * Type definitions for the Biometria (Body Composition) module.
+ * Definições de tipos para o módulo de Biometria (Composição Corporal).
  */
 
 export interface BiometricEvaluation {
@@ -9,8 +9,8 @@ export interface BiometricEvaluation {
   peso: number; // kg
   altura: number; // cm
   imc: number;
-  gordura: number; // % body fat
-  massaMuscular: number; // % muscle mass
+  gordura: number; // % gordura corporal
+  massaMuscular: number; // % massa muscular
   idadeMetabolica: number;
   circunferencias: {
     peito: number;

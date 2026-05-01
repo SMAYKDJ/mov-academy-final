@@ -16,7 +16,7 @@ import { useSearchParams } from 'next/navigation';
 import type { Aluno, AlunoStatus, AlunosFilterState, AlunoFormData } from '@/types/aluno';
 
 /**
- * Alunos (Students) page — full CRUD with KPIs, filters, table, drawer, and form.
+ * Página de Alunos — CRUD completo com KPIs, filtros, tabela, drawer e formulário.
  */
 export default function AlunosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,10 +24,10 @@ export default function AlunosPage() {
   const { showToast } = useToast();
   const searchParams = useSearchParams();
 
-  // Data state with persistence
+  // Estado dos dados com persistência
   const [alunos, setAlunos, isLoaded] = useLocalStorage<Aluno[]>('moviment-alunos', alunosData, 'alunos');
 
-  // Filter state
+  // Estado dos filtros
   const [filters, setFilters] = useState<AlunosFilterState>({
     search: '',
     status: 'todos',
@@ -35,13 +35,13 @@ export default function AlunosPage() {
     periodo: '',
   });
 
-  // UI state
+  // Estado da UI
   const [selectedAluno, setSelectedAluno] = useState<Aluno | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [editingAluno, setEditingAluno] = useState<Aluno | null>(null);
 
-  // Deep linking for notifications
+  // Deep linking para notificações
   useEffect(() => {
     if (!isLoaded) return;
     
@@ -61,17 +61,17 @@ export default function AlunosPage() {
     }
   }, [searchParams, isLoaded, alunos]);
 
-  // Debounced search filter
+  // Filtro de busca com debounce
   const [debouncedSearch, setDebouncedSearch] = useState('');
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(filters.search), 300);
     return () => clearTimeout(timer);
   }, [filters.search]);
 
-  // Filter logic
+  // Lógica de filtragem
   const filtered = useMemo(() => {
     return alunos.filter(a => {
-      // Search
+      // Busca
       if (debouncedSearch) {
         const q = debouncedSearch.toLowerCase();
         if (
@@ -84,10 +84,10 @@ export default function AlunosPage() {
       // Status
       if (filters.status !== 'todos' && a.status !== filters.status) return false;
 
-      // Plan
+      // Plano
       if (filters.plano !== 'todos' && a.plano !== filters.plano) return false;
 
-      // Period (month filter on dataMatricula)
+      // Período (filtro de mês em dataMatricula)
       if (filters.periodo) {
         const [filterYear, filterMonth] = filters.periodo.split('-').map(Number);
         const parts = a.dataMatricula.split('/');
@@ -100,7 +100,7 @@ export default function AlunosPage() {
     });
   }, [alunos, debouncedSearch, filters.status, filters.plano, filters.periodo]);
 
-  // Handlers
+  // Manipuladores
   const handleView = useCallback((aluno: Aluno) => {
     setSelectedAluno(aluno);
     setDrawerOpen(true);
@@ -180,7 +180,7 @@ export default function AlunosPage() {
 
   const handleSave = useCallback((data: AlunoFormData) => {
     if (editingAluno) {
-      // Update
+      // Atualizar
       setAlunos(prev => prev.map(a =>
         a.id === editingAluno.id
           ? { ...a, ...data }
@@ -188,7 +188,7 @@ export default function AlunosPage() {
       ));
       showToast(`${data.nome} atualizado com sucesso`, 'success', 'Aluno Atualizado');
     } else {
-      // Create
+      // Criar
       const nextId = alunos.length > 0 ? Math.max(...alunos.map(a => a.id)) + 1 : 1;
       const newAluno: Aluno = {
         id: nextId,
@@ -214,7 +214,7 @@ export default function AlunosPage() {
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-6">
-          {/* Page Header */}
+          {/* Cabeçalho da Página */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -259,14 +259,14 @@ export default function AlunosPage() {
           {/* KPIs */}
           <AlunosKPI alunos={alunos} loading={!isLoaded} />
 
-          {/* Filters */}
+          {/* Filtros */}
           <AlunosFilters
             filters={filters}
             onChange={setFilters}
             resultCount={filtered.length}
           />
 
-          {/* Table */}
+          {/* Tabela */}
           <AlunosTable
             data={filtered}
             loading={!isLoaded || loading}
@@ -287,7 +287,7 @@ export default function AlunosPage() {
         onStatusChange={handleStatusChange}
       />
 
-      {/* Form */}
+      {/* Formulário */}
       <AlunoForm
         aluno={editingAluno}
         open={formOpen}

@@ -25,7 +25,7 @@ export default function HistoryPage() {
         </section>
       </div>
 
-      {/* Stats Summary */}
+      {/* Resumo de Estatísticas */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-primary-600 rounded-3xl p-5 text-white shadow-lg shadow-primary-200 dark:shadow-none">
           <TrendingUp className="w-6 h-6 mb-3 opacity-60" />
@@ -39,7 +39,7 @@ export default function HistoryPage() {
         </div>
       </div>
 
-      {/* Timeline */}
+      {/* Linha do Tempo */}
       <div className="space-y-4">
         <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">Atividades Recentes</h3>
         <div className="space-y-3">

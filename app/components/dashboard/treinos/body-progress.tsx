@@ -59,7 +59,7 @@ interface HotspotZone {
   grupo: MuscleGroup;
   label: string;
   view: 'front' | 'back';
-  // % coordinates relative to the full image container
+  // Coordenadas % relativas ao contêiner de imagem completo
   left: number;
   top: number;
   width: number;
@@ -151,7 +151,7 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6 relative">
       <div className="flex flex-col xl:flex-row items-start gap-8">
-        {/* Body Map Image with Hotspots */}
+        {/* Imagem do Mapa Corporal com Pontos de Interesse */}
         <div className="body-map-container relative flex-shrink-0 w-full xl:w-auto mx-auto" style={{ maxWidth: '660px' } as React.CSSProperties}>
           {/* View Labels */}
           <div className="flex justify-between px-12 mb-2">
@@ -178,7 +178,7 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
               const isHovered = hoveredMuscle?.grupo === zone.grupo;
               const shouldGlow = intensity >= 20 && !isHovered;
 
-              // Convert hex to rgba for glow effects
+              // Converter hex para rgba para efeitos de brilho
               const hexToRgba = (hex: string, alpha: number) => {
                 const r = parseInt(hex.slice(1, 3), 16);
                 const g = parseInt(hex.slice(3, 5), 16);

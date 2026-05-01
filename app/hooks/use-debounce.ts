@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Custom hook to debounce a value.
- * Useful for search inputs to prevent excessive API calls.
+ * Hook personalizado para debugar um valor.
+ * Útil para entradas de busca para evitar chamadas de API excessivas.
  */
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);

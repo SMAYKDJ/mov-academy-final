@@ -26,7 +26,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
   const [page, setPage] = useState(1);
   const perPage = 10;
 
-  // Sorting
+  // Ordenação
   const sorted = useMemo(() => {
     if (!sortField || !sortDir) return data;
     return [...data].sort((a, b) => {
@@ -60,7 +60,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
     });
   }, [data, sortField, sortDir]);
 
-  // Pagination
+  // Paginação
   const totalPages = Math.ceil(sorted.length / perPage);
   const paginated = sorted.slice((page - 1) * perPage, page * perPage);
 
@@ -132,7 +132,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] overflow-hidden animate-slide-up">
-      {/* Desktop Table */}
+      {/* Tabela Desktop */}
       <div className="overflow-x-auto hidden md:block">
         <table className="w-full text-sm" role="table">
           <thead>
@@ -251,7 +251,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
         </table>
       </div>
 
-      {/* Mobile Cards */}
+      {/* Cartões Mobile */}
       <div className="md:hidden divide-y divide-gray-50 dark:divide-[#1e2235]">
         {paginated.map((aluno) => (
           <div
@@ -296,7 +296,7 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete }: AlunosT
         ))}
       </div>
 
-      {/* Pagination */}
+      {/* Paginação */}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-gray-100 dark:border-[#1e2235] flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-gray-400 dark:text-gray-500">

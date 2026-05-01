@@ -52,7 +52,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
   );
 }
 
-/* ── Plan Badge ──────────────────────────────────── */
+/* ── Badge de Plano ───────────────────────────────── */
 
 const planConfig: Record<string, { bg: string; text: string }> = {
   'Mensal':     { bg: 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700', text: 'text-gray-700 dark:text-gray-300' },
@@ -84,7 +84,7 @@ export function PlanBadge({ plan, className }: PlanBadgeProps) {
   );
 }
 
-/* ── Risk Indicator ──────────────────────────────── */
+/* ── Indicador de Risco ───────────────────────────── */
 
 interface RiskIndicatorProps {
   risk: number;

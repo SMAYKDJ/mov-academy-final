@@ -33,7 +33,7 @@ export function ChurnCard({
   distribution,
   className,
 }: ChurnCardProps) {
-  // For churn, "down" is positive (good)
+  // Para o churn, "para baixo" é positivo (bom)
   const isPositive = trend === 'down';
 
   return (

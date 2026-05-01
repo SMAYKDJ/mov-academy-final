@@ -67,7 +67,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         await Promise.all(updates);
       }
       
-      // Update local profile and sync with global context
+      // Atualizar o perfil local e sincronizar com o contexto global
       await refreshProfile();
 
       if (form.email !== profile.email && isSupabaseConnected) {

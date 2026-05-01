@@ -16,7 +16,7 @@ export function AlunosKPI({ alunos, loading }: AlunosKPIProps) {
   const ativos = alunos.filter(a => a.status === 'ativo').length;
   const inativos = alunos.filter(a => a.status === 'inativo').length;
   const pendentes = alunos.filter(a => a.status === 'pendente').length;
-  // "novos no mês" — simulated: students enrolled in last 30 days (matching '2026')
+  // "novos no mês" — simulado: alunos matriculados nos últimos 30 dias (correspondendo a '2026')
   const novos = alunos.filter(a => {
     if (!a.dataMatricula || typeof a.dataMatricula !== 'string') return false;
     const parts = a.dataMatricula.split('/');
@@ -98,7 +98,7 @@ export function AlunosKPI({ alunos, loading }: AlunosKPIProps) {
           className="bg-white dark:bg-[#0f1117] rounded-2xl p-6 border border-gray-100 dark:border-[#1e2235] hover:shadow-lg hover:shadow-gray-100/50 dark:hover:shadow-none transition-all duration-300 group relative overflow-hidden"
           style={{ animationDelay: `${index * 100}ms` }}
         >
-          {/* Gradient decoration */}
+          {/* Decoração em gradiente */}
           <div className={cn("absolute top-0 left-0 w-1 h-full bg-gradient-to-b rounded-r-full", card.color)} />
 
           <div className="flex items-center justify-between mb-4">

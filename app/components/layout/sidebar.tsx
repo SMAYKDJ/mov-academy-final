@@ -21,8 +21,8 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useAuth } from '@/hooks/use-auth';
 
 /**
- * Navigation menu items.
- * Active state is derived from the current pathname via Next.js router.
+ * Itens do menu de navegação.
+ * O estado ativo é derivado do pathname atual via roteador do Next.js.
  */
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/' },
@@ -46,7 +46,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
-  // Close mobile sidebar on desktop resize
+  // Fechar sidebar mobile ao redimensionar para desktop
   useEffect(() => {
     if (isDesktop && onMobileClose) {
       onMobileClose();
@@ -57,16 +57,16 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
     <aside
       className={cn(
         "h-screen bg-white dark:bg-[#0f1117] border-r border-gray-100 dark:border-[#1e2235] transition-all duration-300 flex flex-col",
-        // Desktop: fixed sidebar with collapse
+        // Desktop: sidebar fixa com recolhimento
         "md:fixed md:left-0 md:top-0 md:z-50",
         isCollapsed ? "md:w-20" : "md:w-64",
-        // Mobile: full-width inside drawer
+        // Mobile: largura total dentro do drawer
         "w-72"
       )}
       role="navigation"
       aria-label="Menu principal"
     >
-      {/* Logo / Brand */}
+      {/* Logo / Marca */}
       <div className="p-5 flex items-center justify-between border-b border-gray-50 dark:border-[#1e2235]">
         <Link
           href="/"
@@ -86,7 +86,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
           </div>
         </Link>
 
-        {/* Desktop: Collapse toggle */}
+        {/* Desktop: Alternar recolhimento */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="hidden md:flex p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -95,7 +95,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
           <ChevronLeft className={cn("w-5 h-5 transition-transform duration-300", isCollapsed && "rotate-180")} />
         </button>
 
-        {/* Mobile: Close button */}
+        {/* Mobile: Botão de fechar */}
         <button
           onClick={onMobileClose}
           className="md:hidden p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-400"
@@ -105,7 +105,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         </button>
       </div>
 
-      {/* Navigation Links */}
+      {/* Links de Navegação */}
       <nav className="flex-1 px-3 mt-4 space-y-1 overflow-y-auto" aria-label="Navegação do dashboard">
         {menuItems.filter(item => {
           if (!user) return false;
@@ -127,7 +127,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
               key={item.label}
               href={item.href}
               onClick={() => {
-                // Close mobile sidebar on navigation
+                // Fechar sidebar mobile ao navegar
                 if (!isDesktop && onMobileClose) onMobileClose();
               }}
               className={cn(
@@ -153,12 +153,12 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
                 {item.label}
               </span>
 
-              {/* Active indicator */}
+              {/* Indicador ativo */}
               {isActive && (
                 <div className="absolute left-0 w-1 h-6 bg-primary-600 dark:bg-primary-400 rounded-r-full" />
               )}
 
-              {/* Collapsed tooltip (desktop only) */}
+              {/* Tooltip recolhido (apenas desktop) */}
               {isCollapsed && (
                 <div className="hidden md:block absolute left-full ml-3 px-3 py-1.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs font-medium rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-xl">
                   {item.label}
@@ -169,9 +169,9 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         })}
       </nav>
 
-      {/* User Profile & Logout */}
+      {/* Perfil do Usuário e Sair */}
       <div className="p-3 border-t border-gray-100 dark:border-[#1e2235] space-y-1">
-        {/* Mini user card */}
+        {/* Mini cartão de usuário */}
         {!isCollapsed && user && (
           <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
             {user.avatar_url ? (
@@ -216,21 +216,21 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
 
   return (
     <>
-      {/* Desktop Sidebar */}
+      {/* Sidebar Desktop */}
       <div className="hidden md:block">
         {sidebarContent}
       </div>
 
-      {/* Mobile Drawer Overlay */}
+      {/* Overlay do Drawer Mobile */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          {/* Overlay backdrop */}
+          {/* Fundo do overlay */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={onMobileClose}
             aria-hidden="true"
           />
-          {/* Drawer panel */}
+          {/* Painel do drawer */}
           <div className="relative z-10 h-full w-fit animate-slide-in-right">
             {sidebarContent}
           </div>

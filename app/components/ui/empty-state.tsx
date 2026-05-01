@@ -4,8 +4,8 @@ import React from 'react';
 import { cn } from '@/utils/cn';
 
 /**
- * Empty state component for tables and lists.
- * Displays a centered message with icon and optional action.
+ * Componente de estado vazio para tabelas e listas.
+ * Exibe uma mensagem centralizada com ícone e ação opcional.
  */
 interface EmptyStateProps {
   icon: React.ReactNode;

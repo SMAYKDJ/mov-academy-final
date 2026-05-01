@@ -5,7 +5,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
   if (typeof window !== 'undefined') {
-    console.warn('Supabase environment variables are missing. Check your .env file.');
+    console.warn('As variáveis de ambiente do Supabase estão faltando. Verifique seu arquivo .env.');
   }
 }
 

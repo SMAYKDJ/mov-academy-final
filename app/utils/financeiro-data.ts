@@ -1,8 +1,8 @@
 import type { Transaction, MonthlyRevenue } from '@/types/financeiro';
 
 /**
- * 40+ realistic financial transactions for the Financeiro module.
- * All data is deterministic to prevent hydration mismatches.
+ * Mais de 40 transações financeiras realistas para o módulo Financeiro.
+ * Todos os dados são determinísticos para evitar incompatibilidades de hidratação.
  */
 export const transacoesData: Transaction[] = [
   // ── RECEITAS (Mensalidades) ──────────────────────────
@@ -496,7 +496,7 @@ export const transacoesData: Transaction[] = [
     metodo: 'boleto',
     recorrente: true,
   },
-  // More revenue to add variety
+  // Mais receitas para adicionar variedade
   {
     id: 'txn-038',
     tipo: 'receita',
@@ -584,8 +584,8 @@ export const transacoesData: Transaction[] = [
 ];
 
 /**
- * Monthly revenue and expense data for the bar chart.
- * Last 6 months of data.
+ * Dados de receita e despesa mensal para o gráfico de barras.
+ * Últimos 6 meses de dados.
  */
 export const monthlyRevenueData: MonthlyRevenue[] = [
   { mes: 'Nov', receita: 38200, despesa: 31500 },

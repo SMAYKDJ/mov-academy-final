@@ -90,7 +90,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
         tabIndex={-1}
         className="absolute right-0 top-0 h-full w-full sm:w-[480px] bg-white dark:bg-[#0f1117] shadow-2xl flex flex-col animate-slide-in-right"
       >
-        {/* Header */}
+        {/* Cabeçalho */}
         <div className="p-6 border-b border-gray-100 dark:border-[#1e2235]">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-4">
@@ -120,7 +120,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
             </button>
           </div>
 
-          {/* Status + Description */}
+          {/* Status + Descrição */}
           <div className="mt-4">
             <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{txn.descricao}</p>
             <span className={cn("inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border", statusCfg.color)}>
@@ -129,9 +129,9 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
           </div>
         </div>
 
-        {/* Content */}
+        {/* Conteúdo */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Overdue alert */}
+          {/* Alerta de atraso */}
           {txn.status === 'atrasado' && (
             <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl">
               <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
@@ -144,7 +144,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
             </div>
           )}
 
-          {/* Details list */}
+          {/* Lista de detalhes */}
           <div>
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
               Detalhes da Transação
@@ -174,7 +174,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
             </div>
           )}
 
-          {/* Transaction ID */}
+          {/* ID da Transação */}
           <div className="pt-4 border-t border-gray-100 dark:border-[#1e2235]">
             <div className="flex items-center justify-between">
               <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">ID Transação</span>
@@ -183,7 +183,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
           </div>
         </div>
 
-        {/* Footer Actions */}
+        {/* Ações de Rodapé */}
         <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex gap-3">
           {txn.status === 'pendente' || txn.status === 'atrasado' ? (
             <>
@@ -211,7 +211,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
             </button>
           )}
 
-          {/* New Confirmation Action */}
+          {/* Nova Ação de Confirmação */}
           {txn.status === 'pago' && txn.alunoId && (
             <button 
               onClick={() => {
@@ -219,10 +219,10 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
                 const phone = student?.telefone || '5521999999999';
                 const msgStudent = generateWAMessage('pagamento_confirmado', txn.alunoNome || 'Aluno', txn.valor);
                 
-                // Open student confirmation
+                // Abrir confirmação do aluno
                 openWhatsApp(phone, msgStudent);
                 
-                // Then notify manager (after a small delay to not block browsers)
+                // Então notificar o gestor (após um pequeno atraso para não bloquear navegadores)
                 setTimeout(() => {
                   notifyManager(txn.alunoNome || 'Aluno', txn.valor);
                 }, 1000);

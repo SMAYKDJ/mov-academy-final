@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 
 /**
- * Service to interact with Supabase tables.
+ * Serviço para interagir com as tabelas do Supabase.
  */
 
 export const SupabaseService = {

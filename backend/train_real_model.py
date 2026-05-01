@@ -12,7 +12,7 @@ DATA_PATH = os.path.join(PROJECT_ROOT, "RELATORIOS", "consolidated_client_data.c
 MODELS_DIR = os.path.join(PROJECT_ROOT, "backend", "models")
 
 def train():
-    print("Loading consolidated data...")
+    print("Carregando dados consolidados...")
     df = pd.read_csv(DATA_PATH)
     
     # Feature Engineering
@@ -27,8 +27,8 @@ def train():
     X = df[features]
     y = df['target']
     
-    print(f"Training on {len(df)} samples...")
-    print(f"Target distribution:\n{y.value_counts(normalize=True)}")
+    print(f"Treinando em {len(df)} amostras...")
+    print(f"Distribuição de alvo:\n{y.value_counts(normalize=True)}")
     
     # Simple split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -41,8 +41,8 @@ def train():
     score = model.score(X_test, y_test)
     cv_scores = cross_val_score(model, X, y, cv=5)
     
-    print(f"✅ Real Model Accuracy: {score:.4f}")
-    print(f"✅ Cross-val Mean: {cv_scores.mean():.4f}")
+    print(f"✅ Acurácia do Modelo Real: {score:.4f}")
+    print(f"✅ Média Cross-val: {cv_scores.mean():.4f}")
     
     # Save Model
     os.makedirs(MODELS_DIR, exist_ok=True)
@@ -60,7 +60,7 @@ def train():
     with open(os.path.join(MODELS_DIR, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
         
-    print("🚀 Real Model deployed to backend/models/")
+    print("🚀 Modelo Real implantado em backend/models/")
 
 if __name__ == "__main__":
     train()

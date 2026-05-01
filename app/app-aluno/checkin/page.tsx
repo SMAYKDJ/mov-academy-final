@@ -13,7 +13,7 @@ export default function CheckinPage() {
 
   const handleCheckin = () => {
     setLoading(true);
-    // Simulate check-in
+    // Simular check-in
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
@@ -56,12 +56,12 @@ export default function CheckinPage() {
       </section>
 
       <div className="bg-white dark:bg-[#0f1117] rounded-[40px] p-8 border border-gray-100 dark:border-[#1e2235] shadow-xl flex flex-col items-center relative overflow-hidden">
-        {/* QR Code Placeholder */}
+        {/* Marcador de QR Code */}
         <div className="relative z-10 w-full aspect-square max-w-[240px] bg-gray-50 dark:bg-[#1a1d27] rounded-3xl border-4 border-gray-100 dark:border-[#2e334d] flex items-center justify-center group overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/5 to-transparent" />
           <QrCode className="w-32 h-32 text-gray-300 dark:text-gray-700 group-hover:scale-110 transition-transform duration-500" />
           
-          {/* Animated Scanning Line */}
+          {/* Linha de Digitalização Animada */}
           <div className="absolute top-0 left-0 w-full h-1 bg-primary-500 shadow-[0_0_10px_rgba(99,102,241,0.5)] animate-[scan_2s_infinite_ease-in-out]" />
         </div>
 
@@ -86,7 +86,7 @@ export default function CheckinPage() {
           </button>
         </div>
 
-        {/* Info row */}
+        {/* Linha de informações */}
         <div className="mt-8 flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest relative z-10">
           <div className="flex items-center gap-1.5">
             <MapPin className="w-3 h-3 text-primary-500" />
@@ -98,7 +98,7 @@ export default function CheckinPage() {
           </div>
         </div>
 
-        {/* Abstract shapes */}
+        {/* Formas abstratas */}
         <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-primary-50 dark:bg-primary-900/10 rounded-full blur-3xl" />
       </div>
 

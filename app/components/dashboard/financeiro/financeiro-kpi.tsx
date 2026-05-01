@@ -114,7 +114,7 @@ export function FinanceiroKPI({ transacoes }: FinanceiroKPIProps) {
           className="bg-white dark:bg-[#0f1117] rounded-2xl p-5 border border-gray-100 dark:border-[#1e2235] hover:shadow-lg hover:shadow-gray-100/50 dark:hover:shadow-none transition-all duration-300 group relative overflow-hidden"
           style={{ animationDelay: `${index * 80}ms` }}
         >
-          {/* Gradient bar */}
+          {/* Barra de gradiente */}
           <div className={cn("absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r", card.color)} />
 
           <div className="flex items-center justify-between mb-3">

@@ -39,7 +39,7 @@ last_names = [
 plans = ['Black VIP', 'Platinum', 'Basic Fit']
 plan_prices = {'Black VIP': 189.90, 'Platinum': 129.90, 'Basic Fit': 79.90}
 
-# --- Generate base data ---
+# --- Gerar dados base ---
 data = {
     'student_id': [f'MOV-{str(i+1).zfill(4)}' for i in range(N_MEMBERS)],
     'name': [
@@ -55,13 +55,12 @@ data = {
     'overdue_days': np.zeros(N_MEMBERS, dtype=int),
 }
 
-# Overdue days only for those with overdue payments
+# Dias de atraso apenas para aqueles com pagamentos em atraso
 overdue_mask = data['overdue_payments'] == 1
 data['overdue_days'][overdue_mask] = np.random.exponential(15, overdue_mask.sum()).astype(int).clip(1, 90)
 
 df = pd.DataFrame(data)
 
-# --- Feature Engineering ---
 # Monthly revenue per student
 df['plan_price'] = df['plan'].map(plan_prices)
 

@@ -45,7 +45,7 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* 1. Welcome Section */}
+      {/* 1. Seção de Boas-vindas */}
       <section className="animate-fade-in">
         <h2 className="text-sm font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-1">Área do Aluno</h2>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
@@ -56,7 +56,7 @@ export default function StudentDashboardPage() {
         </p>
       </section>
 
-      {/* 2. Stats Grid */}
+      {/* 2. Grade de Estatísticas */}
       <section className="grid grid-cols-2 gap-3">
         <div className="bg-white dark:bg-[#0f1117] p-4 rounded-3xl border border-gray-100 dark:border-[#1e2235] shadow-sm">
           <div className="w-8 h-8 bg-orange-50 dark:bg-orange-900/20 rounded-xl flex items-center justify-center mb-3">
@@ -74,7 +74,7 @@ export default function StudentDashboardPage() {
         </div>
       </section>
 
-      {/* 3. Daily Workout Card */}
+      {/* 3. Cartão de Treino Diário */}
       <section>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-base font-bold text-gray-900 dark:text-white">Treino de Hoje</h3>
@@ -112,12 +112,12 @@ export default function StudentDashboardPage() {
             </div>
           </div>
           
-          {/* Abstract decoration */}
+          {/* Decoração abstrata */}
           <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
         </Link>
       </section>
 
-      {/* 4. Weekly View */}
+      {/* 4. Visualização Semanal */}
       <section className="bg-white dark:bg-[#0f1117] rounded-[32px] border border-gray-100 dark:border-[#1e2235] p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white">Frequência Semanal</h3>
@@ -143,7 +143,7 @@ export default function StudentDashboardPage() {
         </div>
       </section>
 
-      {/* 5. Quick Actions */}
+      {/* 5. Ações Rápidas */}
       <section className="grid grid-cols-1 gap-3 pb-8">
         <button className="flex items-center justify-between p-5 bg-white dark:bg-[#0f1117] rounded-3xl border border-gray-100 dark:border-[#1e2235] hover:bg-gray-50 transition-all group">
           <div className="flex items-center gap-4">

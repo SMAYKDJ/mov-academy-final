@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
 
-// Public routes that don't require authentication
+// Rotas públicas que não exigem autenticação
 const PUBLIC_ROUTES = ['/login', '/cadastro'];
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -17,7 +17,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const isPublic = PUBLIC_ROUTES.includes(pathname);
 
   useEffect(() => {
-    if (loading) return; // Wait until auth state is resolved
+    if (loading) return; // Esperar até que o estado de autenticação seja resolvido
     if (redirected.current) return;
 
     if (!user && !isPublic) {
@@ -27,16 +27,16 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       redirected.current = true;
       router.replace('/');
     } else {
-      redirected.current = false; // Reset so future navigation works
+      redirected.current = false; // Redefinir para que a navegação futura funcione
     }
   }, [user, loading, isPublic, router]);
 
-  // IMPORTANT: Always render children for public routes so /login page is never blocked by loading state
+  // IMPORTANTE: Sempre renderizar os filhos para rotas públicas para que a página de /login nunca seja bloqueada pelo estado de carregamento
   if (isPublic) {
     return <>{children}</>;
   }
 
-  // Show loading while auth state is resolving for PROTECTED routes
+  // Mostrar carregamento enquanto o estado de autenticação está sendo resolvido para rotas PROTEGIDAS
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] dark:bg-[#080a0f] flex items-center justify-center">
@@ -48,7 +48,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // For protected routes: block rendering if no user (redirect is happening)
+  // Para rotas protegidas: bloquear a renderização se não houver usuário (o redirecionamento está acontecendo)
   if (!user) {
     return (
       <div className="min-h-screen bg-[#f8fafc] dark:bg-[#080a0f] flex items-center justify-center">

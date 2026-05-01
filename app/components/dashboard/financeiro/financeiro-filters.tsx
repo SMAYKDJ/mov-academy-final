@@ -49,9 +49,9 @@ export function FinanceiroFilters({ filters, onChange, resultCount }: Financeiro
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-5 space-y-4 animate-fade-in">
-      {/* Main Row */}
+      {/* Linha Principal */}
       <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
-        {/* Search */}
+        {/* Busca */}
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -99,7 +99,7 @@ export function FinanceiroFilters({ filters, onChange, resultCount }: Financeiro
           </div>
         </div>
 
-        {/* Advanced */}
+        {/* Avançado */}
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
           className={cn(
@@ -115,10 +115,10 @@ export function FinanceiroFilters({ filters, onChange, resultCount }: Financeiro
         </button>
       </div>
 
-      {/* Advanced Panel */}
+      {/* Painel Avançado */}
       {showAdvanced && (
         <div className="pt-4 border-t border-gray-100 dark:border-[#1e2235] flex flex-col sm:flex-row gap-3 items-stretch sm:items-end animate-fade-in">
-          {/* Payment Method */}
+          {/* Método de Pagamento */}
           <div className="flex-1">
             <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Método de Pagamento</label>
             <div className="relative">
@@ -136,7 +136,7 @@ export function FinanceiroFilters({ filters, onChange, resultCount }: Financeiro
             </div>
           </div>
 
-          {/* Period */}
+          {/* Período */}
           <div className="flex-1">
             <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Período</label>
             <div className="relative">
@@ -160,7 +160,7 @@ export function FinanceiroFilters({ filters, onChange, resultCount }: Financeiro
         </div>
       )}
 
-      {/* Result count */}
+      {/* Contagem de resultados */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-400 dark:text-gray-500">
           <span className="font-bold text-gray-600 dark:text-gray-300">{resultCount}</span> transaç{resultCount !== 1 ? 'ões' : 'ão'}

@@ -1,5 +1,5 @@
 /**
- * Types for the Student Experience (App Aluno).
+ * Tipos para a Experiência do Aluno (App Aluno).
  */
 
 export interface Exercise {
@@ -8,7 +8,7 @@ export interface Exercise {
   series: number;
   repeticoes: string;
   carga: string;
-  descanso: string; // seconds
+  descanso: string; // segundos
   observacao?: string;
   concluido: boolean;
   videoUrl?: string;
@@ -18,7 +18,7 @@ export interface Workout {
   id: string;
   titulo: string;
   tipo: 'A' | 'B' | 'C' | 'D' | 'Extra';
-  duracao: string; // e.g., "45-60 min"
+  duracao: string; // ex: "45-60 min"
   exercicios: Exercise[];
   frequência: string[]; // ['seg', 'qua', 'sex']
 }
@@ -26,7 +26,7 @@ export interface Workout {
 export interface StudentStats {
   peso: number;
   altura: number;
-  bf: number; // Body Fat %
+  bf: number; // % de Gordura Corporal
   treinosNoMes: number;
-  sequenciaAtual: number; // days in a row
+  sequenciaAtual: number; // dias seguidos
 }

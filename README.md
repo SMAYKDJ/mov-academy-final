@@ -1,89 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Este é um projeto [Next.js](https://nextjs.org) inicializado com [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Começando
 
-First, run the development server:
+Primeiro, execute o servidor de desenvolvimento:
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
-# or
+# ou
 pnpm dev
-# or
+# ou
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Você pode começar a editar a página modificando `app/page.tsx`. A página é atualizada automaticamente conforme você edita o arquivo.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Este projeto utiliza [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar e carregar automaticamente a [Geist](https://vercel.com/font), uma nova família de fontes da Vercel.
 
-## Learn More
+## Saiba Mais
 
-To learn more about Next.js, take a look at the following resources:
+Para saber mais sobre o Next.js, consulte os seguintes recursos:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Documentação do Next.js](https://nextjs.org/docs) - aprenda sobre os recursos e API do Next.js.
+- [Aprenda Next.js](https://nextjs.org/learn) - um tutorial interativo do Next.js.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Você pode conferir [o repositório do Next.js no GitHub](https://github.com/vercel/next.js) - seu feedback e contribuições são bem-vindos!
 
-## Deploy on Vercel
+## Implantar na Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A maneira mais fácil de implantar seu app Next.js é usar a [Plataforma Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) dos criadores do Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Confira nossa [documentação de implantação do Next.js](https://nextjs.org/docs/app/building-your-application/deploying) para mais detalhes.
 
 ---
 
-## 🧠 Churn Prediction System
+## 🧠 Sistema de Previsão de Churn
 
-The Moviment Academy platform includes an AI-powered churn prediction module to identify students at risk of leaving the gym.
+A plataforma Moviment Academy inclui um módulo de previsão de churn alimentado por IA para identificar alunos com risco de abandonar a academia.
 
-### 🛠 Technology Stack
+### 🛠 Stack Tecnológica
 - **Backend:** FastAPI (Python)
 - **Machine Learning:** Scikit-learn (Random Forest)
-- **Data Engineering:** Pandas
-- **Frontend:** Next.js + Tailwind CSS + Lucide Icons
-- **Testing:** Pytest (API/Data), Playwright (UI)
+- **Engenharia de Dados:** Pandas
+- **Frontend:** Next.js + Tailwind CSS + Ícones Lucide
+- **Testes:** Pytest (API/Dados), Playwright (UI)
 
-### 🚀 How to Run
+### 🚀 Como Executar
 
-#### 1. Prepare the Data & Model
-The model depends on three source files in `backend/data/`: `recebimentos.csv`, `devedores.csv`, and `frequencia_treino.csv`.
+#### 1. Preparar os Dados e o Modelo
+O modelo depende de três arquivos de origem em `backend/data/`: `recebimentos.csv`, `devedores.csv` e `frequencia_treino.csv`.
 
 ```bash
-# Ingest data and perform feature engineering
+# Ingerir dados e realizar engenharia de recursos
 python backend/data/ingest_churn.py
 
-# Train the Random Forest model
+# Treinar o modelo Random Forest
 python backend/train_churn_model.py
 ```
 
-#### 2. Start the API
+#### 2. Iniciar a API
 ```bash
-# From the root directory
+# A partir do diretório raiz
 uvicorn backend.main:app --reload
 ```
 
-#### 3. Run the Frontend
+#### 3. Executar o Frontend
 ```bash
 npm run dev
 ```
 
-### 🧪 Automated Tests
-The project includes a comprehensive suite of tests:
+### 🧪 Testes Automatizados
+O projeto inclui uma suíte abrangente de testes:
 
 ```bash
-# Run API and Data Ingestion tests
+# Executar testes de API e Ingestão de Dados
 pytest tests/api tests/data
 
-# Run UI End-to-End tests (Playwright)
+# Executar testes de UI End-to-End (Playwright)
 npm run test:ui
 ```
 
-### 📊 API Endpoints
-- `POST /predict/churn`: Predicts churn risk for a student based on monthly frequency, delay days, monthly value, and inadimplência status.
-- `GET /health`: Health check for the API.
-
+### 📊 Endpoints da API
+- `POST /predict/churn`: Prevê o risco de churn para um aluno com base na frequência mensal, dias de atraso, valor mensal e status de inadimplência.
+- `GET /health`: Verificação de saúde da API.

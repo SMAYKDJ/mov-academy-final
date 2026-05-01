@@ -20,17 +20,17 @@ import { notifyManager } from '@/utils/whatsapp-helper';
 import type { Transaction, FinanceiroFilterState } from '@/types/financeiro';
 
 /**
- * Financeiro (Financial) page — complete financial management module.
- * Features: KPIs, revenue chart, expense breakdown, transaction table, detail drawer.
+ * Página Financeiro — módulo completo de gestão financeira.
+ * Funcionalidades: KPIs, gráfico de receitas, detalhamento de despesas, tabela de transações, gaveta de detalhes.
  */
 export default function FinanceiroPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { showToast } = useToast();
 
-  // Data with persistence
+  // Dados com persistência
   const [transacoes, setTransacoes, isLoaded] = useLocalStorage<Transaction[]>('moviment-financeiro', transacoesData, 'transacoes');
 
-  // Filters
+  // Filtros
   const [filters, setFilters] = useState<FinanceiroFilterState>({
     search: '',
     tipo: 'todos',
@@ -39,14 +39,14 @@ export default function FinanceiroPage() {
     periodo: '',
   });
 
-  // UI
+  // Interface
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [editingTxn, setEditingTxn] = useState<Transaction | null>(null);
   const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
   const searchParams = useSearchParams();
 
-  // Deep linking for notifications
+  // Deep linking para notificações
   useEffect(() => {
     if (!isLoaded) return;
     
@@ -66,14 +66,14 @@ export default function FinanceiroPage() {
     }
   }, [searchParams, isLoaded, transacoes]);
 
-  // Debounced search
+  // Busca com debounce
   const [debouncedSearch, setDebouncedSearch] = useState('');
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(filters.search), 300);
     return () => clearTimeout(timer);
   }, [filters.search]);
 
-  // Calculate dynamic chart data from transactions
+  // Calcular dados dinâmicos do gráfico a partir das transações
   const dynamicMonthlyData = useMemo(() => {
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
     const currentYear = new Date().getFullYear();
@@ -94,14 +94,14 @@ export default function FinanceiroPage() {
       }
     });
 
-    // Return only months with data or the first 6 months for display
+    // Retornar apenas meses com dados ou os primeiros 6 meses para exibição
     return dataMap.slice(0, new Date().getMonth() + 1);
   }, [transacoes]);
 
-  // Filter logic
+  // Lógica de filtragem
   const filtered = useMemo(() => {
     return transacoes.filter(t => {
-      // Search
+      // Busca
       if (debouncedSearch) {
         const q = debouncedSearch.toLowerCase();
         if (
@@ -111,16 +111,16 @@ export default function FinanceiroPage() {
         ) return false;
       }
 
-      // Type
+      // Tipo
       if (filters.tipo !== 'todos' && t.tipo !== filters.tipo) return false;
 
       // Status
       if (filters.status !== 'todos' && t.status !== filters.status) return false;
 
-      // Method
+      // Método
       if (filters.metodo !== 'todos' && t.metodo !== filters.metodo) return false;
 
-      // Period
+      // Período
       if (filters.periodo) {
         const [filterYear, filterMonth] = filters.periodo.split('-').map(Number);
         const parts = t.data.split('/');
@@ -133,7 +133,7 @@ export default function FinanceiroPage() {
     });
   }, [transacoes, debouncedSearch, filters.tipo, filters.status, filters.metodo, filters.periodo]);
 
-  // Handlers
+  // Manipuladores
   const handleView = useCallback((txn: Transaction) => {
     setSelectedTxn(txn);
     setDrawerOpen(true);
@@ -158,7 +158,7 @@ export default function FinanceiroPage() {
     } else {
       setTransacoes(prev => [data, ...prev]);
       
-      // Zero Simulation: Real Notification
+      // Simulação Zero: Notificação Real
       if (data.tipo === 'receita' && data.status === 'pago') {
         notifyManager(data.alunoNome || 'Cliente Avulso', data.valor);
       }
@@ -185,7 +185,7 @@ export default function FinanceiroPage() {
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-6">
-          {/* Page Header */}
+          {/* Cabeçalho da Página */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -227,10 +227,10 @@ export default function FinanceiroPage() {
             </div>
           </div>
 
-          {/* KPI Cards */}
+          {/* Cartões de KPI */}
           <FinanceiroKPI transacoes={transacoes} />
 
-          {/* Charts Section */}
+          {/* Seção de Gráficos */}
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
             <div className="xl:col-span-3">
               <RevenueChart data={dynamicMonthlyData} />
@@ -240,14 +240,14 @@ export default function FinanceiroPage() {
             </div>
           </div>
 
-          {/* Filters */}
+          {/* Filtros */}
           <FinanceiroFilters
             filters={filters}
             onChange={setFilters}
             resultCount={filtered.length}
           />
 
-          {/* Transactions Table */}
+          {/* Tabela de Transações */}
           <FinanceiroTable
             data={filtered}
             onView={handleView}
@@ -257,14 +257,14 @@ export default function FinanceiroPage() {
         </main>
       </div>
 
-      {/* Transaction Detail Drawer */}
+      {/* Gaveta de Detalhes da Transação */}
       <TransactionDrawer
         transaction={selectedTxn}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       />
 
-      {/* Transaction Form */}
+      {/* Formulário de Transação */}
       <TransactionForm 
         open={formOpen}
         transaction={editingTxn}

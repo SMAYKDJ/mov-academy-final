@@ -10,17 +10,17 @@ def test_ingest_creates_dataframe(tmp_path: Path):
         devedores_path='backend/data/devedores.csv',
         freq_path='backend/data/frequencia_treino.csv'
     )
-    # Expected columns after feature engineering
+    # Colunas esperadas após a engenharia de atributos
     expected_cols = {
         'nome', 'freq_mensal', 'dias_atraso', 'valor_mensal', 'inadimplente',
         'churn_flag', 'engajamento'
     }
     assert set(df.columns).issuperset(expected_cols)
-    # No NaNs in critical columns
+    # Sem NaNs nas colunas críticas
     assert df[['freq_mensal', 'dias_atraso', 'valor_mensal']].isnull().sum().sum() == 0
     # Verify churn flag logic for a known sample (first row)
     first = df.iloc[0]
-    # If overdue days > 30 or low frequency -> churn_flag should be 1
+    # Se dias de atraso > 30 ou baixa frequência -> churn_flag deve ser 1
     if first['dias_atraso'] > 30 or first['freq_mensal'] < 2:
         assert first['churn_flag'] == 1
     else:

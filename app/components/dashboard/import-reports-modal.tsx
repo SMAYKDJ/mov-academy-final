@@ -11,7 +11,7 @@ export function ImportReportsModal({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
 
-  // Load file list on mount
+  // Carregar lista de arquivos ao montar
   useEffect(() => {
     fetch('/api/reports')
       .then((res) => res.json())
@@ -35,7 +35,7 @@ export function ImportReportsModal({ onClose }: { onClose: () => void }) {
       }
       const data: ProcessReportResponse = await resp.json();
       showToast(`Relatório "${selected}" processado com sucesso!`, 'success');
-      // You could propagate result to parent if needed
+      // Você pode propagar o resultado para o pai, se necessário
     } catch (err: any) {
       setError(err.message);
       showToast(err.message, 'error');

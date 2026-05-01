@@ -64,7 +64,7 @@ export function EventDrawer({ event, open, onClose, onSave, mode }: EventDrawerP
     <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={onClose} />
       <div ref={drawerRef} className="absolute right-0 top-0 h-full w-full sm:w-[480px] bg-white dark:bg-[#0f1117] shadow-2xl flex flex-col animate-slide-in-right">
-        {/* Header */}
+        {/* Cabeçalho */}
         <div className={cn("p-6 text-white relative overflow-hidden bg-gradient-to-r", form.tipo === 'treino' ? 'from-blue-500 to-blue-700' : form.tipo === 'aula' ? 'from-emerald-500 to-teal-700' : 'from-violet-500 to-purple-700')}>
           <div className="absolute -bottom-4 -right-4 w-28 h-28 bg-white/10 rounded-full blur-2xl" />
           <div className="relative z-10">
@@ -88,7 +88,7 @@ export function EventDrawer({ event, open, onClose, onSave, mode }: EventDrawerP
           </div>
         </div>
 
-        {/* Form */}
+        {/* Formulário */}
         <div className="flex-1 overflow-y-auto p-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="sm:col-span-2">
@@ -182,7 +182,7 @@ export function EventDrawer({ event, open, onClose, onSave, mode }: EventDrawerP
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Rodapé */}
         <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex gap-3">
           <button onClick={handleSave} className="flex-1 py-3 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center justify-center gap-2">
             <Save className="w-4 h-4" /> {mode === 'create' ? 'Criar Evento' : 'Salvar'}

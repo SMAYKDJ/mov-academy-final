@@ -5,8 +5,8 @@ import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 /**
- * Theme toggle button with smooth icon transition.
- * Uses next-themes for SSR-safe theme management.
+ * Botão de alternância de tema com transição suave de ícones.
+ * Usa next-themes para gerenciamento de tema seguro para SSR.
  */
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();

@@ -1,5 +1,5 @@
 /**
- * Types for the Cronograma (Schedule/Calendar) module.
+ * Tipos para o módulo de Cronograma (Agenda/Calendário).
  */
 
 export type EventType = 'treino' | 'aula' | 'avaliacao';

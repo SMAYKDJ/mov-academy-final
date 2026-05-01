@@ -10,7 +10,7 @@ interface BodyCompositionProps {
 }
 
 /**
- * Visual body composition breakdown with ring charts and macro-display.
+ * Detalhamento visual da composição corporal com gráficos em anel e exibição macro.
  */
 export function BodyComposition({ stats }: BodyCompositionProps) {
   const agua = 100 - stats.gorduraAtual - stats.massaMuscularAtual - 15; // approx water + organs
@@ -25,7 +25,7 @@ export function BodyComposition({ stats }: BodyCompositionProps) {
 
   const total = segments.reduce((sum, s) => sum + s.value, 0);
 
-  // Ring chart calculation
+  // Cálculo do gráfico em anel (ring chart)
   const radius = 70;
   const circumference = 2 * Math.PI * radius;
   let accumulatedOffset = 0;
@@ -40,13 +40,13 @@ export function BodyComposition({ stats }: BodyCompositionProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-8">
-        {/* Ring Chart */}
+        {/* Gráfico em Anel (Ring Chart) */}
         <div className="relative flex-shrink-0">
           <svg viewBox="0 0 180 180" className="w-44 h-44 -rotate-90">
-            {/* Background ring */}
+            {/* Anel de fundo */}
             <circle cx="90" cy="90" r={radius} fill="none" stroke="#f1f5f9" className="dark:stroke-gray-800" strokeWidth="16" />
 
-            {/* Segments */}
+            {/* Segmentos */}
             {segments.map((seg, idx) => {
               const segLength = (seg.value / total) * circumference;
               const offset = circumference - accumulatedOffset;
@@ -68,14 +68,14 @@ export function BodyComposition({ stats }: BodyCompositionProps) {
             })}
           </svg>
 
-          {/* Center label */}
+          {/* Rótulo central */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-black text-gray-900 dark:text-white">{stats.pesoAtual}</span>
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">kg</span>
           </div>
         </div>
 
-        {/* Legend */}
+        {/* Legenda */}
         <div className="flex-1 w-full space-y-3">
           {segments.map(seg => {
             const pct = ((seg.value / total) * 100).toFixed(1);

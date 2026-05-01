@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
 
 /**
- * Status display configuration.
+ * Configuração de exibição de status.
  */
 const statusConfig: Record<Student['status'], { label: string; variant: 'success' | 'danger' | 'neutral' }> = {
   active: { label: 'Ativo', variant: 'success' },
@@ -20,7 +20,7 @@ const statusConfig: Record<Student['status'], { label: string; variant: 'success
 };
 
 /**
- * Plan badge colors.
+ * Cores das badges de plano.
  */
 const planColors: Record<string, string> = {
   'Black VIP': 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900',
@@ -31,7 +31,7 @@ const planColors: Record<string, string> = {
 const ITEMS_PER_PAGE = 10;
 
 /**
- * Sortable column header component.
+ * Componente de cabeçalho de coluna ordenável.
  */
 function SortableHeader({
   label,
@@ -69,7 +69,7 @@ function SortableHeader({
 }
 
 /**
- * Skeleton loader for data table.
+ * Loader skeleton para a tabela de dados.
  */
 export function DataTableSkeleton() {
   return (
@@ -115,7 +115,7 @@ export function DataTable({ data }: { data: Student[] }) {
   };
 
   /**
-   * Handle column sort toggle (null → asc → desc → null).
+   * Alternar ordenação de coluna (null → asc → desc → null).
    */
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -132,12 +132,12 @@ export function DataTable({ data }: { data: Student[] }) {
   };
 
   /**
-   * Filter, sort, and paginate data.
+   * Filtrar, ordenar e paginar dados.
    */
   const processedData = useMemo(() => {
     let filtered = data;
 
-    // Apply search
+    // Aplicar busca
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = data.filter(
@@ -145,7 +145,7 @@ export function DataTable({ data }: { data: Student[] }) {
       );
     }
 
-    // Apply sort
+    // Aplicar ordenação
     if (sortField && sortDirection) {
       filtered = [...filtered].sort((a, b) => {
         const aVal = a[sortField];
@@ -172,7 +172,7 @@ export function DataTable({ data }: { data: Student[] }) {
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] shadow-sm overflow-hidden animate-slide-up" style={{ animationDelay: '400ms', animationFillMode: 'backwards' }}>
-      {/* Table Header */}
+      {/* Cabeçalho da Tabela */}
       <div className="p-5 md:p-6 border-b border-gray-100 dark:border-[#1e2235] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white leading-none">Base de Alunos</h3>
@@ -181,7 +181,7 @@ export function DataTable({ data }: { data: Student[] }) {
           </p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          {/* Inline search */}
+          {/* Busca em linha */}
           <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -206,7 +206,7 @@ export function DataTable({ data }: { data: Student[] }) {
         </div>
       </div>
 
-      {/* Table Content */}
+      {/* Conteúdo da Tabela */}
       <div className="overflow-x-auto">
         <table className="w-full text-left" role="table">
           <thead>
@@ -252,7 +252,7 @@ export function DataTable({ data }: { data: Student[] }) {
                     key={student.id}
                     className="hover:bg-gray-50/50 dark:hover:bg-[#1a1d27]/30 transition-colors group"
                   >
-                    {/* Student Name */}
+                    {/* Nome do Aluno */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className={cn(
@@ -277,7 +277,7 @@ export function DataTable({ data }: { data: Student[] }) {
                       <Badge variant={statusCfg.variant} dot>{statusCfg.label}</Badge>
                     </td>
 
-                    {/* Plan */}
+                    {/* Plano */}
                     <td className="px-6 py-4">
                       <span className={cn(
                         "inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold",
@@ -287,7 +287,7 @@ export function DataTable({ data }: { data: Student[] }) {
                       </span>
                     </td>
 
-                    {/* AI Risk Score */}
+                    {/* Score de Risco IA */}
                     <td className="px-6 py-4">
                       <div className="flex flex-col items-center gap-1.5 min-w-[100px]">
                         <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
@@ -315,12 +315,12 @@ export function DataTable({ data }: { data: Student[] }) {
                       </div>
                     </td>
 
-                    {/* Last Visit */}
+                    {/* Último Acesso */}
                     <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap">
                       {student.lastVisit}
                     </td>
 
-                    {/* Actions */}
+                    {/* Ações */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
@@ -352,7 +352,7 @@ export function DataTable({ data }: { data: Student[] }) {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* Paginação */}
       {processedData.length > 0 && (
         <div className="p-4 border-t border-gray-100 dark:border-[#1e2235] bg-gray-50/30 dark:bg-[#0d0f15] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
@@ -369,7 +369,7 @@ export function DataTable({ data }: { data: Student[] }) {
             >
               Anterior
             </button>
-            {/* Page numbers */}
+            {/* Números das páginas */}
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
               let pageNum: number;
               if (totalPages <= 5) {

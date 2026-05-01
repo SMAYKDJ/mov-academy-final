@@ -31,7 +31,7 @@ def ler_frequencia():
     return df[['nome', 'freq_mensal']]
 
 def ingest_data(recep_path=None, devedores_path=None, freq_path=None):
-    # Use provided paths or defaults from env/global
+    # Usar caminhos fornecidos ou padrões do ambiente/global
     r_path = recep_path or RECEBIMENTOS_PATH
     d_path = devedores_path or DEVEDORES_PATH
     f_path = freq_path or FREQ_TREINO_PATH
@@ -45,7 +45,7 @@ def ingest_data(recep_path=None, devedores_path=None, freq_path=None):
 
     def _ler_devedores(path):
         df = pd.read_csv(path)
-        # Only students with balance > 0 are truly delinquent
+        # Apenas alunos com saldo > 0 são realmente inadimplentes
         df['inadimplente'] = (df['valor'] > 0).astype(int)
         return df[['nome', 'inadimplente']]
 

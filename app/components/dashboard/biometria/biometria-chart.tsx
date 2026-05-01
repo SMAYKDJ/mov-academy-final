@@ -17,8 +17,8 @@ const metricConfig: Record<MetricKey, { label: string; unit: string; color: stri
 };
 
 /**
- * Multi-metric evolution chart rendered with pure CSS.
- * Includes line-style visualization with dots and filled area.
+ * Gráfico de evolução multimétrica renderizado com CSS puro.
+ * Inclui visualização em estilo de linha com pontos e área preenchida.
  */
 export function BiometriaChart({ data }: BiometriaChartProps) {
   const [activeMetric, setActiveMetric] = useState<MetricKey>('peso');
@@ -32,7 +32,7 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
 
   const getHeight = (val: number) => ((val - minVal) / range) * 100;
 
-  // Calculate trend
+  // Calcular tendência
   const firstVal = values[0];
   const lastVal = values[values.length - 1];
   const trendPercent = (((lastVal - firstVal) / firstVal) * 100).toFixed(1);
@@ -40,13 +40,13 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6">
-      {/* Header */}
+      {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h3 className="text-base font-bold text-gray-900 dark:text-white">Evolução Corporal</h3>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Últimos 6 meses de acompanhamento</p>
         </div>
-        {/* Metric Tabs */}
+        {/* Abas de Métricas */}
         <div className="flex items-center gap-1 bg-gray-100 dark:bg-[#1a1d27] rounded-xl p-1">
           {(Object.keys(metricConfig) as MetricKey[]).map(key => (
             <button
@@ -65,7 +65,7 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
         </div>
       </div>
 
-      {/* Summary */}
+      {/* Resumo */}
       <div className="flex items-center gap-4 mb-6">
         <div>
           <p className="text-3xl font-black text-gray-900 dark:text-white">{lastVal}<span className="text-sm font-medium text-gray-400 ml-1">{config.unit}</span></p>
@@ -79,23 +79,23 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
         </div>
       </div>
 
-      {/* Chart Area */}
+      {/* Área do Gráfico */}
       <div className="relative h-56 flex items-end gap-1">
-        {/* Y-axis labels */}
+        {/* Rótulos do eixo Y */}
         <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-[9px] font-bold text-gray-300 dark:text-gray-600 -ml-1 w-10" aria-hidden="true">
           <span>{maxVal.toFixed(1)}</span>
           <span>{((maxVal + minVal) / 2).toFixed(1)}</span>
           <span>{minVal.toFixed(1)}</span>
         </div>
 
-        {/* Grid lines */}
+        {/* Linhas de grade */}
         <div className="absolute inset-0 ml-12 flex flex-col justify-between" aria-hidden="true">
           {[0, 1, 2].map(i => (
             <div key={i} className="border-b border-dashed border-gray-100 dark:border-[#1e2235]" />
           ))}
         </div>
 
-        {/* Bars + Dots */}
+        {/* Barras + Pontos */}
         <div className="flex-1 flex items-end justify-between gap-2 ml-12 relative">
           {data.map((point, idx) => {
             const height = getHeight(point[activeMetric]);
@@ -116,10 +116,10 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
                   </div>
                 )}
 
-                {/* Bar */}
+                {/* Barra */}
                 <div className="w-full relative" style={{ height: '200px' }}>
                   <div className="absolute bottom-0 w-full h-full flex flex-col items-center justify-end">
-                    {/* Dot */}
+                    {/* Ponto */}
                     <div
                       className={cn(
                         "w-3 h-3 rounded-full border-2 border-white dark:border-[#0f1117] z-10 transition-transform",
@@ -127,7 +127,7 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
                       )}
                       style={{ background: config.color, marginBottom: '-6px' }}
                     />
-                    {/* Bar fill */}
+                    {/* Preenchimento da barra */}
                     <div
                       className="w-full rounded-t-lg transition-all duration-700"
                       style={{
@@ -139,7 +139,7 @@ export function BiometriaChart({ data }: BiometriaChartProps) {
                   </div>
                 </div>
 
-                {/* X label */}
+                {/* Rótulo do eixo X */}
                 <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-3 uppercase tracking-wider">
                   {point.data}
                 </span>

@@ -1,7 +1,7 @@
 import type { RetentionData, FrequenciaHoraria, PlanoDistribution, BIStats, DailyCheckins } from '@/types/relatorios';
 
 /**
- * Realistic mock data for the Business Intelligence module.
+ * Dados simulados realistas para o módulo de Business Intelligence.
  */
 
 export const biStatsData: BIStats = {

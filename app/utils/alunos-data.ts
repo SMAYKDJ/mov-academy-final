@@ -1,7 +1,7 @@
 import type { Aluno } from '@/types/aluno';
 
 /**
- * Deterministic pseudo-random number generator for consistent data.
+ * Gerador de números pseudo-aleatórios determinístico para dados consistentes.
  */
 function seeded(seed: number): number {
   const x = Math.sin(seed + 1) * 10000;
@@ -9,8 +9,8 @@ function seeded(seed: number): number {
 }
 
 /**
- * 30 realistic Brazilian student records for the Alunos module.
- * All data is deterministic to prevent hydration mismatches.
+ * 30 registros realistas de alunos brasileiros para o módulo Alunos.
+ * Todos os dados são determinísticos para evitar incompatibilidades de hidratação.
  */
 export const alunosData: Aluno[] = [
   {

@@ -1,17 +1,17 @@
 /**
- * Type definitions for the Relatórios (BI/Analytics) module.
+ * Definições de tipos para o módulo de Relatórios (BI/Analytics).
  */
 
 export interface RetentionData {
   mes: string;
-  taxaRetencao: number; // Percentage
-  churn: number; // Percentage
-  engajamento: number; // Percentage
+  taxaRetencao: number; // Porcentagem
+  churn: number; // Porcentagem
+  engajamento: number; // Porcentagem
 }
 
 export interface FrequenciaHoraria {
   hora: string; // "06:00", "07:00", etc.
-  seg: number; // Frequency level 0-100
+  seg: number; // Nível de frequência 0-100
   ter: number;
   qua: number;
   qui: number;
@@ -30,7 +30,7 @@ export interface BIStats {
   churnRate: number;
   avgRetentionMonths: number;
   lifetimeValue: number;
-  mrr: number; // Monthly Recurring Revenue
+  mrr: number; // Receita Recorrente Mensal (MRR)
   growthRate: number;
 }
 

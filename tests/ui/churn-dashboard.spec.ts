@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Churn Analytics Dashboard', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the main dashboard page
+    // Navegar para a página principal do dashboard
     await page.goto('/');
   });
 
@@ -15,14 +15,14 @@ test.describe('Churn Analytics Dashboard', () => {
   });
 
   test('should display Churn KPI card and charts', async ({ page }) => {
-    // The Churn Analytics section is expanded by default in the code state
+    // A seção de Análise de Churn é expandida por padrão no estado do código
     const churnSection = page.locator('#churn-analytics');
     
     // Check for Churn Card
     const churnCard = churnSection.locator('text=Taxa de Churn');
     await expect(churnCard).toBeVisible();
 
-    // Check for At-Risk Students Table
+    // Verificar a Tabela de Alunos em Risco
     const atRiskTable = churnSection.locator('text=Alunos em Risco');
     await expect(atRiskTable).toBeVisible();
   });

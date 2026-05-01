@@ -9,11 +9,11 @@ interface RetentionChartProps {
 }
 
 /**
- * Visualization for student retention and churn rates over time.
- * Uses pure CSS lines and bars.
+ * Visualização para taxas de retenção e churn de alunos ao longo do tempo.
+ * Usa linhas e barras em CSS puro.
  */
 export function RetentionChart({ data }: RetentionChartProps) {
-  // Calculate average churn
+  // Calcular churn médio
   const avgChurn = useMemo(() => {
     return (data.reduce((sum, d) => sum + d.churn, 0) / data.length).toFixed(1);
   }, [data]);
@@ -33,19 +33,19 @@ export function RetentionChart({ data }: RetentionChartProps) {
 
       <div className="flex items-end justify-between gap-3 h-48 mb-6 mt-4 px-2">
         {data.map((item, idx) => {
-          // Dynamic scale: 80% is the baseline (0 height), 100% is full height.
-          // This makes small variations (95% vs 98%) much more visible.
+          // Escala dinâmica: 80% é a base (altura 0), 100% é a altura total.
+          // Isso torna pequenas variações (95% vs 98%) muito mais visíveis.
           const displayHeight = Math.max(5, (item.taxaRetencao - 80) * 5); 
           const isPositive = idx === 0 || item.taxaRetencao >= data[idx - 1].taxaRetencao;
 
           return (
             <div key={item.mes} className="flex-1 flex flex-col items-center group relative h-full justify-end">
-                {/* Data Value Label */}
+                {/* Rótulo de Valor de Dados */}
                 <span className="absolute -top-6 text-[10px] font-black text-gray-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity">
                   {item.taxaRetencao}%
                 </span>
 
-                {/* Retention bar */}
+                {/* Barra de retenção */}
                 <div 
                   className={cn(
                     "w-full rounded-t-xl transition-all duration-700 relative shadow-sm group-hover:shadow-md group-hover:-translate-y-1",
@@ -55,7 +55,7 @@ export function RetentionChart({ data }: RetentionChartProps) {
                   )}
                   style={{ height: `${displayHeight}%` }}
                 >
-                  {/* Glass highlight */}
+                  {/* Destaque tipo vidro (Glass) */}
                   <div className="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-xl" />
                   
                   {/* Tooltip */}

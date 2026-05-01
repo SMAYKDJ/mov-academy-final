@@ -1,6 +1,6 @@
 /**
- * Type definitions for the Alunos (Students) module.
- * Comprehensive interfaces for CRUD operations, filtering, and display.
+ * Definições de tipos para o módulo de Alunos.
+ * Interfaces abrangentes para operações de CRUD, filtragem e exibição.
  */
 
 export type AlunoStatus = 'ativo' | 'inativo' | 'pendente';
@@ -28,8 +28,8 @@ export interface Aluno {
   dataNascimento: string;
   endereco: string;
   objetivo: string;
-  risco: number; // 0–100 churn risk
-  frequencia: number; // avg visits/week
+  risco: number; // risco de churn 0–100
+  frequencia: number; // média de visitas/semana
   avatar?: string;
   historicoPagamentos: PaymentRecord[];
 }

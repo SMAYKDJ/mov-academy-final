@@ -19,7 +19,7 @@ export default function BiometriaPage() {
   const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
   const { showToast } = useToast();
 
-  // Real Data Integration (filtering mock data for now based on selected student)
+  // Integração de Dados Reais (filtrando dados simulados por enquanto com base no aluno selecionado)
   const currentHistory = useMemo(() => {
     return evaluationHistory.filter(h => h.alunoId === selectedStudentId);
   }, [selectedStudentId]);
@@ -42,7 +42,7 @@ export default function BiometriaPage() {
       <div className="flex-1 md:ml-64 transition-all duration-300">
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        {/* Global Context Selector */}
+        {/* Seletor de Contexto Global */}
         <div className="bg-white dark:bg-[#0f1117] border-b border-gray-100 dark:border-[#1e2235] px-4 md:px-8 py-3 flex items-center justify-between sticky top-16 z-30 animate-fade-in shadow-sm">
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200/50 dark:border-white/5">
@@ -63,7 +63,7 @@ export default function BiometriaPage() {
         </div>
 
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-6">
-          {/* Page Header */}
+          {/* Cabeçalho da Página */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -96,16 +96,16 @@ export default function BiometriaPage() {
             </div>
           </div>
 
-          {/* KPIs + Health Score */}
+          {/* KPIs + Score de Saúde */}
           <BiometriaKPI stats={currentStats} />
 
-          {/* Charts Row */}
+          {/* Linha de Gráficos */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <BiometriaChart data={evolutionData} />
             <BodyComposition stats={currentStats} />
           </div>
 
-          {/* AI Insights Banner */}
+          {/* Banner de Insights de IA */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-green-900/10 dark:to-teal-900/10 border border-emerald-100 dark:border-green-800/30 rounded-2xl p-5 flex items-start gap-4">
               <div className="w-10 h-10 bg-emerald-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center shrink-0">
@@ -134,12 +134,12 @@ export default function BiometriaPage() {
             </div>
           </div>
 
-          {/* Evaluation History */}
+          {/* Histórico de Avaliações */}
           <BiometriaHistory evaluations={currentHistory} />
         </main>
       </div>
 
-      {/* New Evaluation Form */}
+      {/* Formulário de Nova Avaliação */}
       <BiometriaForm open={formOpen} onClose={() => setFormOpen(false)} />
     </div>
   );

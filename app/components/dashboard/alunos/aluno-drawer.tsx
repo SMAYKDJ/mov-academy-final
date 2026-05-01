@@ -22,7 +22,7 @@ interface AlunoDrawerProps {
 export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusChange }: AlunoDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Close on Escape key
+  // Fechar ao pressionar a tecla Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -37,7 +37,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
     };
   }, [open, onClose]);
 
-  // Focus trap
+  // Armadilha de foco (Focus trap)
   useEffect(() => {
     if (open && drawerRef.current) {
       drawerRef.current.focus();
@@ -78,14 +78,14 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
 
   return (
     <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label={`Detalhes de ${aluno.nome}`}>
-      {/* Backdrop */}
+      {/* Fundo (Backdrop) */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer Panel */}
+      {/* Painel do Drawer */}
       <div
         ref={drawerRef}
         tabIndex={-1}
@@ -94,7 +94,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
           "animate-slide-in-right"
         )}
       >
-        {/* Header */}
+        {/* Cabeçalho */}
         <div className="p-6 border-b border-gray-100 dark:border-[#1e2235] flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className={cn(
@@ -121,9 +121,9 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
           </button>
         </div>
 
-        {/* Content */}
+        {/* Conteúdo */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Quick Stats */}
+          {/* Estatísticas Rápidas */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-gray-50 dark:bg-[#1a1d27] rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -142,7 +142,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
             </div>
           </div>
 
-          {/* Info List */}
+          {/* Lista de Informações */}
           <div>
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
               Informações Pessoais
@@ -162,7 +162,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
             </div>
           </div>
 
-          {/* Payment History */}
+          {/* Histórico de Pagamentos */}
           <div>
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
               Histórico de Pagamentos
@@ -211,7 +211,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
             </div>
           </div>
 
-          {/* WhatsApp Actions */}
+          {/* Ações do WhatsApp */}
           <div className="pt-2">
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3">
               Comunicação WhatsApp
@@ -238,7 +238,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
           </div>
         </div>
 
-        {/* Footer Actions */}
+        {/* Ações de Rodapé */}
         <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex flex-col gap-3">
           <div className="flex gap-3">
             <button

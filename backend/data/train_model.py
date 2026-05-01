@@ -195,7 +195,7 @@ def main():
     print("  Framework: Scikit-learn")
     print("=" * 60)
     
-    # 1-2: Load & Clean
+    # 1-2: Carregar e Limpar
     df = load_and_clean_data(DATA_PATH)
     
     # 3: Feature Engineering

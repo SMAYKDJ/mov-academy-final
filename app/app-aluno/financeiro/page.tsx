@@ -120,7 +120,7 @@ export default function StudentFinancePage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Cabeçalho */}
       <section>
         <h2 className="text-sm font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-1">Financeiro</h2>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
@@ -128,7 +128,7 @@ export default function StudentFinancePage() {
         </h1>
       </section>
 
-      {/* Main Status Card */}
+      {/* Cartão de Status Principal */}
       <section className="bg-white dark:bg-[#0f1117] rounded-[32px] border border-gray-100 dark:border-[#1e2235] p-6 shadow-sm relative overflow-hidden">
         <div className="relative z-10 flex flex-col gap-6">
           <div className="flex items-center justify-between">
@@ -173,11 +173,11 @@ export default function StudentFinancePage() {
           </div>
         </div>
         
-        {/* Abstract decoration */}
+        {/* Decoração abstrata */}
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary-50 dark:bg-primary-900/10 rounded-full blur-3xl" />
       </section>
 
-      {/* History List */}
+      {/* Lista de Histórico */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -208,7 +208,7 @@ export default function StudentFinancePage() {
         </div>
       </section>
 
-      {/* Info Card */}
+      {/* Cartão de Informação */}
       <section className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/20 flex gap-3">
         <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
         <p className="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed">

@@ -1,12 +1,12 @@
 /**
- * Utility to generate WhatsApp messages and links for students.
+ * Utilitário para gerar mensagens e links do WhatsApp para os alunos.
  */
 
 export function formatPhoneForWhatsApp(phone: string): string {
-  // Remove all non-numeric characters
+  // Remover todos os caracteres não numéricos
   const cleaned = phone.replace(/\D/g, '');
   
-  // If it's a typical BR number (10 or 11 digits) without country code, add 55
+  // Se for um número típico do Brasil (10 ou 11 dígitos) sem código de país, adicionar 55
   if (cleaned.length === 10 || cleaned.length === 11) {
     return `55${cleaned}`;
   }
@@ -50,11 +50,11 @@ export const openWhatsApp = (phone: string, message?: string) => {
 };
 
 /**
- * Sends a notification to the gym manager.
- * In a real app, this phone would comes from system settings.
+ * Envia uma notificação para o gestor da academia.
+ * Em um aplicativo real, este telefone viria das configurações do sistema.
  */
 export const notifyManager = (nomeAluno: string, valor: number | string) => {
-  const MANAGER_PHONE = '5591983457028'; // Real manager phone
+  const MANAGER_PHONE = '5591983457028'; // Telefone real do gestor
   const msg = generateWAMessage('aviso_gestor', nomeAluno, valor);
   openWhatsApp(MANAGER_PHONE, msg);
 };

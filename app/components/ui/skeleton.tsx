@@ -1,8 +1,8 @@
 import { cn } from "@/utils/cn"
 
 /**
- * Skeleton loading placeholder with shimmer animation.
- * Use for loading states to maintain layout stability.
+ * Marcador de carregamento Skeleton com animação shimmer.
+ * Use para estados de carregamento para manter a estabilidade do layout.
  */
 function Skeleton({
   className,

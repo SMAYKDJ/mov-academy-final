@@ -15,10 +15,10 @@ export default function ResetPasswordPage() {
   const { showToast } = useToast();
 
   useEffect(() => {
-    // Check if we are actually in a reset session
+    // Verificar se estamos realmente em uma sessão de redefinição
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      // Supabase sets the session automatically when clicking the link
+      // O Supabase define a sessão automaticamente ao clicar no link
       if (!session) {
         // showToast('Sessão de recuperação inválida ou expirada.', 'error');
         // router.push('/login');

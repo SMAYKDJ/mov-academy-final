@@ -3,8 +3,8 @@
 import { useEffect, useCallback } from 'react';
 
 /**
- * Custom hook for keyboard shortcut handling.
- * Supports modifier keys (Ctrl, Shift, Alt, Meta).
+ * Hook personalizado para lidar com atalhos de teclado.
+ * Suporta teclas modificadoras (Ctrl, Shift, Alt, Meta).
  */
 export function useKeyboardShortcut(
   key: string,

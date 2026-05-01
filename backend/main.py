@@ -1,14 +1,14 @@
 """
-FastAPI Microservice — Churn Prediction API.
+Microserviço FastAPI — API de Previsão de Churn.
 
-Exposes ML model predictions via REST endpoints.
-Flow: Supabase → Backend IA → Predição → Dashboard
+Expõe previsões de modelos de ML via endpoints REST.
+Fluxo: Supabase → Backend IA → Predição → Dashboard
 
 Endpoints:
-  POST /predict         — Single student prediction
-  POST /predict/batch   — Batch prediction for multiple students
-  GET  /model/info      — Model metadata and metrics
-  GET  /health          — Health check
+  POST /predict         — Previsão de aluno individual
+  POST /predict/batch   — Previsão em lote para múltiplos alunos
+  GET  /model/info      — Metadados e métricas do modelo
+  GET  /health          — Verificação de saúde
 """
 
 import os
@@ -32,38 +32,38 @@ from pydantic import BaseModel, Field
 import stripe
 from dotenv import load_dotenv
 
-# Load env vars
+# Carregar variáveis de ambiente
 load_dotenv()
 
 
-# --- Configuration ---
+# --- Configuração ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'models', 'churn_model.joblib')
 ENCODER_PATH = os.path.join(BASE_DIR, 'models', 'label_encoder.joblib')
 METRICS_PATH = os.path.join(BASE_DIR, 'models', 'metrics.json')
 
-# --- Supabase Integration ---
+# --- Integração com Supabase ---
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fbbcnazqmkgdrxbdeysr.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "") # Should be Service Role Key for delete operations
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "") # Deve ser a Service Role Key para operações de deleção
 
-# --- Stripe Configuration ---
+# --- Configuração do Stripe ---
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 if STRIPE_SECRET_KEY:
     stripe.api_key = STRIPE_SECRET_KEY
-    print("  ✅ Stripe initialized")
+    print("  ✅ Stripe inicializado")
 else:
-    print("  ⚠️ STRIPE_SECRET_KEY not found in environment")
+    print("  ⚠️ STRIPE_SECRET_KEY não encontrada no ambiente")
 
 
 supabase_client: Optional[Client] = None
 if SUPABASE_URL and SUPABASE_KEY:
     try:
         supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
-        print("  ✅ Supabase client initialized")
+        print("  ✅ Cliente Supabase inicializado")
     except Exception as e:
-        print(f"  ❌ Error initializing Supabase client: {e}")
+        print(f"  ❌ Erro ao inicializar cliente Supabase: {e}")
 
-# --- App Initialization ---
+# --- Inicialização do App ---
 app = FastAPI(
     title="Moviment Academy — Churn Prediction API",
     description="Microserviço de predição de churn com Machine Learning (Random Forest)",
@@ -71,7 +71,7 @@ app = FastAPI(
     docs_url="/docs",
 )
 
-# CORS — Allow Next.js frontend to access
+# CORS — Permitir acesso ao frontend Next.js
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "https://*.vercel.app"],
@@ -80,7 +80,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Load Model on Startup ---
+# --- Carregar Modelo na Inicialização ---
 model = None
 label_encoder = None
 metrics = None
@@ -89,87 +89,87 @@ explainer = None
 
 @app.on_event("startup")
 async def load_model():
-    """Load the trained model and encoder into memory."""
+    """Carregar o modelo treinado e o codificador na memória."""
     global model, label_encoder, metrics, explainer
 
     if os.path.exists(MODEL_PATH):
         model = joblib.load(MODEL_PATH)
-        print(f"  ✅ Model loaded from {MODEL_PATH}")
+        print(f"  ✅ Modelo carregado de {MODEL_PATH}")
     else:
-        print(f"  ⚠️ Model not found at {MODEL_PATH}. Run train_model.py first.")
+        print(f"  ⚠️ Modelo não encontrado em {MODEL_PATH}. Execute train_model.py primeiro.")
 
     if os.path.exists(ENCODER_PATH):
         label_encoder = joblib.load(ENCODER_PATH)
-        print(f"  ✅ Label encoder loaded from {ENCODER_PATH}")
+        print(f"  ✅ Label encoder carregado de {ENCODER_PATH}")
 
     if os.path.exists(METRICS_PATH):
         with open(METRICS_PATH) as f:
             metrics = json.load(f)
-        print(f"  ✅ Metrics loaded: Accuracy={metrics.get('accuracy', 'N/A')}")
+        print(f"  ✅ Métricas carregadas: Acurácia={metrics.get('accuracy', 'N/A')}")
 
     if model:
         explainer = shap.TreeExplainer(model)
-        print("  ✅ SHAP Explainer initialized (TreeExplainer)")
+        print("  ✅ SHAP Explainer inicializado (TreeExplainer)")
 
 
-# --- Pydantic Models ---
+# --- Modelos Pydantic ---
 class StudentInput(BaseModel):
-    """Input schema for a single student prediction."""
-    student_id: str = Field(..., description="Unique student identifier", examples=["MOV-0001"])
-    name: str = Field(..., description="Student name", examples=["Carlos Silva"])
-    weekly_frequency: int = Field(..., ge=0, le=7, description="Weekly training frequency")
-    days_since_last_visit: int = Field(..., ge=0, description="Days since last gym visit")
-    overdue_payments: int = Field(..., ge=0, le=1, description="Has overdue payments (0/1)")
-    overdue_days: int = Field(0, ge=0, description="Number of days payment is overdue")
-    enrollment_months: int = Field(..., ge=1, description="Months since enrollment")
-    age: int = Field(..., ge=16, le=100, description="Student age")
-    plan: str = Field(..., description="Subscription plan", examples=["Platinum"])
+    """Esquema de entrada para uma previsão de aluno individual."""
+    student_id: str = Field(..., description="Identificador único do aluno", examples=["MOV-0001"])
+    name: str = Field(..., description="Nome do aluno", examples=["Carlos Silva"])
+    weekly_frequency: int = Field(..., ge=0, le=7, description="Frequência de treinamento semanal")
+    days_since_last_visit: int = Field(..., ge=0, description="Dias desde a última visita à academia")
+    overdue_payments: int = Field(..., ge=0, le=1, description="Tem pagamentos em atraso (0/1)")
+    overdue_days: int = Field(0, ge=0, description="Número de dias que o pagamento está em atraso")
+    enrollment_months: int = Field(..., ge=1, description="Meses desde a matrícula")
+    age: int = Field(..., ge=16, le=100, description="Idade do aluno")
+    plan: str = Field(..., description="Plano de assinatura", examples=["Platinum"])
 
 class ChurnInput(BaseModel):
-    """Input schema for churn risk prediction (feature based)."""
-    nome: str = Field(..., description="Student name")
-    freq_mensal: float = Field(..., ge=0, le=12, description="Monthly training frequency")
-    dias_atraso: int = Field(..., ge=0, description="Days of payment delay")
-    valor_mensal: float = Field(..., gt=0, description="Monthly payment value")
-    inadimplente: int = Field(..., ge=0, le=1, description="Inadimplente flag (0/1)")
+    """Esquema de entrada para previsão de risco de churn (baseado em características)."""
+    nome: str = Field(..., description="Nome do aluno")
+    freq_mensal: float = Field(..., ge=0, le=12, description="Frequência de treinamento mensal")
+    dias_atraso: int = Field(..., ge=0, description="Dias de atraso no pagamento")
+    valor_mensal: float = Field(..., gt=0, description="Valor do pagamento mensal")
+    inadimplente: int = Field(..., ge=0, le=1, description="Flag de inadimplente (0/1)")
 
 
 class PredictionResult(BaseModel):
-    """Output schema for a churn prediction."""
+    """Esquema de saída para uma previsão de churn."""
     student_id: str
     name: str
-    probability: float = Field(..., description="Churn probability (0.0 to 1.0)")
-    probability_percent: float = Field(..., description="Churn probability (0 to 100%)")
+    probability: float = Field(..., description="Probabilidade de churn (0.0 a 1.0)")
+    probability_percent: float = Field(..., description="Probabilidade de churn (0 a 100%)")
     risk_level: str = Field(..., description="alto / medio / baixo")
     impacts: Optional[dict] = None
     predicted_at: str
 
 
 class ExplanationResult(BaseModel):
-    """Output schema for SHAP explanation."""
+    """Esquema de saída para explicação SHAP."""
     student_id: str
     name: str
     risk_level: str
     probability: float
-    impacts: dict = Field(..., description="Feature names and their SHAP values")
-    summary: str = Field(..., description="Human-readable summary of the main churn factors")
+    impacts: dict = Field(..., description="Nomes das características e seus valores SHAP")
+    summary: str = Field(..., description="Resumo legível por humanos dos principais fatores de churn")
     predicted_at: str
 
 
 class BatchInput(BaseModel):
-    """Input for batch predictions."""
+    """Entrada para previsões em lote."""
     students: list[StudentInput]
 
 
 class BatchResult(BaseModel):
-    """Output for batch predictions."""
+    """Saída para previsões em lote."""
     predictions: list[PredictionResult]
     summary: dict
     processed_at: str
 
 
 class ModelInfo(BaseModel):
-    """Model metadata response."""
+    """Resposta de metadados do modelo."""
     model_type: str
     framework: str
     accuracy: Optional[float]
@@ -182,17 +182,17 @@ class ModelInfo(BaseModel):
 
 
 class PaymentIntentInput(BaseModel):
-    """Input for creating a Stripe Payment Intent."""
-    amount: int = Field(..., gt=0, description="Amount in cents (e.g. 1000 for $10.00)")
-    currency: str = Field("brl", description="Currency code (e.g. brl, usd)")
-    description: Optional[str] = Field(None, description="Description of the purchase")
-    metadata: Optional[dict] = Field(None, description="Additional metadata")
+    """Entrada para criar um Stripe Payment Intent."""
+    amount: int = Field(..., gt=0, description="Valor em centavos (ex: 1000 para R$ 10,00)")
+    currency: str = Field("brl", description="Código da moeda (ex: brl, usd)")
+    description: Optional[str] = Field(None, description="Descrição da compra")
+    metadata: Optional[dict] = Field(None, description="Metadados adicionais")
 
 
 
-# --- Helper Functions ---
+# --- Funções Auxiliares ---
 def classify_risk(probability: float) -> str:
-    """Classify risk level based on churn probability."""
+    """Classificar o nível de risco com base na probabilidade de churn."""
     if probability > 0.70:
         return 'alto'
     elif probability >= 0.40:
@@ -201,17 +201,17 @@ def classify_risk(probability: float) -> str:
 
 
 def predict_student(student: StudentInput) -> PredictionResult:
-    """Run prediction for a single student."""
+    """Executar a previsão para um único aluno."""
     if model is None:
-        raise HTTPException(status_code=503, detail="Model not loaded. Run train_model.py first.")
+        raise HTTPException(status_code=503, detail="Modelo não carregado. Execute train_model.py primeiro.")
 
-    # Encode plan
+    # Codificar plano
     try:
         plan_encoded = label_encoder.transform([student.plan])[0]
     except ValueError:
-        plan_encoded = 1  # Default to middle value
+        plan_encoded = 1  # Valor padrão intermediário
 
-    # Build feature vector (same order as training)
+    # Construir vetor de características (mesma ordem do treinamento)
     features = np.array([[
         student.weekly_frequency,
         student.days_since_last_visit,
@@ -222,7 +222,7 @@ def predict_student(student: StudentInput) -> PredictionResult:
         plan_encoded,
     ]])
 
-    # Predict probability
+    # Prever probabilidade
     proba = model.predict_proba(features)[0][1]
 
     return PredictionResult(
@@ -238,7 +238,7 @@ def predict_student(student: StudentInput) -> PredictionResult:
 # --- Endpoints ---
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """Endpoint de verificação de saúde."""
     return {
         "status": "healthy",
         "model_loaded": model is not None,
@@ -249,18 +249,18 @@ async def health_check():
 @app.post("/predict", response_model=PredictionResult)
 async def predict_churn(student: StudentInput):
     """
-    Predict churn probability for a single student.
-    Returns the probability (0-100%), risk level (alto/medio/baixo),
-    and prediction timestamp.
+    Prever a probabilidade de churn para um único aluno.
+    Retorna a probabilidade (0-100%), nível de risco (alto/medio/baixo),
+    e o carimbo de data/hora da previsão.
     """
     return predict_student(student)
 
 @app.post("/predict/churn", response_model=PredictionResult)
 async def predict_churn_risk(data: ChurnInput):
-    """Predict churn risk using the feature‑based model."""
+    """Prever o risco de churn usando o modelo baseado em características."""
     if model is None:
-        raise HTTPException(status_code=503, detail="Model not loaded. Run train_model.py first.")
-    # Build feature vector
+        raise HTTPException(status_code=503, detail="Modelo não carregado. Execute train_model.py primeiro.")
+    # Construir vetor de características
     features = np.array([[
         data.freq_mensal,
         data.dias_atraso,
@@ -268,36 +268,36 @@ async def predict_churn_risk(data: ChurnInput):
         data.inadimplente,
     ]])
     proba = model.predict_proba(features)[0][1]
-    # Calculate custom score
+    # Calcular pontuação personalizada
     score = calcular_risco({
         "freq_mensal": data.freq_mensal,
         "dias_atraso": data.dias_atraso,
         "valor_mensal": data.valor_mensal,
         "inadimplente": data.inadimplente,
     })
-    # Determine risk level based on score thresholds
+    # Determinar o nível de risco com base nos limites de pontuação
     if score > 30:
         risk = "alto"
     elif score > 15:
         risk = "medio"
     else:
         risk = "baixo"
-    # Calculate SHAP impacts
+    # Calcular impactos SHAP
     impacts = {}
     if explainer is not None:
         try:
             shap_values = explainer.shap_values(features)
-            # For Binary Classification in TreeExplainer, shap_values is a list of [neg, pos] or just pos array
-            # We want class 1 (churn)
+            # Para Classificação Binária no TreeExplainer, shap_values é uma lista de [neg, pos] ou apenas um array pos
+            # Queremos a classe 1 (churn)
             if isinstance(shap_values, list):
                 sv = shap_values[1][0]
             else:
-                sv = shap_values[0] # Some versions return (N, M)
+                sv = shap_values[0] # Algumas versões retornam (N, M)
             
             feature_names = ["freq_mensal", "dias_atraso", "valor_mensal", "inadimplente"]
             impacts = {name: round(float(val), 4) for name, val in zip(feature_names, sv)}
         except Exception as e:
-            print(f"  ⚠️ SHAP calculation error: {e}")
+            print(f"  ⚠️ Erro no cálculo SHAP: {e}")
 
     return PredictionResult(
         student_id="N/A",
@@ -314,10 +314,10 @@ async def predict_churn_risk(data: ChurnInput):
 @app.post("/predict/batch", response_model=BatchResult)
 async def predict_batch(batch: BatchInput):
     """
-    Predict churn for multiple students at once.
+    Prever churn para múltiplos alunos de uma só vez.
     
-    Returns individual predictions plus a summary with
-    risk distribution counts.
+    Retorna previsões individuais mais um resumo com
+    contagens de distribuição de risco.
     """
     predictions = [predict_student(s) for s in batch.students]
 
@@ -341,7 +341,7 @@ async def predict_batch(batch: BatchInput):
 @app.get("/model/info", response_model=ModelInfo)
 async def get_model_info():
     """
-    Get model metadata, performance metrics, and configuration.
+    Obter metadados do modelo, métricas de desempenho e configuração.
     """
     return ModelInfo(
         model_type="Random Forest Classifier",
@@ -371,13 +371,13 @@ async def get_model_info():
 @app.post("/predict/explain", response_model=ExplanationResult)
 async def explain_churn(student: StudentInput):
     """
-    Predict churn AND provide a SHAP explanation for WHY.
-    Returns feature impacts and a text summary.
+    Prever churn E fornecer uma explicação SHAP sobre o PORQUÊ.
+    Retorna impactos de características e um resumo em texto.
     """
     if model is None or explainer is None:
-        raise HTTPException(status_code=503, detail="Model or Explainer not loaded.")
+        raise HTTPException(status_code=503, detail="Modelo ou Explainer não carregado.")
 
-    # Prepare features (same as predict_student)
+    # Preparar características (mesmo que predict_student)
     try:
         plan_encoded = label_encoder.transform([student.plan])[0]
     except ValueError:
@@ -400,34 +400,34 @@ async def explain_churn(student: StudentInput):
     
     features_df = pd.DataFrame([features_val], columns=feature_names)
 
-    # Calculate SHAP values
+    # Calcular valores SHAP
     shap_values = explainer.shap_values(features_df)
     
-    # Handle different SHAP output formats (TreeExplainer vs KernelExplainer, old vs new versions)
-    # Goal: Get the impact for class 1 (churn)
+    # Lidar com diferentes formatos de saída SHAP (TreeExplainer vs KernelExplainer, versões antigas vs novas)
+    # Objetivo: Obter o impacto para a classe 1 (churn)
     if isinstance(shap_values, list):
-        # Format: [impacts_class0, impacts_class1]
+        # Formato: [impactos_classe0, impactos_classe1]
         sv = shap_values[1][0] if len(shap_values) > 1 else shap_values[0][0]
     elif len(shap_values.shape) == 3:
-        # Format: (samples, features, classes) -> (0, :, 1)
+        # Formato: (amostras, características, classes) -> (0, :, 1)
         sv = shap_values[0, :, 1]
     elif len(shap_values.shape) == 2:
-        # Format: (samples, features)
+        # Formato: (amostras, características)
         sv = shap_values[0]
     else:
         sv = shap_values
 
     impacts = {name: round(float(sv[i]), 4) for i, name in enumerate(feature_names)}
     
-    # Sort impacts by absolute value to find main drivers
+    # Ordenar impactos pelo valor absoluto para encontrar os principais impulsionadores
     sorted_impacts = sorted(impacts.items(), key=lambda x: abs(x[1]), reverse=True)
     top_factor, top_val = sorted_impacts[0]
     
-    # Create a simple summary
+    # Criar um resumo simples
     direction = "aumentando" if top_val > 0 else "diminuindo"
     summary = f"O fator principal é '{top_factor}', que está {direction} o risco de churn."
 
-    # Get probability for the result
+    # Obter probabilidade para o resultado
     proba = model.predict_proba(features_df)[0][1]
 
     return ExplanationResult(
@@ -442,7 +442,7 @@ async def explain_churn(student: StudentInput):
 
 
 def find_column_index(headers: list, keywords: list) -> int:
-    """Finds the index of a column that matches any of the given keywords."""
+    """Encontra o índice de uma coluna que corresponde a qualquer uma das palavras-chave fornecidas."""
     for i, h in enumerate(headers):
         h_lower = str(h).lower()
         if any(k.lower() in h_lower for k in keywords):
@@ -452,8 +452,8 @@ def find_column_index(headers: list, keywords: list) -> int:
 @app.post("/upload/report")
 async def upload_report(files: list[UploadFile] = File(...)):
     """
-    Upload multiple PDF reports, extract student data from all, and run batch predictions.
-    Uses smart column mapping to handle variations in PDF headers.
+    Faz o upload de múltiplos relatórios PDF, extrai dados de alunos de todos e executa previsões em lote.
+    Usa mapeamento inteligente de colunas para lidar com variações nos cabeçalhos dos PDFs.
     """
     all_pdf_data = []
     processed_files = []
@@ -473,7 +473,7 @@ async def upload_report(files: list[UploadFile] = File(...)):
                         continue
                         
                     headers = table[0]
-                    # Smart mapping
+                    # Mapeamento inteligente
                     idx_id = find_column_index(headers, ['código', 'id', 'matrícula'])
                     idx_name = find_column_index(headers, ['nome', 'aluno', 'estudante'])
                     idx_freq = find_column_index(headers, ['freq', 'presença', 'visitas'])
@@ -494,7 +494,7 @@ async def upload_report(files: list[UploadFile] = File(...)):
                             student = StudentInput(
                                 student_id=sid,
                                 name=name,
-                                weekly_frequency=freq if freq < 10 else round(freq/52, 2), # Handle yearly presences
+                                weekly_frequency=freq if freq < 10 else round(freq/52, 2), # Lidar com presenças anuais
                                 days_since_last_visit=inativo,
                                 overdue_payments=1 if idx_debitos != -1 and any(x in str(row[idx_debitos]).lower() for x in ['sim', 'vencido', 'pendente']) else 0,
                                 overdue_days=inativo if idx_debitos != -1 and 'vencido' in str(row[idx_debitos]).lower() else 0,
@@ -509,13 +509,13 @@ async def upload_report(files: list[UploadFile] = File(...)):
             
             processed_files.append({"filename": file.filename, "students_found": file_data_count})
         except Exception as e:
-            print(f"Error processing {file.filename}: {e}")
+            print(f"  Erro ao processar {file.filename}: {e}")
 
     if not all_pdf_data:
         raise HTTPException(status_code=422, detail="Não foi possível encontrar dados de alunos em nenhum dos PDFs enviados.")
 
     try:
-        # Run predictions with SHAP explanations
+        # Executar previsões com explicações SHAP
         predictions = []
         for s in all_pdf_data:
             res = await explain_churn(s)
@@ -529,7 +529,7 @@ async def upload_report(files: list[UploadFile] = File(...)):
             "avg_probability": round(sum(p.probability for p in predictions) / len(predictions), 4) if predictions else 0,
         }
 
-        # --- DATA REPLACEMENT LOGIC ---
+        # --- LÓGICA DE SUBSTITUIÇÃO DE DADOS ---
         if supabase_client:
             try:
                 supabase_client.table("alunos").delete().neq("id", -1).execute()
@@ -548,9 +548,9 @@ async def upload_report(files: list[UploadFile] = File(...)):
                 
                 if insert_data:
                     supabase_client.table("alunos").insert(insert_data).execute()
-                    print(f"  ✅ Replaced Supabase data with {len(insert_data)} students.")
+                    print(f"  ✅ Dados do Supabase substituídos por {len(insert_data)} alunos.")
             except Exception as se:
-                print(f"  ⚠️ Error syncing with Supabase: {se}")
+                print(f"  ⚠️ Erro ao sincronizar com o Supabase: {se}")
         
         return {
             "processed_files": processed_files,
@@ -566,14 +566,14 @@ async def upload_report(files: list[UploadFile] = File(...)):
 @app.post("/payments/create-intent")
 async def create_payment_intent(payment_data: PaymentIntentInput):
     """
-    Creates a Stripe Payment Intent for a transaction.
-    Returns the client_secret needed by the frontend.
+    Cria um Stripe Payment Intent para uma transação.
+    Retorna o client_secret necessário pelo frontend.
     """
     if not stripe.api_key:
-        raise HTTPException(status_code=503, detail="Stripe service not configured.")
+        raise HTTPException(status_code=503, detail="Serviço Stripe não configurado.")
 
     try:
-        # Create a PaymentIntent with the specified amount and currency
+        # Criar um PaymentIntent com o valor e a moeda especificados
         intent = stripe.PaymentIntent.create(
             amount=payment_data.amount,
             currency=payment_data.currency,

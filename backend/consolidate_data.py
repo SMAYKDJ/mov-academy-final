@@ -7,29 +7,29 @@ from datetime import datetime
 REPORTS_DIR = "/Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/RELATORIOS"
 
 def extract_id_name(text):
-    # Matches "CODE Name..."
+    # Corresponde a "CÓDIGO Nome..."
     match = re.match(r'^(\d+)\s+(.*?)\s+(?:\(|-|$)', text)
     if match:
         return match.group(1), match.group(2).strip()
     return None, None
 
 def consolidate():
-    students = {} # id -> data
+    students = {} # id -> dados
 
-    # 1. Process Alunos (Base)
+    # 1. Processar Alunos (Base)
     print("Processing Listagem de Alunos...")
     with pdfplumber.open(os.path.join(REPORTS_DIR, "Listagem de Alunos.pdf")) as pdf:
         for page in pdf.pages:
             text = page.extract_text()
             lines = text.split('\n')
             for line in lines:
-                # Basic regex for "CODE Name (PHONE)"
+                # Regex básico para "CÓDIGO Nome (TELEFONE)"
                 match = re.search(r'^(\d+)\s+(.*?)\s+\(\d+\)', line)
                 if match:
                     sid, name = match.group(1), match.group(2).strip()
                     students[sid] = {'id': sid, 'name': name, 'status': 'ativo'}
 
-    # 2. Process Matrículas (Plans, Dates, Actual Churn Status)
+    # 2. Processar Matrículas (Planos, Datas, Status de Churn Atual)
     print("Processing Listagem de Matrículas...")
     with pdfplumber.open(os.path.join(REPORTS_DIR, "Listagem de Matrículas.pdf")) as pdf:
         for page in pdf.pages:
@@ -39,7 +39,7 @@ def consolidate():
                 match = re.search(r'^(\d+)\s+(.*?)\s+(Plano\s+\w+.*?)\s+(\d{2}/\d{2}/\d{4})', line)
                 if match:
                     sid = match.group(1)
-                    # Normalize Plan
+                    # Normalizar Plano
                     raw_plan = match.group(3).strip()
                     plan = 'Mensal'
                     if 'Anual' in raw_plan: plan = 'Anual'
@@ -49,7 +49,7 @@ def consolidate():
                     
                     start_date_str = match.group(4)
                     
-                    # Detect status (Inativa/Vencida/Cancelada means Churn)
+                    # Detectar status (Inativa/Vencida/Cancelada significa Churn)
                     status = 'churn' if any(x in line for x in ['Inativa', 'Vencida', 'Cancelada', 'Pendente']) else 'active'
                     
                     if sid in students:
@@ -57,7 +57,7 @@ def consolidate():
                         students[sid]['start_date'] = start_date_str
                         students[sid]['status'] = status
                         
-                        # Calculate enrollment months
+                        # Calcular meses de matrícula
                         try:
                             start_date = datetime.strptime(start_date_str, "%d/%m/%Y")
                             months = (datetime.now() - start_date).days // 30
@@ -65,7 +65,7 @@ def consolidate():
                         except:
                             students[sid]['enrollment_months'] = 1
 
-    # 3. Process Devedores (Debts)
+    # 3. Processar Devedores (Dívidas)
     print("Processing Relação de Devedores...")
     with pdfplumber.open(os.path.join(REPORTS_DIR, "Relação de Devedores.pdf")) as pdf:
         for page in pdf.pages:
@@ -85,7 +85,7 @@ def consolidate():
                         except:
                             students[sid]['overdue_days'] = 0
 
-    # 4. Process Frequency
+    # 4. Processar Frequência
     print("Processing Alunos Mais Frequentes...")
     with pdfplumber.open(os.path.join(REPORTS_DIR, "Alunos Mais Frequentes.pdf")) as pdf:
         for page in pdf.pages:
@@ -98,11 +98,11 @@ def consolidate():
                     visits = int(match.group(3))
                     if sid in students:
                         students[sid]['weekly_frequency'] = round(visits / 52, 2)
-                        # We don't have "days since last visit" directly, so we estimate
-                        # If frequency is high, days since last visit is low
+                        # Não temos "dias desde a última visita" diretamente, então estimamos
+                        # Se a frequência for alta, os dias desde a última visita são baixos
                         students[sid]['days_since_last_visit'] = max(1, 30 - int(visits/4)) if visits > 0 else 30
 
-    # Default values for missing data
+    # Valores padrão para dados ausentes
     for sid in students:
         s = students[sid]
         if 'weekly_frequency' not in s: s['weekly_frequency'] = 0.0
@@ -110,24 +110,24 @@ def consolidate():
         if 'overdue_payments' not in s: s['overdue_payments'] = 0
         if 'overdue_days' not in s: s['overdue_days'] = 0
         if 'enrollment_months' not in s: s['enrollment_months'] = 1
-        if 'age' not in s: s['age'] = 30 # Default
+        if 'age' not in s: s['age'] = 30 # Padrão
         if 'plan' not in s: s['plan'] = 'Mensal'
         
     df = pd.DataFrame(list(students.values()))
     
-    # --- RISK SIMULATION TECHNIQUE ---
-    # Since we don't have a 'cancelados' report, we simulate the churn label (target 1)
-    # for students who exhibit 'latent churn' behaviors:
+    # --- TÉCNICA DE SIMULAÇÃO DE RISCO ---
+    # Como não temos um relatório de 'cancelados', simulamos o rótulo de churn (alvo 1)
+    # para alunos que exibem comportamentos de 'churn latente':
     def simulate_target(row):
-        # 1. Obvious Churn (Status Vencida/Pendente)
+        # 1. Churn Óbvio (Status Vencida/Pendente)
         if row['status'] == 'churn':
             return 1
         
-        # 2. Latent Churn: Zero frequency AND Has Debts
+        # 2. Churn Latente: Frequência zero E tem dívidas
         if row['weekly_frequency'] == 0 and row['overdue_payments'] > 0:
             return 1
             
-        # 3. High Risk: Very low frequency (< 0.5 visit/week) AND Overdue Days > 30
+        # 3. Risco Alto: Frequência muito baixa (< 0,5 visita/semana) E dias de atraso > 30
         if row['weekly_frequency'] < 0.5 and row['overdue_days'] > 30:
             return 1
             
@@ -135,17 +135,17 @@ def consolidate():
 
     df['target'] = df.apply(simulate_target, axis=1)
     
-    # Ensure we have at least some variety (if still all 0, force top 5% risk as 1 for training)
+    # Garantir que tenhamos pelo menos alguma variedade (se ainda tudo 0, forçar os 5% superiores de risco como 1 para o treinamento)
     if df['target'].sum() < 5:
-        print("⚠️ Not enough simulated churn samples. Forcing high-risk outliers as churn for training variety.")
-        # Sort by (debt days - frequency)
+        print("⚠️ Amostras de churn simuladas insuficientes. Forçando outliers de alto risco como churn para variedade de treinamento.")
+        # Ordenar por (dias de dívida - frequência)
         df = df.sort_values(by=['overdue_days', 'weekly_frequency'], ascending=[False, True])
         df.iloc[:20, df.columns.get_loc('target')] = 1
     
     output_path = os.path.join(REPORTS_DIR, "consolidated_client_data.csv")
     df.to_csv(output_path, index=False)
-    print(f"✅ Consolidation with Simulation complete: {len(df)} students.")
-    print(f"📊 Target distribution (Simulated): {df['target'].value_counts().to_dict()}")
+    print(f"✅ Consolidação com Simulação concluída: {len(df)} alunos.")
+    print(f"📊 Distribuição de alvo (Simulada): {df['target'].value_counts().to_dict()}")
     return df
 
 if __name__ == "__main__":

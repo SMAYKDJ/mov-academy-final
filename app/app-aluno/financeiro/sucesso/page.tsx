@@ -7,7 +7,7 @@ import confetti from 'canvas-confetti';
 
 export default function StudentPaymentSuccessPage() {
   useEffect(() => {
-    // Fire confetti on load
+    // Disparar confetes ao carregar
     const duration = 3 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };

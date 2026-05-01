@@ -1,7 +1,7 @@
 import type { BiometricEvaluation, BiometriaKPIData, EvolutionPoint } from '@/types/biometria';
 
 /**
- * Mock data — Biometric evaluations for a sample student.
+ * Dados simulados — Avaliações biométricas para um aluno de exemplo.
  */
 
 export const biometriaKPIData: BiometriaKPIData = {

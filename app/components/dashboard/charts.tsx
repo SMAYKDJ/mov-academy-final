@@ -6,8 +6,8 @@ import { cn } from '@/utils/cn';
 import type { ChartData } from '@/types';
 
 /**
- * Weekly chart visualization using pure CSS bars.
- * Each bar is interactive with hover tooltip and scaling animation.
+ * Visualização de gráfico semanal usando barras em CSS puro.
+ * Cada barra é interativa com tooltip de hover e animação de escala.
  */
 interface WeeklyChartProps {
   data: ChartData[];
@@ -22,7 +22,7 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
       "bg-white dark:bg-[#0f1117] p-6 rounded-2xl border border-gray-100 dark:border-[#1e2235] shadow-sm hover:shadow-md transition-all duration-300",
       className
     )}>
-      {/* Header */}
+      {/* Cabeçalho */}
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="font-semibold text-gray-900 dark:text-white leading-none">Crescimento</h3>
@@ -33,7 +33,7 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
         </div>
       </div>
 
-      {/* Chart Bars */}
+      {/* Barras do Gráfico */}
       <div className="h-48 flex items-end gap-2 px-1" role="img" aria-label="Gráfico de inscrições semanais">
         {data.map((item, i) => {
           const height = (item.value / maxValue) * 100;
@@ -61,7 +61,7 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
         })}
       </div>
 
-      {/* Labels */}
+      {/* Rótulos */}
       <div className="flex justify-between mt-4 px-1">
         {data.map((item, i) => (
           <span key={i} className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
@@ -74,8 +74,8 @@ export function WeeklyChart({ data, className }: WeeklyChartProps) {
 }
 
 /**
- * Retention insight card with gradient background.
- * Acts as a CTA for the retention campaign feature.
+ * Cartão de insight de retenção com fundo em gradiente.
+ * Atua como um CTA para a funcionalidade de campanha de retenção.
  */
 export function RetentionInsightCard({ className }: { className?: string }) {
   return (
@@ -83,7 +83,7 @@ export function RetentionInsightCard({ className }: { className?: string }) {
       "relative bg-gradient-to-br from-primary-600 via-indigo-600 to-purple-700 p-6 rounded-2xl shadow-xl shadow-primary-100 dark:shadow-none overflow-hidden group",
       className
     )}>
-      {/* Decorative elements */}
+      {/* Elementos decorativos */}
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full blur-2xl" aria-hidden="true" />
 
@@ -100,7 +100,7 @@ export function RetentionInsightCard({ className }: { className?: string }) {
           Estamos a 3% de atingir a meta mensal. Inicie uma campanha de renovação para os alunos em risco!
         </p>
 
-        {/* Progress bar */}
+        {/* Barra de progresso */}
         <div className="mb-6">
           <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <div

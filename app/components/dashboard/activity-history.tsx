@@ -19,7 +19,7 @@ const iconMap = {
 export function ActivityHistory({ onClose }: ActivityHistoryProps) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
+      {/* Fundo (Backdrop) */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" 
         onClick={onClose}
@@ -27,7 +27,7 @@ export function ActivityHistory({ onClose }: ActivityHistoryProps) {
       
       {/* Modal */}
       <div className="relative w-full max-w-2xl bg-white dark:bg-[#0f1117] rounded-3xl shadow-2xl border border-gray-100 dark:border-[#1e2235] overflow-hidden animate-scale-in">
-        {/* Header */}
+        {/* Cabeçalho */}
         <div className="px-6 py-4 border-b border-gray-100 dark:border-[#1e2235] flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Histórico de Atividades</h2>
@@ -41,7 +41,7 @@ export function ActivityHistory({ onClose }: ActivityHistoryProps) {
           </button>
         </div>
  
-        {/* Content */}
+        {/* Conteúdo */}
         <div className="p-6 max-h-[60vh] overflow-y-auto">
           <div className="space-y-4">
             {recentActivity.map((item, idx) => {
@@ -86,7 +86,7 @@ export function ActivityHistory({ onClose }: ActivityHistoryProps) {
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Rodapé */}
         <div className="px-6 py-4 bg-gray-50 dark:bg-[#0f1117] border-t border-gray-100 dark:border-[#1e2235] flex justify-end">
           <button 
             onClick={onClose}

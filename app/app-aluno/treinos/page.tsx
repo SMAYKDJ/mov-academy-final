@@ -38,7 +38,7 @@ export default function StudentWorkoutPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Back button */}
+      {/* Cabeçalho com botão Voltar */}
       <div className="flex items-center gap-4">
         <Link 
           href="/app-aluno"
@@ -52,7 +52,7 @@ export default function StudentWorkoutPage() {
         </div>
       </div>
 
-      {/* Exercise List */}
+      {/* Lista de Exercícios */}
       <div className="space-y-4">
         {workout.exercicios.map((ex, index) => (
           <div 
@@ -65,7 +65,7 @@ export default function StudentWorkoutPage() {
             )}
           >
             <div className="p-5">
-              {/* Top Row: Number + Title + Video */}
+              {/* Linha Superior: Número + Título + Vídeo */}
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
                   <div className={cn(
@@ -90,7 +90,7 @@ export default function StudentWorkoutPage() {
                 )}
               </div>
 
-              {/* Stats Row */}
+              {/* Linha de Estatísticas */}
               <div className="grid grid-cols-3 gap-2 mb-4">
                 <div className="flex flex-col items-center p-2 bg-gray-50 dark:bg-[#1a1d27] rounded-xl">
                   <Repeat className="w-3 h-3 text-gray-400 mb-1" />
@@ -106,7 +106,7 @@ export default function StudentWorkoutPage() {
                 </div>
               </div>
 
-              {/* Action: Toggle Concluido */}
+              {/* Ação: Alternar Concluído */}
               <button 
                 onClick={() => toggleExercise(ex.id)}
                 className={cn(
@@ -130,7 +130,7 @@ export default function StudentWorkoutPage() {
         ))}
       </div>
 
-      {/* Footer Summary */}
+      {/* Resumo no Rodapé */}
       <div className="fixed bottom-24 left-6 right-6 md:max-w-[384px] md:mx-auto">
         <button 
           onClick={handleFinishWorkout}

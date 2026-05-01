@@ -21,13 +21,13 @@ import { useAuth } from "@/hooks/use-auth";
 import type { Student, ActivityItem } from "@/types";
 
 /**
- * Main Dashboard Page.
+ * Página Principal do Dashboard.
  *
- * Architecture:
- * - Sidebar (fixed left, collapsible) + Mobile drawer
- * - Sticky header with search and actions
- * - Scrollable main content with responsive grid
- * - [NEW] Churn Analytics Module (ML-powered predictions)
+ * Arquitetura:
+ * - Sidebar (fixa à esquerda, colapsável) + Drawer Mobile
+ * - Cabeçalho fixo com busca e ações
+ * - Conteúdo principal rolável com grade responsiva
+ * - [NOVO] Módulo de Análise de Churn (previsões baseadas em IA)
  */
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -36,15 +36,15 @@ export default function DashboardPage() {
   const { showToast } = useToast();
   const { user } = useAuth();
 
-  // Real Data Persistence
+  // Persistência de Dados Reais
   const [alunos] = useLocalStorage<any[]>('moviment-alunos', alunosData, 'alunos');
   const [transacoes] = useLocalStorage<any[]>('moviment-financeiro', [], 'transacoes');
   const [searchTerm, setSearchTerm] = useState('');
   
-  // Real-time Churn Prediction from local data
+  // Previsão de Churn em tempo real a partir de dados locais
   const churnSummary = useMemo(() => generateRealChurnSummary(alunos), [alunos]);
 
-  // Calculate Dynamic KPIs (Array format for KPICards)
+  // Calcular KPIs Dinâmicos (formato Array para KPICards)
   const dynamicStats = useMemo(() => {
     const totalAlunos = alunos.length;
     const ativos = alunos.filter(a => a.status === 'ativo').length;
@@ -92,11 +92,11 @@ export default function DashboardPage() {
     ];
   }, [alunos, transacoes, churnSummary]);
 
-  // Generate Dynamic Activity Feed
+  // Gerar Feed de Atividade Dinâmico
   const dynamicActivity = useMemo(() => {
     const activities: ActivityItem[] = [];
     
-    // Recent students
+    // Alunos recentes
     alunos.slice(0, 3).forEach(a => {
       activities.push({
         id: `a-${a.id}`,
@@ -107,7 +107,7 @@ export default function DashboardPage() {
       });
     });
 
-    // Recent transactions
+    // Transações recentes
     transacoes.slice(0, 2).forEach(t => {
       activities.push({
         id: `t-${t.id}`,
@@ -121,7 +121,7 @@ export default function DashboardPage() {
     return activities.length > 0 ? activities : recentActivity;
   }, [alunos, transacoes]);
 
-  // Calculate Dynamic Quick Stats (for the StatsBar)
+  // Calcular Estatísticas Rápidas Dinâmicas (para a StatsBar)
   const dynamicQuickStats = useMemo(() => {
     return [
       { label: 'Frequência Hoje', value: '312 check-ins', color: 'text-primary-600 dark:text-primary-400' },
@@ -150,20 +150,20 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
-      {/* Sidebar */}
+      {/* Barra Lateral */}
       <Sidebar
         mobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
       />
 
-      {/* Main Content Area — pushed right by sidebar width on desktop */}
+      {/* Área de Conteúdo Principal — deslocada para a direita pela largura da barra lateral no desktop */}
       <div className="flex-1 md:ml-64 transition-all duration-300">
-        {/* Header */}
+        {/* Cabeçalho */}
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        {/* Page Content */}
+        {/* Conteúdo da Página */}
         <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto space-y-8">
-          {/* Welcome Section */}
+          {/* Seção de Boas-vindas */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
             <div>
               <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mb-1">Bem-vindo de volta,</p>
@@ -193,21 +193,21 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Filters */}
+          {/* Filtros */}
           <DashboardFilters onSearch={setSearchTerm} />
 
-          {/* KPI Cards */}
+          {/* Cartões de KPI */}
           <KPICards stats={dynamicStats} />
 
-          {/* Quick Stats Bar */}
+          {/* Barra de Estatísticas Rápidas */}
           <StatsBar stats={dynamicQuickStats} />
 
           {/* ═══════════════════════════════════════════════════════════
-              🧠 CHURN ANALYTICS MODULE — ML-Powered Predictions
+              🧠 MÓDULO DE ANÁLISE DE CHURN — Previsões Alimentadas por IA
               Pipeline: Supabase → FastAPI (Python) → Random Forest → Dashboard
               ═══════════════════════════════════════════════════════════ */}
           <section id="churn-analytics" aria-label="Módulo de Análise de Churn">
-            {/* Section Header */}
+            {/* Cabeçalho da Seção */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 animate-fade-in">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-gradient-to-br from-red-500/10 to-orange-500/10 dark:from-red-900/30 dark:to-orange-900/30 rounded-xl">
@@ -238,7 +238,7 @@ export default function DashboardPage() {
 
             {showChurnModule && (
               <div className="space-y-6 animate-slide-up">
-                {/* Row 1: Churn KPI Card + Distribution Chart + Trend Chart */}
+                {/* Linha 1: Cartão de KPI de Churn + Gráfico de Distribuição + Gráfico de Tendência */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   <ChurnCard
                     currentRate={churnSummary.currentRate}
@@ -251,18 +251,18 @@ export default function DashboardPage() {
                   <ChurnTrend data={churnSummary.trendData} />
                 </div>
 
-                {/* Row 2: At-Risk Students Table (full width) */}
+                {/* Linha 2: Tabela de Alunos em Risco (largura total) */}
                 <AtRiskStudentsTable predictions={churnSummary.predictions} />
 
-                {/* Row 3: Insights Panel */}
+                {/* Linha 3: Painel de Insights */}
                 <ChurnInsights insights={churnSummary.insights} />
               </div>
             )}
           </section>
 
-          {/* Main Content Grid */}
+          {/* Grade de Conteúdo Principal */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column — Table (spans 2 columns) */}
+            {/* Coluna Esquerda — Tabela (ocupa 2 colunas) */}
             <div className="lg:col-span-2 space-y-8">
               <DataTable 
                 data={filteredAlunos.map(a => ({
@@ -279,7 +279,7 @@ export default function DashboardPage() {
               />
             </div>
 
-            {/* Right Column — Charts & Activity */}
+            {/* Coluna Direita — Gráficos e Atividades */}
             <div className="space-y-6">
               <ReportUpload onUploadSuccess={() => window.location.reload()} />
               <WeeklyChart data={weeklyChartData} />
@@ -288,7 +288,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Footer */}
+          {/* Rodapé */}
           <footer className="pt-8 pb-4 border-t border-gray-100 dark:border-[#1e2235]">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <p className="text-xs text-gray-400 dark:text-gray-500">

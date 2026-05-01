@@ -9,8 +9,8 @@ interface RevenueChartProps {
 }
 
 /**
- * Pure CSS bar chart showing monthly revenue vs expenses.
- * No external chart library needed.
+ * Gráfico de barras em CSS puro mostrando receita mensal vs despesas.
+ * Nenhuma biblioteca de gráficos externa necessária.
  */
 export function RevenueChart({ data }: RevenueChartProps) {
   const maxValue = useMemo(() => {
@@ -20,7 +20,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
   const formatCurrency = (val: number) =>
     `R$ ${(val / 1000).toFixed(1)}k`;
 
-  // Current month totals
+  // Totais do mês atual
   const current = data[data.length - 1];
   const prev = data[data.length - 2];
   const revenueChange = prev ? ((current.receita - prev.receita) / prev.receita * 100).toFixed(1) : '0';
@@ -28,7 +28,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6">
-      {/* Header */}
+      {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
         <div>
           <h3 className="text-base font-bold text-gray-900 dark:text-white">Receita vs Despesas</h3>
@@ -46,7 +46,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
         </div>
       </div>
 
-      {/* Chart */}
+      {/* Gráfico */}
       <div className="flex items-end gap-3 h-48 md:h-56 mt-4" role="img" aria-label="Gráfico de receita e despesas">
         {data.map((month, idx) => {
           const receitaHeight = (month.receita / maxValue) * 100;
@@ -55,10 +55,10 @@ export function RevenueChart({ data }: RevenueChartProps) {
 
           return (
             <div key={month.mes} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
-              {/* Bars Container */}
+              {/* Container de Barras */}
               <div className="w-full flex items-end justify-center gap-1.5 h-full px-1">
                 
-                {/* Revenue bar */}
+                {/* Barra de receita */}
                 <div className="relative flex-1 max-w-[40px] h-full flex flex-col justify-end">
                   <div
                     className={cn(
@@ -69,14 +69,14 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   >
                     <div className="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-lg" />
                     
-                    {/* Tooltip Revenue */}
+                    {/* Tooltip de Receita */}
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black rounded-lg opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none z-20 shadow-xl whitespace-nowrap">
                       +{formatCurrency(month.receita)}
                     </div>
                   </div>
                 </div>
 
-                {/* Expense bar */}
+                {/* Barra de despesa */}
                 <div className="relative flex-1 max-w-[40px] h-full flex flex-col justify-end">
                   <div
                     className={cn(
@@ -87,7 +87,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   >
                     <div className="absolute inset-x-0 top-0 h-1/2 bg-white/10 rounded-t-lg" />
                     
-                    {/* Tooltip Expense */}
+                    {/* Tooltip de Despesa */}
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-red-600 text-white text-[10px] font-black rounded-lg opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none z-20 shadow-xl whitespace-nowrap">
                       -{formatCurrency(month.despesa)}
                     </div>
@@ -95,7 +95,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                 </div>
               </div>
 
-              {/* Month label */}
+              {/* Rótulo do mês */}
               <span className={cn(
                 "text-[10px] font-black uppercase tracking-tighter mt-2",
                 isLast ? "text-primary-600 dark:text-primary-400" : "text-gray-400 dark:text-gray-500"
@@ -107,7 +107,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
         })}
       </div>
 
-      {/* Summary row */}
+      {/* Linha de resumo */}
       <div className="flex items-center gap-4 mt-5 pt-4 border-t border-gray-100 dark:border-[#1e2235]">
         <div className="flex-1">
           <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Receita Mês Atual</p>

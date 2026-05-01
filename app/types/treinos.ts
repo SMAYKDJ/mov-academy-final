@@ -1,6 +1,6 @@
 /**
- * Type definitions for the Treinos (Workouts) module.
- * Includes muscle groups, exercises, workout plans, and body map data.
+ * Definições de tipos para o módulo de Treinos.
+ * Inclui grupos musculares, exercícios, planos de treino e dados do mapa corporal.
  */
 
 export type MuscleGroup =
@@ -25,7 +25,7 @@ export interface MuscleData {
   grupo: MuscleGroup;
   intensidade: number; // 0–100
   ultimoTreino: string;
-  volumeSemanal: number; // sets per week
+  volumeSemanal: number; // séries por semana
   exerciciosRelacionados: string[];
 }
 
@@ -57,7 +57,7 @@ export interface TreinosKPIData {
   totalTreinos: number;
   frequenciaSemanal: number;
   musculoMaisTreinado: string;
-  evolucao: number; // % improvement
+  evolucao: number; // % de melhora
   xpTotal: number;
   nivel: number;
 }

@@ -36,7 +36,7 @@ export function ChurnChart({ distribution, className }: ChurnChartProps) {
     { key: 'baixo', count: distribution.baixo, ...riskConfig.baixo },
   ];
 
-  // Calculate conic-gradient stops for the donut
+  // Calcular as paradas do conic-gradient para o gráfico de rosca
   let cumulativePercent = 0;
   const gradientStops = segments.map((seg) => {
     const start = cumulativePercent;

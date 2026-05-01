@@ -1,6 +1,6 @@
 /**
- * Mock Data for development and demonstration.
- * All data follows the interfaces defined in types/index.ts.
+ * Dados fictícios (Mock) para desenvolvimento e demonstração.
+ * Todos os dados seguem as interfaces definidas em types/index.ts.
  */
 
 import type { Student, KPIStat, ActivityItem, ChartData } from '@/types';
@@ -25,8 +25,8 @@ function generateEmail(first: string, last: string): string {
 }
 
 /**
- * Deterministic pseudo-random number generator (seeded).
- * Prevents hydration mismatches between server and client.
+ * Gerador de números pseudo-aleatórios determinístico (seeded).
+ * Evita incompatibilidades de hidratação entre servidor e cliente.
  */
 function seededRandom(seed: number): number {
   const x = Math.sin(seed + 1) * 10000;

@@ -7,8 +7,8 @@ import { Dumbbell, CreditCard, User, Home, QrCode } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 /**
- * Mobile-first layout for the Student App.
- * Features a fixed bottom navigation bar and condensed header.
+ * Layout mobile-first para o App do Aluno.
+ * Possui uma barra de navegação inferior fixa e cabeçalho condensado.
  */
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,7 +23,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#080a0f] pb-24 md:max-w-md md:mx-auto md:shadow-2xl md:border-x md:border-gray-100 dark:md:border-[#1e2235]">
-      {/* App Header */}
+      {/* Cabeçalho do App */}
       <header className="sticky top-0 z-40 bg-white/80 dark:bg-[#0f1117]/80 backdrop-blur-xl border-b border-gray-100 dark:border-[#1e2235] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
@@ -36,12 +36,12 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
         </button>
       </header>
 
-      {/* Page Content */}
+      {/* Conteúdo da Página */}
       <main className="p-6 pb-12 animate-fade-in">
         {children}
       </main>
 
-      {/* Bottom Navigation Bar */}
+      {/* Barra de Navegação Inferior */}
       <nav className="fixed bottom-0 left-0 right-0 md:max-w-md md:left-1/2 md:-translate-x-1/2 bg-white/90 dark:bg-[#0f1117]/90 backdrop-blur-xl border-t border-gray-100 dark:border-[#1e2235] px-4 py-3 flex items-center justify-between z-50">
         {navItems.map((item) => {
           const isActive = pathname === item.href;

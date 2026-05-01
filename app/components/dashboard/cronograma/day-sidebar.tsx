@@ -31,7 +31,7 @@ export function DaySidebar({ date, events, onEventClick, onCheckIn }: DaySidebar
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] overflow-hidden h-fit lg:sticky lg:top-24">
-      {/* Header */}
+      {/* Cabeçalho */}
       <div className="p-5 border-b border-gray-100 dark:border-[#1e2235] bg-gradient-to-br from-primary-600 to-indigo-700 text-white">
         <p className="text-[10px] uppercase tracking-widest font-bold opacity-70">{dayName}</p>
         <p className="text-3xl font-black">{dayNum}</p>
@@ -42,7 +42,7 @@ export function DaySidebar({ date, events, onEventClick, onCheckIn }: DaySidebar
         </div>
       </div>
 
-      {/* Events List */}
+      {/* Lista de Eventos */}
       <div className="p-4 space-y-3 max-h-[500px] overflow-y-auto">
         {sorted.length === 0 ? (
           <div className="text-center py-8">
@@ -76,7 +76,7 @@ export function DaySidebar({ date, events, onEventClick, onCheckIn }: DaySidebar
                 <span className="flex items-center gap-1"><User className="w-3 h-3" />{ev.instrutorNome}</span>
               </div>
 
-              {/* Quick Check-in */}
+              {/* Check-in Rápido */}
               {ev.status === 'agendado' && (
                 <div className="mt-3 flex gap-2" onClick={e => e.stopPropagation()}>
                   <button

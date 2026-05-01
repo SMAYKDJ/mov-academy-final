@@ -34,13 +34,13 @@ def test_predict_churn_negative_invalid_data():
     payload = {
         "student_id": "MOV-001",
         "name": "Test Student",
-        "weekly_frequency": -1, # Invalid frequency
+        "weekly_frequency": -1, # Frequência inválida
         "days_since_last_visit": 0,
         "overdue_payments": 0,
         "overdue_days": 0,
-        "enrollment_months": 0, # Invalid months
-        "age": 10, # Below minimum age 16
+        "enrollment_months": 0, # Meses inválidos
+        "age": 10, # Abaixo da idade mínima de 16
         "plan": "Platinum"
     }
     response = requests.post(f"{BASE_URL}/predict", json=payload)
-    assert response.status_code == 422 # Validation error
+    assert response.status_code == 422 # Erro de validação

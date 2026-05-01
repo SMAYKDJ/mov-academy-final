@@ -1,8 +1,8 @@
 import type { MuscleData, WorkoutPlan, TreinosKPIData } from '@/types/treinos';
 
 /**
- * Mock data for the Treinos module.
- * Deterministic data for SSR hydration safety.
+ * Dados simulados para o módulo de Treinos.
+ * Dados determinísticos para segurança de hidratação SSR.
  */
 
 export const treinosKPIData: TreinosKPIData = {

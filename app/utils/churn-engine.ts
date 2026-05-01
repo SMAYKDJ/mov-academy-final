@@ -2,8 +2,8 @@ import type { Aluno } from '@/types/aluno';
 import type { ChurnPrediction, RiskLevel, ChurnSummary, ChurnDistribution, ChurnTrendPoint, ChurnInsight } from '@/types/churn';
 
 /**
- * Real Churn Prediction Engine
- * calculates risk based on actual student data following the KDD methodology.
+ * Motor de Previsão de Churn Real
+ * calcula o risco com base em dados reais dos alunos seguindo a metodologia KDD.
  */
 
 function classifyRisk(probability: number): RiskLevel {
@@ -13,20 +13,20 @@ function classifyRisk(probability: number): RiskLevel {
 }
 
 function calculateProbability(aluno: Aluno): number {
-  // Baseline 25%
+  // Base de 25%
   let prob = 25;
 
-  // Inactivity Penalty (based on ultimoPagamento as proxy for activity if frequencia is low)
-  // Assuming 'frequencia' is weekly visits (0-7)
+  // Penalidade de Inatividade (baseada em ultimoPagamento como proxy para atividade se a frequência for baixa)
+  // Assumindo que 'frequencia' são visitas semanais (0-7)
   if (aluno.frequencia <= 1) prob += 35;
   else if (aluno.frequencia <= 2) prob += 15;
   else prob -= 10;
 
-  // Status Penalty
+  // Penalidade de Status
   if (aluno.status === 'inativo') prob += 50;
   if (aluno.status === 'pendente') prob += 15;
 
-  // Tenure Benefit (Loyalty)
+  // Benefício de Tempo de Casa (Fidelidade)
   if (aluno.dataMatricula) {
     const parts = aluno.dataMatricula.split('/');
     if (parts.length === 3) {
@@ -39,7 +39,7 @@ function calculateProbability(aluno: Aluno): number {
     }
   }
 
-  // Risk Benefit
+  // Benefício de Risco
   prob -= (100 - (aluno.risco || 0)) / 10;
 
   return Math.max(5, Math.min(98, prob));
@@ -53,11 +53,11 @@ export function generateRealChurnSummary(alunos: Aluno[]): ChurnSummary {
       studentName: a.nome,
       probability: prob,
       riskLevel: classifyRisk(prob),
-      lastPresence: a.ultimoPagamento, // Using this as proxy
-      daysSinceLastVisit: Math.floor(Math.random() * 15), // Simulated for now since we don't track visits yet
+      lastPresence: a.ultimoPagamento, // Usando isso como proxy
+      daysSinceLastVisit: Math.floor(Math.random() * 15), // Simulado por enquanto, já que ainda não rastreamos visitas
       weeklyFrequency: a.frequencia,
       paymentStatus: a.status === 'ativo' ? 'up_to_date' : 'overdue',
-      enrollmentMonths: 12, // Placeholder
+      enrollmentMonths: 12, // Espaço reservado
       updatedAt: new Date().toLocaleDateString('pt-BR'),
     };
   });
@@ -70,7 +70,7 @@ export function generateRealChurnSummary(alunos: Aluno[]): ChurnSummary {
     alto, medio, baixo, total: predictions.length
   };
 
-  // Static trend data for chart consistency
+  // Dados de tendência estáticos para consistência do gráfico
   const trendData: ChurnTrendPoint[] = [
     { month: 'Nov', churnRate: 4.2, predicted: 4.5 },
     { month: 'Dez', churnRate: 3.8, predicted: 3.9 },

@@ -35,7 +35,7 @@ export default function CronogramaPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<'view' | 'create'>('view');
 
-  // Events with local state for check-in
+  // Eventos com estado local para check-in
   const [events, setEvents] = useLocalStorage<CalendarEvent[]>('moviment-cronograma', calendarEventsData, 'cronograma');
 
   const filteredEvents = useMemo(() => {

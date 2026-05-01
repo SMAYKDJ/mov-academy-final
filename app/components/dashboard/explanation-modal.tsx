@@ -41,7 +41,7 @@ export function ExplanationModal({ isOpen, onClose, student }: ExplanationModalP
           student_id: student.id,
           name: student.name,
           weekly_frequency: student.frequency || 0,
-          days_since_last_visit: 0, // Placeholder
+          days_since_last_visit: 0, // Espaço reservado
           overdue_payments: student.payments === 'overdue' ? 1 : 0,
           overdue_days: student.overdue_days || 0,
           enrollment_months: student.enrollment_months || 1,
@@ -74,7 +74,7 @@ export function ExplanationModal({ isOpen, onClose, student }: ExplanationModalP
         className="bg-white dark:bg-[#12141c] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-[#2e334d] animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Cabeçalho */}
         <div className="p-6 border-b border-gray-100 dark:border-[#2e334d] flex items-center justify-between bg-gradient-to-r from-primary-50/50 to-transparent dark:from-primary-900/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-200 dark:shadow-none">
@@ -93,7 +93,7 @@ export function ExplanationModal({ isOpen, onClose, student }: ExplanationModalP
           </button>
         </div>
 
-        {/* Content */}
+        {/* Conteúdo */}
         <div className="p-8">
           {loading ? (
             <div className="py-12 flex flex-col items-center gap-4">

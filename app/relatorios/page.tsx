@@ -38,12 +38,12 @@ export default function RelatoriosPage() {
 
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
 
-  // Dynamic Data Simulator based on selected month
+  // Simulador de dados dinâmico baseado no mês selecionado
   const dynamicData = useMemo(() => {
     const monthIndex = months.indexOf(selectedMonth);
     const seed = monthIndex + 1;
     
-    // Simulate checkins (with weekend drops)
+    // Simular check-ins (com quedas nos finais de semana)
     const checkins = Array.from({ length: 7 }, (_, i) => {
       const day = i + 7;
       const isWeekend = i === 4 || i === 5; // Fri/Sat/Sun logic

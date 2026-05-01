@@ -43,7 +43,7 @@ export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) 
 
   return (
     <div className="relative z-[50]">
-      {/* Selector Trigger */}
+      {/* Gatilho do Seletor */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 p-1.5 pl-3 pr-4 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-2xl hover:border-primary-400 dark:hover:border-primary-900/50 transition-all group"
@@ -63,7 +63,7 @@ export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) 
         <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
       </button>
 
-      {/* Dropdown Menu */}
+      {/* Menu Dropdown */}
       {isOpen && (
         <>
           <div className="fixed inset-0 z-[-1]" onClick={() => setIsOpen(false)} />

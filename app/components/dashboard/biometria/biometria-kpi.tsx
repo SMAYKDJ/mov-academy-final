@@ -61,7 +61,7 @@ export function BiometriaKPI({ stats }: BiometriaKPIProps) {
 
   return (
     <div className="space-y-4">
-      {/* KPI Cards */}
+      {/* Cartões de KPI */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((card) => (
           <div key={card.label} className="bg-white dark:bg-[#0f1117] rounded-2xl p-5 border border-gray-100 dark:border-[#1e2235] hover:shadow-lg transition-all relative overflow-hidden">
@@ -86,7 +86,7 @@ export function BiometriaKPI({ stats }: BiometriaKPIProps) {
         ))}
       </div>
 
-      {/* Health Score Bar */}
+      {/* Barra de Pontuação de Saúde */}
       <div className="bg-gradient-to-r from-gray-900 to-gray-800 dark:from-[#0f1117] dark:to-[#1a1d27] rounded-2xl p-5 border border-gray-700 dark:border-[#2d3348] flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">

@@ -21,15 +21,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // Safety timeout to prevent permanent loading state
+    // Tempo limite de segurança para evitar o estado de carregamento permanente
     const timeoutId = setTimeout(() => {
       if (mounted) {
-        console.warn("Auth initialization timed out. Proceeding...");
+        console.warn("A inicialização da autenticação expirou. Prosseguindo...");
         setLoading(false);
       }
     }, 3000);
 
-    // Listen for changes and initial session
+    // Ouve mudanças e a sessão inicial
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
       
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(null);
         }
       } catch (err) {
-        console.error("Auth state change error:", err);
+        console.error("Erro na mudança de estado da autenticação:", err);
       } finally {
         if (mounted) {
           setLoading(false);
@@ -113,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
   return context;
 };

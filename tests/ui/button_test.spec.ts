@@ -4,20 +4,20 @@ import { test, expect } from '@playwright/test';
 test.describe('Platform UI Buttons', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('https://academiamoviment.vercel.app/');
-    // Wait for main dashboard to load
+    // Aguarde o carregamento do dashboard principal
     await page.waitForLoadState('networkidle');
   });
 
   test('Theme toggle switches dark/light mode', async ({ page }) => {
-    // Ensure initial theme (light) - body should have light bg
+    // Garantir tema inicial (claro) - body deve ter bg claro
     const html = page.locator('html');
     await expect(html).not.toHaveClass(/dark/);
     // Click theme button
     const toggle = page.locator('button[aria-label*="escuro"], button[aria-label*="claro"]');
     await toggle.click();
-    // After click, dark class should be present
+    // Após o clique, a classe dark deve estar presente
     await expect(html).toHaveClass(/dark/);
-    // Click again to revert
+    // Clique novamente para reverter
     await toggle.click();
     await expect(html).not.toHaveClass(/dark/);
   });
@@ -35,7 +35,7 @@ test.describe('Platform UI Buttons', () => {
       ]);
       // Verify URL contains expected path
       await expect(page).toHaveURL(new RegExp(href));
-      // Go back to dashboard for next iteration
+      // Voltar ao dashboard para a próxima iteração
       await page.goto('https://academiamoviment.vercel.app/');
     }
   });

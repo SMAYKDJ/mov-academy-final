@@ -33,7 +33,7 @@ export function StripePayment({ amount, onSuccess, onCancel }: StripePaymentProp
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
+        // Certifique-se de mudar isso para sua página de conclusão de pagamento
         return_url: `${window.location.origin}/financeiro/pagamento/sucesso`,
       },
     });

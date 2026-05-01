@@ -41,7 +41,7 @@ def test_predict_churn_missing_field():
 
 def test_predict_churn_model_not_loaded(monkeypatch):
     with TestClient(app) as client:
-        # Simulate model not loaded AFTER startup
+        # Simular modelo não carregado APÓS a inicialização
         monkeypatch.setattr('backend.main.model', None)
         payload = {
             "nome": "Aluno Test",

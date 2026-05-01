@@ -14,20 +14,20 @@ METRICS_PATH = MODEL_DIR / 'metrics.json'
 
 def train():
     if not DATA_PATH.is_file():
-        raise FileNotFoundError(f'Dataset not found at {DATA_PATH}')
+        raise FileNotFoundError(f'Dataset não encontrado em {DATA_PATH}')
     df = pd.read_csv(DATA_PATH)
     X = df[["freq_mensal", "dias_atraso", "valor_mensal", "inadimplente"]]
     y = df["churn"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     model = RandomForestClassifier(n_estimators=200, random_state=42)
     model.fit(X_train, y_train)
-    # Metrics
+    # Métricas
     y_pred = model.predict(X_test)
     
     try:
         auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
     except ValueError:
-        auc = 0.0 # Occurs if only one class is present in y_test
+        auc = 0.0 # Ocorre se apenas uma classe estiver presente em y_test
     except IndexError:
         auc = 0.0
 
@@ -36,12 +36,12 @@ def train():
         "recall": recall_score(y_test, y_pred, zero_division=0),
         "roc_auc": auc
     }
-    # Ensure directory exists
+    # Garantir que o diretório existe
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(model, MODEL_PATH)
     with open(METRICS_PATH, "w") as f:
         json.dump(metrics, f, indent=2)
-    print(f"Model saved to {MODEL_PATH}\nMetrics saved to {METRICS_PATH}")
+    print(f"Modelo salvo em {MODEL_PATH}\nMétricas salvas em {METRICS_PATH}")
 
 if __name__ == "__main__":
     train()

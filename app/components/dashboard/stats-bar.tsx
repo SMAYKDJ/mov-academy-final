@@ -5,8 +5,8 @@ import { cn } from '@/utils/cn';
 import { Skeleton } from '@/components/ui/skeleton';
 
 /**
- * Stats bar showing quick summary data in a compact strip.
- * Useful for secondary metrics below the main KPIs.
+ * Barra de estatísticas mostrando dados de resumo rápidos em uma faixa compacta.
+ * Útil para métricas secundárias abaixo dos KPIs principais.
  */
 
 interface QuickStat {

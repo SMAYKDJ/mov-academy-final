@@ -55,7 +55,7 @@ export function BiometriaForm({ open, onClose }: BiometriaFormProps) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Primary Metrics */}
+          {/* Métricas Principais */}
           <div>
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3 flex items-center gap-2">
               <Scale className="w-3.5 h-3.5" /> Medidas Principais
@@ -83,7 +83,7 @@ export function BiometriaForm({ open, onClose }: BiometriaFormProps) {
                   />
                 </div>
               ))}
-              {/* IMC Auto-calculated */}
+              {/* IMC Calculado Automaticamente */}
               <div>
                 <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">
                   IMC (calculado)
@@ -96,7 +96,7 @@ export function BiometriaForm({ open, onClose }: BiometriaFormProps) {
             </div>
           </div>
 
-          {/* Circumferences */}
+          {/* Circunferências */}
           <div>
             <h3 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-3 flex items-center gap-2">
               <Ruler className="w-3.5 h-3.5" /> Circunferências (cm)

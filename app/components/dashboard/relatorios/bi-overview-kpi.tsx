@@ -15,7 +15,7 @@ export function BIOverviewKPI({ stats }: BIOverviewKPIProps) {
       label: 'Taxa de Churn',
       value: `${stats.churnRate}%`,
       sub: 'vs 2.8% mês ant.',
-      trend: 'down', // down is good for churn
+      trend: 'down', // cair é bom para o churn
       icon: Users2,
       color: 'text-emerald-600 dark:text-green-400',
       bg: 'bg-emerald-50 dark:bg-green-900/20',

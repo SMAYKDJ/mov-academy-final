@@ -1,7 +1,7 @@
 import type { Workout, StudentStats } from '@/types/treino';
 
 /**
- * Realistic mock data for a student's mobile experience.
+ * Dados simulados realistas para a experiência mobile de um aluno.
  */
 
 export const studentStats: StudentStats = {

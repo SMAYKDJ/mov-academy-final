@@ -11,8 +11,8 @@ interface FrequencyHeatmapProps {
 const dias = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
 
 /**
- * Heatmap showing gym usage frequency by hour and day of week.
- * Colored cells indicate density.
+ * Mapa de calor mostrando a frequência de uso da academia por hora e dia da semana.
+ * Células coloridas indicam densidade.
  */
 export function FrequencyHeatmap({ data }: FrequencyHeatmapProps) {
   const getIntensityClass = (value: number) => {

@@ -9,7 +9,7 @@ import { Header } from '@/components/layout/header';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-// Load Stripe outside of component to avoid recreating it
+// Carregar o Stripe fora do componente para evitar recriá-lo
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export default function PagamentoStripePage() {
@@ -18,11 +18,11 @@ export default function PagamentoStripePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Simulation of a plan selection (could come from query params)
+  // Simulação de uma seleção de plano (poderia vir de query params)
   const amount = 14990; // R$ 149,90
 
   useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
+    // Criar o PaymentIntent assim que a página carregar
     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/payments/create-intent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

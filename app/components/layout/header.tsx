@@ -77,7 +77,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   const unreadCount = notifications.filter(n => !n.lida).length;
 
-  // ⌘K shortcut to focus search
+  // Atalho ⌘K para focar na busca
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -93,7 +93,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     return () => document.removeEventListener('keydown', handler);
   }, [searchFocused]);
 
-  // Close notification dropdown on click outside
+  // Fechar o dropdown de notificações ao clicar fora
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -121,7 +121,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     setSearchQuery('');
   };
 
-  // User display info
+  // Informações de exibição do usuário
   const displayName = user?.nome || 'Usuário';
   const displayRole = roleLabel[user?.role || ''] || user?.role || 'Gestor';
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
@@ -136,7 +136,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       role="banner"
     >
       <div className="h-full px-4 md:px-8 flex items-center justify-between gap-4">
-        {/* Left: Mobile menu + dynamic page title */}
+        {/* Esquerda: Menu mobile + título dinâmico da página */}
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuClick}
@@ -151,7 +151,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           </div>
         </div>
 
-        {/* Center: Functional search bar */}
+        {/* Centro: Barra de busca funcional */}
         <div className="flex-1 max-w-md mx-2 md:mx-6">
           <form onSubmit={handleSearch} className="relative group">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 group-focus-within:text-primary-500 transition-colors" />
@@ -190,9 +190,9 @@ export function Header({ onMenuClick }: HeaderProps) {
           </form>
         </div>
 
-        {/* Right: Actions */}
+        {/* Direita: Ações */}
         <div className="flex items-center gap-1.5 md:gap-2">
-          {/* AI Insight button */}
+          {/* Botão de Insights de IA */}
           <button
             onClick={() => showToast('Analisando padrões de treino e churn...', 'info', 'IA Insights')}
             className="hidden sm:flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary-500 to-indigo-600 text-white rounded-xl text-xs font-bold hover:shadow-lg hover:shadow-primary-200 dark:hover:shadow-none transition-all"
@@ -204,7 +204,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
           <ThemeToggle />
 
-          {/* Notifications Bell + Dropdown */}
+          {/* Sino de Notificações + Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setNotifOpen(!notifOpen)}
@@ -222,7 +222,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             {/* Dropdown */}
             {notifOpen && (
               <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white dark:bg-[#0f1117] border border-gray-100 dark:border-[#1e2235] rounded-2xl shadow-2xl overflow-hidden z-50 animate-scale-in">
-                {/* Dropdown Header */}
+                {/* Cabeçalho do Dropdown */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-[#1e2235]">
                   <div>
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white">Notificações</h3>
@@ -238,7 +238,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                   )}
                 </div>
 
-                {/* Notification Items */}
+                {/* Itens de Notificação */}
                 <div className="max-h-72 overflow-y-auto">
                   {notifications.map(notif => {
                     const Icon = notifIconMap[notif.tipo];
@@ -270,7 +270,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                   })}
                 </div>
 
-                {/* Dropdown Footer — now navigates */}
+                {/* Rodapé do Dropdown — agora navega */}
                 <div className="px-4 py-2.5 border-t border-gray-100 dark:border-[#1e2235] text-center">
                   <button
                     onClick={() => {
@@ -286,10 +286,10 @@ export function Header({ onMenuClick }: HeaderProps) {
             )}
           </div>
 
-          {/* Divider */}
+          {/* Divisor */}
           <div className="h-8 w-px bg-gray-100 dark:bg-[#1e2235] mx-1 hidden sm:block" aria-hidden="true" />
 
-          {/* User avatar — clickable, goes to /configuracoes */}
+          {/* Avatar do usuário — clicável, vai para /configuracoes */}
           <Link
             href="/configuracoes"
             className="flex items-center gap-3 pl-2 pr-1 py-1 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-all focus-visible:ring-2 focus-visible:ring-primary-500"

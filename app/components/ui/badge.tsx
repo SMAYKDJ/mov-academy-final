@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/utils/cn';
 
 /**
- * Reusable Badge component for status indicators and labels.
+ * Componente de Badge reutilizável para indicadores de status e rótulos.
  */
 
 const variants = {

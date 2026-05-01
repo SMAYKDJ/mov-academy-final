@@ -6,8 +6,8 @@ import type { KPIStat } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 /**
- * Icon mapping for KPI cards.
- * Maps string keys from data to Lucide icon components.
+ * Mapeamento de ícones para os cartões de KPI.
+ * Mapeia chaves de string dos dados para componentes de ícones Lucide.
  */
 const iconMap = {
   Users,
@@ -17,8 +17,8 @@ const iconMap = {
 };
 
 /**
- * Color configuration for each KPI type — 
- * uses semantic colors instead of mixing red/green arbitrarily.
+ * Configuração de cores para cada tipo de KPI — 
+ * usa cores semânticas em vez de misturar vermelho/verde arbitrariamente.
  */
 const colorConfig: Record<string, {
   iconBg: string;
@@ -50,7 +50,7 @@ const colorConfig: Record<string, {
 function KPICard({ label, value, change, trend, icon, description }: KPIStat) {
   const Icon = iconMap[icon];
   const isChurn = label.includes('Churn');
-  // For churn, down is good. For everything else, up is good.
+  // Para o churn, cair é bom. Para tudo o mais, subir é bom.
   const isPositive = isChurn ? trend === 'down' : trend === 'up';
   const colors = colorConfig[label] || colorConfig['Total Alunos'];
 
@@ -64,7 +64,7 @@ function KPICard({ label, value, change, trend, icon, description }: KPIStat) {
       role="region"
       aria-label={`${label}: ${value}`}
     >
-      {/* Background gradient decoration */}
+      {/* Decoração de gradiente de fundo */}
       <div className={cn(
         "absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl rounded-full -translate-y-1/2 translate-x-1/2 opacity-60 group-hover:opacity-100 transition-opacity",
         colors.gradient
@@ -99,7 +99,7 @@ function KPICard({ label, value, change, trend, icon, description }: KPIStat) {
 }
 
 /**
- * Skeleton loader for KPI cards — maintains layout during data fetch.
+ * Loader skeleton para cartões de KPI — mantém o layout durante a busca de dados.
  */
 export function KPICardsSkeleton() {
   return (
@@ -120,10 +120,10 @@ export function KPICardsSkeleton() {
 }
 
 /**
- * KPI Cards grid with responsive breakpoints:
- * - xl: 4 columns
- * - sm: 2 columns
- * - mobile: 1 column
+ * Grade de Cartões de KPI com breakpoints responsivos:
+ * - xl: 4 colunas
+ * - sm: 2 colunas
+ * - mobile: 1 coluna
  */
 export function KPICards({ stats }: { stats: KPIStat[] }) {
   return (

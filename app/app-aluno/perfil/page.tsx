@@ -30,7 +30,7 @@ export default function ProfilePage() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Configurações</h1>
       </section>
 
-      {/* User Card */}
+      {/* Cartão do Usuário */}
       <div className="flex flex-col items-center">
         <div className="relative group">
           <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-[32px] flex items-center justify-center text-white text-3xl font-black shadow-xl shadow-primary-200 dark:shadow-none overflow-hidden">
@@ -51,7 +51,7 @@ export default function ProfilePage() {
         <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">Membro desde Abr 2024</p>
       </div>
 
-      {/* Info List */}
+      {/* Lista de Informações */}
       <div className="space-y-4">
         <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">Dados Pessoais</h4>
         <div className="bg-white dark:bg-[#0f1117] rounded-3xl border border-gray-100 dark:border-[#1e2235] overflow-hidden">
@@ -85,7 +85,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Menu List */}
+      {/* Lista de Menu */}
       <div className="space-y-4">
         <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">Preferências</h4>
         <div className="bg-white dark:bg-[#0f1117] rounded-3xl border border-gray-100 dark:border-[#1e2235] overflow-hidden">
@@ -111,7 +111,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Logout */}
+      {/* Sair */}
       <button 
         onClick={handleLogout}
         className="w-full p-4 bg-red-50 dark:bg-red-900/10 rounded-2xl flex items-center justify-center gap-3 text-red-600 dark:text-red-400 font-bold active:scale-95 transition-all"
