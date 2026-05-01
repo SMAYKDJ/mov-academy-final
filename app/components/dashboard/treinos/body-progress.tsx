@@ -10,9 +10,6 @@ interface BodyProgressProps {
   onMuscleClick?: (muscle: MuscleData) => void;
 }
 
-/**
- * Label map for Portuguese display.
- */
 const labelMap: Record<MuscleGroup, string> = {
   peito: 'Peito',
   costas: 'Costas',
@@ -28,9 +25,6 @@ const labelMap: Record<MuscleGroup, string> = {
   trapezio: 'Trapézio',
 };
 
-/**
- * Returns a color based on muscle intensity (0-100).
- */
 const getIntensityColor = (value: number): string => {
   if (value >= 80) return '#ef4444';
   if (value >= 60) return '#f97316';
@@ -47,93 +41,119 @@ const getIntensityLabel = (value: number): string => {
   return 'Não treinado';
 };
 
-/**
- * Hotspot zones mapped to percentage positions on the body-muscles.png image.
- * Each zone is positioned relative to the full image as (left%, top%, width%, height%).
- * 
- * The image has two figures:
- *   FRONT VIEW (left ~0-48% of image)
- *   BACK VIEW  (right ~52-100% of image)
- */
 interface HotspotZone {
   grupo: MuscleGroup;
   label: string;
   view: 'front' | 'back';
-  // Coordenadas % relativas ao contêiner de imagem completo
-  left: number;
-  top: number;
-  width: number;
-  height: number;
+  d: string;
 }
 
+/**
+ * Refined Organic Muscle Paths
+ * ViewBox: 660 x 700
+ */
 const hotspotZones: HotspotZone[] = [
-  // ====== FRONT VIEW ======
-  // Trapézio (front — upper shoulders/neck)
-  { grupo: 'trapezio', label: 'Trapézio', view: 'front', left: 12, top: 12, width: 8, height: 8 },
-  { grupo: 'trapezio', label: 'Trapézio', view: 'front', left: 28, top: 12, width: 8, height: 8 },
+  // FRONT VIEW
+  {
+    grupo: 'trapezio',
+    label: 'Trapézio',
+    view: 'front',
+    d: 'M142,102 C150,90 180,90 188,102 L188,125 C180,115 150,115 142,125 Z M202,102 C210,90 240,90 248,102 L248,125 C240,115 210,115 202,125 Z',
+  },
+  {
+    grupo: 'ombros',
+    label: 'Ombros',
+    view: 'front',
+    d: 'M110,140 C100,160 100,190 115,200 L135,190 C145,170 145,150 135,135 Z M280,140 C290,160 290,190 275,200 L255,190 C245,170 245,150 255,135 Z',
+  },
+  {
+    grupo: 'peito',
+    label: 'Peito',
+    view: 'front',
+    d: 'M145,140 Q195,130 245,140 L245,210 Q195,230 145,210 Z',
+  },
+  {
+    grupo: 'biceps',
+    label: 'Bíceps',
+    view: 'front',
+    d: 'M95,205 Q85,245 100,285 L125,280 Q135,240 125,205 Z M295,205 Q305,245 290,285 L265,280 Q255,240 265,205 Z',
+  },
+  {
+    grupo: 'abdomen',
+    label: 'Abdômen',
+    view: 'front',
+    d: 'M158,225 C185,220 205,220 232,225 L232,340 C205,350 185,350 158,340 Z',
+  },
+  {
+    grupo: 'antebraco',
+    label: 'Antebraço',
+    view: 'front',
+    d: 'M80,300 Q70,350 85,400 L110,390 Q120,340 110,295 Z M310,300 Q320,350 305,400 L280,390 Q270,340 280,295 Z',
+  },
+  {
+    grupo: 'quadriceps',
+    label: 'Quadríceps',
+    view: 'front',
+    d: 'M148,365 C135,450 145,520 160,550 L190,540 C205,480 200,420 192,365 Z M242,365 C255,450 245,520 230,550 L200,540 C185,480 190,420 198,365 Z',
+  },
+  {
+    grupo: 'panturrilha',
+    label: 'Panturrilha',
+    view: 'front',
+    d: 'M155,570 Q145,620 160,670 L185,660 Q195,610 185,565 Z M235,570 Q245,620 230,670 L205,660 Q195,610 205,565 Z',
+  },
 
-  // Ombros (front deltoids)
-  { grupo: 'ombros', label: 'Ombros', view: 'front', left: 6, top: 18, width: 7, height: 10 },
-  { grupo: 'ombros', label: 'Ombros', view: 'front', left: 34, top: 18, width: 7, height: 10 },
-
-  // Peito
-  { grupo: 'peito', label: 'Peito', view: 'front', left: 13, top: 18, width: 22, height: 11 },
-
-  // Bíceps
-  { grupo: 'biceps', label: 'Bíceps', view: 'front', left: 3, top: 28, width: 7, height: 12 },
-  { grupo: 'biceps', label: 'Bíceps', view: 'front', left: 37, top: 28, width: 7, height: 12 },
-
-  // Abdômen
-  { grupo: 'abdomen', label: 'Abdômen', view: 'front', left: 15, top: 30, width: 18, height: 16 },
-
-  // Antebraço (front)
-  { grupo: 'antebraco', label: 'Antebraço', view: 'front', left: 1, top: 38, width: 6, height: 12 },
-  { grupo: 'antebraco', label: 'Antebraço', view: 'front', left: 40, top: 38, width: 6, height: 12 },
-
-  // Quadríceps
-  { grupo: 'quadriceps', label: 'Quadríceps', view: 'front', left: 10, top: 50, width: 12, height: 22 },
-  { grupo: 'quadriceps', label: 'Quadríceps', view: 'front', left: 26, top: 50, width: 12, height: 22 },
-
-  // Panturrilha (front — shins/calves)
-  { grupo: 'panturrilha', label: 'Panturrilha', view: 'front', left: 10, top: 74, width: 10, height: 16 },
-  { grupo: 'panturrilha', label: 'Panturrilha', view: 'front', left: 28, top: 74, width: 10, height: 16 },
-
-  // ====== BACK VIEW ======
-  // Trapézio (back — upper back/neck)
-  { grupo: 'trapezio', label: 'Trapézio', view: 'back', left: 60, top: 12, width: 8, height: 8 },
-  { grupo: 'trapezio', label: 'Trapézio', view: 'back', left: 76, top: 12, width: 8, height: 8 },
-
-  // Ombros (rear deltoids)
-  { grupo: 'ombros', label: 'Ombros', view: 'back', left: 54, top: 18, width: 7, height: 10 },
-  { grupo: 'ombros', label: 'Ombros', view: 'back', left: 83, top: 18, width: 7, height: 10 },
-
-  // Costas (upper + lower)
-  { grupo: 'costas', label: 'Costas', view: 'back', left: 61, top: 18, width: 22, height: 22 },
-
-  // Tríceps (back of arms)
-  { grupo: 'triceps', label: 'Tríceps', view: 'back', left: 52, top: 28, width: 7, height: 12 },
-  { grupo: 'triceps', label: 'Tríceps', view: 'back', left: 85, top: 28, width: 7, height: 12 },
-
-  // Antebraço (back)
-  { grupo: 'antebraco', label: 'Antebraço', view: 'back', left: 49, top: 38, width: 6, height: 12 },
-  { grupo: 'antebraco', label: 'Antebraço', view: 'back', left: 89, top: 38, width: 6, height: 12 },
-
-  // Glúteos
-  { grupo: 'gluteos', label: 'Glúteos', view: 'back', left: 61, top: 44, width: 22, height: 10 },
-
-  // Posterior (hamstrings)
-  { grupo: 'posterior', label: 'Posterior', view: 'back', left: 58, top: 54, width: 12, height: 18 },
-  { grupo: 'posterior', label: 'Posterior', view: 'back', left: 74, top: 54, width: 12, height: 18 },
-
-  // Panturrilha (back — calves)
-  { grupo: 'panturrilha', label: 'Panturrilha', view: 'back', left: 58, top: 74, width: 10, height: 16 },
-  { grupo: 'panturrilha', label: 'Panturrilha', view: 'back', left: 76, top: 74, width: 10, height: 16 },
+  // BACK VIEW
+  {
+    grupo: 'trapezio',
+    label: 'Trapézio',
+    view: 'back',
+    d: 'M442,102 C450,90 480,90 488,102 L488,125 C480,115 450,115 442,125 Z M502,102 C510,90 540,90 548,102 L548,125 C540,115 510,115 502,125 Z',
+  },
+  {
+    grupo: 'ombros',
+    label: 'Ombros',
+    view: 'back',
+    d: 'M410,140 C400,160 400,190 415,200 L435,190 C445,170 445,150 435,135 Z M580,140 C590,160 590,190 575,200 L555,190 C545,170 545,150 555,135 Z',
+  },
+  {
+    grupo: 'costas',
+    label: 'Costas',
+    view: 'back',
+    d: 'M445,140 Q495,120 545,140 L545,310 Q495,330 445,310 Z',
+  },
+  {
+    grupo: 'triceps',
+    label: 'Tríceps',
+    view: 'back',
+    d: 'M395,205 Q385,245 400,285 L425,280 Q435,240 425,205 Z M595,205 Q605,245 590,285 L565,280 Q555,240 565,205 Z',
+  },
+  {
+    grupo: 'gluteos',
+    label: 'Glúteos',
+    view: 'back',
+    d: 'M445,325 Q495,310 545,325 L545,410 Q495,430 445,410 Z',
+  },
+  {
+    grupo: 'posterior',
+    label: 'Posterior',
+    view: 'back',
+    d: 'M448,425 C435,490 445,540 460,560 L490,550 C505,500 500,450 492,425 Z M542,425 C555,490 545,540 530,560 L500,550 C485,500 490,450 498,425 Z',
+  },
+  {
+    grupo: 'panturrilha',
+    label: 'Panturrilha',
+    view: 'back',
+    d: 'M455,570 Q445,620 460,670 L485,660 Q495,610 485,565 Z M535,570 Q545,620 530,670 L505,660 Q495,610 505,565 Z',
+  },
+  {
+    grupo: 'antebraco',
+    label: 'Antebraço',
+    view: 'back',
+    d: 'M380,300 Q370,350 385,400 L410,390 Q420,340 410,295 Z M610,300 Q620,350 605,400 L580,390 Q570,340 580,295 Z',
+  },
 ];
 
-/**
- * BodyProgress — Interactive human body muscle heatmap using the anatomical illustration.
- * Overlay hotspots on top of the image provide hover tooltips and click-to-detail feedback.
- */
 export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
   const [hoveredMuscle, setHoveredMuscle] = useState<MuscleData | null>(null);
 
@@ -141,117 +161,107 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
     return muscleData.find(m => m.grupo === grupo);
   };
 
-  const handleMouseEnter = (zone: HotspotZone) => {
-    const data = getMuscleData(zone.grupo);
-    if (data) {
-      setHoveredMuscle(data);
-    }
-  };
-
   return (
-    <div className="bg-white dark:bg-[#0f1117] rounded-2xl border border-gray-100 dark:border-[#1e2235] p-6 relative">
-      <div className="flex flex-col xl:flex-row items-start gap-8">
-        {/* Imagem do Mapa Corporal com Pontos de Interesse */}
-        <div className="body-map-container relative flex-shrink-0 w-full xl:w-auto mx-auto" style={{ maxWidth: '660px' } as React.CSSProperties}>
+    <div className="bg-white dark:bg-[#0f1117] rounded-3xl border border-gray-100 dark:border-[#1e2235] p-4 sm:p-8 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all w-full">
+      <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
+        {/* Interactive SVG Body Map */}
+        <div className="relative w-full max-w-[500px] xl:max-w-[600px] shrink-0 group/map">
           {/* View Labels */}
-          <div className="flex justify-between px-12 mb-2">
-            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Frontal</span>
-            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Posterior</span>
+          <div className="flex justify-between px-8 mb-6">
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 dark:text-gray-500">Visão</span>
+              <span className="text-xs font-bold text-gray-900 dark:text-white">Frontal</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 dark:text-gray-500">Visão</span>
+              <span className="text-xs font-bold text-gray-900 dark:text-white">Posterior</span>
+            </div>
           </div>
 
-          {/* Image Container */}
-          <div className="relative">
+          <div className="relative aspect-[660/700] w-full">
             <Image
               src="/body-muscles.png"
-              alt="Mapa anatômico muscular — visão frontal e posterior"
-              width={660}
-              height={700}
-              className="w-full h-auto object-contain select-none pointer-events-none"
+              alt="Body Muscle Map"
+              fill
+              className="object-contain pointer-events-none drop-shadow-2xl opacity-90 group-hover/map:opacity-100 transition-opacity"
               priority
             />
 
-            {/* Hotspot overlays */}
-            {hotspotZones.map((zone, idx) => {
-              const data = getMuscleData(zone.grupo);
-              const intensity = data?.intensidade ?? 0;
-              const color = getIntensityColor(intensity);
-              const isHovered = hoveredMuscle?.grupo === zone.grupo;
-              const shouldGlow = intensity >= 20 && !isHovered;
+            {/* SVG Interaction Layer */}
+            <svg
+              viewBox="0 0 660 700"
+              className="absolute inset-0 w-full h-full drop-shadow-sm"
+              style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.05))' }}
+            >
+              {hotspotZones.map((zone, idx) => {
+                const data = getMuscleData(zone.grupo);
+                const intensity = data?.intensidade ?? 0;
+                const color = getIntensityColor(intensity);
+                const isHovered = hoveredMuscle?.grupo === zone.grupo;
+                const shouldGlow = intensity >= 20;
 
-              // Converter hex para rgba para efeitos de brilho
-              const hexToRgba = (hex: string, alpha: number) => {
-                const r = parseInt(hex.slice(1, 3), 16);
-                const g = parseInt(hex.slice(3, 5), 16);
-                const b = parseInt(hex.slice(5, 7), 16);
-                return `rgba(${r},${g},${b},${alpha})`;
-              };
-
-              return (
-                <button
-                  key={`${zone.grupo}-${zone.view}-${idx}`}
-                  className={cn(
-                    "absolute rounded-lg transition-all duration-300 cursor-pointer border-2",
-                    isHovered
-                      ? "border-white dark:border-white shadow-lg scale-105 z-10"
-                      : "border-transparent hover:border-white/60"
-                  )}
-                  style={{
-                    left: `${zone.left}%`,
-                    top: `${zone.top}%`,
-                    width: `${zone.width}%`,
-                    height: `${zone.height}%`,
-                    '--muscle-bg': isHovered ? `${color}40` : `${color}20`,
-                    background: 'var(--muscle-bg)',
-                    ...(shouldGlow ? {
-                      '--glow-dur': intensity >= 80 ? '1.2s' : intensity >= 60 ? '1.8s' : '2.5s',
-                      animation: 'muscle-glow var(--glow-dur) ease-in-out infinite',
-                      '--glow-color': hexToRgba(color, 0.4),
-                      '--glow-bg': hexToRgba(color, 0.12),
-                      '--glow-bg-peak': hexToRgba(color, 0.35),
-                    } : {}),
-                  } as React.CSSProperties}
-                  onMouseEnter={() => handleMouseEnter(zone)}
-                  onMouseLeave={() => setHoveredMuscle(null)}
-                  onClick={() => {
-                    if (data && onMuscleClick) onMuscleClick(data);
-                  }}
-                  aria-label={`${zone.label}: ${intensity}% intensidade`}
-                />
-              );
-            })}
-
+                return (
+                  <path
+                    key={`${zone.grupo}-${zone.view}-${idx}`}
+                    d={zone.d}
+                    className={cn(
+                      "transition-all duration-500 cursor-pointer pointer-events-auto outline-none",
+                      isHovered 
+                        ? "stroke-white stroke-[3px] drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]" 
+                        : "stroke-transparent"
+                    )}
+                    style={{
+                      fill: isHovered ? `${color}dd` : `${color}44`,
+                      ...(shouldGlow && !isHovered && {
+                        animation: `muscle-pulse ${intensity >= 80 ? '2s' : '4s'} ease-in-out infinite`,
+                        opacity: 0.7 + (intensity / 300)
+                      } as any),
+                    }}
+                    onMouseEnter={() => setHoveredMuscle(data || null)}
+                    onMouseLeave={() => setHoveredMuscle(null)}
+                    onClick={() => data && onMuscleClick?.(data)}
+                  />
+                );
+              })}
+            </svg>
           </div>
+          
+          {/* Subtle decoration */}
+          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent rounded-full opacity-50" />
         </div>
 
-        {/* Legend + Muscle List Panel */}
-        <div className="flex-1 w-full space-y-6 min-w-0">
-          <div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">Mapa de Condicionamento</h3>
-            <p className="text-xs text-gray-400 dark:text-gray-500">Passe o mouse sobre um grupo muscular para ver detalhes</p>
+        {/* Info Panel */}
+        <div className="flex-1 w-full flex flex-col gap-8 min-w-0">
+          <div className="text-center lg:text-left">
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+              Mapa Muscular
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-md mx-auto lg:mx-0">
+              Passe o mouse para analisar a densidade de treino e volume semanal por grupo muscular.
+            </p>
           </div>
 
-          {/* Color Legend */}
-          <div className="space-y-2">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Escala de Intensidade</p>
-            <div className="flex items-center gap-1">
+          {/* Intensity Legend */}
+          <div className="bg-gray-50 dark:bg-white/5 p-5 rounded-2xl border border-gray-100 dark:border-white/5">
+            <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 dark:text-gray-500 mb-4">Escala de Volume</p>
+            <div className="flex items-center gap-2">
               {[
-                { color: '#d1d5db', label: 'Nenhum' },
+                { color: '#d1d5db', label: 'Inativo' },
                 { color: '#3b82f6', label: 'Leve' },
-                { color: '#22c55e', label: 'Moderado' },
-                { color: '#f97316', label: 'Intenso' },
-                { color: '#ef4444', label: 'Sobrecarga' },
+                { color: '#22c55e', label: 'Meta' },
+                { color: '#f97316', label: 'Alta' },
+                { color: '#ef4444', label: 'Pico' },
               ].map(item => (
-                <div key={item.label} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full h-3 rounded-full" style={{ background: `var(--legend-c, ${item.color})` } as React.CSSProperties} />
-                  <span className="text-[9px] font-bold text-gray-400">{item.label}</span>
+                <div key={item.label} className="flex-1 flex flex-col items-center gap-2">
+                  <div className="w-full h-2.5 rounded-full shadow-inner" style={{ background: item.color }} />
+                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter">{item.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Muscle List */}
-          <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Grupos Musculares</p>
+          {/* Muscle List with improved design */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[450px] overflow-y-auto pr-3 custom-scrollbar">
             {muscleData
               .sort((a, b) => b.intensidade - a.intensidade)
               .map(muscle => (
@@ -261,31 +271,56 @@ export function BodyProgress({ muscleData, onMuscleClick }: BodyProgressProps) {
                   onMouseEnter={() => setHoveredMuscle(muscle)}
                   onMouseLeave={() => setHoveredMuscle(null)}
                   className={cn(
-                    "w-full flex items-center gap-3 p-3 rounded-xl transition-all group text-left",
+                    "flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 border text-left group",
                     hoveredMuscle?.grupo === muscle.grupo
-                      ? "bg-gray-100 dark:bg-[#1a1d27] shadow-sm"
-                      : "hover:bg-gray-50 dark:hover:bg-[#1a1d27]"
+                      ? "bg-white dark:bg-[#1a1d27] border-primary-500 shadow-xl shadow-primary-500/10 -translate-y-1 scale-[1.02]"
+                      : "bg-white dark:bg-[#0f1117] border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10"
                   )}
                 >
                   <div
-                    className="w-4 h-4 rounded-full shrink-0 ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0f1117]"
-                    style={{ background: `var(--muscle-c, ${getIntensityColor(muscle.intensidade)})` } as React.CSSProperties}
+                    className="w-4 h-4 rounded-full shrink-0 ring-4 ring-offset-4 ring-white dark:ring-offset-[#0f1117] transition-transform duration-500 group-hover:scale-125"
+                    style={{ background: getIntensityColor(muscle.intensidade) }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{labelMap[muscle.grupo]}</p>
-                    <p className="text-[10px] text-gray-400">{muscle.ultimoTreino} · {muscle.volumeSemanal} séries/sem</p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white truncate uppercase tracking-tight">
+                      {labelMap[muscle.grupo]}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[10px] font-bold text-gray-400">{muscle.volumeSemanal} sets</span>
+                      <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                      <span className="text-[10px] font-bold text-gray-400 truncate">{muscle.ultimoTreino}</span>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: `var(--muscle-c, ${getIntensityColor(muscle.intensidade)})` } as React.CSSProperties}>
+                    <p className="text-lg font-black leading-none" style={{ color: getIntensityColor(muscle.intensidade) }}>
                       {muscle.intensidade}%
                     </p>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase">{getIntensityLabel(muscle.intensidade)}</p>
                   </div>
                 </button>
               ))}
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes muscle-pulse {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(156, 163, 175, 0.1);
+          border-radius: 10px;
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+          background: rgba(156, 163, 175, 0.3);
+        }
+      `}</style>
     </div>
   );
 }

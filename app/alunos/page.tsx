@@ -237,28 +237,28 @@ export default function AlunosPage() {
       )}>
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <main className="px-4 md:px-8 py-8 w-full space-y-6">
+        <main className="px-4 md:px-8 py-8 w-full max-w-full overflow-x-hidden space-y-6">
           {/* Cabeçalho da Página */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 animate-fade-in">
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                 Gestão de Alunos
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
                 Gerencie cadastros, planos e acompanhe o engajamento dos alunos
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="grid grid-cols-2 sm:flex items-center gap-3 w-full sm:w-auto">
               <button 
                 onClick={() => exportToCSV(alunos, 'alunos-moviment-academy')}
-                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-xs font-black text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <Download className="w-4 h-4" />
                 Exportar
               </button>
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-xs font-black text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <Upload className="w-4 h-4" />
                 Importar
@@ -272,7 +272,7 @@ export default function AlunosPage() {
               />
               <button
                 onClick={handleNewAluno}
-                className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                className="col-span-2 sm:flex-none px-6 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-black hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/20 dark:shadow-none flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Novo Aluno
@@ -281,24 +281,30 @@ export default function AlunosPage() {
           </div>
 
           {/* KPIs */}
-          <AlunosKPI alunos={alunos} loading={!isLoaded} />
+          <div className="w-full overflow-hidden">
+            <AlunosKPI alunos={alunos} loading={!isLoaded} />
+          </div>
 
           {/* Filtros */}
-          <AlunosFilters
-            filters={filters}
-            onChange={setFilters}
-            resultCount={filtered.length}
-          />
+          <div className="w-full">
+            <AlunosFilters
+              filters={filters}
+              onChange={setFilters}
+              resultCount={filtered.length}
+            />
+          </div>
 
           {/* Tabela */}
-          <AlunosTable
-            data={filtered}
-            loading={!isLoaded || loading}
-            onView={handleView}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            expandedLayout={isSidebarCollapsed}
-          />
+          <div className="w-full overflow-hidden">
+            <AlunosTable
+              data={filtered}
+              loading={!isLoaded || loading}
+              onView={handleView}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              expandedLayout={isSidebarCollapsed}
+            />
+          </div>
         </main>
       </div>
 

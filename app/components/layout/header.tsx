@@ -151,8 +151,8 @@ export function Header({ onMenuClick }: HeaderProps) {
           </div>
         </div>
 
-        {/* Centro: Barra de busca funcional */}
-        <div className="flex-1 max-w-md mx-2 md:mx-6">
+        {/* Centro: Barra de busca funcional — Escondida em telas muito pequenas para dar espaço ao título */}
+        <div className="flex-1 max-w-md mx-2 md:mx-6 hidden xs:block">
           <form onSubmit={handleSearch} className="relative group">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 group-focus-within:text-primary-500 transition-colors" />
             <input
@@ -163,7 +163,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               onChange={e => setSearchQuery(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
-              placeholder="Buscar alunos, relatórios... (⌘K)"
+              placeholder="Buscar..."
               className={cn(
                 "w-full pl-10 pr-10 py-2.5 rounded-xl text-sm outline-none transition-all duration-200",
                 "bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235]",

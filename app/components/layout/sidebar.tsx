@@ -238,7 +238,7 @@ export function Sidebar({ mobileOpen, onMobileClose, onCollapse }: SidebarProps)
             aria-hidden="true"
           />
           {/* Painel do drawer */}
-          <div className="relative z-10 h-full w-fit animate-slide-in-right">
+          <div className="relative z-10 h-full w-fit animate-slide-up sm:animate-none">
             {sidebarContent}
           </div>
         </div>

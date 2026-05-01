@@ -119,11 +119,6 @@ export function EventDrawer({ event, open, onClose, onSave, mode }: EventDrawerP
             </div>
             <div>
               <label htmlFor="event-student" className="block text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-1.5">Aluno / Turma</label>
-              <input 
-                id="event-student"
-                type="text" 
-                value={form.alunoNome} 
-                onChange={e => setForm(p => ({...p, alunoNome: e.target.value}))} 
               <div className="relative">
                 <input
                   id="event-student"

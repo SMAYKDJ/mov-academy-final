@@ -49,7 +49,7 @@ export default function ConfiguracoesPage() {
       <div className="flex-1 md:ml-64 transition-all duration-300">
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+        <main className="px-4 md:px-8 py-8 max-w-7xl mx-auto w-full overflow-x-hidden">
           {!user ? (
             <div className="flex items-center justify-center h-[50vh]">
               <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
@@ -83,19 +83,19 @@ export default function ConfiguracoesPage() {
                 {/* Settings Internal Sidebar */}
                 <div className="lg:w-64 shrink-0">
                   {/* Mobile: horizontal scroll tabs */}
-                  <div className="flex lg:hidden gap-2 overflow-x-auto pb-2 scroll-hide">
+                  <div className="flex lg:hidden gap-2 overflow-x-auto pb-4 scroll-hide -mx-4 px-4">
                     {tabs.map(tab => (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={cn(
-                          "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all",
+                          "flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-black whitespace-nowrap transition-all border",
                           activeTab === tab.id
-                            ? "bg-primary-600 text-white shadow-lg shadow-primary-200 dark:shadow-none"
-                            : "bg-white dark:bg-[#0f1117] text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-[#1e2235]"
+                            ? "bg-primary-600 text-white border-primary-600 shadow-lg shadow-primary-500/20"
+                            : "bg-white dark:bg-[#0f1117] text-gray-500 dark:text-gray-400 border-gray-100 dark:border-[#1e2235] hover:border-gray-200"
                         )}
                       >
-                        <tab.icon className="w-4 h-4" />
+                        <tab.icon className={cn("w-4 h-4", activeTab === tab.id ? "text-white" : "text-gray-400")} />
                         {tab.label}
                       </button>
                     ))}

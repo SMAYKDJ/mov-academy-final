@@ -192,9 +192,9 @@ export default function DashboardPage() {
         onCollapse={setIsSidebarCollapsed}
       />
 
-      {/* Área de Conteúdo Principal — deslocada para a direita pela largura da barra lateral no desktop */}
+      {/* Área de Conteúdo Principal — Garante que não ultrapasse a largura da tela no mobile */}
       <div className={cn(
-        "flex-1 transition-all duration-300",
+        "flex-1 w-full min-w-0 transition-all duration-300",
         isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
       )}>
         {/* Cabeçalho */}
@@ -203,28 +203,28 @@ export default function DashboardPage() {
         {/* Conteúdo da Página */}
         <main className="px-4 md:px-8 py-8 w-full space-y-8">
           {/* Seção de Boas-vindas */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
-            <div>
-              <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mb-1">Bem-vindo de volta,</p>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 animate-fade-in">
+            <div className="space-y-1">
+              <p className="text-xs sm:text-sm font-medium text-primary-600 dark:text-primary-400">Bem-vindo de volta,</p>
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                 {user?.nome ? user.nome.split(' ')[0] : 'Gestor'} 👋
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
                 Aqui está o resumo da sua academia hoje{formattedDate ? ' — ' : ''}
                 {formattedDate && <span className="font-medium text-gray-700 dark:text-gray-300">{formattedDate}</span>}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <button 
                 onClick={() => showToast('Seletor de período aberto', 'info', 'Filtro de Calendário')}
-                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500"
+                className="flex-1 sm:flex-none px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 shadow-sm"
               >
                 <CalendarIcon className="w-4 h-4" />
-                Últimos 30 dias
+                <span className="hidden xs:inline">Últimos</span> 30 dias
               </button>
               <button
                 onClick={handleNewStudent}
-                className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                className="flex-1 sm:flex-none px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-black hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/20 dark:shadow-none flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
               >
                 <Plus className="w-4 h-4" />
                 Novo Aluno
@@ -302,10 +302,10 @@ export default function DashboardPage() {
             )}
           </section>
 
-          {/* Grade de Conteúdo Principal */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Coluna Esquerda — Tabela (ocupa 2 colunas) */}
-            <div className="lg:col-span-2 space-y-8">
+          {/* Grade de Conteúdo Principal — Força 1 coluna no mobile/tablet e 3 colunas no desktop */}
+          <div className="flex flex-col xl:flex-row gap-8 w-full max-w-full">
+            {/* Coluna Esquerda — Tabela (ocupa a maior parte no desktop) */}
+            <div className="flex-1 min-w-0 space-y-8 overflow-hidden">
               <DataTable 
                 data={filteredAlunos.map(a => ({
                   id: String(a.id),
@@ -322,8 +322,8 @@ export default function DashboardPage() {
               />
             </div>
 
-            {/* Coluna Direita — Gráficos e Atividades */}
-            <div className="space-y-6">
+            {/* Coluna Direita — Gráficos e Atividades (ocupa o lado no desktop, vai para baixo no mobile) */}
+            <div className="w-full xl:w-80 2xl:w-96 shrink-0 space-y-6 overflow-hidden">
               <ReportUpload onUploadSuccess={() => window.location.reload()} />
               <WeeklyChart data={dynamicWeeklyChart} />
               <RetentionInsightCard />

@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { UserPlus, MoreVertical, ShieldCheck, ShieldAlert, Clock } from 'lucide-react';
+import { UserPlus, MoreVertical, ShieldCheck, ShieldAlert, Clock, Key } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useToast } from '@/components/ui/toast';
+import { ResetPasswordModal } from './reset-password-modal';
 import type { SystemUser, UserRole } from '@/types/configuracoes';
 
 interface UserManagementProps { users: SystemUser[]; }
@@ -20,6 +21,7 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
   const { showToast } = useToast();
   const [users, setUsers] = useState(initialUsers);
   const [showForm, setShowForm] = useState(false);
+  const [resetModalUser, setResetModalUser] = useState<SystemUser | null>(null);
   const [newUser, setNewUser] = useState({ nome: '', email: '', role: 'professor' as UserRole });
 
   const addUser = () => {
@@ -104,6 +106,16 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
                 <span className="hidden md:flex items-center gap-1 text-[10px] text-gray-400">
                   <Clock className="w-3 h-3" /> {user.ultimoAcesso}
                 </span>
+                
+                {/* Botão de Reset de Senha */}
+                <button
+                  onClick={() => setResetModalUser(user)}
+                  className="p-2 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  title="Redefinir senha do usuário"
+                >
+                  <Key className="w-4 h-4" />
+                </button>
+
                 <button 
                   onClick={() => toggleUser(user.id)} 
                   title={user.ativo ? "Desativar usuário" : "Ativar usuário"}
@@ -120,6 +132,12 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
           );
         })}
       </div>
+
+      <ResetPasswordModal 
+        isOpen={!!resetModalUser}
+        onClose={() => setResetModalUser(null)}
+        user={resetModalUser ? { id: resetModalUser.id, nome: resetModalUser.nome, email: resetModalUser.email } : null}
+      />
     </div>
   );
 }
