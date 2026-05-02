@@ -188,6 +188,68 @@ class PaymentIntentInput(BaseModel):
     metadata: Optional[dict] = Field(None, description="Metadados adicionais")
 
 
+# --- Modelos ERP ---
+
+class CashOpenInput(BaseModel):
+    user_id: str
+    opening_balance: float = Field(..., ge=0)
+    notes: Optional[str] = None
+
+class CashTransactionInput(BaseModel):
+    session_id: str
+    type: str = Field(..., pattern="^(entrada|saida|sangria|reforco)$")
+    amount: float = Field(..., gt=0)
+    description: str
+    payment_method: str = Field("dinheiro", pattern="^(dinheiro|cartao|pix)$")
+
+class CashCloseInput(BaseModel):
+    session_id: str
+    closing_balance: float = Field(..., ge=0)
+    notes: Optional[str] = None
+
+class AuditSearchInput(BaseModel):
+    user_id: Optional[str] = None
+    action: Optional[str] = None
+    table_name: Optional[str] = None
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+
+
+class SupplierInput(BaseModel):
+    name: str
+    cnpj: Optional[str] = None
+    contact: Optional[str] = None
+    email: Optional[str] = None
+    category: Optional[str] = None
+
+class ProductInput(BaseModel):
+    name: str
+    sku: Optional[str] = None
+    category: Optional[str] = None
+    min_stock: int = 0
+    unit_price: float = 0.0
+    supplier_id: Optional[str] = None
+
+class StockMovementInput(BaseModel):
+    product_id: str
+    type: str = Field(..., pattern="^(entrada|saida|ajuste)$")
+    quantity: int = Field(..., gt=0)
+    reason: Optional[str] = None
+
+
+class PurchaseOrderInput(BaseModel):
+    supplier_id: str
+    items: list[dict] # list of {product_id, quantity, price}
+    total_amount: float
+    notes: Optional[str] = None
+
+class InvoiceInput(BaseModel):
+    order_id: Optional[str] = None
+    invoice_number: str
+    supplier_id: str
+    items: list[dict]
+
+
 
 # --- Funções Auxiliares ---
 def classify_risk(probability: float) -> str:
@@ -608,5 +670,194 @@ async def create_payment_intent(payment_data: PaymentIntentInput):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+# --- Endpoints de Gestão de Caixa (ERP) ---
+
+@app.post("/cash/open")
+async def open_cash_session(data: CashOpenInput):
+    """Inicia uma nova sessão de caixa diária."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    try:
+        # Verificar se já existe um caixa aberto para este usuário
+        active = supabase_client.table("cash_sessions").select("*").eq("user_id", data.user_id).eq("status", "aberto").execute()
+        if active.data:
+            return {"status": "error", "message": "Já existe um caixa aberto para este usuário.", "session": active.data[0]}
+
+        res = supabase_client.table("cash_sessions").insert({
+            "user_id": data.user_id,
+            "opening_balance": data.opening_balance,
+            "notes": data.notes,
+            "status": "aberto"
+        }).execute()
+        
+        # Log de Auditoria
+        await create_audit_log(data.user_id, "OPEN_CASH", "cash_sessions", res.data[0]["id"], None, res.data[0])
+        
+        return {"status": "success", "session": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/cash/transaction")
+async def add_cash_transaction(data: CashTransactionInput):
+    """Registra uma entrada, saída ou sangria no caixa ativo."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    try:
+        res = supabase_client.table("cash_transactions").insert({
+            "session_id": data.session_id,
+            "type": data.type,
+            "amount": data.amount,
+            "description": data.description,
+            "payment_method": data.payment_method
+        }).execute()
+        
+        return {"status": "success", "transaction": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/cash/close")
+async def close_cash_session(data: CashCloseInput):
+    """Fecha a sessão de caixa ativa e calcula o balanço final."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    try:
+        res = supabase_client.table("cash_sessions").update({
+            "closing_time": datetime.now().isoformat(),
+            "closing_balance": data.closing_balance,
+            "status": "fechado",
+            "notes": data.notes
+        }).eq("id", data.session_id).execute()
+        
+        return {"status": "success", "session": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- Endpoints de Auditoria ---
+
+async def create_audit_log(user_id: str, action: str, table_name: str, record_id: str, old_data: Optional[dict], new_data: Optional[dict]):
+    """Função interna para registrar logs no Supabase."""
+    if not supabase_client: return
+    try:
+        supabase_client.table("audit_logs").insert({
+            "user_id": user_id,
+            "action": action,
+            "table_name": table_name,
+            "record_id": str(record_id),
+            "old_data": old_data,
+            "new_data": new_data
+        }).execute()
+    except Exception as e:
+        print(f"⚠️ Erro ao gravar log: {e}")
+
+@app.post("/audit/search")
+async def search_audit_logs(filters: AuditSearchInput):
+    """Busca detalhada nos logs de auditoria."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    query = supabase_client.table("audit_logs").select("*").order("created_at", desc=True)
+    
+    if filters.user_id: query = query.eq("user_id", filters.user_id)
+    if filters.action: query = query.eq("action", filters.action)
+    if filters.table_name: query = query.eq("table_name", filters.table_name)
+    
+    res = query.limit(100).execute()
+    return res.data
+
+
+# --- Endpoints de Estoque & Suprimentos ---
+
+@app.get("/inventory/products")
+async def list_products():
+    """Lista todos os produtos no estoque."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    res = supabase_client.table("products").select("*, suppliers(name)").execute()
+    return res.data
+
+@app.post("/inventory/products")
+async def create_product(data: ProductInput):
+    """Cadastra um novo produto ou material de manutenção/limpeza."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    try:
+        res = supabase_client.table("products").insert(data.dict()).execute()
+        return {"status": "success", "product": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/inventory/suppliers")
+async def list_suppliers():
+    """Lista fornecedores cadastrados."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    res = supabase_client.table("suppliers").select("*").execute()
+    return res.data
+
+@app.post("/inventory/movement")
+async def record_stock_movement(data: StockMovementInput):
+    """Registra entrada ou saída de itens no estoque."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    try:
+        # Registrar movimento
+        res = supabase_client.table("inventory_movements").insert(data.dict()).execute()
+        
+        # Atualizar saldo no produto
+        # Nota: Idealmente isso seria um trigger no banco, mas faremos aqui para clareza
+        prod = supabase_client.table("products").select("current_stock").eq("id", data.product_id).single().execute()
+        current = prod.data["current_stock"] if prod.data else 0
+        new_total = current + data.quantity if data.type == "entrada" else current - data.quantity
+        
+        supabase_client.table("products").update({"current_stock": new_total}).eq("id", data.product_id).execute()
+        
+        return {"status": "success", "new_total": new_total}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- Endpoints de Compras & Notas Fiscais ---
+
+@app.post("/purchases/order")
+async def create_purchase_order(data: PurchaseOrderInput):
+    """Cria uma nova ordem de compra para fornecedores."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    try:
+        res = supabase_client.table("purchase_orders").insert(data.dict()).execute()
+        return {"status": "success", "order": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/purchases/invoice")
+async def register_invoice(data: InvoiceInput):
+    """Registra uma nota fiscal e atualiza automaticamente o estoque."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    try:
+        # 1. Registrar a NF no sistema (tabela hipotética ou log)
+        print(f"📄 Registrando NF {data.invoice_number} do fornecedor {data.supplier_id}")
+        
+        # 2. Atualizar estoque para cada item da NF
+        for item in data.items:
+            movement = StockMovementInput(
+                product_id=item["product_id"],
+                type="entrada",
+                quantity=item["quantity"],
+                reason=f"NF {data.invoice_number}"
+            )
+            await record_stock_movement(movement)
+            
+        return {"status": "success", "message": f"Estoque atualizado via NF {data.invoice_number}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
