@@ -18,84 +18,99 @@ const iconMap = {
 
 export function ActivityHistory({ onClose }: ActivityHistoryProps) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
       {/* Fundo (Backdrop) */}
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" 
+        className="fixed inset-0 bg-[#080a0f]/80 backdrop-blur-md animate-fade-in" 
         onClick={onClose}
       />
       
-      {/* Modal */}
-      <div className="relative w-full max-w-2xl bg-white dark:bg-[#0f1117] rounded-3xl shadow-2xl border border-gray-100 dark:border-[#1e2235] overflow-hidden animate-scale-in">
-        {/* Cabeçalho */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-[#1e2235] flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Histórico de Atividades</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Log detalhado de todas as ações recentes no sistema</p>
+      {/* Container do Modal para garantir centralização vertical em telas pequenas */}
+      <div className="relative w-full max-w-3xl my-auto animate-scale-in">
+        {/* Modal Content */}
+        <div className="relative flex flex-col w-full bg-white dark:bg-[#0f1117] rounded-[32px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-[#1e2235] overflow-hidden">
+          {/* Cabeçalho */}
+          <div className="px-8 py-6 border-b border-gray-100 dark:border-[#1e2235] flex items-center justify-between bg-white dark:bg-[#0f1117] sticky top-0 z-10">
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Histórico de Atividades</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Log detalhado de todas as ações recentes no sistema</p>
+            </div>
+            <button 
+              onClick={onClose}
+              className="p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all hover:rotate-90 duration-300"
+            >
+              <X className="w-6 h-6 text-gray-400" />
+            </button>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
- 
-        {/* Conteúdo */}
-        <div className="p-6 max-h-[60vh] overflow-y-auto">
-          <div className="space-y-4">
-            {recentActivity.map((item, idx) => {
-              const Icon = iconMap[item.type as keyof typeof iconMap] || Clock;
-              return (
-                <div 
-                  key={item.id} 
-                  className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-[#1a1d27] rounded-2xl hover:bg-white dark:hover:bg-[#1e2235] border border-transparent hover:border-gray-100 dark:hover:border-[#2d3348] transition-all group"
-                >
-                  <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm",
-                    item.type === 'payment' ? "bg-emerald-50 dark:bg-green-900/20 text-emerald-600" :
-                    item.type === 'checkin' ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600" :
-                    item.type === 'signup' ? "bg-warning-50 dark:bg-amber-900/20 text-warning-600" :
-                    "bg-amber-50 dark:bg-amber-900/20 text-amber-600"
-                  )}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                        {item.user} — {item.action}
-                      </h4>
-                      <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap ml-2">
-                        {item.time}
-                      </span>
+   
+          {/* Conteúdo */}
+          <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+            <div className="space-y-6">
+              {recentActivity.map((item, idx) => {
+                const Icon = iconMap[item.type as keyof typeof iconMap] || Clock;
+                return (
+                  <div 
+                    key={item.id} 
+                    className="flex items-start gap-5 p-5 bg-gray-50/50 dark:bg-[#1a1d27]/50 rounded-[24px] hover:bg-white dark:hover:bg-[#1e2235] border border-transparent hover:border-gray-200 dark:hover:border-primary-500/30 transition-all duration-300 group"
+                  >
+                    <div className={cn(
+                      "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-transform duration-500 group-hover:scale-110",
+                      item.type === 'payment' ? "bg-emerald-500 text-white shadow-emerald-500/20" :
+                      item.type === 'checkin' ? "bg-blue-500 text-white shadow-blue-500/20" :
+                      item.type === 'signup' ? "bg-amber-500 text-white shadow-amber-500/20" :
+                      "bg-primary-600 text-white shadow-primary-600/20"
+                    )}>
+                      <Icon className="w-6 h-6" />
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-                      Atividade registrada automaticamente pelo sistema Moviment Academy.
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[10px] font-bold px-2 py-0.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-md text-gray-500 uppercase tracking-wider">
-                        {item.type}
-                      </span>
-                      <ChevronRight className="w-3 h-3 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start gap-4">
+                        <h4 className="text-base font-bold text-gray-900 dark:text-white truncate">
+                          {item.user}
+                        </h4>
+                        <span className="text-xs font-black text-gray-400 dark:text-gray-500 whitespace-nowrap bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
+                          {item.time}
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold text-primary-600 dark:text-primary-400 mt-1">
+                        {item.action}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+                        Evento capturado pelo kernel do sistema e sincronizado com o banco de dados.
+                      </p>
+                      <div className="flex items-center gap-3 mt-4">
+                        <span className="text-[10px] font-black px-3 py-1 bg-gray-100 dark:bg-white/10 rounded-full text-gray-500 dark:text-gray-400 uppercase tracking-[0.1em]">
+                          {item.type}
+                        </span>
+                        <div className="h-1 w-1 bg-gray-300 dark:bg-gray-700 rounded-full" />
+                        <span className="text-[10px] font-bold text-gray-400">ID: {item.id}</span>
+                      </div>
                     </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300 dark:text-gray-700 group-hover:text-primary-500 transition-all group-hover:translate-x-1 self-center" />
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
-
-        {/* Rodapé */}
-        <div className="px-6 py-4 bg-gray-50 dark:bg-[#0f1117] border-t border-gray-100 dark:border-[#1e2235] flex justify-end">
-          <button 
-            onClick={onClose}
-            className="px-6 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200"
-          >
-            Fechar Histórico
-          </button>
+  
+          {/* Rodapé */}
+          <div className="px-8 py-6 bg-gray-50/50 dark:bg-[#1a1d27]/30 border-t border-gray-100 dark:border-[#1e2235] flex justify-between items-center">
+            <p className="text-xs text-gray-400 font-medium italic">Exibindo {recentActivity.length} atividades recentes</p>
+            <button 
+              onClick={onClose}
+              className="px-8 py-3 bg-gray-900 dark:bg-primary-600 text-white rounded-2xl text-sm font-black hover:scale-105 active:scale-95 transition-all shadow-xl shadow-gray-200 dark:shadow-primary-900/20"
+            >
+              Fechar Visualização
+            </button>
+          </div>
         </div>
       </div>
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.2); border-radius: 10px; }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); }
+      `}</style>
     </div>
   );
 }

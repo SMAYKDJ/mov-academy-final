@@ -79,120 +79,140 @@ export function ExplanationModal({ isOpen, onClose, student }: ExplanationModalP
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+      {/* Fundo (Backdrop) */}
       <div 
-        className="bg-white dark:bg-[#12141c] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-[#2e334d] animate-in zoom-in-95 duration-300"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Cabeçalho */}
-        <div className="p-6 border-b border-gray-100 dark:border-[#2e334d] flex items-center justify-between bg-gradient-to-r from-primary-50/50 to-transparent dark:from-primary-900/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-200 dark:shadow-none">
-              <Brain className="text-white w-6 h-6" />
+        className="fixed inset-0 bg-[#080a0f]/80 backdrop-blur-md animate-fade-in" 
+        onClick={onClose}
+      />
+      
+      {/* Container do Modal */}
+      <div className="relative w-full max-w-lg my-auto animate-scale-in">
+        <div className="relative flex flex-col w-full bg-white dark:bg-[#0f1117] rounded-[32px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-[#1e2235] overflow-hidden">
+          {/* Cabeçalho */}
+          <div className="px-8 py-6 border-b border-gray-100 dark:border-[#1e2235] flex items-center justify-between bg-white dark:bg-[#0f1117] sticky top-0 z-10">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+                <Brain className="text-white w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">Análise de Risco IA</h3>
+                <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-wider">{student?.name}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Análise de Risco IA</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{student?.name}</p>
-            </div>
+            <button 
+              onClick={onClose}
+              className="p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all hover:rotate-90 duration-300"
+            >
+              <X className="w-6 h-6 text-gray-400" />
+            </button>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-400"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
 
-        {/* Conteúdo */}
-        <div className="p-8">
-          {loading ? (
-            <div className="py-12 flex flex-col items-center gap-4">
-              <Loader2 className="w-10 h-10 text-primary-600 animate-spin" />
-              <p className="text-sm font-medium text-gray-500 animate-pulse">A IA está processando os dados...</p>
-            </div>
-          ) : error ? (
-            <div className="py-8 text-center space-y-4">
-              <div className="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center text-red-600 mx-auto">
-                <Info className="w-6 h-6" />
+          {/* Conteúdo */}
+          <div className="p-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+            {loading ? (
+              <div className="py-12 flex flex-col items-center gap-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary-500/20 rounded-full animate-ping" />
+                  <Loader2 className="w-12 h-12 text-primary-600 animate-spin relative z-10" />
+                </div>
+                <p className="text-sm font-black text-gray-500 animate-pulse uppercase tracking-widest">Processando Neuronios...</p>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{error}</p>
-              <button 
-                onClick={fetchExplanation}
-                className="text-xs font-bold text-primary-600 uppercase tracking-widest hover:underline"
-              >
-                Tentar novamente
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-[#1a1d27] rounded-2xl border border-gray-100 dark:border-[#2d3348]">
-                <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Risco Calculado:</span>
-                <span className={`text-xl font-black ${
-                  (student?.score || 0) > 70 ? 'text-red-500' : 
-                  (student?.score || 0) > 30 ? 'text-amber-500' : 'text-emerald-500'
-                }`}>
-                  {student?.score}%
-                </span>
+            ) : error ? (
+              <div className="py-8 text-center space-y-4">
+                <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center text-red-600 mx-auto">
+                  <Info className="w-8 h-8" />
+                </div>
+                <p className="text-sm font-bold text-gray-600 dark:text-gray-400">{error}</p>
+                <button 
+                  onClick={fetchExplanation}
+                  className="px-6 py-2 text-xs font-black text-primary-600 uppercase tracking-widest hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-xl transition-all"
+                >
+                  Tentar novamente
+                </button>
               </div>
+            ) : (
+              <div className="space-y-8">
+                <div className="flex items-center justify-between px-6 py-5 bg-gray-50/50 dark:bg-[#1a1d27]/50 rounded-3xl border border-gray-100 dark:border-[#2d3348] shadow-inner">
+                  <span className="text-sm font-black text-gray-400 uppercase tracking-widest">Risco de Churn</span>
+                  <div className="text-right">
+                    <span className={`text-3xl font-black ${(student?.score || 0) > 70 ? 'text-red-500' : (student?.score || 0) > 30 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                      {student?.score}%
+                    </span>
+                    <p className="text-[10px] font-bold text-gray-400 mt-1">NÍVEL DE ALERTA</p>
+                  </div>
+                </div>
 
-              <div className="space-y-4">
-                <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                  <TrendingUp className="w-3 h-3" />
-                  Influenciadores de Decisão
-                </h4>
-                
-                <div className="space-y-3">
-                  {impacts.map((item, idx) => (
-                    <div key={idx} className="space-y-1.5">
-                      <div className="flex justify-between items-end">
-                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 capitalize">
-                          {item.feature.replace(/_/g, ' ')}
-                        </span>
-                        <span className={`text-[10px] font-mono font-bold ${item.impact > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-                          {item.impact > 0 ? '+' : ''}{item.impact.toFixed(3)}
-                        </span>
+                <div className="space-y-6">
+                  <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <TrendingUp className="w-3.5 h-3.5 text-primary-500" />
+                    Influenciadores de Decisão
+                  </h4>
+                  
+                  <div className="space-y-5">
+                    {impacts.map((item, idx) => (
+                      <div key={idx} className="space-y-2 group">
+                        <div className="flex justify-between items-end">
+                          <span className="text-xs font-black text-gray-700 dark:text-gray-300 capitalize tracking-tight group-hover:text-primary-500 transition-colors">
+                            {item.feature.replace(/_/g, ' ')}
+                          </span>
+                          <span className={`text-[10px] font-black font-mono ${item.impact > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
+                            {item.impact > 0 ? 'CRÍTICO' : 'POSITIVO'} • {item.impact > 0 ? '+' : ''}{item.impact.toFixed(3)}
+                          </span>
+                        </div>
+                        <div className="h-2 bg-gray-100 dark:bg-gray-800/50 rounded-full overflow-hidden flex shadow-inner">
+                          <div 
+                            className={`h-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,0,0,0.1)] ${item.impact > 0 ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'}`}
+                            style={{ width: `${Math.min(Math.abs(item.impact) * 100, 100)}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden flex">
-                        <div 
-                          className={`h-full transition-all duration-1000 ${item.impact > 0 ? 'bg-red-500' : 'bg-emerald-500'}`}
-                          style={{ 
-                            width: `${Math.min(Math.abs(item.impact) * 100, 100)}%`,
-                            marginLeft: item.impact < 0 ? '0' : '0' 
-                          }}
-                        />
-                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-6 bg-primary-50 dark:bg-primary-900/10 rounded-3xl border border-primary-100/50 dark:border-primary-900/30 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <Brain className="w-24 h-24 text-primary-600" />
+                  </div>
+                  <div className="flex gap-4 relative z-10">
+                    <div className="p-2 bg-primary-600 rounded-lg h-fit">
+                      <Info className="w-4 h-4 text-white" />
                     </div>
-                  ))}
+                    <div>
+                      <p className="text-xs font-black text-primary-600 uppercase tracking-widest mb-1">Sugestão Estratégica IA</p>
+                      <p className="text-sm leading-relaxed text-primary-900/80 dark:text-primary-300 font-medium">
+                        {
+                          (student?.score || 0) > 70 
+                            ? "Este aluno apresenta comportamento crítico de evasão. Recomendamos contato imediato via WhatsApp oferecendo uma renovação ou desconto especial."
+                            : (student?.score || 0) > 30
+                            ? "Risco moderado detectado. Considere enviar um lembrete motivacional ou convite para uma nova modalidade."
+                            : "Comportamento estável. Mantenha o engajamento atual."
+                        }
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
+            )}
+          </div>
 
-              <div className="pt-4 p-4 bg-primary-50 dark:bg-primary-900/10 rounded-2xl border border-primary-100/50 dark:border-primary-900/30">
-                <div className="flex gap-3">
-                  <Info className="w-5 h-5 text-primary-600 shrink-0" />
-                  <p className="text-[11px] leading-relaxed text-primary-900 dark:text-primary-300">
-                    <strong>Sugestão da IA:</strong> {
-                      (student?.score || 0) > 70 
-                        ? "Este aluno apresenta comportamento crítico de evasão. Recomendamos contato imediato via WhatsApp oferecendo uma renovação ou desconto especial."
-                        : (student?.score || 0) > 30
-                        ? "Risco moderado detectado. Considere enviar um lembrete motivacional ou convite para uma nova modalidade."
-                        : "Comportamento estável. Mantenha o engajamento atual."
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="p-6 bg-gray-50/50 dark:bg-[#1a1d27]/50 border-t border-gray-100 dark:border-[#2e334d]">
-          <button 
-            onClick={onClose}
-            className="w-full py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-[#2d3348] text-gray-900 dark:text-white rounded-xl text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-          >
-            Fechar Análise
-          </button>
+          <div className="px-8 py-6 bg-gray-50/50 dark:bg-[#1a1d27]/30 border-t border-gray-100 dark:border-[#1e2235] flex justify-end">
+            <button 
+              onClick={onClose}
+              className="px-10 py-3 bg-gray-900 dark:bg-primary-600 text-white rounded-2xl text-sm font-black hover:scale-105 active:scale-95 transition-all shadow-xl shadow-gray-200 dark:shadow-primary-900/20"
+            >
+              Entendido
+            </button>
+          </div>
         </div>
       </div>
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.2); border-radius: 10px; }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); }
+      `}</style>
     </div>
   );
 }
