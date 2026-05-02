@@ -236,6 +236,22 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
             </button>
           )}
         </div>
+        
+        {txn.status !== 'cancelado' && (
+          <div className="px-6 pb-6">
+            <button 
+              onClick={() => {
+                if (confirm("Tem certeza que deseja cancelar este lançamento? O registro será mantido com status 'Cancelado' para fins de auditoria.")) {
+                  // Aqui dispararia o onCancel/onDelete passado por prop
+                  onClose();
+                }
+              }}
+              className="w-full py-3 border border-red-100 dark:border-red-900/20 text-red-500 rounded-xl text-xs font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-all"
+            >
+              Cancelar Lançamento (Não Excluir)
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -260,10 +260,11 @@ export function AlunosTable({ data, loading, onView, onEdit, onDelete, expandedL
                     </button>
                     <button
                       onClick={() => onDelete(aluno)}
+                      title="Inativar aluno"
                       className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 text-gray-400 hover:text-danger-600 dark:hover:text-red-400 transition-colors"
-                      aria-label={`Excluir ${aluno.nome}`}
+                      aria-label={`Inativar ${aluno.nome}`}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <UserX className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => openWhatsApp(aluno.telefone)}

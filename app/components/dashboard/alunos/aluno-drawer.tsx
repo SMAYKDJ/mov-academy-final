@@ -249,28 +249,12 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
               <Edit3 className="w-4 h-4" />
               Editar Aluno
             </button>
-            <button
-              onClick={() => {
-                if (confirm(`Deseja cancelar o plano de ${aluno.nome}? O status será alterado para Inativo.`)) {
-                  if (onStatusChange) {
-                    onStatusChange(aluno, 'inativo');
-                  }
-                  onClose();
-                }
-              }}
-              className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-[#2d3348] text-gray-600 dark:text-gray-400 rounded-xl text-sm font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
-            >
-              <UserX className="w-4 h-4" />
-              Cancelar Plano
-            </button>
-          </div>
-          
           <button
             onClick={() => onDelete(aluno)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-xl text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-all"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-amber-100 dark:border-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl text-sm font-bold hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all"
           >
-            <Trash2 className="w-4 h-4" />
-            Excluir Registro Permanente
+            <UserX className="w-4 h-4" />
+            Inativar Cadastro (Arquivar)
           </button>
         </div>
       </div>

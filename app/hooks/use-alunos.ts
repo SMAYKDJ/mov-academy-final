@@ -85,18 +85,22 @@ export function useAlunos() {
     }
   };
 
-  const deleteAluno = async (id: string | number) => {
+  const inactivateAluno = async (id: string | number) => {
     try {
-      const { error } = await supabase.from('profiles').delete().eq('id', id);
+      const { error } = await supabase
+        .from('profiles')
+        .update({ status: 'inativo' })
+        .eq('id', id);
+
       if (error) throw error;
-      showToast('Aluno removido permanentemente.', 'success');
+      showToast('O aluno foi inativado com sucesso. Dados preservados.', 'success');
       fetchAlunos();
       return true;
     } catch (err: any) {
-      showToast('Erro ao remover aluno.', 'error');
+      showToast('Erro ao inativar aluno.', 'error');
       return false;
     }
   };
 
-  return { alunos, loading, fetchAlunos, saveAluno, deleteAluno };
+  return { alunos, loading, fetchAlunos, saveAluno, inactivateAluno };
 }

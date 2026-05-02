@@ -26,7 +26,7 @@ export default function AlunosPage() {
   const searchParams = useSearchParams();
 
   // Estado dos dados reais via Hook
-  const { alunos, loading, saveAluno, deleteAluno, fetchAlunos } = useAlunos();
+  const { alunos, loading, saveAluno, inactivateAluno, fetchAlunos } = useAlunos();
 
   // Estado dos filtros
   const [filters, setFilters] = useState<AlunosFilterState>({
@@ -84,14 +84,14 @@ export default function AlunosPage() {
   }, []);
 
   const handleDelete = useCallback(async (aluno: Aluno) => {
-    if (confirm(`Tem certeza que deseja excluir permanentemente ${aluno.nome}? Esta ação não pode ser desfeita no banco de dados.`)) {
-      const success = await deleteAluno(aluno.id);
+    if (confirm(`Tem certeza que deseja inativar o cadastro de ${aluno.nome}? Todos os dados históricos serão preservados.`)) {
+      const success = await inactivateAluno(aluno.id);
       if (success) {
         setDrawerOpen(false);
         setSelectedAluno(null);
       }
     }
-  }, [deleteAluno]);
+  }, [inactivateAluno]);
 
   const handleStatusChange = useCallback(async (aluno: Aluno, status: AlunoStatus) => {
     const success = await saveAluno({ ...aluno, status } as any, aluno.id);

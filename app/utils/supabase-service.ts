@@ -27,10 +27,10 @@ export const SupabaseService = {
     return data;
   },
 
-  async deleteAluno(id: number) {
+  async inactivateAluno(id: number) {
     const { error } = await supabase
       .from('alunos')
-      .delete()
+      .update({ status: 'inativo' })
       .eq('id', id);
     
     if (error) throw error;
@@ -58,10 +58,10 @@ export const SupabaseService = {
     return data;
   },
 
-  async deleteTransacao(id: string) {
+  async cancelTransacao(id: string) {
     const { error } = await supabase
       .from('transacoes')
-      .delete()
+      .update({ status: 'cancelado' })
       .eq('id', id);
     
     if (error) throw error;
