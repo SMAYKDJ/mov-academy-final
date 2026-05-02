@@ -745,6 +745,24 @@ async def close_cash_session(data: CashCloseInput):
         raise HTTPException(status_code=503, detail="Supabase não configurado.")
     
     try:
+        # 1. Buscar dados da sessão e transações para o resumo
+        session_data = supabase_client.table("cash_sessions").select("*").eq("id", data.session_id).single().execute()
+        transactions = supabase_client.table("cash_transactions").select("*").eq("session_id", data.session_id).execute()
+        
+        # 2. Calcular totais por modalidade
+        totals = {"dinheiro": 0.0, "cartao": 0.0, "pix": 0.0}
+        for tx in transactions.data:
+            val = float(tx["amount"])
+            if tx["type"] == "entrada":
+                totals[tx["payment_method"]] += val
+            elif tx["type"] in ["saida", "sangria"]:
+                if tx["payment_method"] == "dinheiro":
+                    totals["dinheiro"] -= val
+
+        expected_cash = float(session_data.data["opening_balance"]) + totals["dinheiro"]
+        diff = data.closing_balance - expected_cash
+
+        # 3. Fechar Sessão
         res = supabase_client.table("cash_sessions").update({
             "closing_time": datetime.now().isoformat(),
             "closing_balance": data.closing_balance,
@@ -752,7 +770,19 @@ async def close_cash_session(data: CashCloseInput):
             "notes": data.notes
         }).eq("id", data.session_id).execute()
         
-        return {"status": "success", "session": res.data[0]}
+        return {
+            "status": "success", 
+            "session": res.data[0],
+            "report": {
+                "opening_balance": session_data.data["opening_balance"],
+                "closing_balance": data.closing_balance,
+                "expected_balance": expected_cash,
+                "difference": diff,
+                "totals_by_method": totals,
+                "operator_id": session_data.data["user_id"],
+                "closed_at": datetime.now().isoformat()
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

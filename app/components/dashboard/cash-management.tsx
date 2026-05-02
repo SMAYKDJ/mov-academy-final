@@ -21,6 +21,7 @@ export function CashManagement() {
   const [transactionAmount, setTransactionAmount] = useState('');
   const [transactionDesc, setTransactionDesc] = useState('');
   const [transactionType, setTransactionType] = useState<'entrada' | 'saida' | 'sangria'>('entrada');
+  const [report, setReport] = useState<any>(null);
   const { showToast } = useToast();
   const { user } = useAuth();
 
@@ -104,6 +105,36 @@ export function CashManagement() {
     }
   };
 
+  const handleCloseCash = async () => {
+    if (!session) return;
+    const balance = prompt("Informe o saldo final contado no caixa (R$):");
+    if (balance === null) return;
+
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/cash/close', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: session.id,
+          closing_balance: parseFloat(balance),
+          notes: "Fechamento realizado via Dashboard"
+        })
+      });
+      
+      const data = await response.json();
+      if (data.status === 'success') {
+        setReport(data.report);
+        setSession(null);
+        showToast("Caixa fechado com sucesso!", "success");
+      }
+    } catch (err) {
+      showToast("Erro ao fechar caixa.", "error");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleTransaction = async () => {
     if (!transactionAmount || !transactionDesc || !session) return;
     setActionLoading(true);
@@ -182,10 +213,14 @@ export function CashManagement() {
                     R$ {session.opening_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
+                  </p>
+                </div>
                 <button
-                  onClick={() => setSession(null)}
-                  className="w-full py-4 bg-white dark:bg-red-600/10 border border-red-200 dark:border-red-900/20 text-red-600 dark:text-red-400 rounded-2xl text-sm font-black hover:bg-red-50 dark:hover:bg-red-900/20 transition-all shadow-sm"
+                  onClick={handleCloseCash}
+                  disabled={actionLoading}
+                  className="w-full py-4 bg-white dark:bg-red-600/10 border border-red-200 dark:border-red-900/20 text-red-600 dark:text-red-400 rounded-2xl text-sm font-black hover:bg-red-50 dark:hover:bg-red-900/20 transition-all shadow-sm flex items-center justify-center gap-2"
                 >
+                  {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                   Fechar Caixa Agora
                 </button>
               </div>
@@ -362,6 +397,83 @@ export function CashManagement() {
             <span className="text-[10px] font-bold text-gray-300">Hoje</span>
           </div>
         </div>
+        {report && <CashReceipt report={report} operatorName={user?.nome || 'Operador'} />}
+      </div>
+    </div>
+  );
+}
+
+// Componente de Comprovante de Impressão
+function CashReceipt({ report, operatorName }: { report: any, operatorName: string }) {
+  if (!report) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 print:p-0 print:static print:bg-white animate-fade-in">
+      <div className="bg-white text-black p-8 rounded-[32px] w-full max-w-md shadow-2xl print:shadow-none print:w-full font-mono text-sm leading-tight border-4 border-dashed border-gray-200 print:border-none">
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-black uppercase tracking-tighter mb-1">MOVIMENT ACADEMY</h2>
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Comprovante de Fechamento</p>
+        </div>
+
+        <div className="space-y-4 border-y py-4 border-gray-100 mb-6">
+          <div className="flex justify-between">
+            <span className="font-bold">DATA/HORA:</span>
+            <span>{new Date(report.closed_at).toLocaleString('pt-BR')}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-bold">OPERADOR:</span>
+            <span className="uppercase">{operatorName}</span>
+          </div>
+        </div>
+
+        <div className="space-y-2 mb-6">
+          <h4 className="text-xs font-black uppercase tracking-widest border-b pb-1 mb-2">Resumo Financeiro</h4>
+          <div className="flex justify-between">
+            <span>Abertura:</span>
+            <span>R$ {report.opening_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>PIX:</span>
+            <span>R$ {report.totals_by_method.pix.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Cartão:</span>
+            <span>R$ {report.totals_by_method.cartao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+          </div>
+          <div className="flex justify-between font-bold border-t pt-2 mt-2">
+            <span>SALDO FINAL:</span>
+            <span>R$ {report.closing_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+          </div>
+          <div className="flex justify-between text-xs text-gray-500 italic">
+            <span>Diferença:</span>
+            <span className={cn(report.difference < 0 ? "text-red-500" : "text-emerald-500")}>
+              {report.difference >= 0 ? '+' : ''}R$ {report.difference.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex gap-3 print:hidden">
+          <button 
+            onClick={() => window.print()}
+            className="flex-1 py-4 bg-black text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all"
+          >
+            Imprimir Comprovante
+          </button>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all"
+          >
+            Fechar
+          </button>
+        </div>
+
+        <style jsx>{`
+          @media print {
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area { position: absolute; left: 0; top: 0; width: 100%; }
+          }
+        `}</style>
       </div>
     </div>
   );
