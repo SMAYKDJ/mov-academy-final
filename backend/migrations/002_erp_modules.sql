@@ -12,6 +12,17 @@ CREATE TABLE IF NOT EXISTS finance_categories (
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS finance_transactions (
+  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  category_id     UUID REFERENCES finance_categories(id),
+  type            TEXT NOT NULL CHECK (type IN ('receita', 'despesa', 'transferencia')),
+  amount          DECIMAL(12, 2) NOT NULL,
+  description     TEXT,
+  payment_method  TEXT,
+  transaction_date DATE DEFAULT CURRENT_DATE,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- 2. CONTROLE DE CAIXA (PDV)
 CREATE TABLE IF NOT EXISTS cash_sessions (
   id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,

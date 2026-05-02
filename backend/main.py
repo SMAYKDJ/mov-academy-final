@@ -207,6 +207,12 @@ class CashCloseInput(BaseModel):
     closing_balance: float = Field(..., ge=0)
     notes: Optional[str] = None
 
+class CashTransferInput(BaseModel):
+    session_id: str
+    amount: float = Field(..., gt=0)
+    destination: str = Field(..., pattern="^(financeiro|cofre|banco)$")
+    description: Optional[str] = None
+
 class AuditSearchInput(BaseModel):
     user_id: Optional[str] = None
     action: Optional[str] = None
@@ -747,6 +753,43 @@ async def close_cash_session(data: CashCloseInput):
         }).eq("id", data.session_id).execute()
         
         return {"status": "success", "session": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/cash/transfer")
+async def transfer_cash_to_finance(data: CashTransferInput):
+    """Transfere valor do caixa do dia para o caixa financeiro geral (Sangria Estruturada)."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    
+    try:
+        # 1. Registrar a Sangria no Caixa do Dia
+        sangria = supabase_client.table("cash_transactions").insert({
+            "session_id": data.session_id,
+            "type": "sangria",
+            "amount": data.amount,
+            "description": f"Transferência para {data.destination}: {data.description or 'Sem descrição'}",
+            "payment_method": "dinheiro"
+        }).execute()
+
+        # 2. Registrar a Entrada no Financeiro Geral
+        finance = supabase_client.table("finance_transactions").insert({
+            "type": "receita",
+            "amount": data.amount,
+            "description": f"Recebimento de Sangria (Caixa Dia): {data.description or 'Sem descrição'}",
+            "payment_method": "dinheiro"
+        }).execute()
+
+        # 3. Log de Auditoria
+        await create_audit_log("sistema", "CASH_TRANSFER", "cash_sessions", data.session_id, 
+                               None, {"amount": data.amount, "dest": data.destination})
+
+        return {
+            "status": "success", 
+            "message": f"R$ {data.amount} transferidos com sucesso para {data.destination}",
+            "sangria_id": sangria.data[0]["id"],
+            "finance_id": finance.data[0]["id"]
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

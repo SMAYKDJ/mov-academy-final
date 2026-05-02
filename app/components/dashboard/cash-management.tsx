@@ -77,6 +77,33 @@ export function CashManagement() {
     }
   };
 
+  const handleTransfer = async (amount: number, destination: string) => {
+    if (!session || !amount) return;
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/cash/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: session.id,
+          amount: amount,
+          destination: destination,
+          description: "Sangria enviada para o financeiro via dashboard"
+        })
+      });
+      
+      if (response.ok) {
+        showToast(`R$ ${amount} transferidos para ${destination}!`, "success");
+      } else {
+        showToast("Erro na transferência.", "error");
+      }
+    } catch (err) {
+      showToast("Falha na comunicação com o servidor.", "error");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleTransaction = async () => {
     if (!transactionAmount || !transactionDesc || !session) return;
     setActionLoading(true);
@@ -181,6 +208,28 @@ export function CashManagement() {
                 >
                   {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Unlock className="w-4 h-4" />}
                   Abrir Caixa do Dia
+                </button>
+              </div>
+            )}
+
+            {/* Nova Seção: Sangria/Transferência Estruturada */}
+            {session?.status === 'aberto' && (
+              <div className="pt-4 mt-6 border-t border-white/10 space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <ArrowDownRight className="w-4 h-4 text-amber-500" />
+                  <h4 className="text-xs font-black uppercase tracking-widest text-gray-500">Sangria Estruturada</h4>
+                </div>
+                <button
+                  onClick={() => {
+                    const amt = prompt("Valor para transferência (Sangria):");
+                    const dest = prompt("Destino (financeiro, cofre, banco):", "financeiro");
+                    if (amt && dest) {
+                      handleTransfer(parseFloat(amt), dest);
+                    }
+                  }}
+                  className="w-full py-3 bg-white/5 border border-amber-500/30 text-amber-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all"
+                >
+                  Transferir para Caixa Geral
                 </button>
               </div>
             )}
