@@ -12,6 +12,7 @@ Endpoints:
 """
 
 import os
+from utils.notifications import send_closure_notification
 import json
 from datetime import datetime
 from typing import Optional
@@ -787,7 +788,7 @@ async def close_cash_session(data: CashCloseInput):
             "notes": data.notes
         }).eq("id", data.session_id).execute()
         
-        return {
+        res_data = {
             "status": "success", 
             "session": res.data[0],
             "report": {
@@ -803,8 +804,14 @@ async def close_cash_session(data: CashCloseInput):
                 "closed_at": datetime.now().isoformat()
             }
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        
+        # 4. Enviar Notificação Automática
+        try:
+            send_closure_notification(res_data["report"], "Operador do Sistema")
+        except Exception as notify_err:
+            print(f"Erro ao enviar notificação: {notify_err}")
+
+        return res_data
 
 @app.post("/finance/expense")
 async def add_expense(data: ExpenseInput):
