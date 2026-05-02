@@ -39,6 +39,11 @@ export function InventoryManagement() {
 
   const criticalItems = products.filter(p => p.current_stock <= p.min_stock);
 
+  const mockPurchases = [
+    { id: 'OC-001', supplier: 'Brilho Total', status: 'Recebido', date: '2026-05-01', total: 450.00 },
+    { id: 'OC-002', supplier: 'Metalúrgica Silva', status: 'Pendente', date: '2026-05-02', total: 1250.00 },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Alerta de Estoque Crítico */}
