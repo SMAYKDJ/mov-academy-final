@@ -69,35 +69,47 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
   return (
     <div className="bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-2xl overflow-hidden shadow-sm">
       <div className="p-6">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
-          <div className="flex items-center gap-4 bg-gray-50/50 dark:bg-white/5 p-4 rounded-2xl border border-gray-100 dark:border-white/5 flex-1 min-w-0">
-            <div className="p-3 bg-white dark:bg-primary-900/30 rounded-xl shadow-sm shrink-0 border border-gray-100 dark:border-primary-800/30">
-              <FileUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center gap-4 bg-gray-50/50 dark:bg-white/5 p-4 rounded-[24px] border border-gray-100 dark:border-white/5">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-md animate-pulse" />
+              <div className="relative p-3 bg-white dark:bg-[#1a1c26] rounded-2xl shadow-sm shrink-0 border border-gray-100 dark:border-white/10">
+                <FileUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              </div>
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight leading-tight truncate">Importar Relatório PDF</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">Analise múltiplos alunos de uma vez</p>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight leading-tight">Análise em Lote</h3>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">Importar Relatórios PDF</p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 w-full">
+
+          <div className="grid grid-cols-2 gap-3 w-full">
             <button
               onClick={() => setShowModal(true)}
-              className="w-full px-5 py-3 bg-white dark:bg-[#1e2235] border border-gray-200 dark:border-[#2e334d] hover:bg-gray-50 dark:hover:bg-[#252a41] text-gray-700 dark:text-gray-300 text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm border-b-2 active:border-b-0 active:translate-y-[1px]"
+              className="flex flex-col items-center justify-center gap-3 p-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-[28px] hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-white/[0.07] transition-all duration-300 group shadow-sm active:scale-95"
             >
-              <FileText className="w-4 h-4 text-primary-500" />
-              Ver Relatórios Salvos
+              <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-2xl group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-colors">
+                <FileText className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-primary-500 transition-colors" />
+              </div>
+              <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 uppercase tracking-[0.2em] transition-colors">Histórico</span>
             </button>
+            
             <button
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
-              className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20 border-b-2 border-primary-800 active:border-b-0 active:translate-y-[1px]"
+              className="flex flex-col items-center justify-center gap-3 p-5 bg-primary-600 dark:bg-primary-600 border border-primary-500 rounded-[28px] hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-500/30 transition-all duration-300 group shadow-lg shadow-primary-500/10 active:scale-95 relative overflow-hidden"
             >
-              {isUploading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Plus className="w-4 h-4" />
-              )}
-              {isUploading ? 'Processando Documento...' : 'Selecionar Novo PDF'}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8 blur-2xl" />
+              <div className="p-3 bg-white/10 dark:bg-white/20 rounded-2xl group-hover:bg-white/20 transition-colors relative z-10">
+                {isUploading ? (
+                  <Loader2 className="w-5 h-5 text-white animate-spin" />
+                ) : (
+                  <Plus className="w-5 h-5 text-white" />
+                )}
+              </div>
+              <span className="text-[10px] font-black text-white/90 uppercase tracking-[0.2em] relative z-10">
+                {isUploading ? 'Subindo' : 'Novo PDF'}
+              </span>
             </button>
             <input
               type="file"
