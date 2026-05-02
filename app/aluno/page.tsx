@@ -26,7 +26,7 @@ export default function StudentAppPage() {
 
     useEffect(() => {
       if (user) {
-        const name = user.nome || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Atleta';
+        const name = user.nome || user.email?.split('@')[0] || 'Atleta';
         setUserName(name.split(' ')[0]);
       }
     }, [user]);
