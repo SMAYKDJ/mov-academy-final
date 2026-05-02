@@ -714,6 +714,11 @@ async def add_cash_transaction(data: CashTransactionInput):
         raise HTTPException(status_code=503, detail="Supabase não configurado.")
     
     try:
+        # Validar se o caixa ainda está aberto
+        session = supabase_client.table("cash_sessions").select("status").eq("id", data.session_id).single().execute()
+        if not session.data or session.data["status"] != "aberto":
+            raise HTTPException(status_code=400, detail="Não é possível registrar transações em um caixa fechado.")
+
         res = supabase_client.table("cash_transactions").insert({
             "session_id": data.session_id,
             "type": data.type,
@@ -723,6 +728,7 @@ async def add_cash_transaction(data: CashTransactionInput):
         }).execute()
         
         return {"status": "success", "transaction": res.data[0]}
+    except HTTPException as he: raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -807,24 +813,31 @@ async def list_suppliers():
     res = supabase_client.table("suppliers").select("*").execute()
     return res.data
 
+async def internal_record_stock_movement(data: StockMovementInput, user_id: str = "sistema"):
+    """Lógica interna compartilhada para movimentação de estoque."""
+    if not supabase_client: return None
+    
+    # Registrar movimento
+    res = supabase_client.table("inventory_movements").insert(data.dict()).execute()
+    
+    # Atualizar saldo (Abstração simplificada, ideal usar RPC increment para atomicidade)
+    prod = supabase_client.table("products").select("current_stock, name").eq("id", data.product_id).single().execute()
+    current = prod.data["current_stock"] if prod.data else 0
+    new_total = current + data.quantity if data.type == "entrada" else current - data.quantity
+    
+    supabase_client.table("products").update({"current_stock": new_total}).eq("id", data.product_id).execute()
+    
+    # Log de Auditoria
+    await create_audit_log(user_id, f"STOCK_{data.type.upper()}", "products", data.product_id, 
+                           {"old_stock": current}, {"new_stock": new_total, "reason": data.reason})
+    
+    return new_total
+
 @app.post("/inventory/movement")
 async def record_stock_movement(data: StockMovementInput):
     """Registra entrada ou saída de itens no estoque."""
-    if not supabase_client:
-        raise HTTPException(status_code=503, detail="Supabase não configurado.")
-    
     try:
-        # Registrar movimento
-        res = supabase_client.table("inventory_movements").insert(data.dict()).execute()
-        
-        # Atualizar saldo no produto
-        # Nota: Idealmente isso seria um trigger no banco, mas faremos aqui para clareza
-        prod = supabase_client.table("products").select("current_stock").eq("id", data.product_id).single().execute()
-        current = prod.data["current_stock"] if prod.data else 0
-        new_total = current + data.quantity if data.type == "entrada" else current - data.quantity
-        
-        supabase_client.table("products").update({"current_stock": new_total}).eq("id", data.product_id).execute()
-        
+        new_total = await internal_record_stock_movement(data)
         return {"status": "success", "new_total": new_total}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -861,7 +874,7 @@ async def register_invoice(data: InvoiceInput):
                 quantity=item["quantity"],
                 reason=f"NF {data.invoice_number}"
             )
-            await record_stock_movement(movement)
+            await internal_record_stock_movement(movement)
             
         return {"status": "success", "message": f"Estoque atualizado via NF {data.invoice_number}"}
     except Exception as e:

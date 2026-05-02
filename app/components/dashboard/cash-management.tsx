@@ -47,36 +47,65 @@ export function CashManagement() {
   }, []);
 
   const handleOpenCash = async () => {
-    if (!openingBalance || isNaN(parseFloat(openingBalance))) {
+    if (!openingBalance || isNaN(parseFloat(openingBalance)) || !user) {
       showToast("Insira um valor de abertura válido.", "error");
       return;
     }
     setActionLoading(true);
     try {
-      // Mock de sucesso para demonstração
-      setSession({
-        id: 'mock-session-123',
-        status: 'aberto',
-        opening_balance: parseFloat(openingBalance),
-        opening_time: new Date().toISOString()
+      const response = await fetch('/api/cash/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          opening_balance: parseFloat(openingBalance),
+          notes: "Abertura de caixa via Dashboard"
+        })
       });
-      showToast("Caixa aberto com sucesso!", "success");
+      
+      const data = await response.json();
+      if (data.status === 'success') {
+        setSession(data.session);
+        showToast("Caixa aberto com sucesso!", "success");
+      } else {
+        showToast(data.message || "Erro ao abrir caixa.", "error");
+      }
     } catch (err) {
-      showToast("Erro ao abrir caixa.", "error");
+      showToast("Erro de conexão com o servidor.", "error");
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleTransaction = async () => {
-    if (!transactionAmount || !transactionDesc) return;
+    if (!transactionAmount || !transactionDesc || !session) return;
     setActionLoading(true);
-    setTimeout(() => {
-      showToast(`Movimentação de ${transactionType} registrada!`, "success");
-      setTransactionAmount('');
-      setTransactionDesc('');
+    try {
+      const response = await fetch('/api/cash/transaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: session.id,
+          type: transactionType,
+          amount: parseFloat(transactionAmount),
+          description: transactionDesc,
+          payment_method: "dinheiro"
+        })
+      });
+      
+      if (response.ok) {
+        showToast(`Movimentação de ${transactionType} registrada!`, "success");
+        setTransactionAmount('');
+        setTransactionDesc('');
+      } else {
+        const err = await response.json();
+        showToast(err.detail || "Erro ao registrar transação.", "error");
+      }
+    } catch (err) {
+      showToast("Erro ao processar transação.", "error");
+    } finally {
       setActionLoading(false);
-    }, 500);
+    }
   };
 
   if (loading) {
