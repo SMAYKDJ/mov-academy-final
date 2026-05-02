@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileUp, FileText, Loader2, CheckCircle2, AlertCircle, X } from 'lucide-react';
+import { FileUp, FileText, Loader2, CheckCircle2, AlertCircle, X, Plus } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 import { ImportReportsModal } from '@/components/dashboard/import-reports-modal';
 
@@ -42,9 +42,8 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i]);
     }
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
     try {
-      const response = await fetch(`${backendUrl}/upload/report`, {
+      const response = await fetch('/api/upload-report', {
         method: 'POST',
         body: formData,
       });
@@ -70,33 +69,33 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
   return (
     <div className="bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-2xl overflow-hidden shadow-sm">
       <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
-              <FileUp className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-2xl shadow-sm shrink-0">
+              <FileUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
-            <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white">Importar Relatório PDF</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Analise múltiplos alunos de uma vez</p>
+            <div className="min-w-0">
+              <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight leading-tight">Importar Relatório PDF</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Analise múltiplos alunos de uma vez</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
             <button
               onClick={() => setShowModal(true)}
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl flex items-center gap-2"
+              className="px-4 py-3 bg-white dark:bg-[#1e2235] border border-gray-200 dark:border-[#2e334d] hover:bg-gray-50 dark:hover:bg-[#252a41] text-gray-700 dark:text-gray-300 text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
             >
-              <FileText className="w-3 h-3" />
-              Importar Relatórios
+              <FileText className="w-4 h-4 text-primary-500" />
+              Relatórios Salvos
             </button>
             <button
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center gap-2"
+              className="px-5 py-3 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20"
             >
               {isUploading ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <FileText className="w-3 h-3" />
+                <Plus className="w-4 h-4" />
               )}
               Selecionar PDF
             </button>

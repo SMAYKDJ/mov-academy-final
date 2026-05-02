@@ -4,7 +4,7 @@ import os
 import re
 from datetime import datetime
 
-REPORTS_DIR = "/Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre/RELATORIOS"
+REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "RELATORIOS")
 
 def extract_id_name(text):
     # Corresponde a "CÓDIGO Nome..."

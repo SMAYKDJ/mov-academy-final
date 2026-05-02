@@ -1,7 +1,8 @@
 import os
 import re
 import uuid
-from datetime import datetime
+import random
+from datetime import datetime, timedelta
 import pdfplumber
 from supabase import create_client
 from dotenv import load_dotenv
@@ -9,193 +10,184 @@ from dotenv import load_dotenv
 # Carregar variáveis de ambiente
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")  # Requer a chave service_role para deletar/inserir com segurança
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("❌ Erro: SUPABASE_URL e SUPABASE_KEY não configuradas no .env")
     exit(1)
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
 REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "RELATORIOS")
 
-def delete_existing_data():
-    print("🗑️  Deletando dados existentes (transacoes, treinos, alunos)...")
+def to_iso_date(date_str):
+    """Converte DD/MM/YYYY para YYYY-MM-DD"""
     try:
-        # Tentar deletar tudo (requer Service Role Key ou RLS permissivo)
+        return datetime.strptime(date_str, "%d/%m/%Y").strftime("%Y-%m-%d")
+    except:
+        return None
+
+def delete_existing_data():
+    print("🗑️  Deletando dados existentes...")
+    try:
         supabase.table('transacoes').delete().neq('id', '0').execute()
         supabase.table('treinos').delete().neq('id', '0').execute()
         supabase.table('alunos').delete().neq('id', -1).execute()
         print("✅ Dados antigos apagados.")
     except Exception as e:
-        print(f"⚠️ Aviso ao tentar apagar dados. Certifique-se de que a RLS permite deleção. Erro: {e}")
+        print(f"⚠️ Erro ao apagar dados: {e}")
 
 def seed_database():
-    students = {} # mapa para armazenar dados dos alunos
+    students = {}
     transactions = []
 
+    # 1. Extrair Alunos
     print("\n📄 Extraindo alunos de 'Listagem de Matrículas.pdf'...")
     try:
         with pdfplumber.open(os.path.join(REPORTS_DIR, "Listagem de Matrículas.pdf")) as pdf:
             for page in pdf.pages:
                 text = page.extract_text()
-                lines = text.split('\n')
-                for line in lines:
-                    # Padrão de correspondência: ID Nome do Aluno... Plano... Data
+                for line in text.split('\n'):
                     match = re.search(r'^(\d+)\s+(.*?)\s+(Plano\s+\w+.*?)\s+(\d{2}/\d{2}/\d{4})', line)
                     if match:
                         sid = match.group(1)
                         name = match.group(2).strip()
-                        # Normalizar Plano
                         raw_plan = match.group(3).strip()
+                        start_date = match.group(4)
+                        
                         plan = 'Mensal'
                         if 'Anual' in raw_plan: plan = 'Anual'
                         elif 'Semestral' in raw_plan: plan = 'Semestral'
-                        elif 'Trimestral' in raw_plan: plan = 'Trimestral'
-                        elif 'Black' in raw_plan or 'VIP' in raw_plan: plan = 'Black VIP'
                         
-                        start_date = match.group(4)
-                        
-                        # Normalizar Status
-                        status = 'ativo'
-                        if any(x in line for x in ['Inativa', 'Vencida', 'Cancelada']):
-                            status = 'inativo'
-                        elif 'Pendente' in line:
-                            status = 'pendente'
-                        
-                        # Corrigir lógica de e-mail: usar nomes para criar e-mails fictícios
-                        email_base = re.sub(r'[^a-zA-Z0-9]', '', name.split()[0].lower())
-                        email = f"{email_base}_{sid}@moviment.com"
-                        
+                        year = random.randint(1975, 2005)
+                        birth_date = f"{year}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
+
                         students[sid] = {
                             "nome": name,
-                            "email": email,
-                            "telefone": "(11) 99999-9999",
+                            "email": f"{re.sub(r'[^a-z]', '', name.lower().split()[0])}_{sid}@moviment.com",
+                            "telefone": f"(91) 9{random.randint(8000, 9999)}-{random.randint(1000, 9999)}",
                             "plano": plan,
-                            "status": status,
-                            "data_matricula": start_date,
-                            "ultimo_pagamento": start_date,
-                            "data_nascimento": "01/01/1990",
-                            "endereco": "Rua Exemplo, 123",
-                            "objetivo": "Condicionamento Físico",
+                            "status": 'ativo' if 'Ativa' in line else 'inativo',
+                            "data_matricula": to_iso_date(start_date),
+                            "data_nascimento": birth_date,
                             "frequencia": 0,
                             "risco": 0,
-                            "_original_id": sid # para vincular transações
+                            "_original_id": sid
                         }
-        print(f"   Encontrados {len(students)} alunos na listagem de matrículas.")
     except Exception as e:
-        print(f"   Erro ao ler arquivo de matrículas: {e}")
+        print(f"❌ Erro em Matrículas: {e}")
 
-    print("\n📄 Adicionando frequências de 'Alunos Mais Frequentes.pdf'...")
+    # 2. Extrair Frequências
+    print("\n📄 Extraindo frequências...")
     try:
         with pdfplumber.open(os.path.join(REPORTS_DIR, "Alunos Mais Frequentes.pdf")) as pdf:
             for page in pdf.pages:
-                lines = page.extract_text().split('\n')
-                for line in lines:
+                for line in page.extract_text().split('\n'):
                     match = re.search(r'\s+(\d+)\s+(.*?)\s+.*?(\d+)$', line)
                     if match:
-                        sid = match.group(1)
-                        visits = int(match.group(3))
+                        sid, visits = match.group(1), int(match.group(3))
                         if sid in students:
-                            students[sid]['frequencia'] = visits
+                            # Calcular frequência semanal (total / semanas desde início)
+                            start_dt = datetime.strptime(students[sid]['data_matricula'], "%Y-%m-%d")
+                            weeks = max((datetime.now() - start_dt).days / 7, 1)
+                            students[sid]['frequencia'] = int(visits / weeks)
     except Exception as e:
-        print(f"   Erro ao ler arquivo de frequências: {e}")
+        print(f"❌ Erro em Frequências: {e}")
 
-    # Inserir Alunos para obter os IDs Reais (Serial) do Banco
-    print("\n💾 Inserindo alunos no Supabase...")
-    student_records = list(students.values())
-    real_student_mapping = {} # _original_id -> ID do Supabase
+    # 3. Adicionar Ryquelme e Smayk manualmente se faltarem
+    if not any("Ryquelme" in s['nome'] for s in students.values()):
+        students["9999"] = {
+            "nome": "Antonio Ryquelme",
+            "email": "ryquelme@moviment.com",
+            "telefone": "(91) 98888-7777",
+            "plano": "Black VIP",
+            "status": "ativo",
+            "data_matricula": "2024-01-10",
+            "data_nascimento": "2002-05-15",
+            "frequencia": 4,
+            "risco": 5,
+            "_original_id": "9999"
+        }
     
-    # O Supabase permite a inserção de arrays de objetos
-    batch_size = 50
-    inserted_count = 0
-    for i in range(0, len(student_records), batch_size):
-        batch = student_records[i:i+batch_size]
-        # Remover a chave temporária antes de inserir
-        insert_batch = [{k:v for k,v in s.items() if k != '_original_id'} for s in batch]
-        
-        try:
-            res = supabase.table('alunos').insert(insert_batch).execute()
-            if res.data:
-                inserted_count += len(res.data)
-                # Mapear de volta os nomes/e-mails para obter os IDs para as transações
-                for s_inserted in res.data:
-                    for sid, s_orig in students.items():
-                        if s_orig['email'] == s_inserted['email']:
-                            real_student_mapping[sid] = s_inserted['id']
-                            break
-        except Exception as e:
-             print(f"   Erro na inserção do lote {i}: {e}")
-    print(f"✅ {inserted_count} Alunos cadastrados.")
+    if not any("Smayk" in s['nome'] for s in students.values()):
+        students["9998"] = {
+            "nome": "Smayk Dornelles",
+            "email": "smayk@moviment.com",
+            "telefone": "(91) 91234-5678",
+            "plano": "Platinum",
+            "status": "ativo",
+            "data_matricula": "2024-02-15",
+            "data_nascimento": "2000-08-20",
+            "frequencia": 3,
+            "risco": 12,
+            "_original_id": "9998"
+        }
 
-    print("\n📄 Extraindo Recebimentos (Transações pagas)...")
+    # 4. Inserir Alunos
+    print(f"\n💾 Inserindo {len(students)} alunos...")
+    student_records = list(students.values())
+    real_mapping = {}
+    for i in range(0, len(student_records), 50):
+        batch = [{k:v for k,v in s.items() if k != '_original_id'} for s in student_records[i:i+50]]
+        res = supabase.table('alunos').insert(batch).execute()
+        if res.data:
+            for s_ins, s_orig in zip(res.data, student_records[i:i+50]):
+                real_mapping[s_orig['_original_id']] = s_ins['id']
+
+    # 5. Extrair Recebimentos (PAGOS)
+    print("\n📄 Extraindo Recebimentos...")
     try:
-         with pdfplumber.open(os.path.join(REPORTS_DIR, "Listagem de Recebimentos.pdf")) as pdf:
+        with pdfplumber.open(os.path.join(REPORTS_DIR, "Listagem de Recebimentos.pdf")) as pdf:
             for page in pdf.pages:
-                lines = page.extract_text().split('\n')
-                for line in lines:
-                    # Formato esperado: ID Data Desc... Valor Método
-                    # Ex: "123 15/04/2026 Mensalidade... R$ 149,90 Cartão"
-                    # Usando um regex muito permissivo para capturar nomes e valores
-                    match = re.search(r'(\d{2}/\d{2}/\d{4})\s+(.*?)R\$\s*([\d,.]+)\s+(\w+)$', line)
+                for line in page.extract_text().split('\n'):
+                    # Regex corrigido: Código ID Nome ... DataVenc DataPag Valor ValorPago
+                    # Ex: 132939801 983 José Lucas ... 08/04/2026 08/04/2026 1,00 1,00
+                    match = re.search(r'(\d+)\s+(\d+)\s+(.*?)\s+.*?(\d{2}/\d{2}/\d{4})\s+(\d{2}/\d{2}/\d{4})\s+([\d,.]+)\s+([\d,.]+)$', line)
                     if match:
-                        date_str = match.group(1)
-                        desc_and_name = match.group(2).strip()
-                        val_str = match.group(3).replace('.', '').replace(',', '.')
-                        method = match.group(4)
-                        
+                        sid, name, date_str, val_str = match.group(2), match.group(3), match.group(5), match.group(7)
                         transactions.append({
                             "id": str(uuid.uuid4()),
                             "tipo": "receita",
-                            "descricao": f"Pagamento - {desc_and_name[:20]}",
-                            "valor": float(val_str),
-                            "data": date_str,
+                            "descricao": f"Mensalidade - {name[:20]}",
+                            "valor": float(val_str.replace('.', '').replace(',', '.')),
+                            "data": to_iso_date(date_str),
                             "status": "pago",
-                            "metodo": method.lower(),
-                            "aluno_nome": desc_and_name[:30] # Manter apenas parte da string
+                            "metodo": random.choice(["cartao", "pix", "dinheiro"]),
+                            "aluno_id": real_mapping.get(sid),
+                            "aluno_nome": name
                         })
     except Exception as e:
-        print(f"   Erro ao ler arquivo de Recebimentos: {e}")
+        print(f"❌ Erro em Recebimentos: {e}")
 
-    print("\n📄 Extraindo Devedores (Transações pendentes)...")
+    # 6. Extrair Devedores (ATRASADOS)
+    print("\n📄 Extraindo Devedores...")
     try:
-         with pdfplumber.open(os.path.join(REPORTS_DIR, "Relação de Devedores.pdf")) as pdf:
+        with pdfplumber.open(os.path.join(REPORTS_DIR, "Relação de Devedores.pdf")) as pdf:
             for page in pdf.pages:
-                lines = page.extract_text().split('\n')
-                for line in lines:
-                    # Extrair data e valor perto do final da linha
-                    match = re.search(r'(\d{2}/\d{2}/\d{4})\s+([\d,.]+)\s*$', line)
+                for line in page.extract_text().split('\n'):
+                    # Código Nome ... Data Valor
+                    match = re.search(r'^(\d+)\s+(.*?)\s+.*?(\d{2}/\d{2}/\d{4})\s+([\d,.]+)$', line)
                     if match:
-                        date_str = match.group(1)
-                        val_str = match.group(2).replace('.', '').replace(',', '.')
-                        
+                        sid, name, date_str, val_str = match.group(1), match.group(2), match.group(3), match.group(4)
                         transactions.append({
                             "id": str(uuid.uuid4()),
                             "tipo": "receita",
-                            "descricao": "Mensalidade Atrasada",
-                            "valor": float(val_str),
-                            "data": date_str,
+                            "descricao": "Mensalidade em Atraso",
+                            "valor": float(val_str.replace('.', '').replace(',', '.')),
+                            "data": to_iso_date(date_str),
                             "status": "atrasado",
                             "metodo": "pendente",
-                            "aluno_nome": "Devedor Não Identificado" # Simplificar o mapeamento para dívidas
+                            "aluno_id": real_mapping.get(sid),
+                            "aluno_nome": name
                         })
     except Exception as e:
-        print(f"   Erro ao ler arquivo de Devedores: {e}")
+        print(f"❌ Erro em Devedores: {e}")
 
-    print(f"\n💾 Inserindo {len(transactions)} transações no Supabase...")
-    inserted_tx = 0
-    for i in range(0, len(transactions), batch_size):
-        batch = transactions[i:i+batch_size]
-        try:
-            res = supabase.table('transacoes').insert(batch).execute()
-            if res.data:
-                inserted_tx += len(res.data)
-        except Exception as e:
-             print(f"   Erro na inserção de transações do lote {i}: {e}")
-    print(f"✅ {inserted_tx} Transações financeiras cadastradas.")
+    # 7. Inserir Transações
+    print(f"\n💾 Inserindo {len(transactions)} transações...")
+    for i in range(0, len(transactions), 50):
+        supabase.table('transacoes').insert(transactions[i:i+50]).execute()
 
-    print("\n🎉 Seeding Concluído com Sucesso!")
-
+    print("\n🎉 Processo concluído! Banco de dados consistente.")
 
 if __name__ == "__main__":
     delete_existing_data()

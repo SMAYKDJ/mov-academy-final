@@ -7,6 +7,7 @@ import { StripePayment } from '@/components/dashboard/financeiro/stripe-payment'
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { Loader2, ArrowLeft } from 'lucide-react';
+import { cn } from '@/utils/cn';
 import Link from 'next/link';
 
 // Carregar o Stripe fora do componente para evitar recriá-lo
@@ -17,6 +18,7 @@ export default function PagamentoStripePage() {
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Simulação de uma seleção de plano (poderia vir de query params)
   const amount = 14990; // R$ 149,90
@@ -62,12 +64,19 @@ export default function PagamentoStripePage() {
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
-      <Sidebar mobileOpen={mobileMenuOpen} onMobileClose={() => setMobileMenuOpen(false)} />
+      <Sidebar 
+        mobileOpen={mobileMenuOpen} 
+        onMobileClose={() => setMobileMenuOpen(false)} 
+        onCollapse={setIsSidebarCollapsed}
+      />
 
-      <div className="flex-1 md:ml-64 transition-all duration-300">
+      <div className={cn(
+        "flex-1 w-full min-w-0 transition-all duration-300",
+        isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
+      )}>
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <main className="px-4 md:px-8 py-8 max-w-2xl mx-auto space-y-6">
+        <main className="px-4 md:px-8 py-8 w-full max-w-2xl mx-auto space-y-6">
           <div className="flex items-center gap-4 mb-2">
             <Link 
               href="/financeiro"

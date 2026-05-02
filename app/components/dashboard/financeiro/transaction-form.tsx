@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { X, Save, AlertCircle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, Save, AlertCircle, Search, User } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { Transaction, TransactionType, TransactionStatus, PaymentMethod, RevenueCategory, ExpenseCategory } from '@/types/financeiro';
+import { useLocalStorage } from '@/utils/persistence';
+import { alunosData as staticAlunos } from '@/utils/alunos-data';
 
 interface TransactionFormProps {
   open: boolean;
@@ -13,6 +15,9 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ open, transaction, onClose, onSave }: TransactionFormProps) {
+  // Carregar dados reais do Supabase/LocalStorage
+  const [alunos] = useLocalStorage<any[]>('moviment-alunos', staticAlunos, 'alunos');
+
   const [formData, setFormData] = useState({
     tipo: 'receita' as TransactionType,
     descricao: '',
@@ -22,7 +27,35 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
     status: 'pago' as TransactionStatus,
     vencimento: new Date().toLocaleDateString('pt-BR'),
     alunoNome: '',
+    alunoId: undefined as number | undefined,
   });
+
+  const [studentSearch, setStudentSearch] = useState('');
+  const [showStudentList, setShowStudentList] = useState(false);
+
+  // Formatação de moeda (BRL)
+  const formatCurrency = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '');
+    const numberValue = (Number(cleanValue) / 100).toLocaleString('pt-BR', {
+      style: 'decimal',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return numberValue;
+  };
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatCurrency(e.target.value);
+    setFormData(prev => ({ ...prev, valor: formatted }));
+  };
+
+  // Filtragem de alunos (usando dados reais)
+  const filteredStudents = useMemo(() => {
+    if (!studentSearch) return [];
+    return (alunos || []).filter(s => 
+      s.nome.toLowerCase().includes(studentSearch.toLowerCase())
+    ).slice(0, 5);
+  }, [studentSearch, alunos]);
 
   // Carregar dados ao editar
   React.useEffect(() => {
@@ -30,15 +63,15 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
       setFormData({
         tipo: transaction.tipo,
         descricao: transaction.descricao,
-        valor: transaction.valor.toString(),
+        valor: transaction.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 }),
         categoria: transaction.categoria,
         metodo: transaction.metodo,
         status: transaction.status,
         vencimento: transaction.vencimento || new Date().toLocaleDateString('pt-BR'),
         alunoNome: transaction.alunoNome || '',
+        alunoId: transaction.alunoId,
       });
     } else {
-      // Resetar para novo
       setFormData({
         tipo: 'receita',
         descricao: '',
@@ -48,17 +81,22 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
         status: 'pago',
         vencimento: new Date().toLocaleDateString('pt-BR'),
         alunoNome: '',
+        alunoId: undefined,
       });
     }
+    setStudentSearch('');
+    setShowStudentList(false);
   }, [transaction, open]);
 
   if (!open) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const numericValue = parseFloat(formData.valor.replace(/\./g, '').replace(',', '.'));
+    
     onSave({
       ...formData,
-      valor: parseFloat(formData.valor),
+      valor: numericValue,
       data: transaction?.data || new Date().toLocaleDateString('pt-BR'),
       id: transaction?.id || `txn-${Math.random().toString(36).substr(2, 9)}`,
       recorrente: transaction?.recorrente || false
@@ -74,7 +112,7 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">
             {transaction ? 'Editar Transação' : 'Nova Transação'}
           </h2>
-          <button onClick={onClose} aria-label="Fechar formulário" title="Fechar" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-400"><X className="w-5 h-5" /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -100,6 +138,48 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
           </div>
 
           <div className="space-y-4">
+            {/* Campo Aluno (se for Receita) */}
+            {formData.tipo === 'receita' && (
+              <div className="relative">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                  <User className="w-3 h-3" />
+                  Vincular Aluno
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Digite o nome do aluno..."
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235] text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                    value={studentSearch || formData.alunoNome}
+                    onChange={(e) => {
+                      setStudentSearch(e.target.value);
+                      setShowStudentList(true);
+                    }}
+                    onFocus={() => setShowStudentList(true)}
+                  />
+                  {showStudentList && filteredStudents.length > 0 && (
+                    <div className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1a1d27] border border-gray-100 dark:border-[#2d3348] rounded-xl shadow-xl overflow-hidden animate-slide-up">
+                      {filteredStudents.map(student => (
+                        <button
+                          key={student.id}
+                          type="button"
+                          className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between border-b last:border-0 border-gray-100 dark:border-[#2d3348]"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, alunoNome: student.nome, alunoId: student.id }));
+                            setStudentSearch('');
+                            setShowStudentList(false);
+                          }}
+                        >
+                          <span className="font-semibold text-gray-900 dark:text-white">{student.nome}</span>
+                          <span className="text-[10px] text-gray-400 uppercase font-bold">{student.plano}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <input
               required
               placeholder="Descrição (ex: Mensalidade João)"
@@ -111,13 +191,44 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
             <div className="grid grid-cols-2 gap-4">
                <input
                 required
-                type="number"
-                step="0.01"
+                type="text"
                 placeholder="Valor (R$)"
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235] text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235] text-sm font-bold focus:ring-2 focus:ring-primary-500 outline-none"
                 value={formData.valor}
-                onChange={e => setFormData(prev => ({ ...prev, valor: e.target.value }))}
+                onChange={handleValueChange}
               />
+              <select
+                aria-label="Plano de Contas"
+                title="Plano de Contas"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235] text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                value={formData.categoria}
+                onChange={e => setFormData(prev => ({ ...prev, categoria: e.target.value as any }))}
+              >
+                {formData.tipo === 'receita' ? (
+                  <>
+                    <option value="mensalidade">Mensalidade</option>
+                    <option value="matricula">Matrícula</option>
+                    <option value="personal">Personal Trainer</option>
+                    <option value="avulso">Aula Avulsa</option>
+                    <option value="produto">Venda de Produtos</option>
+                    <option value="evento">Eventos / Workshops</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="aluguel">Aluguel / IPTU</option>
+                    <option value="salario">Salários / Comissões</option>
+                    <option value="agua_luz">Água / Luz / Internet</option>
+                    <option value="marketing">Marketing / Social Media</option>
+                    <option value="manutencao">Manutenção Geral</option>
+                    <option value="equipamento">Equipamentos / Insumos</option>
+                    <option value="sistema">Sistemas / Software</option>
+                    <option value="outros">Outros Diversos</option>
+                  </>
+                )}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <select
                 aria-label="Método de pagamento"
                 title="Método"
@@ -129,20 +240,21 @@ export function TransactionForm({ open, transaction, onClose, onSave }: Transact
                 <option value="cartao">Cartão</option>
                 <option value="dinheiro">Dinheiro</option>
                 <option value="boleto">Boleto</option>
+                <option value="debito">Débito</option>
+              </select>
+
+              <select
+                aria-label="Status da transação"
+                title="Status"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235] text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                value={formData.status}
+                onChange={e => setFormData(prev => ({ ...prev, status: e.target.value as TransactionStatus }))}
+              >
+                <option value="pago">Pago</option>
+                <option value="pendente">Pendente</option>
+                <option value="atrasado">Atrasado</option>
               </select>
             </div>
-
-            <select
-              aria-label="Status da transação"
-              title="Status"
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#1e2235] text-sm focus:ring-2 focus:ring-primary-500 outline-none"
-              value={formData.status}
-              onChange={e => setFormData(prev => ({ ...prev, status: e.target.value as TransactionStatus }))}
-            >
-              <option value="pago">Pago</option>
-              <option value="pendente">Pendente</option>
-              <option value="atrasado">Atrasado</option>
-            </select>
           </div>
 
           <button

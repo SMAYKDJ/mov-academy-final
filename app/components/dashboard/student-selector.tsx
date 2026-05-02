@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { Search, User, ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/utils/cn';
+import { useLocalStorage } from '@/utils/persistence';
+import { alunosData as staticAlunos } from '@/utils/alunos-data';
 
 interface Student {
-  id: string;
+  id: string | number;
   name: string;
   plan: string;
   avatar?: string;
@@ -21,18 +23,28 @@ export const mockStudents: Student[] = [
 
 interface StudentSelectorProps {
   onSelect?: (student: Student) => void;
-  selectedId?: string;
+  selectedId?: string | number;
 }
 
 export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  
+  // Usar dados reais do localStorage/Supabase
+  const [alunos] = useLocalStorage<any[]>('moviment-alunos', staticAlunos, 'alunos');
 
-  const selected = mockStudents.find(s => s.id === selectedId) || mockStudents[0];
+  // Mapear dados para o formato do seletor
+  const studentsList = alunos.map(a => ({
+    id: a.id,
+    name: a.nome,
+    plan: a.plano
+  }));
 
-  const filtered = mockStudents.filter(s => 
+  const selected = studentsList.find(s => String(s.id) === String(selectedId)) || studentsList[0];
+
+  const filtered = studentsList.filter(s => 
     s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.id.toLowerCase().includes(search.toLowerCase())
+    String(s.id).toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSelect = (student: Student) => {
@@ -41,26 +53,28 @@ export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) 
     setSearch('');
   };
 
+  if (!selected) return null;
+
   return (
     <div className="relative z-[50]">
       {/* Gatilho do Seletor */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 p-1.5 pl-3 pr-4 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-2xl hover:border-primary-400 dark:hover:border-primary-900/50 transition-all group"
+        className="flex items-center gap-3 p-2 pl-4 pr-5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-2xl hover:border-primary-400 dark:hover:border-primary-900/50 transition-all group shadow-sm hover:shadow-md"
       >
-        <div className="w-8 h-8 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-xs">
-          {selected.name.split(' ').map(n => n[0]).join('')}
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-black text-xs shadow-lg shadow-primary-500/20">
+          {selected.name ? selected.name.split(' ').map((n: string) => n[0]).join('') : 'U'}
         </div>
-        <div className="text-left hidden sm:block">
-          <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 group-hover:text-primary-500 transition-colors">Visualizando Aluno</p>
+        <div className="text-left">
+          <p className="text-[9px] uppercase tracking-[0.15em] font-black text-gray-400 group-hover:text-primary-500 transition-colors">Aluno Selecionado</p>
           <div className="flex items-center gap-2">
-            <p className="text-sm font-bold text-gray-900 dark:text-white">{selected.name}</p>
-            <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/5 text-[9px] font-bold text-gray-500 uppercase rounded tracking-tighter italic">
+            <p className="text-sm font-black text-gray-900 dark:text-white tracking-tight">{selected.name}</p>
+            <span className="hidden sm:inline-block px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 text-[9px] font-black text-primary-600 dark:text-primary-400 uppercase rounded-lg tracking-wider border border-primary-100 dark:border-primary-900/30">
               {selected.plan}
             </span>
           </div>
         </div>
-        <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
+        <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform duration-300 ml-1", isOpen && "rotate-180")} />
       </button>
 
       {/* Menu Dropdown */}
@@ -89,29 +103,29 @@ export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) 
                     onClick={() => handleSelect(student)}
                     className={cn(
                       "w-full flex items-center gap-3 p-2 rounded-xl transition-all group",
-                      selected.id === student.id 
+                      String(selected.id) === String(student.id)
                         ? "bg-primary-50 dark:bg-primary-900/10 border border-primary-100 dark:border-primary-900/30" 
                         : "hover:bg-gray-50 dark:hover:bg-white/5 border border-transparent"
                     )}
                   >
                     <div className={cn(
                       "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0",
-                      selected.id === student.id
+                      String(selected.id) === String(student.id)
                         ? "bg-primary-600 text-white"
                         : "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
                     )}>
-                      {student.name.split(' ').map(n => n[0]).join('')}
+                      {student.name ? student.name.split(' ').map((n: string) => n[0]).join('') : 'U'}
                     </div>
                     <div className="flex-1 text-left min-w-0">
                       <p className={cn(
                         "text-xs font-bold truncate",
-                        selected.id === student.id ? "text-primary-700 dark:text-primary-400" : "text-gray-900 dark:text-white"
+                        String(selected.id) === String(student.id) ? "text-primary-700 dark:text-primary-400" : "text-gray-900 dark:text-white"
                       )}>
                         {student.name}
                       </p>
                       <p className="text-[10px] text-gray-500 truncate">{student.id} · {student.plan}</p>
                     </div>
-                    {selected.id === student.id && <Check className="w-4 h-4 text-primary-600 shrink-0" />}
+                    {String(selected.id) === String(student.id) && <Check className="w-4 h-4 text-primary-600 shrink-0" />}
                   </button>
                 ))
               ) : (

@@ -188,47 +188,47 @@ export default function FinanceiroPage() {
       />
 
       <div className={cn(
-        "flex-1 transition-all duration-300",
+        "flex-1 w-full min-w-0 transition-all duration-300",
         isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
       )}>
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <main className="px-4 md:px-8 py-8 w-full space-y-6">
+        <main className="px-4 md:px-8 py-8 w-full max-w-full overflow-x-hidden space-y-8">
           {/* Cabeçalho da Página */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 animate-fade-in">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 animate-fade-in">
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                 Financeiro
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
                 Controle de receitas, despesas e fluxo de caixa da academia
               </p>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="grid grid-cols-2 sm:flex items-center gap-3 w-full sm:w-auto">
               <button
                 onClick={handleReport}
-                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-xs font-black text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <FileText className="w-4 h-4" />
-                Relatório DRE
+                Relatório
               </button>
               <button
                 onClick={() => exportToCSV(transacoes, 'financeiro-moviment-academy')}
-                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center gap-2"
+                className="px-4 py-2.5 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-xs font-black text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <Download className="w-4 h-4" />
                 Exportar
               </button>
               <button 
                 onClick={() => setFormOpen(true)}
-                className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                className="col-span-1 px-4 py-2.5 bg-primary-600 text-white rounded-xl text-xs font-black hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/20 dark:shadow-none flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Nova Transação
               </button>
               <Link 
                 href="/financeiro/pagamento"
-                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-orange-200 dark:hover:shadow-none transition-all flex items-center gap-2"
+                className="col-span-1 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl text-xs font-black hover:shadow-lg hover:shadow-orange-200 dark:hover:shadow-none transition-all flex items-center justify-center gap-2"
               >
                 <CreditCard className="w-4 h-4" />
                 Pagar Assinatura
@@ -237,32 +237,38 @@ export default function FinanceiroPage() {
           </div>
 
           {/* Cartões de KPI */}
-          <FinanceiroKPI transacoes={transacoes} />
+          <div className="w-full overflow-hidden">
+            <FinanceiroKPI transacoes={transacoes} />
+          </div>
 
           {/* Seção de Gráficos */}
-          <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
-            <div className="xl:col-span-3">
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 w-full max-w-full overflow-hidden">
+            <div className="xl:col-span-3 min-w-0">
               <RevenueChart data={dynamicMonthlyData} />
             </div>
-            <div className="xl:col-span-2">
+            <div className="xl:col-span-2 min-w-0">
               <ExpenseBreakdown transacoes={transacoes} />
             </div>
           </div>
 
           {/* Filtros */}
-          <FinanceiroFilters
-            filters={filters}
-            onChange={setFilters}
-            resultCount={filtered.length}
-          />
+          <div className="w-full">
+            <FinanceiroFilters
+              filters={filters}
+              onChange={setFilters}
+              resultCount={filtered.length}
+            />
+          </div>
 
           {/* Tabela de Transações */}
-          <FinanceiroTable
-            data={filtered}
-            onView={handleView}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <div className="w-full overflow-hidden">
+            <FinanceiroTable
+              data={filtered}
+              onView={handleView}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
         </main>
       </div>
 

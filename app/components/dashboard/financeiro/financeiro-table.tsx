@@ -154,9 +154,17 @@ export function FinanceiroTable({ data, onView, onEdit, onDelete }: FinanceiroTa
                       </div>
                       <div className="min-w-0">
                         <p className="font-semibold text-gray-900 dark:text-white truncate max-w-[280px]">{txn.descricao}</p>
-                        {txn.alunoNome && (
-                          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider font-bold">{txn.categoria}</p>
-                        )}
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {txn.alunoNome ? (
+                            <span className="text-[10px] text-primary-600 dark:text-primary-400 font-bold uppercase tracking-wider bg-primary-50 dark:bg-primary-900/20 px-1.5 py-0.5 rounded">
+                              {txn.alunoNome}
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider font-bold">
+                              {txn.categoria}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -267,7 +275,12 @@ export function FinanceiroTable({ data, onView, onEdit, onDelete }: FinanceiroTa
                       : <ArrowUpRight className="w-4 h-4 text-red-600 dark:text-red-400" />
                     }
                   </div>
-                  <p className="font-semibold text-gray-900 dark:text-white truncate text-sm">{txn.descricao}</p>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-gray-900 dark:text-white truncate text-sm">{txn.descricao}</p>
+                    {txn.alunoNome && (
+                      <p className="text-[10px] text-primary-600 dark:text-primary-400 font-bold uppercase tracking-widest mt-0.5">{txn.alunoNome}</p>
+                    )}
+                  </div>
                 </div>
                 <span className={cn("font-bold text-sm whitespace-nowrap", isReceita ? "text-emerald-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
                   {isReceita ? '+' : '-'}{formatCurrency(txn.valor)}

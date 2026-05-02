@@ -7,9 +7,10 @@ import joblib
 import json
 import os
 
-PROJECT_ROOT = "/Users/smaykdornellesuchoacavalcante/Desktop/trabalho do professor andre"
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.join(BACKEND_DIR, "..")
 DATA_PATH = os.path.join(PROJECT_ROOT, "RELATORIOS", "consolidated_client_data.csv")
-MODELS_DIR = os.path.join(PROJECT_ROOT, "backend", "models")
+MODELS_DIR = os.path.join(BACKEND_DIR, "models")
 
 def train():
     print("Carregando dados consolidados...")
