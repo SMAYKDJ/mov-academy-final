@@ -12,10 +12,11 @@ Endpoints:
 """
 
 import os
-from utils.notifications import send_closure_notification
 import json
+import asyncio
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Dict
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Body
 
 import joblib
 import numpy as np
@@ -79,6 +80,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- Gerenciador de WebSockets (Monitoramento em Tempo Real) ---
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        if websocket in self.active_connections:
+            self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: dict):
+        for connection in self.active_connections:
+            try:
+                await connection.send_json(message)
+            except Exception:
+                pass
+
+manager = ConnectionManager()
 
 # --- Carregar Modelo na Inicialização ---
 model = None
@@ -1026,3 +1049,75 @@ async def register_invoice(data: InvoiceInput):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# --- Módulo IoT: Integração com Catraca Toletus Actuar ---
+
+@app.websocket("/ws/catraca")
+async def websocket_catraca(websocket: WebSocket):
+    """Canal WebSocket para monitoramento de acessos em tempo real."""
+    await manager.connect(websocket)
+    try:
+        while True:
+            # Mantém a conexão viva esperando dados do cliente (opcional)
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
+@app.post("/access/validate")
+async def validate_access(payload: dict = Body(...)):
+    """
+    Valida o acesso do aluno (Tag/Biometria) e notifica o dashboard.
+    Este endpoint é chamado pelo 'Agente Local' da Catraca.
+    """
+    tag_id = payload.get("tag")
+    if not tag_id:
+        raise HTTPException(status_code=400, detail="Tag não informada")
+
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Banco de dados offline")
+
+    try:
+        # 1. Buscar Aluno por ID ou Tag (na Moviment Academy usamos o ID do Supabase como identificador da Tag)
+        res = supabase_client.table("alunos").select("*, planos(*)").eq("id", tag_id).execute()
+        
+        if not res.data:
+            # Caso não encontre pelo ID principal, tenta buscar em um campo customizado se existir
+            status = "vencido" # Tratamos desconhecido como bloqueado por segurança
+            msg = "Usuário Desconhecido"
+            aluno = None
+        else:
+            aluno = res.data[0]
+            # 2. Lógica de Validação de Plano
+            # Verificamos o status do aluno e se o plano está ativo
+            if aluno.get("status") == "Ativo":
+                status = "ativo"
+                msg = "Acesso Liberado"
+            else:
+                status = "vencido"
+                msg = "Acesso Bloqueado (Plano Vencido)"
+
+        # 3. Notificar Dashboard via WebSocket (Broadcasting instantâneo)
+        event = {
+            "nome": aluno["nome"] if aluno else "Desconhecido",
+            "foto": aluno.get("foto_url") if (aluno and aluno.get("foto_url")) else f"https://ui-avatars.com/api/?name={aluno['nome'] if aluno else '?'}&background=random",
+            "status": status,
+            "mensagem": msg,
+            "timestamp": datetime.now().isoformat()
+        }
+        await manager.broadcast(event)
+
+        # 4. Registrar no log de auditoria
+        supabase_client.table("audit_logs").insert({
+            "action": "access_attempt",
+            "details": f"Tentativa de acesso: {tag_id} - Status: {status}",
+            "operator_id": aluno["id"] if aluno else None
+        }).execute()
+
+        return {
+            "status": status, 
+            "liberar_giro": status == "ativo", 
+            "aluno": aluno,
+            "mensagem": msg
+        }
+    except Exception as e:
+        print(f"❌ Erro na validação de acesso: {e}")
+        return {"status": "erro", "liberar_giro": False, "mensagem": str(e)}
