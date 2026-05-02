@@ -79,10 +79,10 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Analise múltiplos alunos de uma vez</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
             <button
               onClick={() => setShowModal(true)}
-              className="px-4 py-3 bg-white dark:bg-[#1e2235] border border-gray-200 dark:border-[#2e334d] hover:bg-gray-50 dark:hover:bg-[#252a41] text-gray-700 dark:text-gray-300 text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
+              className="flex-1 sm:flex-none px-6 py-3 bg-white dark:bg-[#1e2235] border border-gray-200 dark:border-[#2e334d] hover:bg-gray-50 dark:hover:bg-[#252a41] text-gray-700 dark:text-gray-300 text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm whitespace-nowrap min-w-[160px]"
             >
               <FileText className="w-4 h-4 text-primary-500" />
               Relatórios Salvos
@@ -90,7 +90,7 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
             <button
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
-              className="px-5 py-3 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20"
+              className="flex-1 sm:flex-none px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20 whitespace-nowrap min-w-[160px]"
             >
               {isUploading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
