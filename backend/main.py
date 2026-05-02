@@ -749,18 +749,28 @@ async def close_cash_session(data: CashCloseInput):
         session_data = supabase_client.table("cash_sessions").select("*").eq("id", data.session_id).single().execute()
         transactions = supabase_client.table("cash_transactions").select("*").eq("session_id", data.session_id).execute()
         
-        # 2. Calcular totais por modalidade
+        # 2. Calcular totais por modalidade e produtos
         totals = {"dinheiro": 0.0, "cartao": 0.0, "pix": 0.0}
+        sangria_total = 0.0
+        products_sold = 0
+        
         for tx in transactions.data:
             val = float(tx["amount"])
             if tx["type"] == "entrada":
                 totals[tx["payment_method"]] += val
-            elif tx["type"] in ["saida", "sangria"]:
+                if "Venda" in (tx["description"] or ""): # Lógica simples para contar produtos
+                    products_sold += 1
+            elif tx["type"] == "sangria":
+                sangria_total += val
+                if tx["payment_method"] == "dinheiro":
+                    totals["dinheiro"] -= val
+            elif tx["type"] == "saida":
                 if tx["payment_method"] == "dinheiro":
                     totals["dinheiro"] -= val
 
         expected_cash = float(session_data.data["opening_balance"]) + totals["dinheiro"]
         diff = data.closing_balance - expected_cash
+        is_healthy = abs(diff) < 0.01 # Tolerância de 1 centavo
 
         # 3. Fechar Sessão
         res = supabase_client.table("cash_sessions").update({
@@ -778,6 +788,9 @@ async def close_cash_session(data: CashCloseInput):
                 "closing_balance": data.closing_balance,
                 "expected_balance": expected_cash,
                 "difference": diff,
+                "is_healthy": is_healthy,
+                "sangria_total": sangria_total,
+                "products_sold": products_sold,
                 "totals_by_method": totals,
                 "operator_id": session_data.data["user_id"],
                 "closed_at": datetime.now().isoformat()

@@ -407,10 +407,19 @@ function CashReceipt({ report, operatorName }: { report: any, operatorName: stri
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 print:p-0 print:static print:bg-white animate-fade-in">
-      <div className="bg-white text-black p-8 rounded-[32px] w-full max-w-md shadow-2xl print:shadow-none print:w-full font-mono text-sm leading-tight border-4 border-dashed border-gray-200 print:border-none">
+      <div className="bg-white text-black p-8 rounded-[32px] w-full max-w-md shadow-2xl print:shadow-none print:w-full font-mono text-sm leading-tight border-4 border-dashed border-gray-200 print:border-none relative overflow-hidden">
+        
+        {/* Selo de Caixa Saudável */}
+        {report.is_healthy && (
+          <div className="absolute top-4 right-4 bg-emerald-500 text-white p-2 rounded-full shadow-lg print:border-2 print:border-emerald-500 print:text-emerald-500">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
+        )}
+
         <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-black rounded-xl mx-auto mb-3 flex items-center justify-center text-white font-black text-xl">M</div>
           <h2 className="text-xl font-black uppercase tracking-tighter mb-1">MOVIMENT ACADEMY</h2>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Comprovante de Fechamento</p>
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Relatório de Fechamento PDV</p>
         </div>
 
         <div className="space-y-4 border-y py-4 border-gray-100 mb-6">
@@ -422,9 +431,25 @@ function CashReceipt({ report, operatorName }: { report: any, operatorName: stri
             <span className="font-bold">OPERADOR:</span>
             <span className="uppercase">{operatorName}</span>
           </div>
+          <div className="flex justify-between text-[10px] text-gray-400">
+            <span>SESSÃO ID:</span>
+            <span>{report.operator_id?.slice(0, 8)}...</span>
+          </div>
         </div>
 
-        <div className="space-y-2 mb-6">
+        <div className="space-y-3 mb-6">
+          <h4 className="text-xs font-black uppercase tracking-widest border-b pb-1 mb-2">Resumo Operacional</h4>
+          <div className="flex justify-between">
+            <span>Vendas Prod.:</span>
+            <span className="font-bold">{report.products_sold} itens</span>
+          </div>
+          <div className="flex justify-between text-amber-600">
+            <span>Total Sangrias:</span>
+            <span className="font-bold">R$ {report.sangria_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+          </div>
+        </div>
+
+        <div className="space-y-2 mb-6 bg-gray-50 p-4 rounded-2xl print:bg-white print:border">
           <h4 className="text-xs font-black uppercase tracking-widest border-b pb-1 mb-2">Resumo Financeiro</h4>
           <div className="flex justify-between">
             <span>Abertura:</span>
@@ -438,30 +463,49 @@ function CashReceipt({ report, operatorName }: { report: any, operatorName: stri
             <span>Cartão:</span>
             <span>R$ {report.totals_by_method.cartao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
           </div>
-          <div className="flex justify-between font-bold border-t pt-2 mt-2">
+          <div className="flex justify-between font-bold border-t pt-2 mt-2 text-base">
             <span>SALDO FINAL:</span>
             <span>R$ {report.closing_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
           </div>
-          <div className="flex justify-between text-xs text-gray-500 italic">
-            <span>Diferença:</span>
-            <span className={cn(report.difference < 0 ? "text-red-500" : "text-emerald-500")}>
+          <div className="flex justify-between text-xs italic">
+            <span className="text-gray-500">Diferença de Caixa:</span>
+            <span className={cn(report.difference < 0 ? "text-red-600" : "text-emerald-600")}>
               {report.difference >= 0 ? '+' : ''}R$ {report.difference.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
           </div>
         </div>
 
-        <div className="flex gap-3 print:hidden">
+        {/* QR Code Simulado e Assinaturas */}
+        <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col items-center gap-6">
+          <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-gray-200">
+             <div className="grid grid-cols-3 gap-1 p-2 opacity-30">
+               {[...Array(9)].map((_, i) => <div key={i} className="w-3 h-3 bg-black" />)}
+             </div>
+          </div>
+          <p className="text-[8px] text-gray-400 uppercase font-bold">Escaneie para Auditoria Digital</p>
+
+          <div className="w-full flex justify-between gap-4 mt-4">
+            <div className="flex-1 border-t border-black pt-1 text-center">
+              <p className="text-[8px] font-bold uppercase">Operador</p>
+            </div>
+            <div className="flex-1 border-t border-black pt-1 text-center">
+              <p className="text-[8px] font-bold uppercase">Gerente</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex gap-3 print:hidden">
           <button 
             onClick={() => window.print()}
-            className="flex-1 py-4 bg-black text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all"
+            className="flex-1 py-4 bg-black text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-gray-200"
           >
-            Imprimir Comprovante
+            Imprimir Cupom
           </button>
           <button 
             onClick={() => window.location.reload()}
             className="px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all"
           >
-            Fechar
+            Sair
           </button>
         </div>
 
