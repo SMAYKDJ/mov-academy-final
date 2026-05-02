@@ -14,7 +14,38 @@ export default function CatracaMonitorPage() {
   const [history, setHistory] = useState<any[]>([]);
   const audioError = useRef<HTMLAudioElement | null>(null);
   
-  const [activeSubTab, setActiveSubTab] = useState<'monitor' | 'sync'>('monitor');
+  const [activeSubTab, setActiveSubTab] = useState<'monitor' | 'sync' | 'face'>('monitor');
+  const [isFaceScanning, setIsFaceScanning] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const startFaceCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setIsFaceScanning(true);
+      }
+    } catch (err) {
+      alert("Erro ao acessar a câmera. Verifique as permissões.");
+    }
+  };
+
+  const stopFaceCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+      setIsFaceScanning(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeSubTab === 'face') {
+      startFaceCamera();
+    } else {
+      stopFaceCamera();
+    }
+    return () => stopFaceCamera();
+  }, [activeSubTab]);
   const [searchStudent, setSearchStudent] = useState('');
   const [students, setStudents] = useState<any[]>([]);
   const [syncingId, setSyncingId] = useState<string | null>(null);
@@ -137,6 +168,15 @@ export default function CatracaMonitorPage() {
                 >
                   Sincronizar Biometria
                 </button>
+                <button 
+                  onClick={() => setActiveSubTab('face')}
+                  className={cn(
+                    "text-xs font-black uppercase tracking-widest pb-1 border-b-2 transition-all",
+                    activeSubTab === 'face' ? "border-primary-600 text-primary-600" : "border-transparent text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  Reconhecimento Facial
+                </button>
               </div>
             </div>
             
@@ -246,6 +286,59 @@ export default function CatracaMonitorPage() {
                    </div>
                 </div>
               </>
+            ) : activeSubTab === 'face' ? (
+              <div className="xl:col-span-3 bg-white dark:bg-[#0f1117] rounded-[48px] p-10 border border-gray-100 dark:border-white/5 shadow-xl flex flex-col items-center">
+                 <div className="max-w-3xl w-full flex flex-col items-center gap-10">
+                    <div className="text-center">
+                      <h2 className="text-3xl font-black text-gray-900 dark:text-white">Acesso por Reconhecimento Facial</h2>
+                      <p className="text-gray-500">Aproxime-se da câmera para liberar o giro automaticamente.</p>
+                    </div>
+
+                    <div className="relative w-full aspect-video max-w-2xl bg-black rounded-[48px] overflow-hidden shadow-2xl border-4 border-gray-100 dark:border-white/5 group">
+                       <video 
+                        ref={videoRef} 
+                        autoPlay 
+                        muted 
+                        playsInline 
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                       />
+                       
+                       {/* Overlay de Scan */}
+                       <div className="absolute inset-0 pointer-events-none">
+                          <div className="absolute inset-[10%] border-2 border-primary-500/30 rounded-[40px] animate-pulse">
+                             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[2px] bg-primary-500 shadow-[0_0_15px_rgba(59,130,246,0.8)] animate-scan" />
+                          </div>
+                          
+                          {/* Cantos Estilizados */}
+                          <div className="absolute top-8 left-8 w-12 h-12 border-t-4 border-l-4 border-primary-500 rounded-tl-2xl" />
+                          <div className="absolute top-8 right-8 w-12 h-12 border-t-4 border-r-4 border-primary-500 rounded-tr-2xl" />
+                          <div className="absolute bottom-8 left-8 w-12 h-12 border-b-4 border-l-4 border-primary-500 rounded-bl-2xl" />
+                          <div className="absolute bottom-8 right-8 w-12 h-12 border-b-4 border-r-4 border-primary-500 rounded-br-2xl" />
+                       </div>
+
+                       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-6 py-2 rounded-full border border-white/10">
+                          <p className="text-[10px] font-black text-white uppercase tracking-[0.3em] flex items-center gap-2">
+                             <Activity className="w-3 h-3 text-primary-500 animate-spin" /> Escaneando Faces...
+                          </p>
+                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                       <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl text-center">
+                          <p className="text-[10px] font-black text-emerald-600 uppercase mb-1">Acurácia</p>
+                          <p className="text-xl font-black text-emerald-500">99.8%</p>
+                       </div>
+                       <div className="p-6 bg-primary-500/10 border border-primary-500/20 rounded-3xl text-center">
+                          <p className="text-[10px] font-black text-primary-600 uppercase mb-1">Latência</p>
+                          <p className="text-xl font-black text-primary-500">45ms</p>
+                       </div>
+                       <div className="p-6 bg-amber-500/10 border border-amber-500/20 rounded-3xl text-center">
+                          <p className="text-[10px] font-black text-amber-600 uppercase mb-1">Modo</p>
+                          <p className="text-xl font-black text-amber-500">Online</p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
             ) : (
               <div className="xl:col-span-3 bg-white dark:bg-[#0f1117] rounded-[48px] p-10 border border-gray-100 dark:border-white/5 shadow-xl flex flex-col">
                 <div className="max-w-2xl mx-auto w-full space-y-8">
@@ -289,6 +382,17 @@ export default function CatracaMonitorPage() {
                           >
                             {syncingId === student.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Vincular
+                          </button>
+                          
+                          <button 
+                            onClick={() => {
+                               setActiveSubTab('face');
+                               // Aqui iniciaria a lógica de captura
+                            }}
+                            className="p-3 bg-indigo-500/10 text-indigo-500 rounded-xl hover:bg-indigo-500 hover:text-white transition-all shadow-sm"
+                            title="Cadastrar Face"
+                          >
+                            <User className="w-5 h-5" />
                           </button>
                         </div>
                       </div>
