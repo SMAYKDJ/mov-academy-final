@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Cpu, Globe, Lock, Bell, Save, Loader2, Info } from 'lucide-react';
 import { useToast } from "@/components/ui/toast";
+import { cn } from "@/utils/cn";
 
 export function CatracaSettings() {
   const { showToast } = useToast();
