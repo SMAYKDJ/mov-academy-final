@@ -31,6 +31,8 @@ export interface Aluno {
   risco: number; // risco de churn 0–100
   frequencia: number; // média de visitas/semana
   avatar?: string;
+  biometry_id?: string;
+  face_encoding?: any;
   historicoPagamentos: PaymentRecord[];
 }
 
@@ -45,6 +47,7 @@ export interface AlunoFormData {
   endereco: string;
   objetivo: string;
   senha?: string;
+  biometry_id?: string;
 }
 
 export interface AlunosFilterState {

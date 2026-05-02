@@ -44,6 +44,7 @@ const emptyForm: AlunoFormData = {
   endereco: '',
   objetivo: '',
   senha: '',
+  biometry_id: '',
 };
 
 export function AlunoForm({ aluno, open, onClose, onSave, nextId }: AlunoFormProps) {
@@ -67,6 +68,7 @@ export function AlunoForm({ aluno, open, onClose, onSave, nextId }: AlunoFormPro
         endereco: aluno.endereco,
         objetivo: aluno.objetivo,
         senha: '',
+        biometry_id: aluno.biometry_id || '',
       });
     } else if (open) {
       setForm(emptyForm);
@@ -235,6 +237,12 @@ export function AlunoForm({ aluno, open, onClose, onSave, nextId }: AlunoFormPro
             <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">Objetivo</label>
             <input type="text" value={form.objetivo} onChange={(e) => updateField('objetivo', e.target.value)}
               className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Ex: Hipertrofia" />
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-1.5">ID Biométrico (Catraca)</label>
+            <input type="text" value={form.biometry_id || ''} onChange={(e) => updateField('biometry_id', e.target.value)}
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#2d3348] rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Ex: 1234" />
           </div>
         </form>
 

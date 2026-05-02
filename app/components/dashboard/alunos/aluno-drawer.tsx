@@ -67,6 +67,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
     { icon: Calendar, label: 'Nascimento', value: aluno.dataNascimento },
     { icon: Calendar, label: 'Matrícula', value: aluno.dataMatricula },
     { icon: Target, label: 'Objetivo', value: aluno.objetivo },
+    { icon: CreditCard, label: 'ID Catraca', value: aluno.biometry_id || 'Não vinculado' },
   ];
 
   const paymentMethodLabels: Record<string, string> = {

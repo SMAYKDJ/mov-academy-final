@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
 
 // Rotas públicas que não exigem autenticação
-const PUBLIC_ROUTES = ['/login', '/cadastro'];
+const PUBLIC_ROUTES = ['/login', '/cadastro', '/login/reset-password'];
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();

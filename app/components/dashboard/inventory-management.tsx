@@ -180,7 +180,15 @@ export function InventoryManagement() {
                     <td className="px-8 py-5">
                       <div>
                         <p className="text-sm font-bold text-gray-900 dark:text-white">{product.name}</p>
-                        <p className="text-[10px] text-gray-500 font-medium mt-0.5">{product.sku}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <p className="text-[10px] text-gray-500 font-medium">{product.sku}</p>
+                          {product.suppliers && (
+                            <>
+                              <span className="text-[8px] text-gray-300">•</span>
+                              <p className="text-[10px] text-primary-500 font-bold uppercase">{product.suppliers.name}</p>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-8 py-5">

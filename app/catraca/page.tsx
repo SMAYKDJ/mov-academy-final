@@ -5,8 +5,11 @@ import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { cn } from "@/utils/cn";
 import { ShieldCheck, ShieldAlert, Wifi, WifiOff, User, Clock, Activity, Loader2, Save } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
+import { supabase } from "@/lib/supabase";
 
 export default function CatracaMonitorPage() {
+  const { showToast } = useToast();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lastAccess, setLastAccess] = useState<any>(null);
@@ -26,7 +29,7 @@ export default function CatracaMonitorPage() {
         setIsFaceScanning(true);
       }
     } catch (err) {
-      alert("Erro ao acessar a câmera. Verifique as permissões.");
+      showToast("Erro ao acessar a câmera. Verifique as permissões.", "error");
     }
   };
 
@@ -53,7 +56,10 @@ export default function CatracaMonitorPage() {
 
   const fetchStudents = async () => {
     try {
-      const res = await fetch(`/api/students/search?q=${searchStudent}`);
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`/api/students/search?q=${searchStudent}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token}` }
+      });
       if (res.ok) {
         const data = await res.json();
         setStudents(data);
@@ -70,18 +76,22 @@ export default function CatracaMonitorPage() {
   const handleSync = async (studentId: string) => {
     setSyncingId(studentId);
     try {
+       const { data: { session } } = await supabase.auth.getSession();
        const res = await fetch(`/api/students/${studentId}`, {
          method: 'PATCH',
-         headers: { 'Content-Type': 'application/json' },
+         headers: { 
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${session?.access_token}`
+         },
          body: JSON.stringify({ biometry_id: newBiometryId })
        });
        if (res.ok) {
-         alert("Biometria sincronizada com sucesso!");
+         showToast("Biometria sincronizada com sucesso!", "success");
          setNewBiometryId('');
          setSyncingId(null);
        }
     } catch (err) {
-      alert("Erro ao sincronizar");
+      showToast("Erro ao sincronizar", "error");
       setSyncingId(null);
     }
   };

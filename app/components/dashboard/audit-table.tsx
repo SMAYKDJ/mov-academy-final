@@ -14,6 +14,31 @@ const mockLogs = [
 
 export function AuditTable() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLogs = async () => {
+    try {
+      const res = await fetch('/api/audit/logs');
+      if (res.ok) {
+        const data = await res.json();
+        setLogs(data);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar logs");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchLogs();
+  }, []);
+
+  const filteredLogs = (logs.length > 0 ? logs : mockLogs).filter(log => 
+    log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (log.user && log.user.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
     <div className="bg-white dark:bg-[#0f1117] rounded-[32px] border border-gray-100 dark:border-[#1e2235] shadow-xl overflow-hidden">
@@ -60,7 +85,7 @@ export function AuditTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-[#1e2235]">
-            {mockLogs.map((log) => (
+            {filteredLogs.map((log) => (
               <tr key={log.id} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-3">
@@ -80,7 +105,7 @@ export function AuditTable() {
                 </td>
                 <td className="px-8 py-5">
                   <span className="px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase border border-gray-200/50 dark:border-white/5">
-                    {log.table}
+                    {log.table || log.table_name || 'Geral'}
                   </span>
                 </td>
                 <td className="px-8 py-5">
@@ -92,9 +117,9 @@ export function AuditTable() {
                   <div className="flex flex-col items-end">
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
                       <Clock className="w-3 h-3" />
-                      {log.time.split(' ')[1]}
+                      {log.time ? log.time.split(' ')[1] : new Date(log.created_at).toLocaleTimeString('pt-BR')}
                     </div>
-                    <span className="text-[10px] text-gray-400 mt-1">{log.time.split(' ')[0]}</span>
+                    <span className="text-[10px] text-gray-400 mt-1">{log.time ? log.time.split(' ')[0] : new Date(log.created_at).toLocaleDateString('pt-BR')}</span>
                   </div>
                 </td>
               </tr>

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, Lock, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/hooks/use-auth';
+import { supabase } from '@/lib/supabase';
 
 interface ResetPasswordModalProps {
   isOpen: boolean;
@@ -32,13 +33,18 @@ export function ResetPasswordModal({ isOpen, onClose, user }: ResetPasswordModal
 
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Sessão expirada. Faça login novamente.');
+
       const response = await fetch('/api/admin/reset-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
         body: JSON.stringify({
           userId: user.id,
           newPassword: password,
-          adminId: currentUser?.id
         })
       });
 

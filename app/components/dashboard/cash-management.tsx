@@ -43,9 +43,8 @@ export function CashManagement() {
   };
 
   useEffect(() => {
-    // Simulação para fins de demonstração inicial
-    setTimeout(() => setLoading(false), 800);
-  }, []);
+    fetchCurrentSession();
+  }, [user]);
 
   const handleOpenCash = async () => {
     if (!openingBalance || isNaN(parseFloat(openingBalance)) || !user) {

@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth-server';
 
 export async function POST(request: Request) {
+  const session = await verifySession(request);
+  if ('error' in session) {
+    return NextResponse.json({ error: session.error }, { status: session.status });
+  }
+
   try {
     const formData = await request.formData();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
@@ -8,6 +14,9 @@ export async function POST(request: Request) {
 
     const response = await fetch(endpoint, {
       method: 'POST',
+      headers: {
+        'Authorization': request.headers.get('Authorization') || ''
+      },
       body: formData,
     });
 

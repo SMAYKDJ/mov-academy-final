@@ -26,14 +26,27 @@ export async function POST(request: Request) {
       }
     });
 
-    // 1. Verificar se quem está pedindo é realmente um CEO ou Admin
-    const { data: adminUser, error: adminError } = await supabaseAdmin
+    // 1. Verificar a identidade do solicitante via JWT (Bearer Token)
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user: requester }, error: authError } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !requester) {
+      return NextResponse.json({ error: 'Sessão inválida' }, { status: 401 });
+    }
+
+    // 2. Verificar se quem está pedindo é realmente um CEO ou Admin
+    const { data: adminProfile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('role')
-      .eq('id', adminId)
+      .eq('id', requester.id)
       .single();
 
-    if (adminError || !['admin', 'ceo'].includes(adminUser?.role)) {
+    if (profileError || !['admin', 'ceo'].includes(adminProfile?.role)) {
       return NextResponse.json({ error: 'Acesso negado. Apenas CEO ou Admin podem resetar senhas.' }, { status: 403 });
     }
 

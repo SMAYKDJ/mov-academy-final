@@ -3,9 +3,11 @@ import requests
 import time
 
 # --- CONFIGURAÇÃO DA CATRACA TOLETUS ---
+# --- CONFIGURAÇÃO DA CONEXÃO ---
 CATRACA_IP = "192.168.1.100"  # IP da Catraca na rede local
 CATRACA_PORTA = 4000          # Porta padrão Toletus
-SERVIDOR_API = "https://academiamoviment.vercel.app/api/access/validate"
+# Use o IP do seu servidor backend (Ex: Render, Railway ou Local)
+SERVIDOR_API = "http://localhost:8000/access/validate" 
 
 # Buffer de comando Toletus Actuar (Liberação de giro 1 sentido)
 # Nota: Este buffer varia conforme a versão do firmware SDK Toletus

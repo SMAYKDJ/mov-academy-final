@@ -27,7 +27,13 @@ import io
 import re
 from supabase import create_client, Client
 from fastapi import FastAPI, HTTPException, UploadFile, File
-from .data.utils import classificar_engajamento, calcular_risco
+try:
+    from .data.utils import classificar_engajamento, calcular_risco
+    from .utils.notifications import send_closure_notification
+except ImportError:
+    from data.utils import classificar_engajamento, calcular_risco
+    from utils.notifications import send_closure_notification
+
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import stripe
@@ -44,7 +50,7 @@ ENCODER_PATH = os.path.join(BASE_DIR, 'models', 'label_encoder.joblib')
 METRICS_PATH = os.path.join(BASE_DIR, 'models', 'metrics.json')
 
 # --- Integração com Supabase ---
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fbbcnazqmkgdrxbdeysr.supabase.co")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://qwxfunbgykcnupalnatu.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "") # Deve ser a Service Role Key para operações de deleção
 
 # --- Configuração do Stripe ---
@@ -80,6 +86,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends
+
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verifica o token JWT do Supabase e retorna o usuário."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Serviço de autenticação indisponível.")
+    
+    token = credentials.credentials
+    try:
+        # Verifica o token diretamente no Supabase
+        res = supabase_client.auth.get_user(token)
+        if not res.user:
+            raise HTTPException(status_code=401, detail="Token inválido ou expirado.")
+        return res.user
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Erro de autenticação: {str(e)}")
 
 # --- Gerenciador de WebSockets (Monitoramento em Tempo Real) ---
 class ConnectionManager:
@@ -360,8 +386,8 @@ async def predict_churn(student: StudentInput):
     """
     return predict_student(student)
 
-@app.post("/predict/churn", response_model=PredictionResult)
-async def predict_churn_risk(data: ChurnInput):
+@app.post("/predict/churn")
+async def predict_churn(data: AlunoInput, user: any = Depends(get_current_user)):
     """Prever o risco de churn usando o modelo baseado em características."""
     # Usar o modelo de 7 características ou o cálculo de score manual
     if model is not None and getattr(model, "n_features_in_", 0) == 7:
@@ -835,6 +861,8 @@ async def close_cash_session(data: CashCloseInput):
             print(f"Erro ao enviar notificação: {notify_err}")
 
         return res_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/finance/expense")
 async def add_expense(data: ExpenseInput):
@@ -955,7 +983,7 @@ async def search_audit_logs(filters: AuditSearchInput):
 # --- Endpoints de Estoque & Suprimentos ---
 
 @app.get("/inventory/products")
-async def list_products():
+async def list_products(user: any = Depends(get_current_user)):
     """Lista todos os produtos no estoque."""
     if not supabase_client:
         raise HTTPException(status_code=503, detail="Supabase não configurado.")
@@ -986,7 +1014,7 @@ async def internal_record_stock_movement(data: StockMovementInput, user_id: str 
     if not supabase_client: return None
     
     # Registrar movimento
-    res = supabase_client.table("inventory_movements").insert(data.dict()).execute()
+    res = supabase_client.table("stock_movements").insert(data.dict()).execute()
     
     # Atualizar saldo (Abstração simplificada, ideal usar RPC increment para atomicidade)
     prod = supabase_client.table("products").select("current_stock, name").eq("id", data.product_id).single().execute()
@@ -1077,7 +1105,20 @@ async def validate_access(payload: dict = Body(...)):
 
     try:
         # 1. Buscar Aluno por Biometry ID ou Tag Principal
-        res = supabase_client.table("alunos").select("*, planos(*)").or_(f"id.eq.{tag_id},biometry_id.eq.{tag_id}").execute()
+        # Se for um ID numérico (biometria), buscamos por biometry_id. 
+        # Se for um formato de UUID, buscamos por ID.
+        is_uuid = False
+        try:
+            import uuid
+            uuid.UUID(str(tag_id))
+            is_uuid = True
+        except:
+            is_uuid = False
+
+        if is_uuid:
+            res = supabase_client.table("alunos").select("*, planos(*)").eq("id", tag_id).execute()
+        else:
+            res = supabase_client.table("alunos").select("*, planos(*)").eq("biometry_id", tag_id).execute()
         
         if not res.data:
             # Caso não encontre pelo ID principal, tenta buscar em um campo customizado se existir
@@ -1106,11 +1147,15 @@ async def validate_access(payload: dict = Body(...)):
         await manager.broadcast(event)
 
         # 4. Registrar no log de auditoria
-        supabase_client.table("audit_logs").insert({
-            "action": "access_attempt",
-            "details": f"Tentativa de acesso: {tag_id} - Status: {status}",
-            "operator_id": aluno["id"] if aluno else None
-        }).execute()
+        try:
+            supabase_client.table("audit_logs").insert({
+                "action": "access_attempt",
+                "details": f"Tentativa de acesso: {tag_id} - Status: {status}",
+                "user_id": str(aluno["id"]) if aluno else "desconhecido",
+                "table_name": "alunos"
+            }).execute()
+        except Exception as e:
+            print(f"⚠️ Alerta: Falha ao gravar log de auditoria: {e}")
 
         return {
             "status": status, 
