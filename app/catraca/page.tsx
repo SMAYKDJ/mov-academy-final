@@ -12,6 +12,7 @@ export default function CatracaMonitorPage() {
   const [lastAccess, setLastAccess] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
+  const audioError = useRef<HTMLAudioElement | null>(null);
   
   const [activeSubTab, setActiveSubTab] = useState<'monitor' | 'sync'>('monitor');
   const [searchStudent, setSearchStudent] = useState('');
