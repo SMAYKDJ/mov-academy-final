@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Loader2, FileUp, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
+import { cn } from '@/utils/cn';
 import { ReportFileList, ProcessReportResponse } from '@/types/report';
 
 export function ImportReportsModal({ onClose }: { onClose: () => void }) {
