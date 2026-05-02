@@ -73,7 +73,7 @@ app = FastAPI(
 # CORS — Permitir acesso ao frontend Next.js
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://*.vercel.app"],
+    allow_origins=["*"], # Permitir todas as origens em produção para evitar bloqueios de domínio customizado
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -264,7 +264,14 @@ def classify_risk(probability: float) -> str:
 def predict_student(student: StudentInput) -> PredictionResult:
     """Executar a previsão para um único aluno."""
     if model is None:
-        raise HTTPException(status_code=503, detail="Modelo não carregado. Execute train_model.py primeiro.")
+        return PredictionResult(
+            student_id=student.student_id,
+            name=student.name,
+            probability=0.0,
+            probability_percent=0.0,
+            risk_level="erro (modelo não carregado)",
+            predicted_at=datetime.now().isoformat(),
+        )
 
     # Codificar plano
     try:

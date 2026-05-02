@@ -20,8 +20,16 @@ import { useAuth } from "@/hooks/use-auth";
 import { Header } from "@/components/layout/header";
 
 export default function StudentAppPage() {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'treino' | 'agenda' | 'progresso' | 'pagar'>('treino');
+    const { user } = useAuth();
+    const [userName, setUserName] = useState('Atleta');
+    const [activeTab, setActiveTab] = useState<'treino' | 'agenda' | 'progresso' | 'pagar'>('treino');
+
+    useEffect(() => {
+      if (user) {
+        const name = user.nome || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Atleta';
+        setUserName(name.split(' ')[0]);
+      }
+    }, [user]);
 
   return (
     <div className="min-h-screen bg-[#080a0f] text-white font-sans pb-24">
@@ -30,11 +38,11 @@ export default function StudentAppPage() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-2xl flex items-center justify-center text-xl font-black shadow-lg shadow-primary-500/20 border border-white/10">
-              {user?.nome ? user.nome[0] : 'A'}
+              {userName[0]}
             </div>
             <div>
               <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Bom dia,</p>
-              <h1 className="text-2xl font-black tracking-tight">{user?.nome?.split(' ')[0] || 'Atleta'} 👋</h1>
+              <h1 className="text-2xl font-black tracking-tight">{userName} 👋</h1>
             </div>
           </div>
           <div className="p-3 bg-white/5 rounded-xl border border-white/5 relative">
@@ -75,7 +83,7 @@ export default function StudentAppPage() {
       </main>
 
       {/* Navegação Inferior (Estilo App Mobile) */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-[#0f1117]/80 backdrop-blur-xl border-t border-white/5 px-6 py-4 flex justify-between items-center z-50">
+      <nav className="fixed bottom-0 left-0 right-0 bg-[#0f1117]/80 backdrop-blur-xl border-t border-white/5 px-6 py-4 flex justify-between items-center z-[40]">
         <NavButton active={activeTab === 'treino'} onClick={() => setActiveTab('treino')} icon={Dumbbell} label="Treino" />
         <NavButton active={activeTab === 'agenda'} onClick={() => setActiveTab('agenda')} icon={Calendar} label="Agenda" />
         <NavButton active={activeTab === 'progresso'} onClick={() => setActiveTab('progresso')} icon={LineChart} label="Evolução" />
