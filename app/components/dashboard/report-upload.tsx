@@ -69,35 +69,35 @@ export function ReportUpload({ onUploadSuccess }: { onUploadSuccess?: () => void
   return (
     <div className="bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-2xl overflow-hidden shadow-sm">
       <div className="p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-2xl shadow-sm shrink-0">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
+          <div className="flex items-center gap-4 bg-gray-50/50 dark:bg-white/5 p-4 rounded-2xl border border-gray-100 dark:border-white/5 flex-1 min-w-0">
+            <div className="p-3 bg-white dark:bg-primary-900/30 rounded-xl shadow-sm shrink-0 border border-gray-100 dark:border-primary-800/30">
               <FileUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight leading-tight">Importar Relatório PDF</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Analise múltiplos alunos de uma vez</p>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight leading-tight truncate">Importar Relatório PDF</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">Analise múltiplos alunos de uma vez</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+          <div className="flex flex-col gap-3 w-full">
             <button
               onClick={() => setShowModal(true)}
-              className="flex-1 sm:flex-none px-6 py-3 bg-white dark:bg-[#1e2235] border border-gray-200 dark:border-[#2e334d] hover:bg-gray-50 dark:hover:bg-[#252a41] text-gray-700 dark:text-gray-300 text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm whitespace-nowrap min-w-[160px]"
+              className="w-full px-5 py-3 bg-white dark:bg-[#1e2235] border border-gray-200 dark:border-[#2e334d] hover:bg-gray-50 dark:hover:bg-[#252a41] text-gray-700 dark:text-gray-300 text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm border-b-2 active:border-b-0 active:translate-y-[1px]"
             >
               <FileText className="w-4 h-4 text-primary-500" />
-              Relatórios Salvos
+              Ver Relatórios Salvos
             </button>
             <button
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
-              className="flex-1 sm:flex-none px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20 whitespace-nowrap min-w-[160px]"
+              className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20 border-b-2 border-primary-800 active:border-b-0 active:translate-y-[1px]"
             >
               {isUploading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Plus className="w-4 h-4" />
               )}
-              Selecionar PDF
+              {isUploading ? 'Processando Documento...' : 'Selecionar Novo PDF'}
             </button>
             <input
               type="file"
