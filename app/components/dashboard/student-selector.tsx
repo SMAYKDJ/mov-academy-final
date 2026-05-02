@@ -23,18 +23,16 @@ export const mockStudents: Student[] = [
 
 interface StudentSelectorProps {
   onSelect?: (student: Student) => void;
-  selectedId?: string | number;
+  selectedId?: string | number | null;
+  students?: any[];
 }
 
-export function StudentSelector({ onSelect, selectedId }: StudentSelectorProps) {
+export function StudentSelector({ onSelect, selectedId, students = [] }: StudentSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   
-  // Usar dados reais do localStorage/Supabase
-  const [alunos] = useLocalStorage<any[]>('moviment-alunos', staticAlunos, 'alunos');
-
   // Mapear dados para o formato do seletor
-  const studentsList = alunos.map(a => ({
+  const studentsList = students.map(a => ({
     id: a.id,
     name: a.nome,
     plan: a.plano

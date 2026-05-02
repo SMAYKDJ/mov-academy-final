@@ -9,20 +9,28 @@ import { TreinoCard } from '@/components/dashboard/treinos/treino-card';
 import { TreinoDrawer } from '@/components/dashboard/treinos/treino-drawer';
 import { MuscleDetailDrawer } from '@/components/dashboard/treinos/muscle-detail-drawer';
 import { TreinoForm } from '@/components/dashboard/treinos/treino-form';
-import { treinosKPIData, muscleMapData, workoutPlansData } from '@/utils/treinos-data';
-import { Plus, Sparkles, UserCircle2 } from 'lucide-react';
+import { useAlunos } from '@/hooks/use-alunos';
+import { Plus, Sparkles, UserCircle2, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
-import { StudentSelector, mockStudents } from '@/components/dashboard/student-selector';
+import { StudentSelector } from '@/components/dashboard/student-selector';
 import { useLocalStorage } from '@/utils/persistence';
 import type { WorkoutPlan, MuscleData } from '@/types/treinos';
 
 export default function TreinosPage() {
   const { showToast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { alunos, loading: loadingAlunos } = useAlunos();
 
-  // Persistência de Dados
-  const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', workoutPlansData, 'treinos');
-  const [selectedStudentId, setSelectedStudentId] = useState(mockStudents[0].id);
+  // Persistência de Dados (Em um sistema real, viria do banco)
+  const [plans, setPlans] = useLocalStorage<WorkoutPlan[]>('moviment-plans', [], 'treinos');
+  const [selectedStudentId, setSelectedStudentId] = useState<string | number | null>(null);
+
+  // Inicializar o aluno selecionado quando carregar
+  useEffect(() => {
+    if (alunos.length > 0 && !selectedStudentId) {
+      setSelectedStudentId(alunos[0].id);
+    }
+  }, [alunos, selectedStudentId]);
 
   // Memoized filtered plans
   const filteredPlans = useMemo(() => {
@@ -100,6 +108,7 @@ export default function TreinosPage() {
             </div>
             <StudentSelector 
               selectedId={selectedStudentId} 
+              students={alunos}
               onSelect={(s) => {
                 setSelectedStudentId(s.id);
                 showToast(`Carregando contexto de treinos para ${s.name}...`, 'info');

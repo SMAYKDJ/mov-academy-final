@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { openWhatsApp, generateWAMessage, notifyManager } from '@/utils/whatsapp-helper';
-import { alunosData } from '@/utils/alunos-data';
+import { useAlunos } from '@/hooks/use-alunos';
 import type { Transaction, TransactionStatus, PaymentMethod } from '@/types/financeiro';
 
 interface TransactionDrawerProps {
@@ -51,6 +51,7 @@ const categoryLabels: Record<string, string> = {
 
 export function TransactionDrawer({ transaction, open, onClose }: TransactionDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
+  const { alunos } = useAlunos();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -193,7 +194,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
               </button>
               <button 
                 onClick={() => {
-                  const student = alunosData.find(s => s.id === txn.alunoId);
+                  const student = alunos.find(s => s.id === txn.alunoId);
                   const phone = student?.telefone || '5521999999999';
                   const msg = generateWAMessage(txn.status === 'atrasado' ? 'cobranca' : 'lembrete', txn.alunoNome || 'Aluno', txn.valor, txn.vencimento);
                   openWhatsApp(phone, msg);
@@ -215,7 +216,7 @@ export function TransactionDrawer({ transaction, open, onClose }: TransactionDra
           {txn.status === 'pago' && txn.alunoId && (
             <button 
               onClick={() => {
-                const student = alunosData.find(s => s.id === txn.alunoId);
+                const student = alunos.find(s => s.id === txn.alunoId);
                 const phone = student?.telefone || '5521999999999';
                 const msgStudent = generateWAMessage('pagamento_confirmado', txn.alunoNome || 'Aluno', txn.valor);
                 

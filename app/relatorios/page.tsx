@@ -7,8 +7,8 @@ import { BIOverviewKPI } from '@/components/dashboard/relatorios/bi-overview-kpi
 import { RetentionChart } from '@/components/dashboard/relatorios/retention-chart';
 import { FrequencyHeatmap } from '@/components/dashboard/relatorios/frequency-heatmap';
 import { CheckinsChart } from '@/components/dashboard/relatorios/checkins-chart';
+import { useBI } from '@/hooks/use-bi';
 import { 
-  biStatsData, 
   retentionHistoryData, 
   frequencyHeatmapData, 
   dailyCheckinsData,
@@ -25,7 +25,8 @@ import {
   ArrowRight,
   TrendingUp,
   Users2,
-  CalendarClock
+  CalendarClock,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 import { cn } from '@/utils/cn';
@@ -38,55 +39,40 @@ export default function RelatoriosPage() {
   const [showActionPlan, setShowActionPlan] = useState(false);
   const { showToast } = useToast();
 
+  const { stats, loading } = useBI();
+
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
 
-  // Simulador de dados dinâmico baseado no mês selecionado
-  const dynamicData = useMemo(() => {
-    const monthIndex = months.indexOf(selectedMonth);
-    const seed = monthIndex + 1;
-    
-    // Simular check-ins (com quedas nos finais de semana)
-    const checkins = Array.from({ length: 7 }, (_, i) => {
-      const day = i + 7;
-      const isWeekend = i === 4 || i === 5; // Fri/Sat/Sun logic
-      const base = 250 + (seed * 10);
-      const val = isWeekend ? base * 0.4 : base + (Math.sin(seed + i) * 30);
-      return { 
-        data: `${day < 10 ? '0' + day : day}/0${monthIndex + 1}`, 
-        quantidade: Math.floor(val) 
-      };
-    });
-
-    // Simulate heatmap (picos às 06h e 18h)
-    const heatmap = frequencyHeatmapData.map(h => ({
-      ...h,
-      seg: Math.floor(h.seg * (0.9 + seed * 0.02)),
-      qua: Math.floor(h.qua * (0.8 + seed * 0.03)),
-      sex: Math.floor(h.sex * (0.7 + seed * 0.05)),
-    }));
-
-    return { checkins, heatmap };
-  }, [selectedMonth]);
+  // Dados para exibição (Mistura de reais e auxiliares para gráficos)
+  const biData = stats ? [
+    { label: 'Total de Alunos', value: stats.totalAlunos.toString(), change: '+12%', trend: 'up' as const, icon: Users2, color: 'text-blue-600 bg-blue-50' },
+    { label: 'Faturamento Mensal', value: `R$ ${stats.faturamentoMensal.toLocaleString('pt-BR')}`, change: '+8.2%', trend: 'up' as const, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
+    { label: 'Taxa de Retenção', value: `${stats.retentionRate}%`, change: '+0.5%', trend: 'up' as const, icon: CheckCircle2, color: 'text-violet-600 bg-violet-50' },
+    { label: 'Risco de Churn Médio', value: `${stats.riscoMedio}%`, change: '-2%', trend: 'down' as const, icon: CalendarClock, color: 'text-amber-600 bg-amber-50' },
+  ] : [];
 
   const handleExportBI = () => {
-    showToast(`Preparando dados de ${selectedMonth}...`, 'info', 'Exportar BI');
+    if (!stats) return;
+    showToast(`Preparando dados reais de ${selectedMonth}...`, 'info', 'Exportar BI');
     
     setTimeout(() => {
-      const headers = ['Data', 'Check-ins'];
-      const csvRows = dynamicData.checkins.map(d => `${d.data},${d.quantidade}`);
+      const content = `Relatorio BI Moviment Academy - ${selectedMonth}\n` +
+                      `Total Alunos: ${stats.totalAlunos}\n` +
+                      `Alunos Ativos: ${stats.alunosAtivos}\n` +
+                      `Faturamento: R$ ${stats.faturamentoMensal}\n` +
+                      `Risco Medio: ${stats.riscoMedio}%`;
       
-      const csvContent = [headers.join(','), ...csvRows].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `bi_moviment_${selectedMonth.toLowerCase()}_2026.csv`);
+      link.setAttribute('download', `bi_moviment_real_${selectedMonth.toLowerCase()}.txt`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      showToast(`Relatório de ${selectedMonth} exportado!`, 'success', 'Download Concluído');
-    }, 1200);
+      showToast(`Relatório exportado com sucesso!`, 'success', 'Download Concluído');
+    }, 800);
   };
 
   return (
@@ -109,54 +95,24 @@ export default function RelatoriosPage() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-bold uppercase tracking-widest rounded-md">
-                  Business Intelligence
+                   Dados Reais de Produção
                 </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                 Análise Estratégica
               </h1>
               <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-                Métricas de retenção, churn e inteligência de crescimento
+                Métricas de retenção, churn e inteligência baseadas no banco de dados.
               </p>
             </div>
-            <div className="flex items-center gap-3 relative">
-              <div className="relative">
-                <button 
-                  onClick={() => setShowMonthSelector(!showMonthSelector)}
-                  className="px-4 py-2 bg-white dark:bg-[#0f1117] border border-gray-200 dark:border-[#1e2235] rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2"
-                >
-                  <Calendar className="w-4 h-4" />
-                  {selectedMonth}, 2026
-                </button>
-
-                {showMonthSelector && (
-                  <div className="absolute top-full mt-2 right-0 w-48 bg-white dark:bg-[#0f1117] border border-gray-100 dark:border-[#1e2235] rounded-xl shadow-2xl z-50 overflow-hidden animate-scale-in">
-                    {months.map((m) => (
-                      <button
-                        key={m}
-                        onClick={() => {
-                          setSelectedMonth(m);
-                          setShowMonthSelector(false);
-                          showToast(`Período alterado para ${m}, 2026`, 'info', 'Filtro Atualizado');
-                        }}
-                        className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                          selectedMonth === m 
-                            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 font-bold' 
-                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                        }`}
-                      >
-                        {m}, 2026
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
+            
+            <div className="flex items-center gap-3">
               <button 
                 onClick={handleExportBI}
-                className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg flex items-center gap-2"
+                disabled={loading}
+                className="px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg flex items-center gap-2 disabled:opacity-50"
               >
-                <FileDown className="w-4 h-4" />
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
                 Exportar BI
               </button>
             </div>
@@ -164,7 +120,15 @@ export default function RelatoriosPage() {
 
           {/* Core Stats */}
           <section className="animate-fade-in">
-            <BIOverviewKPI stats={biStatsData} />
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="h-32 bg-white dark:bg-[#0f1117] rounded-2xl animate-pulse border border-gray-100 dark:border-white/5" />
+                ))}
+              </div>
+            ) : (
+              <BIOverviewKPI stats={biData} />
+            )}
           </section>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">

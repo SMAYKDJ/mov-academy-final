@@ -6,13 +6,13 @@ import { cn } from '@/utils/cn';
 import { EmptyState } from '@/components/ui/empty-state';
 import type { Transaction, TransactionStatus, PaymentMethod } from '@/types/financeiro';
 import { openWhatsApp } from '@/utils/whatsapp-helper';
-import { alunosData } from '@/utils/alunos-data';
 
 type SortField = 'descricao' | 'valor' | 'data' | 'status' | 'metodo';
 type SortDir = 'asc' | 'desc' | null;
 
 interface FinanceiroTableProps {
   data: Transaction[];
+  students?: any[];
   onView: (txn: Transaction) => void;
   onEdit: (txn: Transaction) => void;
   onDelete: (txn: Transaction) => void;
@@ -33,7 +33,7 @@ const metodoLabels: Record<PaymentMethod, string> = {
   debito: 'Débito',
 };
 
-export function FinanceiroTable({ data, onView, onEdit, onDelete }: FinanceiroTableProps) {
+export function FinanceiroTable({ data, students = [], onView, onEdit, onDelete }: FinanceiroTableProps) {
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
@@ -234,7 +234,7 @@ export function FinanceiroTable({ data, onView, onEdit, onDelete }: FinanceiroTa
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            const student = alunosData.find(s => s.id === txn.alunoId);
+                            const student = students.find(s => s.id === txn.alunoId);
                             if (student) openWhatsApp(student.telefone);
                           }}
                           className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/10 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"

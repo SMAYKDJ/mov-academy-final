@@ -8,10 +8,10 @@ import { AlunosFilters } from '@/components/dashboard/alunos/alunos-filters';
 import { AlunosTable } from '@/components/dashboard/alunos/alunos-table';
 import { AlunoDrawer } from '@/components/dashboard/alunos/aluno-drawer';
 import { AlunoForm } from '@/components/dashboard/alunos/aluno-form';
-import { alunosData } from '@/utils/alunos-data';
+import { useAlunos } from '@/hooks/use-alunos';
 import { useToast } from '@/components/ui/toast';
-import { Plus, Download, Upload, Trash2 } from 'lucide-react';
-import { useLocalStorage, exportToCSV } from '@/utils/persistence';
+import { Plus, Download, Upload } from 'lucide-react';
+import { exportToCSV } from '@/utils/persistence';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/utils/cn';
 import type { Aluno, AlunoStatus, AlunosFilterState, AlunoFormData } from '@/types/aluno';
@@ -22,12 +22,11 @@ import type { Aluno, AlunoStatus, AlunosFilterState, AlunoFormData } from '@/typ
 export default function AlunosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [loading] = useState(false);
   const { showToast } = useToast();
   const searchParams = useSearchParams();
 
-  // Estado dos dados com persistência
-  const [alunos, setAlunos, isLoaded] = useLocalStorage<Aluno[]>('moviment-alunos', alunosData, 'alunos');
+  // Estado dos dados reais via Hook
+  const { alunos, loading, saveAluno, deleteAluno, fetchAlunos } = useAlunos();
 
   // Estado dos filtros
   const [filters, setFilters] = useState<AlunosFilterState>({
@@ -50,7 +49,7 @@ export default function AlunosPage() {
     return () => clearTimeout(timer);
   }, [filters.search]);
 
-  // Lógica de filtragem
+  // Lógica de filtragem (ainda feita no client para performance de busca instantânea)
   const filtered = useMemo(() => {
     return alunos.filter(a => {
       // Busca
@@ -69,26 +68,9 @@ export default function AlunosPage() {
       // Plano
       if (filters.plano !== 'todos' && a.plano !== filters.plano) return false;
 
-      // Período (filtros pré-definidos)
-      if (filters.periodo) {
-        const parts = a.dataMatricula.split('/');
-        const day = parseInt(parts[0]);
-        const month = parseInt(parts[1]) - 1;
-        const year = parseInt(parts[2]);
-        const matriculaDate = new Date(year, month, day);
-        const today = new Date();
-        const diffTime = Math.abs(today.getTime() - matriculaDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (filters.periodo === '7d' && diffDays > 7) return false;
-        if (filters.periodo === '30d' && diffDays > 30) return false;
-        if (filters.periodo === '90d' && diffDays > 90) return false;
-        if (filters.periodo === '365d' && diffDays > 365) return false;
-      }
-
       return true;
     });
-  }, [alunos, debouncedSearch, filters.status, filters.plano, filters.periodo]);
+  }, [alunos, debouncedSearch, filters.status, filters.plano]);
 
   // Manipuladores
   const handleView = useCallback((aluno: Aluno) => {
@@ -101,20 +83,22 @@ export default function AlunosPage() {
     setFormOpen(true);
   }, []);
 
-  const handleDelete = useCallback((aluno: Aluno) => {
-    if (confirm(`Tem certeza que deseja excluir ${aluno.nome}?`)) {
-      setAlunos(prev => prev.filter(a => a.id !== aluno.id));
-      showToast(`${aluno.nome} foi removido com sucesso`, 'success', 'Aluno Excluído');
-      setDrawerOpen(false);
-      setSelectedAluno(null);
+  const handleDelete = useCallback(async (aluno: Aluno) => {
+    if (confirm(`Tem certeza que deseja excluir permanentemente ${aluno.nome}? Esta ação não pode ser desfeita no banco de dados.`)) {
+      const success = await deleteAluno(aluno.id);
+      if (success) {
+        setDrawerOpen(false);
+        setSelectedAluno(null);
+      }
     }
-  }, [setAlunos, showToast]);
+  }, [deleteAluno]);
 
-  const handleStatusChange = useCallback((aluno: Aluno, status: AlunoStatus) => {
-    setAlunos(prev => prev.map(a => a.id === aluno.id ? { ...a, status } : a));
-    const label = status === 'inativo' ? 'inativado' : status === 'ativo' ? 'reativado' : 'atualizado';
-    showToast(`${aluno.nome} foi ${label} com sucesso`, 'success', 'Status Alterado');
-  }, [setAlunos, showToast]);
+  const handleStatusChange = useCallback(async (aluno: Aluno, status: AlunoStatus) => {
+    const success = await saveAluno({ ...aluno, status } as any, aluno.id);
+    if (success) {
+      showToast(`${aluno.nome} agora está ${status}`, 'success');
+    }
+  }, [saveAluno, showToast]);
 
   const handleNewAluno = useCallback(() => {
     setEditingAluno(null);
@@ -123,7 +107,7 @@ export default function AlunosPage() {
 
   // Deep linking para notificações e novos alunos
   useEffect(() => {
-    if (!isLoaded) return;
+    if (loading) return;
     
     const q = searchParams.get('search');
     const id = searchParams.get('id');
@@ -143,10 +127,9 @@ export default function AlunosPage() {
 
     if (isNew) {
       handleNewAluno();
-      // Limpar a URL sem recarregar a página (opcional, mas bom para UX)
       window.history.replaceState({}, '', '/alunos');
     }
-  }, [searchParams, isLoaded, alunos, handleNewAluno]);
+  }, [searchParams, loading, alunos, handleNewAluno]);
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

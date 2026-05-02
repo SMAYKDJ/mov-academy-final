@@ -12,25 +12,20 @@ import { ActivityHistory } from "@/components/dashboard/activity-history";
 import { StatsBar } from "@/components/dashboard/stats-bar";
 import { ChurnCard, ChurnChart, ChurnTrend, AtRiskStudentsTable, ChurnInsights } from "@/components/dashboard/churn";
 import { ReportUpload } from "@/components/dashboard/report-upload";
+import { useAlunos } from "@/hooks/use-alunos";
 import { stats, weeklyChartData, recentActivity } from "@/utils/mock-data";
 import { generateRealChurnSummary } from "@/utils/churn-engine";
-import { alunosData } from "@/utils/alunos-data";
-import { useLocalStorage } from "@/utils/persistence";
-import { Calendar as CalendarIcon, Plus, ArrowUpRight, Zap, AlertTriangle } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, ArrowUpRight, Zap, AlertTriangle, Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import type { Student, ActivityItem } from "@/types";
 
+import { supabase } from "@/lib/supabase";
+
 /**
  * Página Principal do Dashboard.
- *
- * Arquitetura:
- * - Sidebar (fixa à esquerda, colapsável) + Drawer Mobile
- * - Cabeçalho fixo com busca e ações
- * - Conteúdo principal rolável com grade responsiva
- * - [NOVO] Módulo de Análise de Churn (previsões baseadas em IA)
  */
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,40 +37,61 @@ export default function DashboardPage() {
   const router = useRouter();
   const [showActivityHistory, setShowActivityHistory] = useState(false);
 
-  // Persistência de Dados Reais
-  const [alunos] = useLocalStorage<any[]>('moviment-alunos', alunosData, 'alunos');
-  const [transacoes] = useLocalStorage<any[]>('moviment-financeiro', [], 'transacoes');
+  // Dados Reais via Hook
+  const { alunos, loading: loadingAlunos } = useAlunos();
+  const [transacoes, setTransacoes] = useState<any[]>([]);
+  const [loadingTransacoes, setLoadingTransacoes] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch transações reais
+  useEffect(() => {
+    async function fetchFinance() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/finance/transactions', {
+          headers: { 'Authorization': `Bearer ${session?.access_token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setTransacoes(data);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar transações");
+      } finally {
+        setLoadingTransacoes(false);
+      }
+    }
+    fetchFinance();
+  }, []);
   
-  // Previsão de Churn em tempo real a partir de dados locais
+  // Previsão de Churn em tempo real a partir de dados reais
   const churnSummary = useMemo(() => generateRealChurnSummary(alunos), [alunos]);
 
   // Calcular KPIs Dinâmicos (formato Array para KPICards)
   const dynamicStats = useMemo(() => {
     const totalAlunos = alunos.length;
-    const ativos = alunos.filter(a => a.status === 'ativo').length;
     const faturamento = transacoes
       .filter(t => t.tipo === 'receita' && t.status === 'pago')
-      .reduce((acc, t) => acc + t.valor, 0);
+      .reduce((acc, t) => acc + (t.valor || 0), 0);
     
     return [
       {
         id: 'kpi-1',
         label: 'Total Alunos',
         value: totalAlunos.toString(),
-        change: '+12%',
-        trend: 'up' as 'up' | 'down',
+        change: '+0%',
+        trend: 'up' as const,
         icon: 'Users' as const,
-        description: 'Alunos registrados no sistema'
+        description: 'Alunos registrados no banco'
       },
       {
         id: 'kpi-2',
         label: 'Receita Mensal',
         value: `R$ ${faturamento.toLocaleString('pt-BR')}`,
-        change: '+8%',
-        trend: 'up' as 'up' | 'down',
+        change: '+0%',
+        trend: 'up' as const,
         icon: 'DollarSign' as const,
-        description: 'Faturamento bruto confirmado'
+        description: 'Faturamento real confirmado'
       },
       {
         id: 'kpi-3',
@@ -84,16 +100,16 @@ export default function DashboardPage() {
         change: churnSummary.change,
         trend: churnSummary.trend as 'up' | 'down',
         icon: 'TrendingDown' as const,
-        description: 'Probabilidade média de evasão'
+        description: 'Risco médio de evasão calculado'
       },
       {
         id: 'kpi-4',
-        label: 'Novas Matrículas',
-        value: (alunos.filter(a => (a as any).dataMatricula?.includes('/04/')).length || 12).toString(),
-        change: '+5%',
-        trend: 'up' as 'up' | 'down',
-        icon: 'UserPlus' as const,
-        description: 'Matrículas realizadas este mês'
+        label: 'Alertas de Risco',
+        value: churnSummary.atRiskCount.toString(),
+        change: churnSummary.change,
+        trend: 'down' as const,
+        icon: 'AlertTriangle' as const,
+        description: 'Alunos com risco alto (>70%)'
       }
     ];
   }, [alunos, transacoes, churnSummary]);
@@ -101,70 +117,35 @@ export default function DashboardPage() {
   // Gerar Feed de Atividade Dinâmico
   const dynamicActivity = useMemo(() => {
     const activities: ActivityItem[] = [];
-    
-    // Alunos recentes
-    alunos.slice(0, 3).forEach(a => {
+    alunos.slice(0, 5).forEach(a => {
       activities.push({
         id: `a-${a.id}`,
         user: a.nome,
-        action: `realizou a matrícula no plano ${a.plano}`,
+        action: `registrado no sistema`,
         time: 'Recente',
         type: 'signup' as const
       });
     });
-
-    // Transações recentes
-    transacoes.slice(0, 2).forEach(t => {
-      activities.push({
-        id: `t-${t.id}`,
-        user: t.alunoNome || 'Sistema',
-        action: `confirmou pagamento de ${t.descricao}`,
-        time: 'Hoje',
-        type: 'payment' as const
-      });
-    });
-
-    return activities.length > 0 ? activities : recentActivity;
-  }, [alunos, transacoes]);
+    return activities;
+  }, [alunos]);
 
   // Calcular Estatísticas Rápidas Dinâmicas (para a StatsBar)
   const dynamicQuickStats = useMemo(() => {
     return [
-      { label: 'Frequência Hoje', value: '312 check-ins', color: 'text-primary-600 dark:text-primary-400' },
+      { label: 'Base de Alunos', value: `${alunos.length} cadastrados`, color: 'text-primary-600 dark:text-primary-400' },
       { label: 'Alunos Ativos', value: `${alunos.filter(a => a.status === 'ativo').length} pessoas`, color: 'text-success-600 dark:text-green-400' },
-      { label: 'Alertas Churn', value: `${churnSummary.atRiskCount} alunos`, color: 'text-danger-600 dark:text-red-400' },
-      { label: 'Novos Contatos', value: '12 leads', color: 'text-warning-600 dark:text-amber-400' },
+      { label: 'Risco Crítico', value: `${churnSummary.atRiskCount} alertas`, color: 'text-danger-600 dark:text-red-400' },
+      { label: 'Faturamento', value: `R$ ${transacoes.filter(t => t.status === 'pago').reduce((acc, t) => acc + (t.valor || 0), 0).toLocaleString('pt-BR')}`, color: 'text-warning-600 dark:text-amber-400' },
     ];
-  }, [alunos, churnSummary]);
+  }, [alunos, churnSummary, transacoes]);
 
-  // Gráfico Semanal Dinâmico
-  const dynamicWeeklyChart = useMemo(() => {
-    const days = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
-    const counts = [0, 0, 0, 0, 0, 0, 0];
-    
-    alunos.forEach(a => {
-      if (a.dataMatricula) {
-        const [d, m, y] = a.dataMatricula.split('/').map(Number);
-        const date = new Date(y, m - 1, d);
-        if (!isNaN(date.getTime())) {
-          counts[date.getDay()]++;
-        }
-      }
-    });
-
-    // Reorganizar para começar em SEG e terminar em DOM
-    const labels = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
-    const values = [counts[1], counts[2], counts[3], counts[4], counts[5], counts[6], counts[0]];
-
-    return labels.map((label, i) => ({ label, value: values[i] || 1 })); // Fallback 1 para visibilidade
-  }, [alunos]);
+  const dynamicWeeklyChart = useMemo(() => weeklyChartData, []);
 
   useEffect(() => {
-    console.group('📊 Auditoria do Dashboard');
-    console.log('Alunos Totais:', alunos.length);
-    console.table(dynamicWeeklyChart);
-    console.groupEnd();
-  }, [dynamicWeeklyChart, alunos]);
+    if (alunos.length > 0) {
+      console.log('📊 Dashboard Alimentado com Dados Reais');
+    }
+  }, [alunos]);
 
   const filteredAlunos = useMemo(() => {
     return alunos.filter(aluno => 

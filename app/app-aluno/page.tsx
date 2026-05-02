@@ -19,29 +19,62 @@ import { supabase } from '@/lib/supabase';
 
 export default function StudentDashboardPage() {
   const [userName, setUserName] = React.useState('Aluno');
-  const workout = currentWorkout;
-  const stats = studentStats;
-  const progress = (workout.exercicios.filter(e => e.concluido).length / workout.exercicios.length) * 100;
+  const [stats, setStats] = React.useState({
+    treinosNoMes: 0,
+    sequenciaAtual: 0,
+    peso: 0,
+  });
+  const [workout, setWorkout] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    async function fetchUser() {
+    async function fetchData() {
+      setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // 1. Perfil
         const { data: profile } = await supabase
           .from('profiles')
-          .select('full_name')
+          .select('*')
           .eq('id', user.id)
           .maybeSingle();
         
-        if (profile?.full_name) {
-          setUserName(profile.full_name.split(' ')[0]);
-        } else if (user.email) {
-          setUserName(user.email.split('@')[0]);
+        if (profile) {
+          setUserName(profile.nome || profile.full_name?.split(' ')[0] || 'Aluno');
+          setStats({
+            treinosNoMes: profile.treinos_mes || 0,
+            sequenciaAtual: profile.sequencia || 0,
+            peso: profile.peso || 0,
+          });
+        }
+
+        // 2. Treino de Hoje (Busca o mais recente ou do dia)
+        const { data: workouts } = await supabase
+          .from('workouts')
+          .select('*')
+          .eq('user_id', user.id)
+          .limit(1)
+          .order('created_at', { ascending: false });
+        
+        if (workouts && workouts.length > 0) {
+          setWorkout(workouts[0]);
         }
       }
+      setLoading(false);
     }
-    fetchUser();
+    fetchData();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <Zap className="w-10 h-10 text-primary-500 animate-pulse" />
+        <p className="text-gray-500 font-bold animate-pulse">Carregando seu progresso...</p>
+      </div>
+    );
+  }
+
+  const progress = workout?.exercicios ? (workout.exercicios.filter((e: any) => e.concluido).length / workout.exercicios.length) * 100 : 0;
 
   return (
     <div className="space-y-6">
@@ -78,43 +111,49 @@ export default function StudentDashboardPage() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-base font-bold text-gray-900 dark:text-white">Treino de Hoje</h3>
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">45-60 min</span>
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Plano Ativo</span>
         </div>
         
-        <Link 
-          href="/app-aluno/treinos"
-          className="block group relative overflow-hidden bg-gradient-to-br from-primary-600 to-indigo-700 rounded-[32px] p-6 text-white shadow-xl shadow-primary-200 dark:shadow-none"
-        >
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-0.5 bg-white/20 rounded-md text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
-                Treino {workout.tipo}
-              </span>
-            </div>
-            <h4 className="text-xl font-bold mb-4">{workout.titulo}</h4>
-            
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex justify-between text-[10px] font-bold mb-1 opacity-80 uppercase tracking-wider">
-                  <span>Progresso</span>
-                  <span>{Math.round(progress)}%</span>
+        {workout ? (
+          <Link 
+            href="/app-aluno/treinos"
+            className="block group relative overflow-hidden bg-gradient-to-br from-primary-600 to-indigo-700 rounded-[32px] p-6 text-white shadow-xl shadow-primary-200 dark:shadow-none"
+          >
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="px-2 py-0.5 bg-white/20 rounded-md text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+                  Treino {workout.tipo || 'A'}
+                </span>
+              </div>
+              <h4 className="text-xl font-bold mb-4">{workout.titulo || workout.nome}</h4>
+              
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex justify-between text-[10px] font-bold mb-1 opacity-80 uppercase tracking-wider">
+                    <span>Progresso</span>
+                    <span>{Math.round(progress)}%</span>
+                  </div>
+                  <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-white transition-all duration-1000"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-white transition-all duration-1000"
-                    style={{ width: `${progress}%` }}
-                  />
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-primary-600 shadow-xl group-hover:scale-110 transition-transform">
+                  <Play className="w-5 h-5 fill-current ml-0.5" />
                 </div>
               </div>
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-primary-600 shadow-xl group-hover:scale-110 transition-transform">
-                <Play className="w-5 h-5 fill-current ml-0.5" />
-              </div>
             </div>
+            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          </Link>
+        ) : (
+          <div className="bg-gray-100 dark:bg-white/5 rounded-[32px] p-8 text-center border-2 border-dashed border-gray-200 dark:border-white/5">
+            <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500 font-bold">Nenhum treino prescrito para hoje.</p>
+            <p className="text-[10px] text-gray-400 uppercase mt-1">Fale com seu instrutor</p>
           </div>
-          
-          {/* Decoração abstrata */}
-          <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-        </Link>
+        )}
       </section>
 
       {/* 4. Visualização Semanal */}
@@ -125,17 +164,18 @@ export default function StudentDashboardPage() {
         </div>
         <div className="flex justify-between items-center gap-2 px-1">
           {['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((day, i) => {
-            const completed = [0, 2, 4].includes(i); // seg, qua, sex
-            const isToday = i === 1; // ter
+            const today = new Date().getDay();
+            const dayMap = [0, 1, 2, 3, 4, 5, 6]; // D S T Q Q S S
+            const isToday = (today === 0 ? 6 : today - 1) === i;
+            
             return (
               <div key={i} className="flex flex-col items-center gap-3">
                 <span className={cn("text-[9px] font-bold", isToday ? "text-primary-600" : "text-gray-400")}>{day}</span>
                 <div className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-                  completed ? "bg-emerald-500 text-white shadow-lg shadow-emerald-100 dark:shadow-none" : 
                   isToday ? "border-2 border-primary-600 text-primary-600" : "bg-gray-50 dark:bg-gray-800 text-gray-300"
                 )}>
-                  {completed ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-1 h-1 rounded-full bg-current" />}
+                   <div className="w-1 h-1 rounded-full bg-current" />
                 </div>
               </div>
             );
@@ -145,19 +185,25 @@ export default function StudentDashboardPage() {
 
       {/* 5. Ações Rápidas */}
       <section className="grid grid-cols-1 gap-3 pb-8">
-        <button className="flex items-center justify-between p-5 bg-white dark:bg-[#0f1117] rounded-3xl border border-gray-100 dark:border-[#1e2235] hover:bg-gray-50 transition-all group">
+        <Link 
+          href="/app-aluno/perfil"
+          className="flex items-center justify-between p-5 bg-white dark:bg-[#0f1117] rounded-3xl border border-gray-100 dark:border-[#1e2235] hover:bg-gray-50 transition-all group"
+        >
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center">
               <Clock className="w-5 h-5 text-blue-600" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-gray-900 dark:text-white">Histórico de Acessos</p>
-              <p className="text-[10px] text-gray-400">Ver suas últimas visitas</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">Seu Perfil</p>
+              <p className="text-[10px] text-gray-400">Ver seus dados e plano</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-primary-500 transition-colors" />
-        </button>
+        </Link>
       </section>
+    </div>
+  );
+}
     </div>
   );
 }

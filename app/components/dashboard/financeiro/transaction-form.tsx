@@ -4,8 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { X, Save, AlertCircle, Search, User } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { Transaction, TransactionType, TransactionStatus, PaymentMethod, RevenueCategory, ExpenseCategory } from '@/types/financeiro';
-import { useLocalStorage } from '@/utils/persistence';
-import { alunosData as staticAlunos } from '@/utils/alunos-data';
+import { useAlunos } from '@/hooks/use-alunos';
 
 interface TransactionFormProps {
   open: boolean;
@@ -15,8 +14,8 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ open, transaction, onClose, onSave }: TransactionFormProps) {
-  // Carregar dados reais do Supabase/LocalStorage
-  const [alunos] = useLocalStorage<any[]>('moviment-alunos', staticAlunos, 'alunos');
+  // Dados reais via Hook
+  const { alunos } = useAlunos();
 
   const [formData, setFormData] = useState({
     tipo: 'receita' as TransactionType,
