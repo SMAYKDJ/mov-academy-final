@@ -15,15 +15,51 @@ const mockProducts = [
 export function InventoryManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeSubTab, setActiveSubTab] = useState<'produtos' | 'compras'>('produtos');
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  const mockPurchases = [
-    { id: 'OC-001', supplier: 'Brilho Total', status: 'Recebido', date: '2026-05-01', total: 450.00 },
-    { id: 'OC-002', supplier: 'Metalúrgica Silva', status: 'Pendente', date: '2026-05-02', total: 1250.00 },
-  ];
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/inventory/products');
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar estoque");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const criticalItems = products.filter(p => p.current_stock <= p.min_stock);
 
   return (
     <div className="space-y-6">
+      {/* Alerta de Estoque Crítico */}
+      {criticalItems.length > 0 && (
+        <div className="p-4 bg-red-500 text-white rounded-2xl shadow-lg shadow-red-500/20 flex items-center justify-between animate-pulse">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-6 h-6" />
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest">Atenção: Estoque Crítico</p>
+              <p className="text-[10px] font-bold opacity-90">Existem {criticalItems.length} itens abaixo do limite mínimo de segurança.</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setSearchTerm('baixo')}
+            className="px-4 py-2 bg-white text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all"
+          >
+            Ver Itens
+          </button>
+        </div>
+      )}
+
       {/* Sub-Navegação de Estoque */}
       <div className="flex gap-4 border-b border-gray-100 dark:border-white/5 pb-1">
         <button 
@@ -131,12 +167,15 @@ export function InventoryManagement() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-[#1e2235]">
-                {mockProducts.map((product) => (
-                  <tr key={product.id} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                {products.map((product) => (
+                  <tr key={product.id} className={cn(
+                    "group hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors",
+                    product.current_stock <= product.min_stock && "bg-red-50/30 dark:bg-red-900/5"
+                  )}>
                     <td className="px-8 py-5">
                       <div>
                         <p className="text-sm font-bold text-gray-900 dark:text-white">{product.name}</p>
-                        <p className="text-[10px] text-gray-500 font-medium mt-0.5">{product.supplier}</p>
+                        <p className="text-[10px] text-gray-500 font-medium mt-0.5">{product.sku}</p>
                       </div>
                     </td>
                     <td className="px-8 py-5">
@@ -150,22 +189,22 @@ export function InventoryManagement() {
                           <div 
                             className={cn(
                               "h-full transition-all",
-                              product.stock <= product.min_stock ? "bg-red-500" : "bg-emerald-500"
+                              product.current_stock <= product.min_stock ? "bg-red-500" : "bg-emerald-500"
                             )}
-                            style={{ width: `${Math.min((product.stock / (product.min_stock * 2)) * 100, 100)}%` }}
+                            style={{ width: `${Math.min((product.current_stock / (product.min_stock * 2)) * 100, 100)}%` }}
                           />
                         </div>
                         <span className={cn(
                           "text-xs font-black",
-                          product.stock <= product.min_stock ? "text-red-600" : "text-gray-900 dark:text-white"
+                          product.current_stock <= product.min_stock ? "text-red-600" : "text-gray-900 dark:text-white"
                         )}>
-                          {product.stock} un
+                          {product.current_stock} un
                         </span>
                       </div>
                     </td>
                     <td className="px-8 py-5">
                       <p className="text-sm font-bold text-gray-900 dark:text-white">
-                        R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {(product.unit_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </p>
                     </td>
                     <td className="px-8 py-5 text-right">

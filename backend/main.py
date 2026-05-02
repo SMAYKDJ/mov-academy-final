@@ -255,6 +255,13 @@ class InvoiceInput(BaseModel):
     supplier_id: str
     items: list[dict]
 
+class ExpenseInput(BaseModel):
+    category_id: str
+    amount: float = Field(..., gt=0)
+    description: str
+    due_date: Optional[str] = None
+    status: str = "pago" # ou pendente
+
 
 
 # --- Funções Auxiliares ---
@@ -795,6 +802,51 @@ async def close_cash_session(data: CashCloseInput):
                 "operator_id": session_data.data["user_id"],
                 "closed_at": datetime.now().isoformat()
             }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/finance/expense")
+async def add_expense(data: ExpenseInput):
+    """Registra uma despesa fixa ou variável no financeiro."""
+    if not supabase_client: return {"status": "error"}
+    try:
+        res = supabase_client.table("finance_transactions").insert({
+            "category_id": data.category_id,
+            "type": "despesa",
+            "amount": data.amount,
+            "description": data.description,
+            "payment_method": "caixa",
+            "transaction_date": datetime.now().date().isoformat()
+        }).execute()
+        return {"status": "success", "data": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/finance/dre")
+async def get_dre_summary(period: str = "month"):
+    """Calcula o Demonstrativo de Resultados (DRE) para o período."""
+    if not supabase_client: return {"status": "error"}
+    try:
+        # 1. Buscar transações financeiras (Receitas vs Despesas)
+        txs = supabase_client.table("finance_transactions").select("*").execute()
+        
+        revenue = sum(float(t["amount"]) for t in txs.data if t["type"] == "receita")
+        expenses = sum(float(t["amount"]) for t in txs.data if t["type"] == "despesa")
+        
+        # 2. Buscar compras de estoque (saídas de capital)
+        # (Nesta versão simplificada estamos usando finance_transactions para tudo)
+        
+        net_profit = revenue - expenses
+        margin = (net_profit / revenue * 100) if revenue > 0 else 0
+        
+        return {
+            "period": period,
+            "revenue": revenue,
+            "expenses": expenses,
+            "net_profit": net_profit,
+            "margin": margin,
+            "tx_count": len(txs.data)
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

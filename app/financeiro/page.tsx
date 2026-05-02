@@ -7,12 +7,13 @@ import { CashManagement } from "@/components/dashboard/cash-management";
 import { InventoryManagement } from "@/components/dashboard/inventory-management";
 import { AuditTable } from "@/components/dashboard/audit-table";
 import { cn } from "@/utils/cn";
-import { DollarSign, ShieldCheck, History, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
+import { DollarSign, ShieldCheck, History, ArrowUpCircle, ArrowDownCircle, TrendingUp } from "lucide-react";
+import { DRESummary } from "@/components/dashboard/dre-summary";
 
 export default function FinanceiroPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'caixa' | 'auditoria' | 'estoque'>('caixa');
+  const [activeTab, setActiveTab] = useState<'caixa' | 'auditoria' | 'estoque' | 'dre'>('caixa');
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-[#080a0f]">
@@ -78,6 +79,18 @@ export default function FinanceiroPage() {
                 <ShieldCheck className="w-4 h-4" />
                 Auditoria
               </button>
+              <button
+                onClick={() => setActiveTab('dre')}
+                className={cn(
+                  "px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2",
+                  activeTab === 'dre' 
+                    ? "bg-white dark:bg-primary-600 text-primary-600 dark:text-white shadow-sm" 
+                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                )}
+              >
+                <TrendingUp className="w-4 h-4" />
+                DRE / Lucro
+              </button>
             </div>
           </div>
 
@@ -86,8 +99,10 @@ export default function FinanceiroPage() {
               <CashManagement />
             ) : activeTab === 'estoque' ? (
               <InventoryManagement />
-            ) : (
+            ) : activeTab === 'auditoria' ? (
               <AuditTable />
+            ) : (
+              <DRESummary />
             )}
           </div>
         </main>
