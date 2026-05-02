@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { cn } from "@/utils/cn";
-import { ShieldCheck, ShieldAlert, Wifi, WifiOff, User, Clock, Activity } from "lucide-react";
+import { ShieldCheck, ShieldAlert, Wifi, WifiOff, User, Clock, Activity, Loader2, Save } from "lucide-react";
 
 export default function CatracaMonitorPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
