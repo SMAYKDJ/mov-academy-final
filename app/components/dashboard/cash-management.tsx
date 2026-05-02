@@ -213,8 +213,6 @@ export function CashManagement() {
                     R$ {session.opening_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
-                  </p>
-                </div>
                 <button
                   onClick={handleCloseCash}
                   disabled={actionLoading}
