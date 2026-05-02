@@ -1076,8 +1076,8 @@ async def validate_access(payload: dict = Body(...)):
         raise HTTPException(status_code=503, detail="Banco de dados offline")
 
     try:
-        # 1. Buscar Aluno por ID ou Tag (na Moviment Academy usamos o ID do Supabase como identificador da Tag)
-        res = supabase_client.table("alunos").select("*, planos(*)").eq("id", tag_id).execute()
+        # 1. Buscar Aluno por Biometry ID ou Tag Principal
+        res = supabase_client.table("alunos").select("*, planos(*)").or_(f"id.eq.{tag_id},biometry_id.eq.{tag_id}").execute()
         
         if not res.data:
             # Caso não encontre pelo ID principal, tenta buscar em um campo customizado se existir
