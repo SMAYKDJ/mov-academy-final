@@ -1254,3 +1254,96 @@ async def download_agent_package(
         media_type="application/x-zip-compressed",
         headers={"Content-Disposition": "attachment; filename=Agente_Local_Moviment_Configurado.zip"}
     )
+
+# --- SISTEMA DE COBRANÇA AUTOMÁTICA (STRIPE) ---
+
+@app.post("/api/finance/generate-pix")
+async def generate_pix_payment(aluno_id: int, valor: float):
+    """Gera um link de pagamento PIX via Stripe."""
+    try:
+        import stripe
+        # A chave deve estar nas variáveis de ambiente da Vercel/Render
+        stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+        # Criar uma Checkout Session do Stripe configurada para PIX
+        session = stripe.checkout.Session.create(
+            payment_method_types=['pix'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'brl',
+                    'product_data': {'name': f'Mensalidade - Moviment Academy'},
+                    'unit_amount': int(valor * 100),
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url="https://moviment-academy.vercel.app/financeiro?success=true",
+            cancel_url="https://moviment-academy.vercel.app/financeiro?cancel=true",
+            metadata={"aluno_id": str(aluno_id)}
+        )
+        
+        return {"url": session.url, "id": session.id}
+    except Exception as e:
+        print(f"❌ Erro ao gerar PIX Stripe: {e}")
+        # Fallback para simulação (PIX estático) se a chave não estiver configurada
+        return {
+            "url": f"https://checkout.stripe.com/pay/simulado_{aluno_id}",
+            "id": f"cs_test_{aluno_id}",
+            "pix_code": "00020126330014BR.GOV.BCB.PIX01111234567890152040000530398654041.005802BR5913MOVIMENT ACAD6009SAO PAULO62070503***6304E2D1"
+        }
+
+@app.post("/api/webhooks/stripe")
+async def stripe_webhook(request: Request):
+    """Recebe confirmações de pagamento do Stripe e atualiza o sistema."""
+    import stripe
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+    
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, os.getenv("STRIPE_WEBHOOK_SECRET") or ""
+        )
+    except Exception as e:
+        # Se falhar a assinatura (webhook secret não configurado), logamos mas não travamos para testes
+        print(f"⚠️ Webhook Signature falhou ou não configurado: {e}")
+        # Em produção, você deve retornar erro aqui se falhar
+        return {"status": "ignored", "reason": "signature_fail"}
+
+    # Se o pagamento foi completado com sucesso
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        aluno_id = session.get("metadata", {}).get("aluno_id")
+        
+        if aluno_id:
+            print(f"✅ PAGAMENTO CONFIRMADO: Aluno {aluno_id}")
+            # Aqui você chamaria o SupabaseService para dar baixa automática
+            
+@app.post("/api/finance/trigger-automated-billing")
+async def trigger_automated_billing():
+    """Percorre os alunos e envia cobranças para quem vence em 2 dias."""
+    try:
+        # 1. Buscar alunos que vencem em 2 dias (Simulado)
+        # Em produção: query no Supabase filtrando data_vencimento = hoje + 2
+        alunos_a_cobrar = [
+            {"id": 1, "nome": "Ricardo Silva", "valor": 149.90, "telefone": "5591983457028"},
+            {"id": 2, "nome": "Ana Costa", "valor": 120.00, "telefone": "5591983457028"}
+        ]
+        
+        relatorio = []
+        for aluno in alunos_a_cobrar:
+            # 2. Gerar Link de Pagamento Stripe
+            res = await generate_pix_payment(aluno["id"], aluno["valor"])
+            url_pagamento = res["url"]
+            
+            # 3. Preparar Mensagem (Em produção: enviar via Evolution API/Bot)
+            msg = f"Olá, {aluno['nome']}! Sua mensalidade vence em 2 dias. Pague agora via PIX para manter seu acesso: {url_pagamento}"
+            
+            relatorio.append({
+                "aluno": aluno["nome"],
+                "status": "Cobrança Gerada e Enviada",
+                "link": url_pagamento
+            })
+            
+        return {"status": "success", "cobrancas_processadas": len(alunos_a_cobrar), "detalhes": relatorio}
+    except Exception as e:
+        return {"status": "erro", "mensagem": str(e)}

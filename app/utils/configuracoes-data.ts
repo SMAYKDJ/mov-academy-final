@@ -27,7 +27,7 @@ export const systemUsersData: SystemUser[] = [
 
 export const integrationsData: IntegrationConfig[] = [
   { id: 'int-1', nome: 'Webhook de Pagamentos', tipo: 'webhook', status: 'ativo', url: 'https://api.movimentacademy.com/webhooks/payments' },
-  { id: 'int-2', nome: 'API REST', tipo: 'api', status: 'ativo', apiKey: 'mvmt_live_sk_a1b2c3d4e5f6g7h8i9j0' },
+  { id: 'int-2', nome: 'Stripe (PIX & Cartão)', tipo: 'api', status: 'inativo' },
   { id: 'int-3', nome: 'WhatsApp Business', tipo: 'whatsapp', status: 'inativo' },
   { id: 'int-4', nome: 'Notificações E-mail', tipo: 'email', status: 'ativo' },
 ];

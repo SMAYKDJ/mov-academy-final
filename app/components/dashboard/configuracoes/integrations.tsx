@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/toast';
 import type { IntegrationConfig } from '@/types/configuracoes';
 
 import { WhatsAppSettings } from './whatsapp-settings';
+import { StripeSettings } from './stripe-settings';
 
 interface IntegrationsProps { integrations: IntegrationConfig[]; }
 
@@ -21,6 +22,20 @@ const colorMap = {
 export function Integrations({ integrations }: IntegrationsProps) {
   const { showToast } = useToast();
   const [configuringId, setConfiguringId] = useState<string | null>(null);
+
+  if (configuringId === 'int-2') {
+    return (
+      <div className="space-y-6">
+        <button 
+          onClick={() => setConfiguringId(null)}
+          className="text-xs font-black text-gray-400 hover:text-primary-600 flex items-center gap-2 mb-4 group"
+        >
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> Voltar para Integrações
+        </button>
+        <StripeSettings />
+      </div>
+    );
+  }
 
   if (configuringId === 'int-3') {
     return (
