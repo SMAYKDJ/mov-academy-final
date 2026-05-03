@@ -204,6 +204,3 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
-    </div>
-  );
-}

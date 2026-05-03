@@ -26,7 +26,8 @@ export default function AlunosPage() {
   const searchParams = useSearchParams();
 
   // Estado dos dados reais via Hook
-  const { alunos, loading, saveAluno, inactivateAluno, fetchAlunos } = useAlunos();
+  const { alunos, setAlunos, loading, saveAluno, inactivateAluno, fetchAlunos } = useAlunos();
+  const isLoaded = !loading;
 
   // Estado dos filtros
   const [filters, setFilters] = useState<AlunosFilterState>({

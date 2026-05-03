@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Eye, Pencil, Trash2, ChevronUp, ChevronDown, MoreHorizontal, MessageCircle } from 'lucide-react';
+import { Eye, Pencil, Trash2, ChevronUp, ChevronDown, MoreHorizontal, MessageCircle, UserX } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { StatusBadge, PlanBadge, RiskIndicator } from './status-badge';
 import { Skeleton } from '@/components/ui/skeleton';

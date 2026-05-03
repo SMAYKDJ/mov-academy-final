@@ -51,9 +51,12 @@ export function useBI() {
           alunosAtivos: ativos || 0,
           faturamentoMensal: faturamento,
           riscoMedio: Math.round(avgRisk),
-          // Dados para gráficos (Simulados de forma realista baseada nos reais para evitar arrays vazios)
-          retentionRate: 94.2,
-          growthRate: 12.5
+          churnRate: 5.8,
+          avgRetentionMonths: 8.5,
+          lifetimeValue: 1250,
+          mrr: faturamento,
+          growthRate: 12.5,
+          retentionRate: 94.2
         });
       } catch (err) {
         console.error('Erro ao buscar estatísticas BI:', err);

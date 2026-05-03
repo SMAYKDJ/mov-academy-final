@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, DollarSign, TrendingDown, UserPlus, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, DollarSign, TrendingDown, UserPlus, ArrowUpRight, ArrowDownRight, AlertTriangle } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { KPIStat } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,6 +15,7 @@ const iconMap = {
   DollarSign,
   TrendingDown,
   UserPlus,
+  AlertTriangle,
 };
 
 /**
@@ -45,6 +46,11 @@ const colorConfig: Record<string, {
     iconBg: 'bg-warning-50 dark:bg-amber-900/20',
     iconText: 'text-warning-600 dark:text-amber-400',
     gradient: 'from-warning-500/5 to-transparent',
+  },
+  'Alertas de Risco': {
+    iconBg: 'bg-red-50 dark:bg-red-900/20',
+    iconText: 'text-red-600 dark:text-red-400',
+    gradient: 'from-red-500/5 to-transparent',
   },
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { DollarSign, Plus, ArrowUpRight, ArrowDownRight, Wallet, History, Lock, Unlock, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { DollarSign, Plus, ArrowUpRight, ArrowDownRight, Wallet, History, Lock, Unlock, AlertCircle, CheckCircle2, Loader2, Shield } from 'lucide-react';
 import { cn } from "@/utils/cn";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/use-auth";
@@ -532,13 +532,13 @@ function CashReceipt({ report, operatorName }: { report: any, operatorName: stri
           </button>
         </div>
 
-        <style jsx>{`
+        <style dangerouslySetInnerHTML={{ __html: `
           @media print {
             body * { visibility: hidden; }
             .print-area, .print-area * { visibility: visible; }
             .print-area { position: absolute; left: 0; top: 0; width: 100%; }
           }
-        `}</style>
+        ` }} />
       </div>
     </div>
   );

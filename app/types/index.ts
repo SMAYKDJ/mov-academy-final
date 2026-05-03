@@ -26,7 +26,7 @@ export interface KPIStat {
   value: string;
   change: string;
   trend: 'up' | 'down';
-  icon: 'Users' | 'DollarSign' | 'TrendingDown' | 'UserPlus';
+  icon: 'Users' | 'DollarSign' | 'TrendingDown' | 'UserPlus' | 'AlertTriangle';
   description: string;
 }
 

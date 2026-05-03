@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { TreinosKPI } from '@/components/dashboard/treinos/treinos-kpi';
@@ -196,3 +196,28 @@ export default function TreinosPage() {
     </div>
   );
 }
+
+// Mock Data local se não vier do banco
+const mockStudents = [
+  { id: 'MOV-0001', name: 'João Henrique Diniz Costa Ribeiro Godinho' },
+  { id: 'MOV-0002', name: 'Ana Beatriz Souza' },
+  { id: 'MOV-0003', name: 'Carlos Eduardo Lima' },
+];
+
+const treinosKPIData = {
+  totalTreinos: 42,
+  frequenciaSemanal: 4.2,
+  musculoMaisTreinado: 'Peito',
+  evolucao: 12,
+  xpTotal: 1250,
+  nivel: 4
+};
+
+const muscleMapData: MuscleData[] = [
+  { grupo: 'peito', intensidade: 85, volumeSemanal: 12, ultimoTreino: 'Ontem', exerciciosRelacionados: [] },
+  { grupo: 'costas', intensidade: 70, volumeSemanal: 10, ultimoTreino: '2 dias atrás', exerciciosRelacionados: [] },
+  { grupo: 'ombros', intensidade: 45, volumeSemanal: 8, ultimoTreino: '3 dias atrás', exerciciosRelacionados: [] },
+  { grupo: 'triceps', intensidade: 30, volumeSemanal: 6, ultimoTreino: '4 dias atrás', exerciciosRelacionados: [] },
+  { grupo: 'biceps', intensidade: 65, volumeSemanal: 8, ultimoTreino: '2 dias atrás', exerciciosRelacionados: [] },
+  { grupo: 'quadriceps', intensidade: 90, volumeSemanal: 16, ultimoTreino: 'Hoje', exerciciosRelacionados: [] },
+];

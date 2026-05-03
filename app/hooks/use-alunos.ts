@@ -29,10 +29,13 @@ export function useAlunos() {
         plano: p.plano || 'Mensal',
         status: p.status || 'ativo',
         dataMatricula: p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR') : '',
+        dataNascimento: p.data_nascimento || '',
+        endereco: p.endereco || '',
+        objetivo: p.objetivo || '',
         ultimoPagamento: p.ultimo_pagamento || '',
         risco: p.risco_churn || 0,
         frequencia: p.frequencia_semanal || 0,
-        historicoPagamentos: [] // Buscaríamos de outra tabela se necessário
+        historicoPagamentos: []
       }));
 
       setAlunos(mapped);
@@ -102,5 +105,5 @@ export function useAlunos() {
     }
   };
 
-  return { alunos, loading, fetchAlunos, saveAluno, inactivateAluno };
+  return { alunos, setAlunos, loading, fetchAlunos, saveAluno, inactivateAluno };
 }

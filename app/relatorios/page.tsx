@@ -44,12 +44,10 @@ export default function RelatoriosPage() {
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
 
   // Dados para exibição (Mistura de reais e auxiliares para gráficos)
-  const biData = stats ? [
-    { label: 'Total de Alunos', value: stats.totalAlunos.toString(), change: '+12%', trend: 'up' as const, icon: Users2, color: 'text-blue-600 bg-blue-50' },
-    { label: 'Faturamento Mensal', value: `R$ ${stats.faturamentoMensal.toLocaleString('pt-BR')}`, change: '+8.2%', trend: 'up' as const, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
-    { label: 'Taxa de Retenção', value: `${stats.retentionRate}%`, change: '+0.5%', trend: 'up' as const, icon: CheckCircle2, color: 'text-violet-600 bg-violet-50' },
-    { label: 'Risco de Churn Médio', value: `${stats.riscoMedio}%`, change: '-2%', trend: 'down' as const, icon: CalendarClock, color: 'text-amber-600 bg-amber-50' },
-  ] : [];
+  const dynamicData = useMemo(() => ({
+    heatmap: frequencyHeatmapData,
+    checkins: dailyCheckinsData
+  }), []);
 
   const handleExportBI = () => {
     if (!stats) return;
@@ -127,7 +125,7 @@ export default function RelatoriosPage() {
                 ))}
               </div>
             ) : (
-              <BIOverviewKPI stats={biData} />
+              <BIOverviewKPI stats={stats} />
             )}
           </section>
 

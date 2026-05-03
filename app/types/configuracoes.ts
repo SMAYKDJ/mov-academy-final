@@ -42,4 +42,4 @@ export interface IntegrationConfig {
   apiKey?: string;
 }
 
-export type SettingsTab = 'perfil' | 'academia' | 'seguranca' | 'usuarios' | 'integracoes' | 'preferencias' | 'catraca';
+export type SettingsTab = 'perfil' | 'academia' | 'seguranca' | 'usuarios' | 'integracoes' | 'preferencias' | 'catraca' | 'tv' | 'churn';

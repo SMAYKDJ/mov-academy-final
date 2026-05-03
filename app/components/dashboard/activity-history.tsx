@@ -114,15 +114,8 @@ export function ActivityHistory({ onClose }: ActivityHistoryProps) {
               Fechar Visualização
             </button>
           </div>
-   </div>
+    </div>
         </div>
       </div>
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.2); border-radius: 10px; }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); }
-      `}</style>
-    </div>
   );
 }
