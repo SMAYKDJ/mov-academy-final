@@ -600,11 +600,19 @@ def find_column_index(headers: list, keywords: list) -> int:
     return -1
 
 @app.post("/upload/report")
-async def upload_report(files: list[UploadFile] = File(...)):
+async def upload_report(files: list[UploadFile] = File(...), user: any = Depends(get_current_user)):
     """
     Faz o upload de múltiplos relatórios PDF, extrai dados de alunos de todos e executa previsões em lote.
     Usa mapeamento inteligente de colunas para lidar com variações nos cabeçalhos dos PDFs.
     """
+    # Validar se o usuário é administrador (segurança extra)
+    try:
+        user_profile = supabase_client.table("profiles").select("role").eq("id", user.id).single().execute()
+        if not user_profile.data or user_profile.data.get("role") != "admin":
+             raise HTTPException(status_code=403, detail="Apenas administradores podem processar relatórios.")
+    except Exception:
+        raise HTTPException(status_code=403, detail="Erro ao validar permissões de administrador.")
+
     all_pdf_data = []
     processed_files = []
 
@@ -1009,6 +1017,17 @@ async def list_suppliers():
     res = supabase_client.table("suppliers").select("*").execute()
     return res.data
 
+@app.post("/inventory/suppliers")
+async def create_supplier(data: SupplierInput):
+    """Cadastra um novo fornecedor."""
+    if not supabase_client:
+        raise HTTPException(status_code=503, detail="Supabase não configurado.")
+    try:
+        res = supabase_client.table("suppliers").insert(data.dict()).execute()
+        return {"status": "success", "supplier": res.data[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 async def internal_record_stock_movement(data: StockMovementInput, user_id: str = "sistema"):
     """Lógica interna compartilhada para movimentação de estoque."""
     if not supabase_client: return None
@@ -1129,12 +1148,35 @@ async def validate_access(payload: dict = Body(...)):
             aluno = res.data[0]
             # 2. Lógica de Validação de Plano
             # Verificamos o status do aluno e se o plano está ativo
-            if aluno.get("status") == "Ativo":
+            # 2. Lógica de Validação de Plano com Tolerância (Grace Period)
+            status_aluno = aluno.get("status", "Inativo")
+            data_vencimento_str = aluno.get("data_vencimento")
+            
+            # Tolerância padrão de 3 dias (poderia vir de uma tabela de config)
+            grace_period_days = 3
+            
+            if status_aluno == "Ativo":
                 status = "ativo"
                 msg = "Acesso Liberado"
+            elif data_vencimento_str:
+                try:
+                    from datetime import date
+                    vencimento = datetime.fromisoformat(data_vencimento_str).date()
+                    hoje = date.today()
+                    atraso = (hoje - vencimento).days
+                    
+                    if atraso <= grace_period_days:
+                        status = "ativo" # Liberado pela tolerância
+                        msg = f"Liberado (Tolerância: {atraso} dias de atraso)"
+                    else:
+                        status = "vencido"
+                        msg = f"Bloqueado: {atraso} dias de atraso"
+                except:
+                    status = "vencido"
+                    msg = "Erro na data de vencimento"
             else:
                 status = "vencido"
-                msg = "Acesso Bloqueado (Plano Vencido)"
+                msg = "Acesso Bloqueado (Plano Inativo)"
 
         # 3. Notificar Dashboard via WebSocket (Broadcasting instantâneo)
         event = {

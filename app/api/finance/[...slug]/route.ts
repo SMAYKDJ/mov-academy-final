@@ -7,6 +7,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
 
+  // Verificar permissão
+  if (session.user.role !== 'admin' && session.user.role !== 'ceo') {
+    return NextResponse.json({ error: 'Acesso negado às finanças.' }, { status: 403 });
+  }
+
   try {
     const { slug } = await params;
     const slugPath = slug.join('/');

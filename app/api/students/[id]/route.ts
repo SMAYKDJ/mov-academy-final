@@ -11,6 +11,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
 
+  // Verificar se o usuário é administrador
+  if (session.user.role !== 'admin' && session.user.role !== 'ceo') {
+    return NextResponse.json({ error: 'Acesso negado. Apenas administradores podem alterar biometria.' }, { status: 403 });
+  }
+
   try {
     const { id } = await params;
     const body = await request.json();

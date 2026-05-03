@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               id: session.user.id,
               email: session.user.email!,
               nome: session.user.user_metadata?.nome || 'Usuário',
-              role: (session.user.user_metadata?.role as UserRole) || 'admin'
+              role: (session.user.user_metadata?.role as UserRole) || 'aluno'
             });
           }
         } else if (mounted) {
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: session.user.id,
           email: session.user.email!,
           nome: session.user.user_metadata?.nome || 'Usuário',
-          role: (session.user.user_metadata?.role as UserRole) || 'admin',
+          role: (session.user.user_metadata?.role as UserRole) || 'aluno',
           avatar_url: session.user.user_metadata?.avatar_url
         });
       }

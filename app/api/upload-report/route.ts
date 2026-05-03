@@ -7,6 +7,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
 
+  // Apenas administradores podem processar relatórios (destrutivo)
+  if (session.user.role !== 'admin' && session.user.role !== 'ceo') {
+    return NextResponse.json({ error: 'Acesso negado. Apenas administradores podem processar relatórios.' }, { status: 403 });
+  }
+
   try {
     const formData = await request.formData();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';

@@ -36,6 +36,22 @@ export const SupabaseService = {
     if (error) throw error;
   },
 
+  async anonymizeAluno(id: number) {
+    const { error } = await supabase
+      .from('alunos')
+      .update({ 
+        nome: 'ALUNO ANONIMIZADO (LGPD)', 
+        telefone: '00000000000',
+        email: `anonimo_${id}@moviment.academy`,
+        foto_url: null,
+        biometry_id: null,
+        status: 'inativo'
+      })
+      .eq('id', id);
+    
+    if (error) throw error;
+  },
+
   // --- TRANSAÇÕES ---
   async getTransacoes() {
     const { data, error } = await supabase

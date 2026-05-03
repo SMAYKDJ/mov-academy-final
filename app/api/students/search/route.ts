@@ -11,6 +11,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
 
+  // Apenas administradores e CEOs pesquisam alunos
+  if (session.user.role !== 'admin' && session.user.role !== 'ceo') {
+    return NextResponse.json({ error: 'Acesso negado à pesquisa.' }, { status: 403 });
+  }
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('q') || '';
 

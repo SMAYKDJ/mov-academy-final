@@ -7,6 +7,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
 
+  // Administradores, CEOs e Recepção gerenciam o estoque
+  const allowedRoles = ['admin', 'ceo', 'recepcao'];
+  if (!allowedRoles.includes(session.user.role)) {
+    return NextResponse.json({ error: 'Acesso negado ao estoque.' }, { status: 403 });
+  }
+
   try {
     const { slug } = await params;
     const slugPath = slug.join('/');
@@ -33,6 +39,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   const session = await verifySession(request);
   if ('error' in session) {
     return NextResponse.json({ error: session.error }, { status: session.status });
+  }
+
+  // Apenas administradores e CEOs gerenciam o estoque
+  if (session.user.role !== 'admin' && session.user.role !== 'ceo') {
+    return NextResponse.json({ error: 'Acesso negado ao estoque.' }, { status: 403 });
   }
 
   try {

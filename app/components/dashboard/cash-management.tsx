@@ -268,14 +268,38 @@ export function CashManagement() {
           </div>
         </div>
 
-        {/* Dicas de Segurança */}
-        <div className="p-6 bg-primary-50 dark:bg-primary-900/10 rounded-3xl border border-primary-100 dark:border-primary-900/20 flex gap-4">
-          <AlertCircle className="w-6 h-6 text-primary-600 shrink-0" />
-          <div>
-            <p className="text-xs font-black text-primary-600 uppercase tracking-widest mb-1">Dica de Gestão</p>
-            <p className="text-xs leading-relaxed text-primary-900 dark:text-primary-300">
-              Lembre-se de realizar **sangrias** periódicas se o volume de dinheiro físico no caixa ultrapassar o limite de segurança da sua academia.
-            </p>
+        {/* Dicas de Segurança e Alerta de Sangria */}
+        <div className="space-y-4">
+          {session?.status === 'aberto' && (
+            <div className={cn(
+              "p-6 rounded-3xl border animate-pulse-subtle flex gap-4 transition-all",
+              1250 > 1000 
+                ? "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-900/30" 
+                : "bg-primary-50 dark:bg-primary-900/10 border-primary-100 dark:border-primary-900/20"
+            )}>
+              <AlertCircle className={cn("w-6 h-6 shrink-0", 1250 > 1000 ? "text-red-600" : "text-primary-600")} />
+              <div>
+                <p className={cn("text-xs font-black uppercase tracking-widest mb-1", 1250 > 1000 ? "text-red-600" : "text-primary-600")}>
+                  {1250 > 1000 ? "⚠️ ALERTA DE SEGURANÇA" : "Dica de Gestão"}
+                </p>
+                <p className={cn("text-xs leading-relaxed font-medium", 1250 > 1000 ? "text-red-900 dark:text-red-300" : "text-primary-900 dark:text-primary-300")}>
+                  {1250 > 1000 
+                    ? "O saldo em dinheiro físico ultrapassou R$ 1.000,00. Realize uma SANGRIA para o cofre imediatamente."
+                    : "Lembre-se de realizar sangrias periódicas se o volume de dinheiro físico no caixa ultrapassar o limite de segurança."
+                  }
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="p-6 bg-primary-50 dark:bg-primary-900/10 rounded-3xl border border-primary-100 dark:border-primary-900/20 flex gap-4">
+            <Shield className="w-6 h-6 text-primary-600 shrink-0" />
+            <div>
+              <p className="text-xs font-black text-primary-600 uppercase tracking-widest mb-1">Auditoria Ativa</p>
+              <p className="text-xs leading-relaxed text-primary-900 dark:text-primary-300">
+                Todas as movimentações deste caixa estão sendo registradas com seu ID de usuário para fins de auditoria.
+              </p>
+            </div>
           </div>
         </div>
       </div>

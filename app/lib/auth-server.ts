@@ -18,5 +18,17 @@ export async function verifySession(request: Request) {
     return { error: 'Sessão inválida', status: 401 };
   }
 
-  return { user };
+  // Buscar o perfil para obter a role
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  return { 
+    user: {
+      ...user,
+      role: profile?.role || 'aluno'
+    } 
+  };
 }

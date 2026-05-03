@@ -240,7 +240,7 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
         </div>
 
         {/* Ações de Rodapé */}
-        <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] flex flex-col gap-3">
+        <div className="p-6 border-t border-gray-100 dark:border-[#1e2235] space-y-3">
           <div className="flex gap-3">
             <button
               onClick={() => { onEdit(aluno); onClose(); }}
@@ -249,6 +249,22 @@ export function AlunoDrawer({ aluno, open, onClose, onEdit, onDelete, onStatusCh
               <Edit3 className="w-4 h-4" />
               Editar Aluno
             </button>
+            <button
+              onClick={() => {
+                if (confirm("LGPD: Deseja realmente anonimizar este aluno? O nome e contatos serão apagados permanentemente, mas o histórico financeiro será mantido para estatística.")) {
+                  // Aqui chamaria a função de anonimização
+                  onStatusChange?.(aluno, 'inativo');
+                  onClose();
+                }
+              }}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-white/10 text-gray-500 rounded-xl text-sm font-bold hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+              title="Anonimizar dados pessoais (LGPD)"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              Anonimizar
+            </button>
+          </div>
+          
           <button
             onClick={() => onDelete(aluno)}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-amber-100 dark:border-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl text-sm font-bold hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all"

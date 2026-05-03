@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth-server';
 
 export async function POST(request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
+  const session = await verifySession(request);
+  if ('error' in session) {
+    return NextResponse.json({ error: session.error }, { status: session.status });
+  }
+
+  // Administradores, CEOs e Recepção gerenciam o caixa
+  const allowedRoles = ['admin', 'ceo', 'recepcao'];
+  if (!allowedRoles.includes(session.user.role)) {
+    return NextResponse.json({ error: 'Acesso negado ao caixa.' }, { status: 403 });
+  }
+
   try {
     const { slug } = await params;
     const slugPath = slug.join('/');
@@ -9,7 +21,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     
     const response = await fetch(`${backendUrl}/cash/${slugPath}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': request.headers.get('Authorization') || ''
+      },
       body: JSON.stringify(body),
     });
 
