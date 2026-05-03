@@ -18,6 +18,18 @@ export default function LoginPage() {
   const { login, fieldError } = useLogin();
   const [loading, setLoading] = useState(false);
 
+  // Pré-aquecimento do Backend (Acordar o servidor da Render)
+  React.useEffect(() => {
+    const wakeUpBackend = async () => {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      try {
+        // Faz uma requisição silenciosa para o health check
+        fetch(`${backendUrl}/health`).catch(() => {});
+      } catch (e) {}
+    };
+    wakeUpBackend();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -146,10 +158,20 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full py-3.5 bg-primary-600 text-white rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 dark:shadow-none flex items-center justify-center gap-2 disabled:opacity-70"
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>
-                  <span>Entrar no Sistema</span>
-                  <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </>}
+                {loading ? (
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Autenticando...</span>
+                    </div>
+                    <p className="text-[10px] opacity-70 font-normal mt-1 italic">Primeiro acesso pode levar 30s</p>
+                  </div>
+                ) : (
+                  <>
+                    <span>Entrar no Sistema</span>
+                    <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </button>
 
               <div className="text-center pt-2">

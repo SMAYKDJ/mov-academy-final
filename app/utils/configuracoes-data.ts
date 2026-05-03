@@ -26,7 +26,7 @@ export const systemUsersData: SystemUser[] = [
 ];
 
 export const integrationsData: IntegrationConfig[] = [
-  { id: 'int-1', nome: 'Webhook de Pagamentos', tipo: 'webhook', status: 'ativo', url: 'https://api.movimentacademy.com/webhooks/payments' },
+  { id: 'int-1', nome: 'Webhook de Pagamentos', tipo: 'webhook', status: 'ativo', url: 'https://academiamoviment.vercel.app/api/webhooks/stripe' },
   { id: 'int-2', nome: 'Stripe (PIX & Cartão)', tipo: 'api', status: 'inativo' },
   { id: 'int-3', nome: 'WhatsApp Business', tipo: 'whatsapp', status: 'inativo' },
   { id: 'int-4', nome: 'Notificações E-mail', tipo: 'email', status: 'ativo' },
