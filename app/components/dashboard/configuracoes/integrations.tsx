@@ -6,6 +6,8 @@ import { cn } from '@/utils/cn';
 import { useToast } from '@/components/ui/toast';
 import type { IntegrationConfig } from '@/types/configuracoes';
 
+import { WhatsAppSettings } from './whatsapp-settings';
+
 interface IntegrationsProps { integrations: IntegrationConfig[]; }
 
 const iconMap = { webhook: Globe, api: Key, whatsapp: MessageCircle, email: Mail };
@@ -18,6 +20,21 @@ const colorMap = {
 
 export function Integrations({ integrations }: IntegrationsProps) {
   const { showToast } = useToast();
+  const [configuringId, setConfiguringId] = useState<string | null>(null);
+
+  if (configuringId === 'int-3') {
+    return (
+      <div className="space-y-6">
+        <button 
+          onClick={() => setConfiguringId(null)}
+          className="text-xs font-black text-gray-400 hover:text-primary-600 flex items-center gap-2 mb-4 group"
+        >
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> Voltar para Integrações
+        </button>
+        <WhatsAppSettings />
+      </div>
+    );
+  }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -86,7 +103,7 @@ export function Integrations({ integrations }: IntegrationsProps) {
               )}
 
               {int.status === 'inativo' && (
-                <button onClick={() => showToast(`Integração "${int.nome}" requer configuração`, 'info', 'Integração')}
+                <button onClick={() => setConfiguringId(int.id)}
                   className="mt-3 px-4 py-2 border border-gray-200 dark:border-[#2d3348] text-gray-600 dark:text-gray-400 rounded-xl text-xs font-bold hover:bg-gray-100 dark:hover:bg-[#0f1117] transition-all flex items-center gap-2">
                   <ExternalLink className="w-3.5 h-3.5" /> Configurar
                 </button>
