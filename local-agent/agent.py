@@ -10,7 +10,7 @@ try:
         config = json.load(f)
 except:
     config = {
-        "api_url": "https://moviment-academy.vercel.app/api/access/validate",
+        "api_url": "https://academiamoviment.vercel.app/api/access/validate",
         "catraca_ip": "192.168.1.100",
         "catraca_port": 4000,
         "token": "mvmt_local_agent_key_123"

@@ -1211,7 +1211,7 @@ async def validate_access(payload: dict = Body(...)):
 
 @app.get("/api/agent/download")
 async def download_agent_package(
-    api_url: str = "https://moviment-academy.vercel.app/api/access/validate",
+    api_url: str = "https://academiamoviment.vercel.app/api/access/validate",
     catraca_ip: str = "192.168.1.100",
     catraca_port: int = 4000
 ):
@@ -1277,8 +1277,8 @@ async def generate_pix_payment(aluno_id: int, valor: float):
                 'quantity': 1,
             }],
             mode='payment',
-            success_url="https://moviment-academy.vercel.app/financeiro?success=true",
-            cancel_url="https://moviment-academy.vercel.app/financeiro?cancel=true",
+            success_url="https://academiamoviment.vercel.app/financeiro?success=true",
+            cancel_url="https://academiamoviment.vercel.app/financeiro?cancel=true",
             metadata={"aluno_id": str(aluno_id)}
         )
         

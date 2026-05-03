@@ -92,7 +92,7 @@ export function StripeSettings() {
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">URL do seu Endpoint de Webhook</p>
                 <div className="flex items-center gap-2">
                     <code className="text-[11px] text-indigo-600 font-bold bg-indigo-50 dark:bg-indigo-900/20 px-2 py-1 rounded">
-                        https://moviment-academy.vercel.app/api/webhooks/stripe
+                        https://academiamoviment.vercel.app/api/webhooks/stripe
                     </code>
                 </div>
                 <p className="text-[9px] text-gray-500 mt-3 leading-relaxed italic">

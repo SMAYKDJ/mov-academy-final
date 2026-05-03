@@ -10,8 +10,9 @@ import { UserManagement } from '@/components/dashboard/configuracoes/user-manage
 import { Integrations } from '@/components/dashboard/configuracoes/integrations';
 import { PreferencesSettings } from '@/components/dashboard/configuracoes/preferences-settings';
 import { currentProfile, gymSettingsData, systemUsersData, integrationsData } from '@/utils/configuracoes-data';
-import { User, Building2, Shield, Users, Plug, Settings2, Loader2, Cpu } from 'lucide-react';
+import { User, Building2, Shield, Users, Plug, Settings2, Loader2, Cpu, Monitor } from 'lucide-react';
 import { CatracaSettings } from '@/components/dashboard/configuracoes/catraca-settings';
+import { TVSettings } from '@/components/dashboard/configuracoes/tv-settings';
 import { cn } from '@/utils/cn';
 import type { SettingsTab } from '@/types/configuracoes';
 import { useAuth } from '@/hooks/use-auth';
@@ -24,6 +25,7 @@ const tabs: { id: SettingsTab; label: string; icon: React.ElementType; descripti
   { id: 'integracoes', label: 'Integrações', icon: Plug, description: 'APIs e webhooks' },
   { id: 'preferencias', label: 'Preferências', icon: Settings2, description: 'Tema e notificações' },
   { id: 'catraca', label: 'Catraca', icon: Cpu, description: 'Hardware e acesso' },
+  { id: 'tv', label: 'Painel TV', icon: Monitor, description: 'Lobby e recepção' },
 ];
 
 export default function ConfiguracoesPage() {
@@ -43,6 +45,7 @@ export default function ConfiguracoesPage() {
       case 'integracoes': return <Integrations integrations={integrationsData} />;
       case 'preferencias': return <PreferencesSettings />;
       case 'catraca': return <CatracaSettings />;
+      case 'tv': return <TVSettings />;
     }
   };
 
