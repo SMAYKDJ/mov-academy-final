@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Globe, Key, MessageCircle, Mail, Copy, ExternalLink } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useToast } from '@/components/ui/toast';
