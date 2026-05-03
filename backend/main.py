@@ -1208,3 +1208,49 @@ async def validate_access(payload: dict = Body(...)):
     except Exception as e:
         print(f"❌ Erro na validação de acesso: {e}")
         return {"status": "erro", "liberar_giro": False, "mensagem": str(e)}
+
+@app.get("/api/agent/download")
+async def download_agent_package(
+    api_url: str = "https://moviment-academy.vercel.app/api/access/validate",
+    catraca_ip: str = "192.168.1.100",
+    catraca_port: int = 4000
+):
+    """Gera um pacote ZIP configurado para o Agente Local."""
+    import zipfile
+    import io
+    import os
+
+    # 1. Definir os conteúdos
+    config_data = {
+        "api_url": api_url,
+        "catraca_ip": catraca_ip,
+        "catraca_port": catraca_port,
+        "token": "mvmt_local_agent_key_123"
+    }
+    
+    # Caminho para os arquivos base (que criamos antes)
+    base_dir = os.path.join(os.getcwd(), "local-agent")
+    
+    # 2. Criar o ZIP na memória
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        # Adicionar config.json dinâmico
+        zip_file.writestr("config.json", json.dumps(config_data, indent=4))
+        
+        # Adicionar arquivos estáticos (agent.py, install.bat, README.md)
+        for filename in ["agent.py", "install.bat", "README.md"]:
+            file_path = os.path.join(base_dir, filename)
+            if os.path.exists(file_path):
+                zip_file.write(file_path, filename)
+            else:
+                # Fallback se os arquivos não existirem no disco no momento do deploy
+                zip_file.writestr(filename, f"# Arquivo {filename} não encontrado no servidor.")
+
+    zip_buffer.seek(0)
+    
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        zip_buffer, 
+        media_type="application/x-zip-compressed",
+        headers={"Content-Disposition": "attachment; filename=Agente_Local_Moviment_Configurado.zip"}
+    )

@@ -8,10 +8,19 @@ echo.
 :: Verificar se Python existe
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERRO] Python nao encontrado! 
-    echo Por favor, instale o Python 3.9+ em: https://www.python.org/
-    pause
-    exit /b
+    echo [AVISO] Python nao encontrado!
+    echo [INFO] Baixando instalador do Python 3.11 automaticamente...
+    :: Usar curl (nativo no Win10+) para baixar o instalador
+    curl -L -o python_installer.exe https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe
+    
+    echo [INFO] Iniciando instalacao silenciosa... Por favor, aguarde uns instantes.
+    start /wait python_installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+    
+    echo [OK] Python instalado com sucesso!
+    del python_installer.exe
+    
+    :: Atualizar o PATH para a sessao atual
+    set "PATH=%PATH%;%ProgramFiles%\Python311\;%ProgramFiles%\Python311\Scripts\"
 )
 
 echo [1/3] Criando ambiente virtual (venv)...

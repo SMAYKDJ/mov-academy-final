@@ -27,11 +27,32 @@ export function CatracaSettings() {
     showToast("Configurações da Catraca salvas com sucesso!", "success");
   };
 
+  const handleDownloadAgent = () => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const params = new URLSearchParams({
+      api_url: config.localAgentUrl + '/api/access/validate', // Ou a URL de prod
+      catraca_ip: config.hardwareIp,
+      catraca_port: config.hardwarePort
+    });
+
+    window.location.href = `${backendUrl}/api/agent/download?${params.toString()}`;
+    showToast("Gerando pacote personalizado e iniciando download...", "success");
+  };
+
   return (
     <div className="space-y-8 animate-fade-in">
-      <div>
-        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Configurações da Catraca</h2>
-        <p className="text-gray-500 text-sm">Gerencie a comunicação entre o hardware Toletus e a plataforma.</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Configurações da Catraca</h2>
+          <p className="text-gray-500 text-sm">Gerencie a comunicação entre o hardware Toletus e a plataforma.</p>
+        </div>
+        <button 
+          onClick={handleDownloadAgent}
+          className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
+        >
+          <Save className="w-3.5 h-3.5" />
+          Baixar Agente Configurado (.zip)
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
