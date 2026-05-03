@@ -707,6 +707,30 @@ async def upload_report(files: list[UploadFile] = File(...), user: any = Depends
                 if insert_data:
                     supabase_client.table("alunos").insert(insert_data).execute()
                     print(f"  ✅ Dados do Supabase substituídos por {len(insert_data)} alunos.")
+
+                    # --- SALVAR NO HISTÓRICO PARA TREINAMENTO FUTURO ---
+                    try:
+                        history_path = os.path.join(BASE_DIR, "..", "RELATORIOS", "consolidated_client_data.csv")
+                        os.makedirs(os.path.dirname(history_path), exist_ok=True)
+                        
+                        new_df = pd.DataFrame([{
+                            'weekly_frequency': s.weekly_frequency,
+                            'days_since_last_visit': s.days_since_last_visit,
+                            'overdue_payments': s.overdue_payments,
+                            'overdue_days': s.overdue_days,
+                            'enrollment_months': s.enrollment_months,
+                            'age': s.age,
+                            'plan': s.plan,
+                            'target': 1 if s.days_since_last_visit > 30 else 0 # Define target básico
+                        } for s in all_pdf_data])
+
+                        if os.path.exists(history_path):
+                            new_df.to_csv(history_path, mode='a', header=False, index=False)
+                        else:
+                            new_df.to_csv(history_path, index=False)
+                        print(f"  💾 Histórico de treinamento atualizado: {len(new_df)} novas linhas.")
+                    except Exception as he:
+                        print(f"  ⚠️ Erro ao salvar histórico de treinamento: {he}")
             except Exception as se:
                 print(f"  ⚠️ Erro ao sincronizar com o Supabase: {se}")
         
